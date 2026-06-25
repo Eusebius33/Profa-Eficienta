@@ -1,0 +1,676 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Traducere în limbaj matematic
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block main %}
+<div class="unscrollable">
+<!-- BACKGROUND -->
+<div class="min-h-0 h-[calc(100dvh-80px)] bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 p-6 overflow-hidden">
+
+    <!-- WRAPPER -->
+    <div class="w-full max-w-[1850px] mx-auto h-full bg-white border border-slate-200 rounded-[2rem] shadow-2xl p-3 flex gap-3 overflow-hidden">
+
+        <!-- STANGA - CONVERSATII -->
+        <div class="w-72 bg-slate-950 border border-slate-800 rounded-3xl p-4 flex flex-col shadow-xl">
+
+            <h2 class="text-white text-lg font-bold mb-4">
+                Conversații
+            </h2>
+
+            <div class="space-y-2 overflow-y-auto">
+                {% for conv in conversations %}
+                    <a
+                        href="/mode2/{{ conv['id'] }}"
+                        class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl"
+                    >
+                        {{ conv["title"] }}
+                    </a>
+                {% endfor %}
+            </div>
+
+            <!-- ACCOUNT -->
+            <div class="mt-auto pt-4 border-t border-slate-800">
+                <a
+                    href="/account"
+                    class="flex items-center gap-3 p-2 rounded-2xl bg-slate-50 hover:bg-slate-400 transition"
+                >
+                    <div class="w-10 h-10 rounded-full bg-cyan-500 flex items-center justify-center text-slate-950 font-bold">
+                        A
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-sm font-semibold text-slate-950">Cont</span>
+                        <span class="text-xs text-slate-950">Gestioneaza</span>
+                    </div>
+                </a>
+            </div>
+
+        </div>
+
+        <!-- CENTRU -->
+        <div class="flex-1 bg-slate-950 border border-slate-800 rounded-3xl p-6 flex flex-col shadow-xl h-full min-h-0 overflow-hidden">
+
+            <!-- HEADER -->
+            <div class="mb-6 flex items-start justify-between gap-4">
+                <div>
+                    <h1 class="text-3xl font-bold text-white">
+                        Traducere limbaj liber în limbaj matematic
+                    </h1>
+                    <p class="text-slate-400 mt-1">
+                        Transformă textul natural în expresii și simboluri matematice
+                    </p>
+                </div>
+            </div>
+
+            <!-- CONTENT -->
+            <div class="flex-1 bg-white rounded-3xl border border-slate-700 p-6 flex flex-col shadow-inner min-h-0 overflow-hidden">
+
+                <!-- INFO -->
+                <div class="grid grid-cols-3 gap-4 mb-6">
+                    <div class="bg-slate-100 rounded-2xl p-4 border border-slate-200">
+                        <p class="text-xs uppercase tracking-wide text-slate-500 mb-1">Mod activ {{mode}}</p>
+                        <p class="font-semibold text-slate-900">Text → Mate</p>
+                    </div>
+                    <div class="bg-slate-100 rounded-2xl p-4 border border-slate-200">
+                        <p class="text-xs uppercase tracking-wide text-slate-500 mb-1">Simboluri</p>
+                        <p class="font-semibold text-slate-900">Liceu</p>
+                    </div>
+                    <div class="bg-slate-100 rounded-2xl p-4 border border-slate-200">
+                        <p class="text-xs uppercase tracking-wide text-slate-500 mb-1">Output</p>
+                        <p class="font-semibold text-slate-900">Expresii matematice</p>
+                    </div>
+                </div>
+
+                <!-- CHAT -->
+                <div id="chat" class="flex-1 overflow-y-auto space-y-4 pr-2 min-h-0 mb-2">
+                    {% for message in messages %}
+                        {% if message["role"] == "user" %}
+                            <div class="bg-cyan-100 p-4 rounded-2xl text-slate-900 w-fit max-w-xl ml-auto border border-cyan-200">
+                                {{ message["content"] | safe }}
+                            </div>
+                        {% else %}
+                            <div class="bg-slate-100 p-5 rounded-2xl max-w-3xl border border-slate-200">
+                                <h3 class="font-bold text-slate-900 mb-3">Răspuns AI</h3>
+                                <div class="text-slate-700 text-sm leading-relaxed">
+                                    <div class="math-render mb-2" data-math="{{ message['content'] | e }}"></div>
+                                    <button
+                                        class="copy-btn inline-flex items-center justify-center text-xs bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-3 py-1 rounded-lg"
+                                        data-content="{{ message['content'] | e }}">
+                                        Descarcă .docx
+                                    </button>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                <!-- QUICK ACTIONS -->
+                <div class="flex flex-wrap justify-end gap-2 mt-auto mb-3 flex-shrink-0">
+                    <button class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm">
+                        Soluție exercițiu anterior
+                    </button>
+                    <button class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold py-2 px-4 rounded-xl text-sm">
+                        Genereaza <input type="number" placeholder="  X" style="width:20px;"> exercitii
+                    </button>
+                </div>
+
+                <!-- INPUT -->
+                <form action="/mode2/{{ conversation_id }}" method="post" class="flex gap-3">
+                    <textarea
+                        name="prompt"
+                        rows="1"
+                        placeholder='Ex: "integrala din x la pătrat plus radical din 3"...'
+                        class="flex-1 text-slate-950 border border-slate-300 rounded-2xl p-4 resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                    ></textarea>
+                    <button
+                        type="submit" onclick="this.disabled=true; this.form.submit();"
+                        class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold px-8 rounded-2xl"
+                    >
+                        Tradu
+                    </button>
+                </form>
+
+            </div>
+
+        </div>
+
+        <!-- DREAPTA -->
+        <div class="w-80 flex flex-col gap-3">
+
+            <!-- SIMBOLURI -->
+            <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 shadow-xl h-[calc(100vh-430px)] overflow-y-auto">
+
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-white font-bold">Simboluri matematice</h2>
+                    <div class="flex items-center gap-2">
+                        <button class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-red-500 transition flex items-center justify-center text-white">♥</button>
+                        <button class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 transition flex items-center justify-center text-white">🔍</button>
+                    </div>
+                </div>
+
+                <div class="space-y-5 text-sm">
+                    <div>
+                        <h3 class="text-cyan-400 font-bold mb-2">Clasa a IX-a</h3>
+                        <div class="space-y-2 text-slate-300">
+                            <div class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">√ Radical</div>
+                            <div class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">x² Puteri</div>
+                            <div class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">Fracții</div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-cyan-400 font-bold mb-2">Clasa a X-a</h3>
+                        <div class="space-y-2 text-slate-300">
+                            <div class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">Trigonometrie</div>
+                            <div class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">Sin / Cos</div>
+                            <div class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">Matrici</div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-cyan-400 font-bold mb-2">Clasa a XI-a</h3>
+                        <div class="space-y-2 text-slate-300">
+                            <div class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">Limite</div>
+                            <div class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">Derivate</div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-cyan-400 font-bold mb-2">Clasa a XII-a</h3>
+                        <div class="space-y-2 text-slate-300">
+                            <div class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">Integrale</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- EXERCITII -->
+            <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 shadow-xl h-[calc(100vh-670px)] overflow-y-auto">
+                <h2 class="text-white font-bold mb-3">Exerciții salvate</h2>
+                <div class="space-y-2 text-sm">
+                    <a class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">Radicali clasa IX</a>
+                    <a class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">Integrale simple</a>
+                    <a class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">Trigonometrie BAC</a>
+                </div>
+            </div>
+
+            <!-- BUTTONS -->
+            <div class="flex flex-col gap-2">
+                <a href="/menu" class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold py-3 rounded-xl text-center">
+                    Schimbă mod
+                </a>
+                <form action="/create_mode2" method="post">
+                    <input type="hidden" name="style"        value="{{ conversation['style_id'] }}">
+                    <input type="hidden" name="school_class" value="{{ conversation['school_class'] }}">
+                    <input type="hidden" name="bac"          value="{{ conversation['bac'] }}">
+                    <button type="submit" class="w-full bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-3 rounded-xl">
+                        Conversație nouă
+                    </button>
+                </form>
+            </div>
+
+            <!-- TIP -->
+            <div class="text-xs text-slate-500 px-1">
+                Tip: apasă pe un simbol pentru a-l insera automat în conversație.
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+</div>
+
+<!-- KaTeX for rendering math in the browser -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<!-- JSZip for building the .docx file -->
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+
+<script>
+// ─── 1. Render all math in chat visually using KaTeX ───────────────────────
+document.addEventListener("DOMContentLoaded", function () {
+    // Scroll chat to bottom
+    const chat = document.getElementById("chat");
+    if (chat) chat.scrollTop = chat.scrollHeight;
+
+    // Render each AI response as a formatted equation
+    document.querySelectorAll(".math-render").forEach(function (el) {
+        const latex = cleanLatex(el.dataset.math);
+        try {
+            katex.render(latex, el, {
+                displayMode: true,
+                throwOnError: false,
+                output: "html"
+            });
+        } catch (e) {
+            el.textContent = latex;
+        }
+    });
+
+    // Auto-expand textarea
+    const ta = document.querySelector("textarea[name='prompt']");
+    if (ta) {
+        ta.addEventListener("input", function () {
+            this.style.height = "auto";
+            this.style.height = this.scrollHeight + "px";
+        });
+    }
+});
+
+// ─── 2. Helpers ────────────────────────────────────────────────────────────
+function cleanLatex(latex) {
+    return (latex || "").replace(/\$\$/g, "").replace(/\$/g, "").trim();
+}
+
+// ─── 3. LaTeX → OMML (Office Math XML) — no external dependencies ─────────
+function latexToOmml(latex) {
+    latex = latex.trim();
+
+    function grabArg(tex, i) {
+        while (i < tex.length && /\s/.test(tex[i])) i++;
+        if (tex[i] === "{") {
+            let depth = 0, start = i;
+            while (i < tex.length) {
+                if (tex[i] === "{") depth++;
+                else if (tex[i] === "}") { depth--; if (depth === 0) { i++; break; } }
+                i++;
+            }
+            return { content: tex.slice(start + 1, i - 1), consumed: i - start };
+        }
+        return { content: tex[i] || "", consumed: 1 };
+    }
+
+    function extractLastRun(xml) {
+        const patterns = [
+            /(<m:sSup>[\s\S]*?<\/m:sSup>)$/,
+            /(<m:sSub>[\s\S]*?<\/m:sSub>)$/,
+            /(<m:sSubSup>[\s\S]*?<\/m:sSubSup>)$/,
+            /(<m:f>[\s\S]*?<\/m:f>)$/,
+            /(<m:rad>[\s\S]*?<\/m:rad>)$/,
+            /(<m:nary>[\s\S]*?<\/m:nary>)$/,
+            /(<m:func>[\s\S]*?<\/m:func>)$/,
+            /(<m:d>[\s\S]*?<\/m:d>)$/,
+            /(<m:r>[\s\S]*?<\/m:r>)$/,
+        ];
+        for (const p of patterns) {
+            const m = xml.match(p);
+            if (m) return { before: xml.slice(0, xml.length - m[1].length), run: m[1] };
+        }
+        return { before: "", run: xml };
+    }
+
+    function esc(ch) {
+        return ch === "&" ? "&amp;" : ch === "<" ? "&lt;" : ch === ">" ? "&gt;" : ch;
+    }
+
+    function parse(tex) {
+        let result = "";
+        let i = 0;
+
+        while (i < tex.length) {
+            if (/\s/.test(tex[i])) { i++; continue; }
+
+            // \frac{num}{den}
+            if (tex.startsWith("\\frac", i)) {
+                i += 5;
+                const num = grabArg(tex, i); i += num.consumed;
+                const den = grabArg(tex, i); i += den.consumed;
+                result += `<m:f><m:num>${parse(num.content)}</m:num><m:den>${parse(den.content)}</m:den></m:f>`;
+                continue;
+            }
+
+            // \sqrt[n]{x} or \sqrt{x}
+            if (tex.startsWith("\\sqrt", i)) {
+                i += 5;
+                let degree = "";
+                if (tex[i] === "[") {
+                    const end = tex.indexOf("]", i);
+                    degree = tex.slice(i + 1, end);
+                    i = end + 1;
+                }
+                const arg = grabArg(tex, i); i += arg.consumed;
+                if (degree) {
+                    result += `<m:rad><m:radPr/><m:deg>${parse(degree)}</m:deg><m:e>${parse(arg.content)}</m:e></m:rad>`;
+                } else {
+                    result += `<m:rad><m:radPr><m:degHide m:val="1"/></m:radPr><m:deg/><m:e>${parse(arg.content)}</m:e></m:rad>`;
+                }
+                continue;
+            }
+
+            // \int, \iint, \iiint
+            if (tex.startsWith("\\iiint", i)) {
+                i += 6;
+                result += `<m:nary><m:naryPr><m:chr m:val="∭"/><m:limLoc m:val="subSup"/><m:subHide m:val="1"/><m:supHide m:val="1"/></m:naryPr><m:sub/><m:sup/><m:e/></m:nary>`;
+                continue;
+            }
+            if (tex.startsWith("\\iint", i)) {
+                i += 5;
+                result += `<m:nary><m:naryPr><m:chr m:val="∬"/><m:limLoc m:val="subSup"/><m:subHide m:val="1"/><m:supHide m:val="1"/></m:naryPr><m:sub/><m:sup/><m:e/></m:nary>`;
+                continue;
+            }
+            if (tex.startsWith("\\int", i)) {
+                i += 4;
+                result += `<m:nary><m:naryPr><m:chr m:val="∫"/><m:limLoc m:val="subSup"/><m:subHide m:val="1"/><m:supHide m:val="1"/></m:naryPr><m:sub/><m:sup/><m:e/></m:nary>`;
+                continue;
+            }
+
+            // \sum
+            if (tex.startsWith("\\sum", i)) {
+                i += 4;
+                result += `<m:nary><m:naryPr><m:chr m:val="∑"/><m:limLoc m:val="undOvr"/></m:naryPr><m:sub/><m:sup/><m:e/></m:nary>`;
+                continue;
+            }
+
+            // \prod
+            if (tex.startsWith("\\prod", i)) {
+                i += 5;
+                result += `<m:nary><m:naryPr><m:chr m:val="∏"/><m:limLoc m:val="undOvr"/></m:naryPr><m:sub/><m:sup/><m:e/></m:nary>`;
+                continue;
+            }
+
+            // \lim
+            if (tex.startsWith("\\lim", i)) {
+                i += 4;
+                result += `<m:func><m:funcPr/><m:fName><m:r><m:t>lim</m:t></m:r></m:fName><m:e/></m:func>`;
+                continue;
+            }
+
+            // Trig functions
+            const funcs = ["\\sin","\\cos","\\tan","\\cot","\\sec","\\csc","\\arcsin","\\arccos","\\arctan","\\log","\\ln","\\exp"];
+            let funcMatched = false;
+            for (const f of funcs) {
+                if (tex.startsWith(f, i) && !/[a-zA-Z]/.test(tex[i + f.length] || "")) {
+                    i += f.length;
+                    const name = f.slice(1);
+                    result += `<m:func><m:funcPr/><m:fName><m:r><m:t>${name}</m:t></m:r></m:fName><m:e/></m:func>`;
+                    funcMatched = true;
+                    break;
+                }
+            }
+            if (funcMatched) continue;
+
+            // Greek letters and symbols
+            const symbols = {
+                "\\infty":"∞","\\pi":"π","\\alpha":"α","\\beta":"β","\\gamma":"γ",
+                "\\delta":"δ","\\epsilon":"ε","\\varepsilon":"ε","\\zeta":"ζ",
+                "\\eta":"η","\\theta":"θ","\\iota":"ι","\\kappa":"κ","\\lambda":"λ",
+                "\\mu":"μ","\\nu":"ν","\\xi":"ξ","\\rho":"ρ","\\sigma":"σ",
+                "\\tau":"τ","\\upsilon":"υ","\\phi":"φ","\\varphi":"φ","\\chi":"χ",
+                "\\psi":"ψ","\\omega":"ω","\\Delta":"Δ","\\Gamma":"Γ","\\Lambda":"Λ",
+                "\\Omega":"Ω","\\Phi":"Φ","\\Pi":"Π","\\Psi":"Ψ","\\Sigma":"Σ",
+                "\\Theta":"Θ","\\Xi":"Ξ","\\Upsilon":"Υ",
+                "\\cdot":"·","\\times":"×","\\pm":"±","\\mp":"∓",
+                "\\leq":"≤","\\geq":"≥","\\neq":"≠","\\approx":"≈","\\equiv":"≡",
+                "\\in":"∈","\\notin":"∉","\\subset":"⊂","\\supset":"⊃",
+                "\\cup":"∪","\\cap":"∩","\\emptyset":"∅","\\forall":"∀","\\exists":"∃",
+                "\\nabla":"∇","\\partial":"∂","\\hbar":"ℏ","\\infty":"∞",
+                "\\rightarrow":"→","\\leftarrow":"←","\\Rightarrow":"⇒","\\Leftarrow":"⇐",
+                "\\leftrightarrow":"↔","\\to":"→","\\cdots":"⋯","\\ldots":"…",
+                "\\vdots":"⋮","\\ddots":"⋱",
+            };
+            let symMatched = false;
+            for (const [cmd, sym] of Object.entries(symbols)) {
+                if (tex.startsWith(cmd, i) && !/[a-zA-Z]/.test(tex[i + cmd.length] || "")) {
+                    i += cmd.length;
+                    result += `<m:r><m:t>${sym}</m:t></m:r>`;
+                    symMatched = true;
+                    break;
+                }
+            }
+            if (symMatched) continue;
+
+            // Skip \left \right \, \; \! \quad \qquad and other spacing/delimiter commands
+            const skips = ["\\left","\\right","\\,","\\;","\\!","\\quad","\\qquad","\\displaystyle","\\textstyle","\\scriptstyle","\\text"];
+            let skipMatched = false;
+            for (const s of skips) {
+                if (tex.startsWith(s, i)) {
+                    i += s.length;
+                    // for \text, consume the argument but render as upright text
+                    if (s === "\\text") {
+                        const arg = grabArg(tex, i); i += arg.consumed;
+                        result += `<m:r><m:rPr><m:sty m:val="p"/></m:rPr><m:t>${arg.content}</m:t></m:r>`;
+                    }
+                    skipMatched = true;
+                    break;
+                }
+            }
+            if (skipMatched) continue;
+
+            // Unknown backslash command — skip over it
+            if (tex[i] === "\\") {
+                i++;
+                while (i < tex.length && /[a-zA-Z]/.test(tex[i])) i++;
+                continue;
+            }
+
+            // Superscript ^
+            if (tex[i] === "^") {
+                i++;
+                const sup = grabArg(tex, i); i += sup.consumed;
+                // Check if previous was already a subscript → combine into sSubSup
+                const prev = result.match(/(<m:sSub>[\s\S]*?<\/m:sSub>)$/);
+                if (prev) {
+                    const base  = prev[1].match(/<m:e>([\s\S]*?)<\/m:e>/)[1];
+                    const sub   = prev[1].match(/<m:sub>([\s\S]*?)<\/m:sub>/)[1];
+                    result = result.slice(0, result.length - prev[1].length);
+                    result += `<m:sSubSup><m:e>${base}</m:e><m:sub>${sub}</m:sub><m:sup>${parse(sup.content)}</m:sup></m:sSubSup>`;
+                } else {
+                    const lastR = extractLastRun(result);
+                    result = lastR.before + `<m:sSup><m:e>${lastR.run}</m:e><m:sup>${parse(sup.content)}</m:sup></m:sSup>`;
+                }
+                continue;
+            }
+
+            // Subscript _
+            if (tex[i] === "_") {
+                i++;
+                const sub = grabArg(tex, i); i += sub.consumed;
+                // Check if previous was already a superscript → combine into sSubSup
+                const prev = result.match(/(<m:sSup>[\s\S]*?<\/m:sSup>)$/);
+                if (prev) {
+                    const base = prev[1].match(/<m:e>([\s\S]*?)<\/m:e>/)[1];
+                    const sup  = prev[1].match(/<m:sup>([\s\S]*?)<\/m:sup>/)[1];
+                    result = result.slice(0, result.length - prev[1].length);
+                    result += `<m:sSubSup><m:e>${base}</m:e><m:sub>${parse(sub.content)}</m:sub><m:sup>${sup}</m:sup></m:sSubSup>`;
+                } else {
+                    const lastR = extractLastRun(result);
+                    result = lastR.before + `<m:sSub><m:e>${lastR.run}</m:e><m:sub>${parse(sub.content)}</m:sub></m:sSub>`;
+                }
+                continue;
+            }
+
+            // Braces group { }
+            if (tex[i] === "{") {
+                const arg = grabArg(tex, i); i += arg.consumed;
+                result += parse(arg.content);
+                continue;
+            }
+
+            // Parentheses ( )
+            if (tex[i] === "(") {
+                i++;
+                // Find matching )
+                let depth = 1, start = i;
+                while (i < tex.length && depth > 0) {
+                    if (tex[i] === "(") depth++;
+                    else if (tex[i] === ")") depth--;
+                    if (depth > 0) i++;
+                    else i++;
+                }
+                const inner = tex.slice(start, i - 1);
+                result += `<m:d><m:dPr><m:begChr m:val="("/><m:endChr m:val=")"/></m:dPr><m:e>${parse(inner)}</m:e></m:d>`;
+                continue;
+            }
+
+            // Brackets [ ]
+            if (tex[i] === "[") {
+                i++;
+                let depth = 1, start = i;
+                while (i < tex.length && depth > 0) {
+                    if (tex[i] === "[") depth++;
+                    else if (tex[i] === "]") depth--;
+                    if (depth > 0) i++;
+                    else i++;
+                }
+                const inner = tex.slice(start, i - 1);
+                result += `<m:d><m:dPr><m:begChr m:val="["/><m:endChr m:val="]"/></m:dPr><m:e>${parse(inner)}</m:e></m:d>`;
+                continue;
+            }
+
+            // Plain character
+            const ch = tex[i]; i++;
+            if (/[a-zA-Z]/.test(ch)) {
+                result += `<m:r><m:rPr><m:sty m:val="i"/></m:rPr><m:t>${ch}</m:t></m:r>`;
+            } else {
+                result += `<m:r><m:t>${esc(ch)}</m:t></m:r>`;
+            }
+        }
+
+        return result;
+    }
+
+    return parse(latex);
+}
+
+// ─── 4. Build the .docx zip ────────────────────────────────────────────────
+async function buildDocx(omml) {
+    const contentTypes = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+  <Default Extension="xml" ContentType="application/xml"/>
+  <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+  <Override PartName="/word/settings.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml"/>
+  <Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/>
+  <Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>
+  <Override PartName="/docProps/core.xml" ContentType="application/package/2006/metadata/core-properties+xml"/>
+</Types>`;
+
+    const rels = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
+  <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/>
+  <Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/>
+</Relationships>`;
+
+    const wordRels = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>
+  <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/settings" Target="settings.xml"/>
+</Relationships>`;
+
+    const documentXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document
+  xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+  xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math"
+  xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+  xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing">
+  <w:body>
+    <w:p>
+      <m:oMathPara>
+        <m:oMathParaPr><m:jc m:val="center"/></m:oMathParaPr>
+        <m:oMath>${omml}</m:oMath>
+      </m:oMathPara>
+    </w:p>
+    <w:sectPr>
+      <w:pgSz w:w="12240" w:h="15840"/>
+      <w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440"/>
+    </w:sectPr>
+  </w:body>
+</w:document>`;
+
+    const stylesXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+          xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math">
+  <w:docDefaults>
+    <w:rPrDefault>
+      <w:rPr>
+        <w:rFonts w:ascii="Cambria Math" w:hAnsi="Cambria Math"/>
+        <w:sz w:val="24"/>
+      </w:rPr>
+    </w:rPrDefault>
+  </w:docDefaults>
+  <w:style w:type="paragraph" w:default="1" w:styleId="Normal">
+    <w:name w:val="Normal"/>
+    <w:rPr>
+      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/>
+      <w:sz w:val="24"/>
+    </w:rPr>
+  </w:style>
+</w:styles>`;
+
+    const settingsXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:settings xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:compat>
+    <w:compatSetting w:name="compatibilityMode" w:uri="http://schemas.microsoft.com/office/word" w:val="15"/>
+  </w:compat>
+</w:settings>`;
+
+    const appXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties">
+  <Application>Microsoft Office Word</Application>
+  <DocSecurity>0</DocSecurity>
+  <ScaleCrop>false</ScaleCrop>
+  <SharedDoc>false</SharedDoc>
+</Properties>`;
+
+    const coreXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties"
+  xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <dc:creator>MathApp</dc:creator>
+  <cp:revision>1</cp:revision>
+</cp:coreProperties>`;
+
+    const zip = new JSZip();
+    zip.file("[Content_Types].xml", contentTypes);
+    zip.file("_rels/.rels", rels);
+    zip.file("word/document.xml", documentXml);
+    zip.file("word/_rels/document.xml.rels", wordRels);
+    zip.file("word/styles.xml", stylesXml);
+    zip.file("word/settings.xml", settingsXml);
+    zip.file("docProps/app.xml", appXml);
+    zip.file("docProps/core.xml", coreXml);
+
+    return await zip.generateAsync({
+        type: "blob",
+        mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        compression: "DEFLATE"
+    });
+}
+
+// ─── 5. Button click handler ───────────────────────────────────────────────
+document.addEventListener("click", async function (e) {
+    const btn = e.target.closest(".copy-btn");
+    if (!btn) return;
+
+    const latex = cleanLatex(btn.dataset.content);
+    btn.innerText = "Se generează...";
+    btn.disabled = true;
+
+    try {
+        // LaTeX → OMML directly (no XSLT, no external fetch)
+        const omml = latexToOmml(latex);
+
+        // Build and download .docx
+        const blob = await buildDocx(omml);
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement("a");
+        a.href     = url;
+        a.download = "ecuatie.docx";
+        a.click();
+        URL.revokeObjectURL(url);
+
+        btn.innerText = "Descărcat ✓";
+    } catch (err) {
+        console.error("Export error:", err);
+        btn.innerText = "Eroare!";
+    } finally {
+        btn.disabled = false;
+        setTimeout(() => { btn.innerText = "Descarcă .docx"; }, 2000);
+    }
+});
+</script>
+
+{% endblock %}

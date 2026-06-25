@@ -1,0 +1,329 @@
+{% extends "layout.html" %}
+
+{% block title %}
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block main %}
+
+<!-- BACKGROUND -->
+<div class="h-[calc(100vh-80px)] bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 p-6 overflow-hidden">
+
+    <!-- WRAPPER -->
+    <div class="w-full max-w-[1850px] mx-auto h-full bg-white border border-slate-200 rounded-[2rem] shadow-2xl p-3 flex gap-3 overflow-hidden">
+
+        <!-- STANGA - CONVERSATII -->
+        <div class="w-72 bg-slate-950 border border-slate-800 rounded-3xl p-4 flex flex-col shadow-xl">
+
+            <h2 class="text-white text-lg font-bold mb-4">
+                Conversații
+            </h2>
+
+        <div class="space-y-2 overflow-y-auto">
+
+            {% for conv in conversations %}
+
+                <a
+                    href="/mode1/{{ conv['id'] }}"
+                    class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl"
+                >
+                    {{ conv["title"] }}
+                </a>
+
+            {% endfor %}
+
+        </div>
+            <!-- ACCOUNT -->
+            <div class="mt-auto pt-4 border-t border-slate-800">
+
+                <a
+                    href="/account"
+                    class="flex items-center gap-3 p-2 rounded-2xl bg-slate-50 hover:bg-slate-400 transition"
+                >
+
+                    <div class="w-10 h-10 rounded-full bg-cyan-500 flex items-center justify-center text-slate-950 font-bold">
+                        A
+                    </div>
+
+                    <div class="flex flex-col">
+                        <span class="text-sm font-semibold text-slate-950">
+                            Cont
+                        </span>
+
+                        <span class="text-xs text-slate-950">
+                            Gestioneaza
+                        </span>
+                    </div>
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <!-- CENTRU -->
+<div class="flex-1 bg-slate-950 border border-slate-800 rounded-3xl p-6 flex flex-col shadow-xl h-full min-h-0 overflow-hidden">
+
+    <!-- HEADER -->
+    <div class="mb-6">
+        <h1 class="text-3xl font-bold text-white">
+            Asistent AI
+        </h1>
+
+        <p class="text-slate-400 mt-1">
+            Afla raspunsuri la intrebarile tale legate de gestionarea elevilor si matematica. De asemenea poti afla si cum functioneaza programul nostru.
+        </p>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="flex-1 bg-white rounded-3xl border border-slate-700 p-6 flex flex-col shadow-inner min-h-0 overflow-hidden">
+
+        <!-- CHAT -->
+        <div id="chat" class="flex-1 overflow-y-auto space-y-4 pr-2 min-h-0 mb-2">
+
+            {% for message in messages %}
+
+                {% if message["role"] == "user" %}
+
+                    <div class="bg-cyan-100 p-4 rounded-2xl text-slate-900 w-fit max-w-xl ml-auto border border-cyan-200">
+                        {{ message["content"] | safe }}
+                    </div>
+
+                {% else %}
+
+                    <div class="bg-slate-100 p-5 rounded-2xl max-w-3xl border border-slate-200">
+
+                        <h3 class="font-bold text-slate-900 mb-3">
+                            Răspuns AI
+                        </h3>
+
+                        <div class="text-slate-700 text-sm leading-relaxed whitespace-pre-line">
+                            <div class="math-content">
+                                {{ message["content"] | safe }}
+                            </div>
+                        </div>
+
+                    </div>
+
+                {% endif %}
+
+            {% endfor %}
+
+        </div>
+
+            <!-- USER MESSAGE
+            <div class="bg-cyan-100 p-4 rounded-2xl w-fit max-w-xl ml-auto border border-cyan-200">
+                Text introdus de utilizator...
+            </div>
+
+        </div>-->
+
+        <!-- ACTION BUTTONS -->
+        <div class="flex flex-wrap justify-end gap-2 mt-auto mb-3 flex-shrink-0">
+
+            <button class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm">
+                Soluție exercițiu anterior
+            </button>
+
+            <button class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm">
+                Generează exerciții similare
+            </button>
+
+            <button class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold py-2 px-4 rounded-xl text-sm">
+                Cum predau la clasă
+            </button>
+
+        </div>
+
+        <!-- INPUT -->
+        <form action="/mode1/{{ conversation_id }}"  method="post" class="flex gap-3">
+
+            <textarea
+                name="prompt"
+                rows="1"
+                placeholder="Scrie exercițiul sau întrebarea..."
+                class="flex-1 text-slate-950 border border-slate-300 rounded-2xl p-4 resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            ></textarea>
+
+            <button
+                type="submit" onclick="this.disabled=true; this.form.submit();"
+                class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold px-8 rounded-2xl"
+            >
+                Trimite
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+        <!-- DREAPTA - SIMBOLURI -->
+        <div class="w-80 flex flex-col gap-3">
+
+            <!-- SIMBOLURI -->
+            <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 shadow-xl h-[calc(100vh-430px)] overflow-y-auto">
+
+<div class="flex items-center justify-between mb-4">
+
+    <h2 class="text-white font-bold">
+        Simboluri matematice
+    </h2>
+
+    <div class="flex items-center gap-2">
+
+        <!-- FAVORITE -->
+        <button
+            class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-red-500 transition flex items-center justify-center text-white"
+        >
+            ♥
+        </button>
+
+        <!-- SEARCH -->
+        <button
+            class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 transition flex items-center justify-center text-white"
+        >
+            🔍
+        </button>
+
+    </div>
+
+</div>
+
+                <div class="space-y-5 text-sm">
+
+                    <div>
+
+                        <h3 class="text-cyan-400 font-bold mb-2">
+                            Clasa a IX-a
+                        </h3>
+
+                        <div class="space-y-2">
+
+                            <div class="bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">
+                                radical
+                            </div>
+
+                            <div class="bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">
+                                radical ordin 2
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div>
+
+                        <h3 class="text-cyan-400 font-bold mb-2">
+                            Clasa a X-a
+                        </h3>
+
+                        <div class="space-y-2">
+
+                            <div class="bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">
+                                radical
+                            </div>
+
+                            <div class="bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">
+                                funcții
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div>
+
+                        <h3 class="text-cyan-400 font-bold mb-2">
+                            Clasa a XI-a
+                        </h3>
+
+                        <div class="space-y-2">
+
+                            <div class="bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">
+                                derivate
+                            </div>
+
+                            <div class="bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">
+                                integrale
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div>
+
+                        <h3 class="text-cyan-400 font-bold mb-2">
+                            Clasa a XII-a
+                        </h3>
+
+                        <div class="space-y-2">
+
+                            <div class="bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">
+                                bac final
+                            </div>
+
+                            <div class="bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">
+                                recapitulare
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- EXERCITII SALVATE -->
+            <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 shadow-xl h-[calc(100vh-670px)] overflow-y-auto">
+
+                <h2 class="text-white font-bold mb-3">
+                    Exerciții salvate
+                </h2>
+
+                <div class="space-y-2 text-sm">
+
+                    <div class="bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">
+                        exercițiu 1
+                    </div>
+
+                    <div class="bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">
+                        exercițiu 2
+                    </div>
+
+                    <div class="bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">
+                        exercițiu 3
+                    </div>
+
+                </div>
+
+            </div>
+
+<!-- BUTTON -->
+<div class="flex flex-col gap-2">
+
+    <a href="/menu"
+       class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold py-3 rounded-xl text-center">
+        Schimbă mod
+    </a>
+
+    <form action="/create_mode1" method="post">
+        <button type="submit"
+                class="w-full bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-3 rounded-xl">
+            Conversație nouă
+        </button>
+    </form>
+
+</div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

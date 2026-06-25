@@ -1,0 +1,198 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Panou Control
+{% endblock %}
+{% block footer %}
+{% endblock %}
+{% block main %}
+
+<!-- BACKGROUND -->
+<div class="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 p-6">
+
+    <!-- ECRAN ÎN ECRAN (WRAPPER PRINCIPAL) -->
+    <div class="w-full max-w-[1800px] mx-auto bg-white border border-slate-200 rounded-[2rem] shadow-2xl p-3 flex gap-3">
+
+        <!-- SIDEBAR STANGA (CARD) -->
+        <div class="w-72 bg-slate-950 border border-slate-800 rounded-3xl p-4 flex flex-col shadow-xl">
+
+            <h2 class="text-white text-lg font-bold mb-4">
+                Conversații
+            </h2>
+
+            <div class="space-y-2 overflow-y-auto">
+
+                <a class="block bg-slate-50 hover:bg-slate-400 text-slate-950 px-3 py-2 rounded-xl">
+                    Conv 1
+                </a>
+
+                <a class="block bg-slate-50 hover:bg-slate-400 text-slate-950 px-3 py-2 rounded-xl">
+                    BAC Trigonometrie
+                </a>
+
+                <a class="block bg-slate-50 hover:bg-slate-400 text-slate-950 px-3 py-2 rounded-xl">
+                    Exerciții clasa X
+                </a>
+
+            </div>
+
+<div class="mt-auto pt-4 border-t border-slate-800">
+
+    <a
+        href="/account"
+        class="flex items-center gap-3 p-2 rounded-2xl bg-slate-50 hover:bg-slate-400 transition"
+    >
+
+        <div class="w-10 h-10 rounded-full bg-cyan-500 flex items-center justify-center text-slate-950 font-bold">
+            A
+        </div>
+
+        <div class="flex flex-col">
+            <span class="text-sm font-semibold text-slate-950">
+                Cont
+            </span>
+
+            <span class="text-xs text-slate-950">
+                Gestioneaza
+            </span>
+        </div>
+
+    </a>
+
+</div>
+
+
+
+        </div>
+
+
+        <!-- CENTRU (CARD PRINCIPAL) -->
+        <div class="flex-1 bg-slate-950 border border-slate-800 rounded-3xl p-6 flex flex-col shadow-xl">
+
+            <!-- HEADER -->
+            <div class="mb-6">
+                <h1 class="text-3xl font-bold text-white">
+                    Continuă conversația
+                </h1>
+                <p class="text-slate-400">
+                    mod activ: {{ mod }}
+                </p>
+            </div>
+
+
+
+
+
+            <!-- CHAT AREA -->
+            <div class="flex-1 bg-white rounded-3xl border border-slate-700 p-6 flex flex-col shadow-inner min-h-[700px]">
+
+                <div class="flex-1 overflow-y-auto space-y-4">
+
+                    <div class="bg-slate-100 p-4 rounded-2xl w-fit max-w-xl">
+                        Salut! Ce vrei să generezi azi?
+                    </div>
+
+                    <div class="bg-cyan-100 p-4 rounded-2xl w-fit max-w-xl ml-auto">
+                        Generează 10 exerciții de trigonometrie BAC
+                    </div>
+
+                    <div class="bg-slate-100 p-4 rounded-2xl w-fit max-w-xl">
+                        Sigur. Iată exercițiile...
+                    </div>
+
+                </div>
+
+
+
+                <!-- QUICK ACTIONS
+                <div class="flex justify-end gap-2 mb-2 mt-4">
+
+                    <button class="bg-slate-800 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded-xl text-sm">
+                        Rezolvare exercițiu anterior
+                    </button>
+
+                    <button class="bg-slate-800 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded-xl text-sm">
+                        Generează exerciții similare
+                    </button>
+
+                    <button class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-2 px-4 rounded-xl text-sm">
+                        Cum predau la clasă
+                    </button>
+
+                </div>-->
+
+                <!-- INPUT -->
+                <form action="/mode1" method="post" class="flex gap-2">
+
+                    <textarea
+                        class="flex-1 border border-slate-300 rounded-2xl p-3 resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                        rows="2"
+                        placeholder="Scrie cererea ta..."
+                    ></textarea>
+
+                    <button
+                        class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-6 rounded-2xl"
+                        type="submit"
+                    >
+                        Trimite
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+
+        <!-- DREAPTA (CARD)
+        <div class="w-80 bg-slate-950 border border-slate-800 rounded-3xl p-4 flex flex-col shadow-xl">-->
+        <!-- DREAPTA -->
+        <div class="w-80 flex flex-col gap-3">
+
+            <!-- FIȘIERE -->
+            <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 shadow-xl min-h-[310px]">
+                <h2 class="text-white font-bold mb-3">Fișiere generate</h2>
+
+                <ul class="space-y-2 text-slate-300 text-sm">
+                    <li class="block bg-slate-50 hover:bg-slate-400 text-slate-950 px-3 py-2 rounded-xl">2024-2025 Proba E</li>
+                    <li class="block bg-slate-50 hover:bg-slate-400 text-slate-950 px-3 py-2 rounded-xl">BAC Simulare 1</li>
+                    <li class="block bg-slate-50 hover:bg-slate-400 text-slate-950 px-3 py-2 rounded-xl">Teste trigonometrie</li>
+                </ul>
+            </div>
+
+
+            <!-- EXERCIȚII SALVATE -->
+            <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 shadow-xl min-h-[470px]">
+                <h2 class="text-white font-bold mb-3">Exerciții salvate</h2>
+
+                <div class="text-slate-300 text-sm space-y-2">
+
+                    <div class="block bg-slate-50 hover:bg-slate-400 text-slate-950 px-3 py-2 rounded-xl">
+                        Clasa IX - radicali
+                    </div>
+
+                    <div class="block bg-slate-50 hover:bg-slate-400 text-slate-950 px-3 py-2 rounded-xl">
+                        Trigonometrie - baze
+                    </div>
+
+                    <div class="block bg-slate-50 hover:bg-slate-400 text-slate-950 px-3 py-2 rounded-xl">
+                        Ecuații
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- TIP -->
+            <div class="text-xs text-slate-500 mt-auto">
+                Tip: apasa pe exercitiu pentru a il lipi in conversatie, si apasa pe document pentru a il descarca
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

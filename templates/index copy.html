@@ -1,0 +1,163 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Dashboard AI Edu
+{% endblock %}
+
+{% block main %}
+
+<div class="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 flex">
+
+    <!-- SIDEBAR STANGA -->
+    <div class="w-72 bg-slate-950 border-r border-slate-800 p-4 flex flex-col">
+
+        <h2 class="text-white text-lg font-bold mb-4">
+            Conversații
+        </h2>
+
+        <div class="space-y-2 overflow-y-auto">
+
+            <a class="block bg-slate-900 hover:bg-slate-800 text-slate-200 px-3 py-2 rounded-xl">
+                Conv 1
+            </a>
+
+            <a class="block bg-slate-900 hover:bg-slate-800 text-slate-200 px-3 py-2 rounded-xl">
+                BAC Trigonometrie
+            </a>
+
+            <a class="block bg-slate-900 hover:bg-slate-800 text-slate-200 px-3 py-2 rounded-xl">
+                Exerciții clasa X
+            </a>
+
+        </div>
+
+        <div class="mt-auto pt-4 border-t border-slate-800 text-xs text-slate-500">
+            AI Edu Dashboard
+        </div>
+
+    </div>
+
+
+    <!-- CENTRU (CHAT / WORKSPACE) -->
+    <div class="flex-1 p-6 flex flex-col">
+
+        <!-- HEADER -->
+        <div class="mb-6">
+            <h1 class="text-3xl font-bold text-white">
+                Continuă conversația
+            </h1>
+            <p class="text-slate-400">
+                Stil activ: {{ style }}
+            </p>
+        </div>
+
+
+        <!-- QUICK ACTIONS -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+
+            <button class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-3 rounded-2xl">
+                Rezolvare exercițiu anterior
+            </button>
+
+            <button class="bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 rounded-2xl">
+                Generează exerciții similare
+            </button>
+
+            <button class="bg-green-500 hover:bg-green-400 text-slate-950 font-bold py-3 rounded-2xl">
+                Cum predau la clasă
+            </button>
+
+        </div>
+
+
+        <!-- CHAT AREA -->
+        <div class="flex-1 bg-white rounded-3xl border border-slate-700 p-6 flex flex-col">
+
+            <div class="flex-1 overflow-y-auto space-y-4">
+
+                <div class="bg-slate-100 p-4 rounded-2xl w-fit max-w-xl">
+                    Salut! Ce vrei să generezi azi?
+                </div>
+
+                <div class="bg-cyan-100 p-4 rounded-2xl w-fit max-w-xl ml-auto">
+                    Generează 10 exerciții de trigonometrie BAC
+                </div>
+
+                <div class="bg-slate-100 p-4 rounded-2xl w-fit max-w-xl">
+                    Sigur. Iată exercițiile...
+                </div>
+
+            </div>
+
+
+            <!-- INPUT -->
+            <form action="/index" method="post" class="mt-4 flex gap-2">
+
+                <textarea
+                    class="flex-1 border border-slate-300 rounded-2xl p-3 resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                    rows="2"
+                    placeholder="Scrie cererea ta..."
+                ></textarea>
+
+                <button
+                    class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-6 rounded-2xl"
+                    type="submit"
+                >
+                    Trimite
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- DREAPTA PANEL -->
+    <div class="w-80 bg-slate-950 border-l border-slate-800 p-4 flex flex-col gap-6">
+
+        <!-- FIȘIERE -->
+        <div>
+            <h2 class="text-white font-bold mb-3">Fișiere generate</h2>
+
+            <ul class="space-y-2 text-slate-300 text-sm">
+                <li class="bg-slate-900 p-2 rounded-xl">2024-2025 Proba E</li>
+                <li class="bg-slate-900 p-2 rounded-xl">BAC Simulare 1</li>
+                <li class="bg-slate-900 p-2 rounded-xl">Teste trigonometrie</li>
+            </ul>
+        </div>
+
+
+        <!-- EXERCIȚII SALVATE -->
+        <div>
+            <h2 class="text-white font-bold mb-3">Exerciții salvate</h2>
+
+            <div class="text-slate-300 text-sm space-y-2">
+
+                <div class="bg-slate-900 p-2 rounded-xl">
+                    Clasa IX - radicali
+                </div>
+
+                <div class="bg-slate-900 p-2 rounded-xl">
+                    Trigonometrie - baze
+                </div>
+
+                <div class="bg-slate-900 p-2 rounded-xl">
+                    Ecuații
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- TIP -->
+        <div class="text-xs text-slate-500 mt-auto">
+            Tip: “Generează variante similare” = AI expansion feature
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

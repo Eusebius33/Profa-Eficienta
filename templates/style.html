@@ -1,0 +1,195 @@
+{% extends "layout1.html" %}
+
+{% block title %}
+    {% if user and user["gender"] == "F" %}
+        Profa Eficientă
+    {% else %}
+        Proful Eficient
+    {% endif %}
+{% endblock %}
+
+{% block main %}
+
+<div class="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 flex items-center justify-center px-4 py-10">
+
+    <!-- monitor -->
+<div class="w-full max-w-5xl bg-white bg-white border border-slate-200 rounded-[2rem] shadow-2xl p-3">
+
+        <!-- monitor screen -->
+        <div class="bg-white rounded-[1.5rem] border border-slate-800 p-8 md:p-12">
+
+            <!-- header -->
+            <div class="text-center mb-10">
+
+                <!--<div class="inline-flex items-center gap-2 mb-4">
+
+                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+
+                </div>-->
+
+                <h1 class="text-4xl md:text-5xl font-bold text-slate-900 mb-3">
+                    Configurează-ți stilul
+                </h1>
+
+                <p class="text-slate-600 max-w-2xl mx-auto">
+                    Personalizează modul în care sunt generate testele, exercițiile și materialele educaționale.
+                </p>
+
+            </div>
+
+            <!-- form -->
+            <form
+                action="/style"
+                method="post"
+                enctype="multipart/form-data"
+                class="space-y-7">
+
+                <div>
+                    <label class="block text-sm text-slate-700 mb-2">
+                        Nume stil
+                    </label>
+
+                    <input
+                        type="text"
+                        name="style_name"
+                        placeholder="Ex: Stil BAC Mate"
+                        required
+                        class="w-full rounded-2xl bg-white border border-slate-300 px-4 py-4 text-slate-900 outline-none focus:ring-2 focus:ring-cyan-500"
+                    >
+
+                </div>
+                <!-- select -->
+                <div>
+
+                    <label class="block text-sm text-slate-700 mb-2">
+                        Tipul principal de materiale create
+                    </label>
+
+                    <select
+                        name="test_type"
+                        required
+                        class="w-full rounded-2xl bg-white border border-slate-300 px-4 py-4 text-slate-900 outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition"
+                    >
+                        <option disabled selected value="">
+                            Selectează o opțiune
+                        </option>
+
+                        <option value="practice">
+                            Exerciții practice structurate
+                        </option>
+
+                        <option value="theory">
+                            Evaluări teoretice
+                        </option>
+
+                        <option value="bac_full">
+                            Simulare completă model Bacalaureat
+                        </option>
+
+                        <option value="bac_partial">
+                            Subiect individual tip Bacalaureat
+                        </option>
+
+                        <option value="guided">
+                            Exerciții parțial rezolvate
+                        </option>
+
+                        <option value="formula_help">
+                            Exerciții cu formule și indicații
+                        </option>
+                    </select>
+
+                </div>
+
+                <!-- textarea -->
+                <div>
+
+                    <label class="block text-sm text-slate-700 mb-2">
+                        Descrie modul în care creezi testele
+                    </label>
+
+                    <textarea required
+                        name="style_description"
+                        rows="7"
+                        placeholder="Ex: Prefer exerciții progresive, cu dificultate crescătoare, accent pe logică și aplicabilitate practică..."
+                        class="w-full rounded-2xl bg-white border border-slate-300 px-4 py-4 text-slate-900 placeholder:text-slate-900 outline-none resize-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition"
+                    ></textarea>
+
+                </div>
+
+                <!-- upload -->
+                <div>
+
+                    <label class="block text-sm text-slate-700 mb-3">
+                        Atașează exemple de teste sau materiale
+                    </label>
+
+                    <label
+                        for="fileUpload"
+                        class="relative flex flex-col items-center justify-center gap-3 border-2 border-dashed border-slate-700 hover:border-cyan-500 rounded-3xl p-10 bg-white cursor-pointer transition"
+                    >
+
+                        <div class="text-5xl">
+                            📄
+                        </div>
+
+                        <div class="text-center">
+
+                            <p class="text-slate-600 font-medium">
+                                Drag & Drop sau click pentru upload
+                            </p>
+
+                            <p class="text-slate-600 text-sm mt-1">
+                                PDF, DOCX, PNG, JPG
+                            </p>
+
+                        </div>
+
+                        <input
+                            id="fileUpload"
+                            type="file"
+                            name="documents"
+                            multiple
+                            class="hidden"
+                        >
+
+                    </label>
+
+                    <!-- file names -->
+                    <div
+                        id="fileList"
+                        class="mt-4 space-y-2"
+                    ></div>
+
+                </div>
+
+                <!-- buttons -->
+                <div class="flex flex-col md:flex-row gap-4 pt-2">
+
+                    <button
+                        type="submit"
+                        class="flex-1 rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-4 transition duration-300 shadow-lg shadow-cyan-500/20"
+                    >
+                        Salvează stilul
+                    </button>
+
+                    <button
+                        type="button"
+                        class="flex-1 rounded-2xl border border-slate-700 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-4 transition"
+                    >
+                        Utilizează stil prestabilit
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--KaTeX-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Optional custom Tailwind config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#06b6d4"
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Bootstrap (optional, poti sa-l stergi daca ramai full Tailwind) -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+        crossorigin="anonymous"
+    >
+
+    <!-- CSS -->
+    <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
+
+    <!-- JS -->
+    <script
+        src="{{ url_for('static', filename='script.js') }}"
+        defer
+    ></script>
+
+    <title>
+        {% block title %}{% endblock %} |
+
+        {% if session["gender"] == "F" %}
+            Profa Eficientă
+        {% else %}
+            Proful Eficient
+        {% endif %}
+    </title>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        document.querySelectorAll(".math-content").forEach(function (el) {
+
+            renderMathInElement(el, {
+
+                delimiters: [
+                    {left: "$$", right: "$$", display: true},
+                    {left: "\\(", right: "\\)", display: false}
+                ],
+
+                throwOnError: false
+            });
+
+        });
+
+    });
+    </script>
+
+</head>
+
+<body class="bg-slate-950 text-white min-h-screen flex flex-col">
+
+    <!-- Navbar -->
+    <nav class="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
+
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            {% if session["user_id"] %}
+            <!-- Logo -->
+            <a
+                href="/"
+                class="flex items-center gap-3 text-white no-underline"
+            >
+
+                <!-- daca vrei logo -->
+                <!--
+                <img
+                    src="{{ url_for('static', filename='logoM.svg') }}"
+                    alt="Logo"
+                    class="h-10 w-10"
+                >
+                -->
+
+<span class="text-2xl font-bold tracking-tight">
+
+    {% if session["gender"] == "F" %}
+        Profa
+    {% else %}
+        Proful
+    {% endif %}
+
+    <span class="text-cyan-400">
+        Eficient{% if session["gender"] == "F" %}ă{% endif %}
+    </span>
+
+</span>
+            </a>
+            {%else%}
+                        <!-- Logo -->
+            <a
+                href="/landing"
+                class="flex items-center gap-3 text-white no-underline"
+            >
+
+                <!-- daca vrei logo -->
+                <!--
+                <img
+                    src="{{ url_for('static', filename='logoM.svg') }}"
+                    alt="Logo"
+                    class="h-10 w-10"
+                >
+                -->
+
+                <span class="text-2xl font-bold tracking-tight">
+                    Proful
+                    <span class="text-cyan-400">
+                        Eficient
+                    </span>
+                </span>
+
+            </a>
+            {%endif%}
+
+            {% if session["user_id"] %}
+
+                <!-- Logged -->
+                <div class="flex items-center gap-6 text-sm font-medium">
+
+
+                    <form action="/create_mode1" method="post" class="m-0">
+                        <button
+                            type="submit"
+                            class="text-slate-300 hover:text-cyan-400 transition bg-transparent border-0 p-0"
+                        >
+                            Conversație
+                        </button>
+                    </form>
+
+                    <a
+                        href="/account"
+                        class="text-slate-300 hover:text-cyan-400 transition no-underline"
+                    >
+                        Cont
+                    </a>
+
+                    <a
+                        href="/documentation"
+                        class="text-slate-300 hover:text-cyan-400 transition no-underline"
+                    >
+                        Ghid
+                    </a>
+
+                    <a
+                        href="/menu"
+                        class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-4 py-2 rounded-xl font-semibold transition no-underline"
+                    >
+                        Creează
+                    </a>
+
+                </div>
+
+            {% else %}
+
+                <!-- Guest -->
+                <div class="flex items-center gap-4 text-sm font-medium">
+
+                    <a
+                        href="/login"
+                        class="text-slate-300 hover:text-cyan-400 transition no-underline"
+                    >
+                        Intră în cont
+                    </a>
+
+                    <a
+                        href="/register"
+                        class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-4 py-2 rounded-xl font-semibold transition no-underline"
+                    >
+                        Înregistrează-te
+                    </a>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </nav>
+
+    <!-- Flash messages -->
+    {% if get_flashed_messages() %}
+        <header class="max-w-7xl w-full mx-auto px-4 mt-4">
+            <div class="bg-cyan-500/10 border border-cyan-500 text-cyan-300 rounded-2xl px-4 py-3 text-center">
+                {{ get_flashed_messages() | join(" ") }}
+            </div>
+        </header>
+    {% endif %}
+
+    <!-- Main -->
+    <main class="flex-1">
+        {% block main %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+{% block footer %}
+
+<footer class="border-t border-slate-800 mt-auto">
+
+    <div class="max-w-7xl mx-auto px-6 py-6 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-500">
+
+        <p>
+            © 2026 Profu' Eficient. Toate drepturile rezervate.
+        </p>
+
+        <div class="flex items-center gap-4">
+
+            <a
+                href="/documentation"
+                class="hover:text-cyan-400 transition no-underline text-slate-500"
+            >
+                Ghid
+            </a>
+
+            <a
+                href="/login"
+                class="hover:text-cyan-400 transition no-underline text-slate-500"
+            >
+                Intra in cont
+            </a>
+
+            <a
+                href="/register"
+                class="hover:text-cyan-400 transition no-underline text-slate-500"
+            >
+                Inregistreaza-te
+            </a>
+
+        </div>
+
+    </div>
+
+</footer>
+{% endblock %}
+
+
+</body>
+
+</html>

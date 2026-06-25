@@ -1,0 +1,640 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Traducere în limbaj matematic
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block main %}
+<div class="unscrollable">
+<!-- BACKGROUND -->
+<div class="min-h-0 h-[calc(100dvh-80px)] bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 p-6 overflow-hidden">
+
+    <!-- WRAPPER -->
+    <div class="w-full max-w-[1850px] mx-auto h-full bg-white border border-slate-200 rounded-[2rem] shadow-2xl p-3 flex gap-3 overflow-hidden">
+
+        <!-- STANGA - CONVERSATII -->
+        <div class="w-72 bg-slate-950 border border-slate-800 rounded-3xl p-4 flex flex-col shadow-xl">
+
+            <h2 class="text-white text-lg font-bold mb-4">
+                Conversații
+            </h2>
+
+        <div class="space-y-2 overflow-y-auto">
+
+            {% for conv in conversations %}
+
+                <a
+                    href="/mode2/{{ conv['id'] }}"
+                    class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl"
+                >
+                    {{ conv["title"] }}
+                </a>
+
+            {% endfor %}
+
+        </div>
+
+            <!-- ACCOUNT -->
+            <div class="mt-auto pt-4 border-t border-slate-800">
+
+                <a
+                    href="/account"
+                    class="flex items-center gap-3 p-2 rounded-2xl bg-slate-50 hover:bg-slate-400 transition"
+                >
+
+                    <div class="w-10 h-10 rounded-full bg-cyan-500 flex items-center justify-center text-slate-950 font-bold">
+                        A
+                    </div>
+
+                    <div class="flex flex-col">
+                        <span class="text-sm font-semibold text-slate-950">
+                            Cont
+                        </span>
+
+                        <span class="text-xs text-slate-950">
+                            Gestioneaza
+                        </span>
+                    </div>
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <!-- CENTRU -->
+<div class="flex-1 bg-slate-950 border border-slate-800 rounded-3xl p-6 flex flex-col shadow-xl h-full min-h-0 overflow-hidden">
+
+            <!-- HEADER -->
+            <div class="mb-6 flex items-start justify-between gap-4">
+
+                <div>
+                    <h1 class="text-3xl font-bold text-white">
+                        Traducere limbaj liber în limbaj matematic
+                    </h1>
+
+                    <p class="text-slate-400 mt-1">
+                        Transformă textul natural în expresii și simboluri matematice
+                    </p>
+                </div>
+
+                <!--<div class="bg-slate-900 border border-slate-700 rounded-2xl px-4 py-3 min-w-[280px]">
+
+                    <div class="text-slate-400 text-sm">
+                        Stil activ:
+                    </div>
+
+                    <div class="text-white font-bold text-lg">
+                        {{ style }}
+                    </div>
+
+                    <div class="text-slate-400 text-sm mt-2">
+                        Clasa: {{ class }}
+                    </div>
+
+                    <div class="text-slate-400 text-sm">
+                        BAC: {{ bac }}
+                    </div>
+
+                </div>-->
+
+            </div>
+
+            <!-- CONTENT -->
+    <div class="flex-1 bg-white rounded-3xl border border-slate-700 p-6 flex flex-col shadow-inner min-h-0 overflow-hidden">
+
+                <!-- INFO -->
+                <div class="grid grid-cols-3 gap-4 mb-6">
+
+                    <div class="bg-slate-100 rounded-2xl p-4 border border-slate-200">
+                        <p class="text-xs uppercase tracking-wide text-slate-500 mb-1">
+                            Mod activ {{mode}}
+                        </p>
+
+                        <p class="font-semibold text-slate-900">
+                            Text → Mate
+                        </p>
+                    </div>
+
+                    <div class="bg-slate-100 rounded-2xl p-4 border border-slate-200">
+                        <p class="text-xs uppercase tracking-wide text-slate-500 mb-1">
+                            Simboluri
+                        </p>
+
+                        <p class="font-semibold text-slate-900">
+                            Liceu
+                        </p>
+                    </div>
+
+                    <div class="bg-slate-100 rounded-2xl p-4 border border-slate-200">
+                        <p class="text-xs uppercase tracking-wide text-slate-500 mb-1">
+                            Output
+                        </p>
+
+                        <p class="font-semibold text-slate-900">
+                            Expresii matematice
+                        </p>
+                    </div>
+
+                </div>
+
+                <!-- CHAT -->
+        <div id="chat" class="flex-1 overflow-y-auto space-y-4 pr-2 min-h-0 mb-2">
+
+            {% for message in messages %}
+
+                {% if message["role"] == "user" %}
+
+                    <div class="bg-cyan-100 p-4 rounded-2xl text-slate-900 w-fit max-w-xl ml-auto border border-cyan-200">
+                        {{ message["content"] | safe }}
+                    </div>
+
+                {% else %}
+
+                    <div class="bg-slate-100 p-5 rounded-2xl max-w-3xl border border-slate-200">
+
+                        <h3 class="font-bold text-slate-900 mb-3">
+                            Răspuns AI
+                        </h3>
+
+                        <div class="text-slate-700 text-sm leading-relaxed whitespace-pre-line">
+                            <div class="math-content" data-math="{{ message['content'] | e }}">
+                                {{ message["content"] | e }}
+                            </div>
+                            <button
+                                class="copy-btn inline-flex items-center justify-center text-xs bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-3 py-1 rounded-lg"
+                                data-content="{{ message['content'] | e }}">
+                                Copiaza
+                            </button>
+                        </div>
+
+                    </div>
+
+                {% endif %}
+
+            {% endfor %}
+
+        </div>
+
+                <!-- QUICK ACTIONS -->
+        <div class="flex flex-wrap justify-end gap-2 mt-auto mb-3 flex-shrink-0">
+
+                    <button
+                        class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm"
+                    >
+                        Soluție exercițiu anterior
+                </button>
+
+                    <button
+                        class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold py-2 px-4 rounded-xl text-sm"
+                    >
+                        Genereaza <input type="number" placeholder="  X" style="width:20px;"> exercitii
+                    </button>
+
+                </div>
+
+                <!-- INPUT -->
+                <form action="/mode2/{{ conversation_id }}"  method="post" class="flex gap-3">
+
+                    <textarea
+                        name="prompt"
+                        rows="1"
+                        placeholder='Ex: "integrala din x la pătrat plus radical din 3"...'
+                        class="flex-1 text-slate-950 border border-slate-300 rounded-2xl p-4 resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                    ></textarea>
+
+                    <button
+                        type="submit" onclick="this.disabled=true; this.form.submit();"
+                        class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold px-8 rounded-2xl"
+                    >
+                        Tradu
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+        <!-- DREAPTA -->
+        <div class="w-80 flex flex-col gap-3">
+
+            <!-- SIMBOLURI -->
+            <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 shadow-xl h-[calc(100vh-430px)] overflow-y-auto">
+
+<div class="flex items-center justify-between mb-4">
+
+    <h2 class="text-white font-bold">
+        Simboluri matematice
+    </h2>
+
+    <div class="flex items-center gap-2">
+
+        <!-- FAVORITE -->
+        <button
+            class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-red-500 transition flex items-center justify-center text-white"
+        >
+            ♥
+        </button>
+
+        <!-- SEARCH -->
+        <button
+            class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 transition flex items-center justify-center text-white"
+        >
+            🔍
+        </button>
+
+    </div>
+
+</div>
+
+                <div class="space-y-5 text-sm">
+
+                    <!-- IX -->
+                    <div>
+
+                        <h3 class="text-cyan-400 font-bold mb-2">
+                            Clasa a IX-a
+                        </h3>
+
+                        <div class="space-y-2 text-slate-300">
+
+                            <div class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">√ Radical</div>
+                            <div class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">x² Puteri</div>
+                            <div class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">Fracții</div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- X -->
+                    <div>
+
+                        <h3 class="text-cyan-400 font-bold mb-2">
+                            Clasa a X-a
+                        </h3>
+
+                        <div class="space-y-2 text-slate-300">
+
+                            <div class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">Trigonometrie</div>
+                            <div class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">Sin / Cos</div>
+                            <div class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">Matrici</div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- XI -->
+                    <div>
+
+                        <h3 class="text-cyan-400 font-bold mb-2">
+                            Clasa a XI-a
+                        </h3>
+
+                        <div class="space-y-2 text-slate-300">
+
+                            <div class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">Limite</div>
+                            <div class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">Derivate</div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- XII -->
+                    <div>
+
+                        <h3 class="text-cyan-400 font-bold mb-2">
+                            Clasa a XII-a
+                        </h3>
+
+                        <div class="space-y-2 text-slate-300">
+
+                            <div class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">Integrale</div>
+                            <div class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl"></div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- EXERCITII -->
+            <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 shadow-xl h-[calc(100vh-670px)] overflow-y-auto">
+
+                <h2 class="text-white font-bold mb-3">
+                    Exerciții salvate
+                </h2>
+
+                <div class="space-y-2 text-sm">
+
+                    <a class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">
+                        Radicali clasa IX
+                    </a>
+
+                    <a class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">
+                        Integrale simple
+                    </a>
+
+                    <a class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">
+                        Trigonometrie BAC
+                    </a>
+
+
+                </div>
+
+            </div>
+
+            <!-- BUTTONS -->
+
+
+                <div class="flex flex-col gap-2">
+
+                    <a href="/menu"
+                    class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold py-3 rounded-xl text-center">
+                        Schimbă mod
+                    </a>
+                <form action="/create_mode2" method="post">
+                    <input type="hidden" name="style"        value="{{ conversation['style_id'] }}">
+                    <input type="hidden" name="school_class" value="{{ conversation['school_class'] }}">
+                    <input type="hidden" name="bac"          value="{{ conversation['bac'] }}">
+                    <button type="submit"
+                            class="w-full bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-3 rounded-xl">
+                        Conversație nouă
+                    </button>
+                </form>
+
+            </div>
+
+            <!-- TIP -->
+            <div class="text-xs text-slate-500 px-1">
+
+                Tip: apasă pe un simbol pentru a-l insera automat în conversație.
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script>
+function cleanLatex(latex) {
+    return (latex || "").replace(/\$\$/g, "").replace(/\$/g, "").trim();
+}
+
+// Render math visually in chat
+document.addEventListener("DOMContentLoaded", function () {
+    const chat = document.getElementById("chat");
+    if (chat) chat.scrollTop = chat.scrollHeight;
+
+    document.querySelectorAll(".math-content").forEach(function (el) {
+        const latex = cleanLatex(el.dataset.math);
+        try {
+            katex.render(latex, el, {
+                displayMode: true,
+                throwOnError: false,
+                output: "html"
+            });
+        } catch (e) {
+            el.textContent = latex;
+        }
+    });
+});
+
+// Copy button — pastes as real formatted math into Word
+document.addEventListener("click", async function (e) {
+    const btn = e.target.closest(".copy-btn");
+    if (!btn) return;
+
+    const latex = cleanLatex(btn.dataset.content);
+
+    try {
+        // Render to full HTML with inline styles (Word reads this)
+        const rendered = katex.renderToString(latex, {
+            displayMode: true,
+            throwOnError: false,
+            output: "html"
+        });
+
+        // Wrap with KaTeX CSS inlined so Word renders it correctly
+        const fullHtml = `
+<html>
+<head>
+<style>
+.katex { font: 1.21em KaTeX_Main, Times New Roman, serif; line-height: 1.2; white-space: nowrap; }
+.katex .mfrac .frac-line { border-bottom: 1px solid; }
+.katex .mfrac vbox { display: inline-table; }
+.katex .mfrac { display: inline-block; vertical-align: middle; }
+.katex .sqrt { display: inline-block; }
+.katex .sqrt > .root { display: none; }
+.katex .mord { display: inline; }
+.katex .msupsub { display: inline-block; vertical-align: middle; }
+.katex-display { display: block; text-align: center; margin: 1em 0; }
+</style>
+</head>
+<body>
+${rendered}
+</body>
+</html>`;
+
+        await navigator.clipboard.write([
+            new ClipboardItem({
+                "text/html": new Blob([fullHtml], { type: "text/html" }),
+                "text/plain": new Blob([latex], { type: "text/plain" })
+            })
+        ]);
+
+        btn.innerText = "Copiat ✓";
+        setTimeout(() => { btn.innerText = "Copiaza"; }, 1500);
+
+    } catch (err) {
+        console.error(err);
+        await navigator.clipboard.writeText(latex);
+        btn.innerText = "Copiat (text) ✓";
+        setTimeout(() => { btn.innerText = "Copiaza"; }, 1500);
+    }
+});
+</script>
+<!--<script>
+function cleanLatex(latex) {
+    return (latex || "")
+        .replace(/\$\$/g, "")
+        .replace(/\$/g, "")
+        .trim();
+}
+
+document.addEventListener("click", async function (e) {
+    const btn = e.target.closest(".copy-btn");
+    if (!btn) return;
+
+    const latex = cleanLatex(btn.dataset.content);
+
+    try {
+        // Render to a hidden DOM element to extract MathML
+        const container = document.createElement("div");
+        container.style.position = "absolute";
+        container.style.left = "-9999px";
+        document.body.appendChild(container);
+
+        katex.render(latex, container, {
+            displayMode: true,
+            throwOnError: false,
+            output: "mathml"   // ← pure MathML output only
+        });
+
+        // Extract just the <math> element
+        const mathEl = container.querySelector("math");
+        
+        if (!mathEl) throw new Error("No MathML generated");
+
+        // Word requires the namespace attribute on <math>
+        mathEl.setAttribute("xmlns", "http://www.w3.org/1998/Math/MathML");
+
+        const mathML = mathEl.outerHTML;
+        document.body.removeChild(container);
+
+        // Copy both MathML (for Word) and plain LaTeX (fallback)
+        await navigator.clipboard.write([
+            new ClipboardItem({
+                // Word on Windows reads this MIME type for equations
+                "application/mathml+xml": new Blob([mathML], { type: "application/mathml+xml" }),
+                // Word on Mac / fallback
+                "text/html": new Blob([mathML], { type: "text/html" }),
+                "text/plain": new Blob([latex], { type: "text/plain" })
+            })
+        ]);
+
+        btn.innerText = "Copiat ✓";
+        setTimeout(() => { btn.innerText = "Copiaza"; }, 1200);
+
+    } catch (err) {
+        console.error(err);
+        // Graceful fallback: copy raw LaTeX
+        await navigator.clipboard.writeText(latex);
+        btn.innerText = "Copiat (LaTeX) ✓";
+        setTimeout(() => { btn.innerText = "Copiaza"; }, 1200);
+    }
+});
+</script>
+<script>
+function cleanLatex(latex) {
+    return (latex || "")
+        .replace(/\$\$/g, "")
+        .replace(/\$/g, "")
+        .trim();
+}
+
+document.addEventListener("click", async function (e) {
+
+    const btn = e.target.closest(".copy-btn");
+    if (!btn) return;
+
+    const latex = cleanLatex(btn.dataset.content);
+
+    try {
+
+        const html = katex.renderToString(latex, {
+            displayMode: true,
+            throwOnError: false,
+            output: "htmlAndMathml"
+        });
+
+        await navigator.clipboard.write([
+            new ClipboardItem({
+                "text/html": new Blob([html], { type: "text/html" }),
+                "text/plain": new Blob([latex], { type: "text/plain" })
+            })
+        ]);
+
+        btn.innerText = "Copiat ✓";
+
+        setTimeout(() => {
+            btn.innerText = "Copiaza";
+        }, 1200);
+
+    } catch (err) {
+        console.error(err);
+
+        await navigator.clipboard.writeText(latex);
+    }
+});
+</script>-->
+<!--
+<script>
+function latexToUnicode(latex) {
+
+    const superscripts = {
+        "0":"⁰","1":"¹","2":"²","3":"³","4":"⁴",
+        "5":"⁵","6":"⁶","7":"⁷","8":"⁸","9":"⁹",
+        "+":"⁺","-":"⁻","=":"⁼","(":"⁽",")":"⁾",
+        "n":"ⁿ","i":"ⁱ","∞":"∞"
+    };
+
+    const subscripts = {
+        "0":"₀","1":"₁","2":"₂","3":"₃","4":"₄",
+        "5":"₅","6":"₆","7":"₇","8":"₈","9":"₉",
+        "+":"₊","-":"₋","=":"₌","(":"₍",")":"₎",
+        "e":"ₑ"
+    };
+
+    function toSuper(str) {
+        return str.split("").map(c => superscripts[c] || c).join("");
+    }
+
+    function toSub(str) {
+        return str.split("").map(c => subscripts[c] || c).join("");
+    }
+
+    return latex
+        .replace(/\\int/g, "∫")
+        .replace(/\\infty/g, "∞")
+        .replace(/\\sqrt/g, "√")
+        .replace(/\\alpha/g, "α")
+        .replace(/\\beta/g, "β")
+        .replace(/\\gamma/g, "γ")
+        .replace(/\\,/g, " ")
+
+        .replace(/\^\{([^}]*)\}/g, (_, p1) => toSuper(p1))
+        .replace(/\^([a-zA-Z0-9∞])/g, (_, p1) => toSuper(p1))
+
+        .replace(/_\{([^}]*)\}/g, (_, p1) => toSub(p1))
+        .replace(/_([a-zA-Z0-9])/g, (_, p1) => toSub(p1))
+
+        .replace(/[{}]/g, "");
+}
+
+document.addEventListener("click", async function (e) {
+
+    const btn = e.target.closest(".copy-btn");
+    if (!btn) return;
+
+    let latex = btn.dataset.content;
+
+    latex = latex
+        .replace(/\$\$/g, "")
+        .trim();
+
+    const unicodeMath = latexToUnicode(latex);
+
+    try {
+        await navigator.clipboard.writeText(unicodeMath);
+
+        btn.innerText = "Copiat ✓";
+
+        setTimeout(() => {
+            btn.innerText = "Copiaza";
+        }, 1200);
+
+    } catch (err) {
+        console.error(err);
+    }
+});
+</script>-->
+{% endblock %}

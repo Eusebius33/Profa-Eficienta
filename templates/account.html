@@ -1,0 +1,136 @@
+{% extends "layout1.html" %}
+
+{% block title %}
+    {% if user and user["gender"] == "F" %}
+        Profa Eficientă
+    {% else %}
+        Proful Eficient
+    {% endif %}
+{% endblock %}
+
+{% block main %}
+
+<div class="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 px-4 py-10 flex items-center justify-center">
+
+    <div class="w-full max-w-3xl bg-white border border-slate-700 rounded-3xl shadow-2xl p-8">
+
+        <!-- header -->
+        <div class="text-center mb-10">
+
+            <h1 class="text-4xl font-bold text-slate-900 mb-2">
+                Contul tău
+            </h1>
+
+            <p class="text-slate-700">
+                Gestionează datele contului și setările tale
+            </p>
+
+        </div>
+
+        <!-- user info -->
+        <div class="space-y-5 mb-10">
+
+            <div class="bg-white border border-slate-700 rounded-2xl p-4">
+                <p class="text-slate-900 text-sm">Username</p>
+                <p class="text-slate-900 text-lg font-semibold">{{ username }}</p>
+            </div>
+
+            <div class="bg-white border border-slate-700 rounded-2xl p-4">
+                <p class="text-slate-900 text-sm">Email</p>
+                <p class="text-slate-900 text-lg font-semibold">{{ email }}</p>
+            </div>
+
+            <div class="bg-white border border-slate-700 rounded-2xl p-4">
+                <p class="text-slate-900 text-sm">Parolă</p>
+                <p class="text-slate-900 text-lg font-semibold">••••••••</p>
+            </div>
+
+        </div>
+
+        <!-- actions -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            <!-- change password -->
+            <form action="/passwordchange" method="post" class="w-full">
+                <button
+                    type="submit"
+                    class="w-full rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-4 transition"
+                >
+                    Schimbă parola
+                </button>
+            </form>
+
+            <!-- logout -->
+            <a href="/logout">
+                <button
+                    class="w-full rounded-2xl bg-slate-900 hover:bg-red-400 text-white font-bold py-4 transition"
+                >
+                    Ieși din cont
+                </button>
+            </a>
+
+        </div>
+
+        <!-- STYLE SETTINGS -->
+<!-- STYLE SETTINGS -->
+<div class="mt-10 border-t border-slate-700 pt-8">
+
+    <h2 class="text-xl font-bold text-slate-900 mb-4">
+        Stil & Preferințe
+    </h2>
+
+    <form action="/style" method="post">
+
+        <div class="flex flex-col md:flex-row gap-6">
+
+            <!-- LEFT SIDE -->
+            <div class="w-full md:w-1/2 space-y-4">
+
+                <input
+                    type="text"
+                    name="style_name"
+                    required
+                    placeholder="Nume stil"
+                    class="w-full rounded-2xl bg-white border border-slate-700 px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                >
+
+                <select
+                    name="test_type"
+                    required
+                    class="w-full rounded-2xl bg-white border border-slate-700 px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                >
+                    <option disabled selected value="">Tip teste</option>
+                    <option value="theory">Teoretice</option>
+                    <option value="practice">Practice</option>
+                    <option value="bac_full">Model BAC</option>
+                </select>
+
+            </div>
+
+            <!-- RIGHT SIDE -->
+            <div class="w-full md:w-1/2 space-y-4">
+
+                <textarea
+                    name="style_description"
+                    required
+                    rows="4"
+                    placeholder="Descrie modul în care vrei să fie generate testele..."
+                    class="w-full rounded-2xl bg-white border border-slate-700 px-4 py-3 text-slate-900 resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                ></textarea>
+
+                <button
+                    type="submit"
+                    class="w-full rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-4 transition"
+                >
+                    Salvează setările
+                </button>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}
