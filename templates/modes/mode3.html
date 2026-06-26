@@ -77,8 +77,7 @@ Creează după Model
                                     <button class="copy-btn text-xs bg-cyan-500 text-slate-950 px-2 py-1 rounded-lg font-bold"
                                         data-content="{{ message['content'] | e }}">Copiaza</button>
                                 </div>
-                                <div class="math-content text-slate-700 text-sm leading-relaxed max-w-full overflow-x-auto"
-                                    data-math="{{ message['content'] | e }}">
+                                <div class="math-content text-slate-700 text-sm leading-relaxed whitespace-pre-wrap break-words max-w-full overflow-x-auto">
                                     {{ message["content"] }}
                                 </div>
                             </div>
@@ -170,26 +169,12 @@ Creează după Model
 </div>
 
 <script>
-function cleanLatex(latex) {
-    return (latex || "").replace(/\$\$/g, "").replace(/\$/g, "").trim();
-}
-
 document.addEventListener("DOMContentLoaded", function () {
+    // Scroll chat to bottom
     const chat = document.getElementById("chat");
     if (chat) chat.scrollTop = chat.scrollHeight;
 
-    document.querySelectorAll(".math-content").forEach(function (el) {
-        const raw = el.dataset.math || "";
-        if (!raw.includes("$")) { el.textContent = raw; return; }
-        const latex = cleanLatex(raw);
-        if (!latex) return;
-        try {
-            katex.render(latex, el, { displayMode: true, throwOnError: false, output: "html" });
-        } catch (e) {
-            el.textContent = latex;
-        }
-    });
-
+    // Auto-expand textarea
     const ta = document.querySelector("textarea[name='prompt']");
     if (ta) {
         ta.addEventListener("input", function () {
@@ -199,26 +184,17 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+// Copy button
 document.addEventListener("click", async function (e) {
     const btn = e.target.closest(".copy-btn");
     if (!btn) return;
-    const latex = cleanLatex(btn.dataset.content);
+    const raw = btn.dataset.content || "";
     try {
-        const html = katex.renderToString(latex, { displayMode: true, throwOnError: false, output: "mathml" });
-        const mathEl = new DOMParser().parseFromString(html, "text/html").querySelector("math");
-        if (!mathEl) throw new Error("No MathML");
-        mathEl.setAttribute("xmlns", "http://www.w3.org/1998/Math/MathML");
-        await navigator.clipboard.write([
-            new ClipboardItem({
-                "text/plain": new Blob([mathEl.outerHTML], { type: "text/plain" }),
-                "text/html":  new Blob([mathEl.outerHTML], { type: "text/html" })
-            })
-        ]);
+        await navigator.clipboard.writeText(raw);
         btn.innerText = "Copiat ✓";
         setTimeout(() => { btn.innerText = "Copiaza"; }, 1200);
     } catch (err) {
-        await navigator.clipboard.writeText(latex);
-        btn.innerText = "Copiat (LaTeX) ✓";
+        btn.innerText = "Eroare";
         setTimeout(() => { btn.innerText = "Copiaza"; }, 1200);
     }
 });

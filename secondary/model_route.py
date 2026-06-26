@@ -12,16 +12,51 @@ def mode3_chat(db, connect, apology, conversation_id, file_read, upload_folder):
     if not conversation:
         return apology("conversație inexistentă")
 
+    # Exclude hidden system messages from display
     messages = db.execute(
-        "SELECT * FROM messages WHERE conversation_id = ? ORDER BY id ASC",
+        "SELECT * FROM messages WHERE conversation_id = ? AND role != 'system' ORDER BY id ASC",
         (conversation_id,)
     ).fetchall()
 
-    if len(messages) == 0:
+    # Count ALL messages (including system) to check if first load
+    total = db.execute(
+        "SELECT COUNT(*) AS c FROM messages WHERE conversation_id = ?",
+        (conversation_id,)
+    ).fetchone()["c"]
+
+    if total == 0:
         filename = conversation["title"]
         filepath = os.path.join(upload_folder, filename)
+
+        if not os.path.exists(filepath):
+            return apology("Fișierul încărcat nu a fost găsit", 404)
+
         raw_content = file_read(filepath)
-        intro = f"Am citit fișierul: {filename}\n\nConținut extras:\n\n{raw_content}\n\nVerifică dacă exercițiile au fost citite corect. Dacă totul arată bine, scrie \"generează testul\" sau cere modificări."
+
+        latex_content = ai.convert_file_to_latex(raw_content, filepath=filepath)
+
+        # Store PURE LaTeX as hidden system message (model reference for generation)
+        db.execute(
+            "INSERT INTO messages (conversation_id, role, content) VALUES (?, ?, ?)",
+            (conversation_id, "system", latex_content)
+        )
+
+        if latex_content and latex_content.startswith("Eroare AI:"):
+            intro = (
+                f"Am încercat să citesc fișierul **{filename}**, "
+                f"dar a apărut o eroare la procesare:\n\n{latex_content}\n\n"
+                f"Poți încerca să încarci din nou fișierul."
+            )
+        else:
+            intro = (
+                f"Am citit fișierul **{filename}** și am identificat "
+                f"următoarele exerciții:\n\n{latex_content}\n\n"
+                f"Verifică dacă exercițiile au fost extrase corect.\n"
+                f"- Dacă totul arată bine, scrie **\"generează testul\"**\n"
+                f"- Dacă sunt probleme, descrie ce trebuie corectat."
+            )
+
+        # Store visible intro
         db.execute(
             "INSERT INTO messages (conversation_id, role, content) VALUES (?, ?, ?)",
             (conversation_id, "assistant", intro)
@@ -31,7 +66,7 @@ def mode3_chat(db, connect, apology, conversation_id, file_read, upload_folder):
 
     if request.method == "POST":
         prompt = request.form.get("prompt")
-        if not prompt:
+        if not prompt or not prompt.strip():
             return redirect(f"/mode3/{conversation_id}")
 
         db.execute(
@@ -40,19 +75,22 @@ def mode3_chat(db, connect, apology, conversation_id, file_read, upload_folder):
         )
         connect.commit()
 
+        # Build history (exclude system message)
         history_rows = db.execute(
-            "SELECT role, content FROM messages WHERE conversation_id = ? ORDER BY id ASC",
+            "SELECT role, content FROM messages WHERE conversation_id = ? AND role != 'system' ORDER BY id ASC",
             (conversation_id,)
         ).fetchall()
         history = "\n".join(f"{r['role']}: {r['content']}" for r in history_rows)
 
-        filename = conversation["title"]
-        filepath = os.path.join(upload_folder, filename)
-        raw_content = file_read(filepath)
-        latex_content = ai.convert_file_to_latex(raw_content, fliepath=filepath)
+        # Fetch pure LaTeX model (the hidden system message)
+        system_msg = db.execute(
+            "SELECT content FROM messages WHERE conversation_id = ? AND role = 'system' LIMIT 1",
+            (conversation_id,)
+        ).fetchone()
+        model_content = system_msg["content"] if system_msg else ""
 
         response = ai.generate_from_model(
-            model_content=latex_content,
+            model_content=model_content,
             conversation_history=history,
             user_prompt=prompt
         )
@@ -64,6 +102,7 @@ def mode3_chat(db, connect, apology, conversation_id, file_read, upload_folder):
         connect.commit()
         return redirect(f"/mode3/{conversation_id}")
 
+    # ---- GET: render chat ----
     conversations = db.execute(
         "SELECT * FROM conversations WHERE user_id = ? AND mode = ? ORDER BY created_at DESC",
         (session["user_id"], "mode3")
@@ -76,6 +115,7 @@ def mode3_chat(db, connect, apology, conversation_id, file_read, upload_folder):
         conversation=conversation,
         conversation_id=conversation_id
     )
+
 
 def mode2_chat(db, connect, apology, conversation_id):
 

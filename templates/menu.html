@@ -108,7 +108,9 @@
                     </h2>
 
                     <p class="text-slate-600 leading-relaxed">
-                        Încarci un model de test existent in format word sau .pdf și generezi automat un test nou asemanator cu cel incarcat.
+                        Încarci un model de test existent în format Word sau PDF.
+                        AI-ul extrage exercițiile, le afișează pentru verificare,
+                        apoi generează un test nou similar.
                     </p>
 
                 </div>
@@ -122,25 +124,20 @@
                         class="border-2 border-dashed border-slate-200 hover:border-cyan-400 transition rounded-3xl p-6 text-center cursor-pointer bg-slate-50">
 
                         <p class="text-slate-900 font-medium">Încarcă modelul</p>
-                        <p class="text-slate-500 text-sm">Drag & Drop sau click</p>
+                        <p class="text-slate-500 text-sm">Drag & Drop sau click (.pdf, .docx, .txt)</p>
 
-                        <input type="file" required name="file" class="hidden">
+                        <input type="file" required name="file" class="hidden"
+                            accept=".pdf,.docx,.txt,.png,.jpg,.jpeg">
 
                     </label>
 
-                    <label class="text-sm font-medium text-slate-700">Instrucțiuni</label>
-                    <textarea rows="3" name="prompt" required
-                        placeholder="Ex: generează un test cu dificultate medie..."
-                        class="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900 resize-none"></textarea>
-
-                    <label class="text-sm font-medium text-slate-700">Diferențe față de model</label>
-                    <textarea rows="3" name="differences" required
-                        placeholder="Ex: mai multe exerciții de algebră..."
-                        class="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900 resize-none"></textarea>
+                    <p class="text-slate-500 text-xs">
+                        După încărcare, vei vedea exercițiile extrase și vei putea cere modificări sau genera un test nou.
+                    </p>
 
                     <button type="submit"
                         class="rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-4 transition">
-                        Începe Generarea
+                        Analizează fișierul
                     </button>
 
                 </form>

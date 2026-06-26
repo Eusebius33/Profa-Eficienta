@@ -249,15 +249,32 @@ def account_function(db):
 def password_function(db, connect, apology):
     if request.method == "POST":
 
+        current_password = request.form.get("current_password")
         password = request.form.get("password")
+        confirmation = request.form.get("confirmation")
+
+        if not current_password:
+            return apology("trebuie să introduci parola curentă", 400)
 
         if not password:
+            return apology("trebuie să introduci parola nouă", 400)
 
-            return apology(
-                "must provide password",
-                400
-            )
+        if not confirmation:
+            return apology("trebuie să confirmi parola nouă", 400)
 
+        if password != confirmation:
+            return apology("parolele nu coincid", 400)
+
+        # verify current password
+        user = db.execute(
+            "SELECT * FROM users WHERE id = ?",
+            (session["user_id"],)
+        ).fetchone()
+
+        if not user or not check_password_hash(user["hash"], current_password):
+            return apology("parola curentă este incorectă", 400)
+
+        # update password
         hash_password = generate_password_hash(
             password,
             method="scrypt",
@@ -276,4 +293,5 @@ def password_function(db, connect, apology):
 
         return redirect("/account")
 
-    return render_template("account.html")
+    return render_template("passwordchange.html")
+

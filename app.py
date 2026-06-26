@@ -22,6 +22,14 @@ app.config["SESSION_TYPE"] = "filesystem"
 
 Session(app)
 
+@app.after_request
+def after_request(response):
+    """Prevent browser from caching pages — fixes back-button after logout."""
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Expires"] = 0
+    response.headers["Pragma"] = "no-cache"
+    return response
+
 # =========================================================
 # DATABASE & TABLES
 # =========================================================
@@ -100,7 +108,7 @@ except:
     pass
 connect.commit()
 
-ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "pdf", "docx"}
+ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "pdf", "docx", "txt"}
 def allowed_file(filename):
 
     return ("." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS)
