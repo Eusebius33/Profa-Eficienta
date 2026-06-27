@@ -55,7 +55,7 @@ Dashboard AI Edu
         <!-- QUICK ACTIONS -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
 
-            <button class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-3 rounded-2xl">
+            <button class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold hover:scale-105 active:scale-95 transition-all shadow-md hover:shadow-cyan-500/30 py-3 rounded-2xl">
                 Rezolvare exercițiu anterior
             </button>
 
@@ -75,15 +75,15 @@ Dashboard AI Edu
 
             <div class="flex-1 overflow-y-auto space-y-4">
 
-                <div class="bg-slate-100 p-4 rounded-2xl w-fit max-w-xl">
+                <div class="bg-slate-100 text-slate-900 p-4 rounded-2xl hover:shadow-md transition-shadow w-fit max-w-xl">
                     Salut! Ce vrei să generezi azi?
                 </div>
 
-                <div class="bg-cyan-100 p-4 rounded-2xl w-fit max-w-xl ml-auto">
+                <div class="bg-cyan-100 text-slate-900 p-4 rounded-2xl hover:shadow-md transition-shadow w-fit max-w-xl ml-auto">
                     Generează 10 exerciții de trigonometrie BAC
                 </div>
 
-                <div class="bg-slate-100 p-4 rounded-2xl w-fit max-w-xl">
+                <div class="bg-slate-100 text-slate-900 p-4 rounded-2xl hover:shadow-md transition-shadow w-fit max-w-xl">
                     Sigur. Iată exercițiile...
                 </div>
 
@@ -94,13 +94,13 @@ Dashboard AI Edu
             <form action="/index" method="post" class="mt-4 flex gap-2">
 
                 <textarea
-                    class="flex-1 border border-slate-300 rounded-2xl p-3 resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                    class="flex-1 text-slate-900 border border-slate-300 rounded-2xl p-3 resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500"
                     rows="2"
                     placeholder="Scrie cererea ta..."
                 ></textarea>
 
                 <button
-                    class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-6 rounded-2xl"
+                    class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold hover:scale-105 active:scale-95 transition-all shadow-md hover:shadow-cyan-500/30 px-6 rounded-2xl"
                     type="submit"
                 >
                     Trimite

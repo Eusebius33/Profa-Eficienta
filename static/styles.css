@@ -1,3 +1,45 @@
+/* =============================================
+   BOOTSTRAP OVERRIDE — Fix invisible text
+   Bootstrap's a{color} rule overrides Tailwind's
+   text-slate-950 on <a> tags. This section forces
+   correct colors AFTER both frameworks load.
+   ============================================= */
+
+/* Sidebar conversation links & account link */
+a.block[class*="bg-slate-50"],
+a[class*="bg-slate-50"] {
+    color: #020617 !important;        /* slate-950 */
+    text-decoration: none !important;
+}
+a.block[class*="bg-slate-50"]:hover,
+a[class*="bg-slate-50"]:hover {
+    color: #020617 !important;
+}
+
+/* Navbar links — keep them light on dark navbar */
+nav a {
+    text-decoration: none !important;
+}
+nav a[class*="text-slate-300"] {
+    color: #cbd5e1 !important;        /* slate-300 */
+}
+nav a[class*="text-slate-300"]:hover {
+    color: #22d3ee !important;        /* cyan-400 */
+}
+nav a[class*="text-slate-400"] {
+    color: #94a3b8 !important;        /* slate-400 */
+}
+nav a[class*="text-cyan-400"] {
+    color: #22d3ee !important;        /* cyan-400 */
+}
+
+/* All links inside white chat area / info cards */
+.bg-white a,
+div[class*="bg-white"] a {
+    color: inherit !important;
+    text-decoration: none !important;
+}
+
 /* optional custom scrollbar */
 
 ::-webkit-scrollbar {

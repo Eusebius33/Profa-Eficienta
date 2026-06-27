@@ -17,22 +17,16 @@ Panou Control
         <div class="w-72 bg-slate-950 border border-slate-800 rounded-3xl p-4 flex flex-col shadow-xl">
 
             <h2 class="text-white text-lg font-bold mb-4">
-                Conversații
+                <span data-i18n="idx_conversations">Conversații</span>
             </h2>
 
             <div class="space-y-2 overflow-y-auto">
 
-                <a class="block bg-slate-50 hover:bg-slate-400 text-slate-950 px-3 py-2 rounded-xl">
-                    Conv 1
-                </a>
+                <a class="block bg-slate-50 hover:bg-slate-400 text-slate-950 px-3 py-2 rounded-xl"> <span data-i18n="idx_conv1">Conv 1</span> </a>
 
-                <a class="block bg-slate-50 hover:bg-slate-400 text-slate-950 px-3 py-2 rounded-xl">
-                    BAC Trigonometrie
-                </a>
+                <a class="block bg-slate-50 hover:bg-slate-400 text-slate-950 px-3 py-2 rounded-xl"> <span data-i18n="idx_conv2">BAC Trigonometrie</span> </a>
 
-                <a class="block bg-slate-50 hover:bg-slate-400 text-slate-950 px-3 py-2 rounded-xl">
-                    Exerciții clasa X
-                </a>
+                <a class="block bg-slate-50 hover:bg-slate-400 text-slate-950 px-3 py-2 rounded-xl"> <span data-i18n="idx_conv3">Exerciții clasa X</span> </a>
 
             </div>
 
@@ -40,7 +34,7 @@ Panou Control
 
     <a
         href="/account"
-        class="flex items-center gap-3 p-2 rounded-2xl bg-slate-50 hover:bg-slate-400 transition"
+        class="flex items-center gap-3 p-2 rounded-2xl bg-slate-50 text-slate-900 hover:bg-slate-400 transition"
     >
 
         <div class="w-10 h-10 rounded-full bg-cyan-500 flex items-center justify-center text-slate-950 font-bold">
@@ -48,13 +42,9 @@ Panou Control
         </div>
 
         <div class="flex flex-col">
-            <span class="text-sm font-semibold text-slate-950">
-                Cont
-            </span>
+            <span class="text-sm font-semibold text-slate-950" data-i18n="idx_account">Cont</span>
 
-            <span class="text-xs text-slate-950">
-                Gestioneaza
-            </span>
+            <span class="text-xs text-slate-950" data-i18n="idx_manage">Gestioneaza</span>
         </div>
 
     </a>
@@ -71,11 +61,9 @@ Panou Control
 
             <!-- HEADER -->
             <div class="mb-6">
-                <h1 class="text-3xl font-bold text-white">
-                    Continuă conversația
-                </h1>
+                <h1 class="text-3xl font-bold text-white" data-i18n="idx_continue" data-i18n="idx_continue">Continuă conversația</h1>
                 <p class="text-slate-400">
-                    mod activ: {{ mod }}
+                    <span data-i18n="idx_active_mode"><span data-i18n="idx_active_mode">mod activ:</span></span> {{ mod }}
                 </p>
             </div>
 
@@ -88,17 +76,11 @@ Panou Control
 
                 <div class="flex-1 overflow-y-auto space-y-4">
 
-                    <div class="bg-slate-100 p-4 rounded-2xl w-fit max-w-xl">
-                        Salut! Ce vrei să generezi azi?
-                    </div>
+                    <div class="bg-slate-100 text-slate-900 p-4 rounded-2xl hover:shadow-md transition-shadow w-fit max-w-xl" data-i18n="idx_hello" data-i18n="idx_hello">Salut! Ce vrei să generezi azi?</div>
 
-                    <div class="bg-cyan-100 p-4 rounded-2xl w-fit max-w-xl ml-auto">
-                        Generează 10 exerciții de trigonometrie BAC
-                    </div>
+                    <div class="bg-cyan-100 text-slate-900 p-4 rounded-2xl hover:shadow-md transition-shadow w-fit max-w-xl ml-auto" data-i18n="idx_gen_trig" data-i18n="idx_gen_trig">Generează 10 exerciții de trigonometrie BAC</div>
 
-                    <div class="bg-slate-100 p-4 rounded-2xl w-fit max-w-xl">
-                        Sigur. Iată exercițiile...
-                    </div>
+                    <div class="bg-slate-100 text-slate-900 p-4 rounded-2xl hover:shadow-md transition-shadow w-fit max-w-xl" data-i18n="idx_here_ex" data-i18n="idx_here_ex">Sigur. Iată exercițiile...</div>
 
                 </div>
 
@@ -115,7 +97,7 @@ Panou Control
                         Generează exerciții similare
                     </button>
 
-                    <button class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-2 px-4 rounded-xl text-sm">
+                    <button class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold hover:scale-105 active:scale-95 transition-all shadow-md hover:shadow-cyan-500/30 py-2 px-4 rounded-xl text-sm">
                         Cum predau la clasă
                     </button>
 
@@ -125,17 +107,15 @@ Panou Control
                 <form action="/mode1" method="post" class="flex gap-2">
 
                     <textarea
-                        class="flex-1 border border-slate-300 rounded-2xl p-3 resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                        class="flex-1 text-slate-900 border border-slate-300 rounded-2xl p-3 resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500"
                         rows="2"
-                        placeholder="Scrie cererea ta..."
+                        data-i18n-placeholder="idx_write_req" data-i18n-placeholder="idx_write_req" placeholder="Scrie cererea ta..."
                     ></textarea>
 
                     <button
-                        class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-6 rounded-2xl"
+                        class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold hover:scale-105 active:scale-95 transition-all shadow-md hover:shadow-cyan-500/30 px-6 rounded-2xl"
                         type="submit"
-                    >
-                        Trimite
-                    </button>
+                     data-i18n="idx_send" data-i18n="idx_send">Trimite</button>
 
                 </form>
 
@@ -151,33 +131,27 @@ Panou Control
 
             <!-- FIȘIERE -->
             <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 shadow-xl min-h-[310px]">
-                <h2 class="text-white font-bold mb-3">Fișiere generate</h2>
+                <h2 class="text-white font-bold mb-3" data-i18n="idx_gen_files" data-i18n="idx_gen_files">Fișiere generate</h2>
 
                 <ul class="space-y-2 text-slate-300 text-sm">
                     <li class="block bg-slate-50 hover:bg-slate-400 text-slate-950 px-3 py-2 rounded-xl">2024-2025 Proba E</li>
                     <li class="block bg-slate-50 hover:bg-slate-400 text-slate-950 px-3 py-2 rounded-xl">BAC Simulare 1</li>
-                    <li class="block bg-slate-50 hover:bg-slate-400 text-slate-950 px-3 py-2 rounded-xl">Teste trigonometrie</li>
+                    <li class="block bg-slate-50 hover:bg-slate-400 text-slate-950 px-3 py-2 rounded-xl" data-i18n="idx_tests_trig" data-i18n="idx_tests_trig">Teste trigonometrie</li>
                 </ul>
             </div>
 
 
             <!-- EXERCIȚII SALVATE -->
             <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 shadow-xl min-h-[470px]">
-                <h2 class="text-white font-bold mb-3">Exerciții salvate</h2>
+                <h2 class="text-white font-bold mb-3" data-i18n="idx_saved_ex" data-i18n="idx_saved_ex">Exerciții salvate</h2>
 
                 <div class="text-slate-300 text-sm space-y-2">
 
-                    <div class="block bg-slate-50 hover:bg-slate-400 text-slate-950 px-3 py-2 rounded-xl">
-                        Clasa IX - radicali
-                    </div>
+                    <div class="block bg-slate-50 hover:bg-slate-400 text-slate-950 px-3 py-2 rounded-xl" data-i18n="idx_cls9_rad" data-i18n="idx_cls9_rad">Clasa IX - radicali</div>
 
-                    <div class="block bg-slate-50 hover:bg-slate-400 text-slate-950 px-3 py-2 rounded-xl">
-                        Trigonometrie - baze
-                    </div>
+                    <div class="block bg-slate-50 hover:bg-slate-400 text-slate-950 px-3 py-2 rounded-xl" data-i18n="idx_trig_base" data-i18n="idx_trig_base">Trigonometrie - baze</div>
 
-                    <div class="block bg-slate-50 hover:bg-slate-400 text-slate-950 px-3 py-2 rounded-xl">
-                        Ecuații
-                    </div>
+                    <div class="block bg-slate-50 hover:bg-slate-400 text-slate-950 px-3 py-2 rounded-xl" data-i18n="idx_equations" data-i18n="idx_equations">Ecuații</div>
 
                 </div>
 
@@ -185,9 +159,7 @@ Panou Control
 
 
             <!-- TIP -->
-            <div class="text-xs text-slate-500 mt-auto">
-                Tip: apasa pe exercitiu pentru a il lipi in conversatie, si apasa pe document pentru a il descarca
-            </div>
+            <div class="text-xs text-slate-500 mt-auto" data-i18n="idx_tip" data-i18n="idx_tip">Tip: apasa pe exercitiu pentru a il lipi in conversatie, si apasa pe document pentru a il descarca</div>
 
         </div>
 

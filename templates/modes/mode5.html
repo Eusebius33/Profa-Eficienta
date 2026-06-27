@@ -15,27 +15,19 @@ Generator BAC
         <!-- STANGA - CONVERSATII -->
         <div class="w-72 bg-slate-950 border border-slate-800 rounded-3xl p-4 flex flex-col shadow-xl">
 
-            <h2 class="text-white text-lg font-bold mb-4">
+            <h2 class="text-white text-lg font-bold mb-4" data-i18n="conversations_title">
                 Conversații
             </h2>
 
             <div class="space-y-2 overflow-y-auto">
 
-                <a class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">
-                    BAC Mate INFO
-                </a>
+                <a class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="m5_bac_mate">BAC Mate INFO</a>
 
-                <a class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">
-                    Trigonometrie BAC
-                </a>
+                <a class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="m5_trig_bac">Trigonometrie BAC</a>
 
-                <a class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">
-                    Exerciții integrale
-                </a>
+                <a class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="m5_ex_int">Exerciții integrale</a>
 
-                <a class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">
-                    Simulare 2025
-                </a>
+                <a class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="m5_sim_2025">Simulare 2025</a>
 
             </div>
 
@@ -44,7 +36,7 @@ Generator BAC
 
                 <a
                     href="/account"
-                    class="flex items-center gap-3 p-2 rounded-2xl bg-slate-50 hover:bg-slate-400 transition"
+                    class="flex items-center gap-3 p-2 rounded-2xl bg-slate-50 text-slate-900 hover:bg-slate-400 transition"
                 >
 
                     <div class="w-10 h-10 rounded-full bg-cyan-500 flex items-center justify-center text-slate-950 font-bold">
@@ -52,13 +44,9 @@ Generator BAC
                     </div>
 
                     <div class="flex flex-col">
-                        <span class="text-sm font-semibold text-slate-950">
-                            Cont
-                        </span>
+                        <span class="text-sm font-semibold text-slate-950" data-i18n="idx_account">Cont</span>
 
-                        <span class="text-xs text-slate-950">
-                            Gestioneaza
-                        </span>
+                        <span class="text-xs text-slate-950" data-i18n="idx_manage">Gestioneaza</span>
                     </div>
 
                 </a>
@@ -74,19 +62,13 @@ Generator BAC
             <div class="mb-6 flex items-start justify-between gap-4">
 
                 <div>
-                    <h1 class="text-3xl font-bold text-white">
-                        Generator BAC AI
-                    </h1>
+                    <h1 class="text-3xl font-bold text-white" data-i18n="m5_header">Generator BAC AI</h1>
 
-                    <p class="text-slate-400 mt-1">
-                        Creează variante BAC personalizate instant
-                    </p>
+                    <p class="text-slate-400 mt-1" data-i18n="m5_sub">Creează variante BAC personalizate instant</p>
                 </div>
 
                 <div class="bg-slate-900 border border-slate-700 rounded-2xl px-4 py-3 min-w-[280px]">
-                    <div class="text-slate-400 text-sm">
-                        BAC activ:
-                    </div>
+                    <div class="text-slate-400 text-sm" data-i18n="m5_bac_active">BAC activ:</div>
 
                     <div class="text-white font-bold text-lg">
                         {{ bac }}M_tehnologic
@@ -101,34 +83,22 @@ Generator BAC
                 <!-- INFO -->
                 <div class="grid grid-cols-3 gap-4 mb-6">
 
-                    <div class="bg-slate-100 rounded-2xl p-4 border border-slate-200">
-                        <p class="text-xs uppercase tracking-wide text-slate-500 mb-1">
-                            Accent
-                        </p>
+                    <div class="bg-slate-100 text-slate-900 rounded-2xl hover:shadow-md transition-shadow p-4 border border-slate-200">
+                        <p class="text-xs uppercase tracking-wide text-slate-500 mb-1" data-i18n="m5_accent">Accent</p>
 
-                        <p class="font-semibold text-slate-900">
-                            Trigonometrie
-                        </p>
+                        <p class="font-semibold text-slate-900" data-i18n="m5_trig">Trigonometrie</p>
                     </div>
 
-                    <div class="bg-slate-100 rounded-2xl p-4 border border-slate-200">
-                        <p class="text-xs uppercase tracking-wide text-slate-500 mb-1">
-                            Lecții incluse
-                        </p>
+                    <div class="bg-slate-100 text-slate-900 rounded-2xl hover:shadow-md transition-shadow p-4 border border-slate-200">
+                        <p class="text-xs uppercase tracking-wide text-slate-500 mb-1" data-i18n="m5_lessons_incl">Lecții incluse</p>
 
-                        <p class="font-semibold text-slate-900">
-                            Funcții, Matrici, Integrale
-                        </p>
+                        <p class="font-semibold text-slate-900" data-i18n="m5_func_matr_int">Funcții, Matrici, Integrale</p>
                     </div>
 
-                    <div class="bg-slate-100 rounded-2xl p-4 border border-slate-200">
-                        <p class="text-xs uppercase tracking-wide text-slate-500 mb-1">
-                            Lecții omise
-                        </p>
+                    <div class="bg-slate-100 text-slate-900 rounded-2xl hover:shadow-md transition-shadow p-4 border border-slate-200">
+                        <p class="text-xs uppercase tracking-wide text-slate-500 mb-1" data-i18n="m5_lessons_omit">Lecții omise</p>
 
-                        <p class="font-semibold text-slate-900">
-                            Geometrie vectorială
-                        </p>
+                        <p class="font-semibold text-slate-900" data-i18n="m5_geom_vect">Geometrie vectorială</p>
                     </div>
 
                 </div>
@@ -137,19 +107,24 @@ Generator BAC
                 <div class="flex-1 overflow-y-auto space-y-4">
 
                     <!-- AI MESSAGE -->
-                    <div class="bg-slate-100 p-5 rounded-2xl max-w-3xl border border-slate-200">
+                    <div class="bg-slate-100 text-slate-900 p-5 rounded-2xl hover:shadow-md transition-shadow max-w-3xl border border-slate-200 relative group">
+
+                        
+                        <!-- COPY BUTTON -->
+                        <button type="button" class="copy-math-btn absolute top-3 right-3 text-slate-500 hover:text-slate-900 bg-slate-200 hover:bg-slate-300 p-1.5 rounded-lg transition flex items-center gap-1"
+                                onclick="copyMathToClipboard(this, this.parentElement.querySelector('.msg-content-container'))" title="Copy Math to Word">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                        </button>
 
                         <div class="flex items-center justify-between mb-3">
-                            <h3 class="font-bold text-slate-900">
-                                Variantă BAC generată
-                            </h3>
+                            <h3 class="font-bold text-slate-900" data-i18n="m5_variant_gen">Variantă BAC generată</h3>
 
                             <span class="text-xs bg-cyan-500 text-slate-950 px-2 py-1 rounded-lg font-bold">
                                 AI Generated
                             </span>
                         </div>
 
-                        <div class="space-y-3 text-slate-700 text-sm leading-relaxed">
+                        <div class="space-y-3 text-slate-700 text-sm leading-relaxed msg-content-container">
 
                             <p>
                                 SUBIECTUL I
@@ -180,9 +155,7 @@ Generator BAC
                     </div>
 
                     <!-- USER -->
-                    <div class="bg-cyan-100 p-4 rounded-2xl w-fit max-w-xl ml-auto border border-cyan-200">
-                        Generează variantă BAC fără integrale și accent pe trigonometrie
-                    </div>
+                    <div class="bg-cyan-100 text-slate-900 p-4 rounded-2xl hover:shadow-md transition-shadow w-fit max-w-xl ml-auto border border-cyan-200" data-i18n="m5_user_msg">Generează variantă BAC fără integrale și accent pe trigonometrie</div>
 
                 </div>
 
@@ -191,30 +164,22 @@ Generator BAC
 
                     <button
                         class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm"
-                    >
-                        Rezolvare test
-                    </button>
+                     data-i18n="m5_solve_test">Rezolvare test</button>
 
                     <button
                         class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm"
-                    >
-                        Generează similare
-                    </button>
+                     data-i18n="m5_gen_similar">Generează similare</button>
 
                     <button
                         class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm"
-                    >
-                        Generează rand 2
-                    </button>
+                     data-i18n="m5_gen_row2">Generează rand 2</button>
 
                     <form action="/mode5/{{ conversation_id }}"  method="post">
 
                         <button
                             type="submit"
                             class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold py-2 px-4 rounded-xl text-sm"
-                        >
-                            Generează alt BAC
-                        </button>
+                         data-i18n="m5_gen_alt">Generează alt BAC</button>
 
                     </form>
 
@@ -226,16 +191,14 @@ Generator BAC
                     <textarea
                         name="prompt"
                         rows="1"
-                        placeholder="Ex: Generează 10 exerciții BAC dificultate mare fără integrale..."
+                        data-i18n-placeholder="m5_gen_ph" placeholder="Ex: Generează 10 exerciții BAC dificultate mare fără integrale..."
                         class="flex-1 text-slate-950 border border-slate-300 rounded-2xl p-4 resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500"
                     ></textarea>
 
                     <button
                         type="submit"
                         class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold px-8 rounded-2xl"
-                    >
-                        Generează
-                    </button>
+                     data-i18n="m5_generate">Generează</button>
 
                 </form>
 
@@ -249,35 +212,25 @@ Generator BAC
             <!-- SELECTEAZA LECTII -->
             <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 shadow-xl h-[calc(100vh-430px)] overflow-y-auto">
 
-                <h2 class="text-white font-bold mb-4">
-                    Selectează lecții
-                </h2>
+                <h2 class="text-white font-bold mb-4" data-i18n="m5_select_lessons">Selectează lecții</h2>
 
                 <div class="space-y-5 text-sm">
 
                     <!-- IX -->
                     <div>
 
-                        <h3 class="text-cyan-400 font-bold mb-2">
-                            Clasa a IX-a
-                        </h3>
+                        <h3 class="text-cyan-400 font-bold mb-2" data-i18n="grade_9">Clasa a IX-a</h3>
 
                         <div class="space-y-2">
 
                             <label class="flex items-center gap-2 text-slate-300">
-                                <input type="checkbox">
-                                Radicali
-                            </label>
+                                <input type="checkbox" data-i18n="m_radicals">Radicali</label>
 
                             <label class="flex items-center gap-2 text-slate-300">
-                                <input type="checkbox">
-                                Puteri
-                            </label>
+                                <input type="checkbox" data-i18n="m_powers">Puteri</label>
 
                             <label class="flex items-center gap-2 text-slate-300">
-                                <input type="checkbox">
-                                Fracții
-                            </label>
+                                <input type="checkbox" data-i18n="m_fractions">Fracții</label>
 
                         </div>
 
@@ -286,26 +239,18 @@ Generator BAC
                     <!-- X -->
                     <div>
 
-                        <h3 class="text-cyan-400 font-bold mb-2">
-                            Clasa a X-a
-                        </h3>
+                        <h3 class="text-cyan-400 font-bold mb-2" data-i18n="grade_10">Clasa a X-a</h3>
 
                         <div class="space-y-2">
 
                             <label class="flex items-center gap-2 text-slate-300">
-                                <input type="checkbox">
-                                Matrici
-                            </label>
+                                <input type="checkbox" data-i18n="m_matrices">Matrici</label>
 
                             <label class="flex items-center gap-2 text-slate-300">
-                                <input type="checkbox">
-                                Trigonometrie
-                            </label>
+                                <input type="checkbox" data-i18n="m_trig">Trigonometrie</label>
 
                             <label class="flex items-center gap-2 text-slate-300">
-                                <input type="checkbox">
-                                Numere complexe
-                            </label>
+                                <input type="checkbox" data-i18n="m_complex">Numere complexe</label>
 
                         </div>
 
@@ -314,21 +259,15 @@ Generator BAC
                     <!-- XI -->
                     <div>
 
-                        <h3 class="text-cyan-400 font-bold mb-2">
-                            Clasa a XI-a
-                        </h3>
+                        <h3 class="text-cyan-400 font-bold mb-2" data-i18n="grade_11">Clasa a XI-a</h3>
 
                         <div class="space-y-2">
 
                             <label class="flex items-center gap-2 text-slate-300">
-                                <input type="checkbox">
-                                Limite
-                            </label>
+                                <input type="checkbox" data-i18n="m_limits">Limite</label>
 
                             <label class="flex items-center gap-2 text-slate-300">
-                                <input type="checkbox">
-                                Derivate
-                            </label>
+                                <input type="checkbox" data-i18n="m_deriv">Derivate</label>
 
                         </div>
 
@@ -341,9 +280,7 @@ Generator BAC
             <!-- FISIERE -->
             <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 shadow-xl h-[calc(100vh-670px)] overflow-y-auto">
 
-                <h2 class="text-white font-bold mb-3">
-                    Descarcă variante BAC
-                </h2>
+                <h2 class="text-white font-bold mb-3" data-i18n="m5_download_bac">Descarcă variante BAC</h2>
 
                 <div class="space-y-2 text-sm">
 
@@ -352,7 +289,7 @@ Generator BAC
                     </a>
 
                     <a class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">
-                        Simulare BAC 2025
+                        <span data-i18n="m5_bac_sim">Simulare BAC</span> 2025
                     </a>
 
                     <a class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">
@@ -369,24 +306,16 @@ Generator BAC
 
                     <button onclick="window.location.href='/menu'"
                         class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold py-3 rounded-xl"
-                    >
-                        Schimbă mod
-                    </button>
+                     data-i18n="change_mode">Schimbă mod</button>
 
                     <button onclick="window.location.href='/create_mode5'"
                         class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-3 rounded-xl"
-                    >
-                        Conversație nouă
-                    </button>
+                     data-i18n="new_chat">Conversație nouă</button>
 
                 </div>
 
             <!-- TIP -->
-            <div class="text-xs text-slate-500 px-1">
-
-                Tip: apasă pe o lecție pentru a o include în generarea variantei BAC.
-
-            </div>
+            <div class="text-xs text-slate-500 px-1" data-i18n="m5_tip">Tip: apasă pe o lecție pentru a o include în generarea variantei BAC.</div>
 
         </div>
 

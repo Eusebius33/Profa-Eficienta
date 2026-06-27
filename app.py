@@ -14,6 +14,7 @@ from secondary import ai, docs, ocr, accounts
 from secondary import model_route
 from flask import request
 import traceback
+import json
 
 app = Flask(__name__)
 os.makedirs("uploads", exist_ok=True)
@@ -21,6 +22,44 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 
 Session(app)
+
+# =========================================================
+# TRANSLATIONS
+# =========================================================
+try:
+    with open("translations.json", "r", encoding="utf-8") as f:
+        translations = json.load(f)
+except Exception as e:
+    print(f"Could not load translations: {e}")
+    translations = {}
+
+def t(key):
+    lang = session.get("lang", "ro")
+    return translations.get(key, {}).get(lang, key)
+
+@app.context_processor
+def inject_t():
+    return dict(t=t)
+
+from flask import jsonify
+
+@app.route("/api/translations")
+def get_translations():
+    try:
+        with open("translations.json", "r", encoding="utf-8") as f:
+            return jsonify(json.load(f))
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/set_lang/<lang>")
+def set_lang(lang):
+    if lang in ["ro", "en"]:
+        session["lang"] = lang
+        
+    response = redirect(request.referrer or "/")
+    response.set_cookie('lang', lang, max_age=31536000) # 1 year
+    return response
+
 
 # =========================================================
 # DATABASE & TABLES

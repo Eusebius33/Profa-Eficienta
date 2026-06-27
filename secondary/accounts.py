@@ -81,7 +81,9 @@ def style_function(apology, db, connect):
     return render_template("style.html", user=user)
 
 def login_function(db, apology):
+    lang = session.get("lang", "ro")
     session.clear()
+    session["lang"] = lang
 
     if request.method == "POST":
 
@@ -93,10 +95,10 @@ def login_function(db, apology):
         # =========================
 
         if not email:
-            return apology("must provide email", 400)
+            return apology(app.t("err_must_provide_email"), 400)
 
         if not password:
-            return apology("must provide password", 400)
+            return apology(app.t("err_must_provide_password"), 400)
 
         # =========================
         # FIND USER
@@ -114,7 +116,7 @@ def login_function(db, apology):
         if len(rows) != 1:
 
             return apology(
-                "invalid email and/or password",
+                app.t("err_invalid_credentials"),
                 400
             )
 
@@ -130,7 +132,7 @@ def login_function(db, apology):
         ):
 
             return apology(
-                "invalid email and/or password",
+                app.t("err_invalid_credentials"),
                 400
             )
 
@@ -147,7 +149,9 @@ def login_function(db, apology):
     return render_template("login.html")
 
 def register_function(db, connect, apology):
+    lang = session.get("lang", "ro")
     session.clear()
+    session["lang"] = lang
 
     if request.method == "POST":
 
@@ -167,22 +171,22 @@ def register_function(db, connect, apology):
         # =========================
 
         if not email:
-            return apology("must provide email", 400)
+            return apology(app.t("err_must_provide_email"), 400)
 
         if not password:
-            return apology("must provide password", 400)
+            return apology(app.t("err_must_provide_password"), 400)
 
         if not username:
-            return apology("must provide username", 400)
+            return apology(app.t("err_must_provide_username"), 400)
 
         if not gender:
-            return apology("must provide gender", 400)
+            return apology(app.t("err_must_provide_gender"), 400)
 
         if not tehnologie:
-            return apology("must provide tehnologie", 400)
+            return apology(app.t("err_must_provide_tech"), 400)
 
         if not liceu:
-            return apology("must provide liceu", 400)
+            return apology(app.t("err_must_provide_highschool"), 400)
 
         # =========================
         # HASH PASSWORD
@@ -228,7 +232,7 @@ def register_function(db, connect, apology):
         except sqlite3.IntegrityError:
 
             return apology(
-                "user already registered",
+                app.t("err_user_exists"),
                 400
             )
 

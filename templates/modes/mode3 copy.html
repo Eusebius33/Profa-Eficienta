@@ -48,21 +48,21 @@ Creează după Model
 
             <!-- INFO -->
             <div class="grid grid-cols-3 gap-4 mb-6 flex-shrink-0">
-                <div class="bg-slate-100 rounded-2xl p-4 border border-slate-200">
+                <div class="bg-slate-100 text-slate-900 rounded-2xl hover:shadow-md transition-shadow p-4 border border-slate-200">
                     <p class="text-xs uppercase tracking-wide text-slate-500 mb-1">Model încărcat</p>
                     <p class="font-semibold text-slate-900">{{ conversation["title"] }}</p>
                 </div>
-                <div class="bg-slate-100 rounded-2xl p-4 border border-slate-200">
+                <div class="bg-slate-100 text-slate-900 rounded-2xl hover:shadow-md transition-shadow p-4 border border-slate-200">
                     <p class="text-xs uppercase tracking-wide text-slate-500 mb-1">Modificări</p>
                     <p class="font-semibold text-slate-900">Exerciții regenerate</p>
                 </div>
-                <div class="bg-slate-100 rounded-2xl p-4 border border-slate-200">
+                <div class="bg-slate-100 text-slate-900 rounded-2xl hover:shadow-md transition-shadow p-4 border border-slate-200">
                     <p class="text-xs uppercase tracking-wide text-slate-500 mb-1">Output</p>
                     <p class="font-semibold text-slate-900">Variantă nouă</p>
                 </div>
             </div>
 
-            <div class="bg-slate-100 rounded-2xl p-4 border border-slate-200">
+            <div class="bg-slate-100 text-slate-900 rounded-2xl hover:shadow-md transition-shadow p-4 border border-slate-200">
 
                 <p class="text-xs uppercase tracking-wide text-slate-500 mb-1">
                     Modificări
@@ -74,7 +74,7 @@ Creează după Model
 
             </div>
 
-            <div class="bg-slate-100 rounded-2xl p-4 border border-slate-200">
+            <div class="bg-slate-100 text-slate-900 rounded-2xl hover:shadow-md transition-shadow p-4 border border-slate-200">
 
                 <p class="text-xs uppercase tracking-wide text-slate-500 mb-1">
                     Output
@@ -93,11 +93,11 @@ Creează după Model
 
             {% for message in messages %}
                 {% if message["role"] == "user" %}
-                    <div class="bg-cyan-100 p-4 rounded-2xl text-slate-900 w-fit max-w-xl ml-auto border border-cyan-200 whitespace-pre-wrap break-words">
+                    <div class="bg-cyan-100 text-slate-900 p-4 rounded-2xl hover:shadow-md transition-shadow text-slate-900 w-fit max-w-xl ml-auto border border-cyan-200 whitespace-pre-wrap break-words">
                         {{ message["content"] | safe }}
                     </div>
                 {% else %}
-                    <div class="bg-slate-100 p-5 rounded-2xl max-w-3xl border border-slate-200">
+                    <div class="bg-slate-100 text-slate-900 p-5 rounded-2xl hover:shadow-md transition-shadow max-w-3xl border border-slate-200">
                         <div class="flex items-center justify-between mb-3">
                             <h3 class="font-bold text-slate-900">Test generat</h3>
                             <button
@@ -117,7 +117,7 @@ Creează după Model
         </div>
 
             <!-- USER 
-            <div class="bg-cyan-100 p-4 rounded-2xl w-fit max-w-xl ml-auto border border-cyan-200">
+            <div class="bg-cyan-100 text-slate-900 p-4 rounded-2xl hover:shadow-md transition-shadow w-fit max-w-xl ml-auto border border-cyan-200">
                 Scoate trigonometria și adaugă matrici
             </div>-->
 
@@ -335,12 +335,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-document.addEventListener("click", async function (e) {
-    const btn = e.target.closest(".copy-btn");
-    if (!btn) return;
-    const latex = cleanLatex(btn.dataset.content);
-    try {
-        const html = katex.renderToString(latex, { displayMode: true, throwOnError: false, output: "mathml" });
+
         const mathEl = new DOMParser().parseFromString(html, "text/html").querySelector("math");
         if (!mathEl) throw new Error("No MathML");
         mathEl.setAttribute("xmlns", "http://www.w3.org/1998/Math/MathML");
@@ -359,34 +354,7 @@ document.addEventListener("click", async function (e) {
     }
 });
 
-//     document.addEventListener("click", async function (e) {
-
-// ```
-// const btn = e.target.closest(".copy-btn");
-
-// if (!btn) return;
-
-// const raw = btn.dataset.content || "";
-
-// try {
-
-//     // extrage toate blocurile $$...$$
-//     const matches = [...raw.matchAll(/\$\$(.*?)\$\$/gs)];
-
-//     if (!matches.length)
-//         throw new Error("Nu exista expresii LaTeX");
-
-//     let mathMLContent = "";
-
-//     for (const match of matches) {
-
-//         const latex = match[1].trim();
-
-//         const html = katex.renderToString(latex, {
-//             displayMode: true,
-//             throwOnError: false,
-//             output: "mathml"
-//         });
+//     
 
 //         const mathEl = new DOMParser()
 //             .parseFromString(html, "text/html")

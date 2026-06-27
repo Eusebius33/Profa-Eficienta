@@ -2,6 +2,8 @@
 <html lang="ro">
 
 <head>
+    <meta name="color-scheme" content="dark">
+    <meta name="darkreader-lock">
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -44,9 +46,9 @@
         {% block title %}{% endblock %} |
 
         {% if session["gender"] == "F" %}
-            Profa Eficientă
+            {{ t("app_name_f") }}
         {% else %}
-            Proful Eficient
+            {{ t("app_name_m") }}
         {% endif %}
     </title>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
@@ -145,31 +147,27 @@
                         <button
                             type="submit"
                             class="text-slate-300 hover:text-cyan-400 transition bg-transparent border-0 p-0"
-                        >
-                            Conversație
-                        </button>
+                         data-i18n="nav_conversation">{{ t("nav_conversation") }}</button>
                     </form>
 
                     <a
                         href="/account"
                         class="text-slate-300 hover:text-cyan-400 transition no-underline"
-                    >
-                        Cont
-                    </a>
+                     data-i18n="nav_account">{{ t("nav_account") }}</a>
 
                     <a
                         href="/documentation"
                         class="text-slate-300 hover:text-cyan-400 transition no-underline"
-                    >
-                        Ghid
-                    </a>
+                     data-i18n="nav_guide">{{ t("nav_guide") }}</a>
 
                     <a
                         href="/menu"
                         class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-4 py-2 rounded-xl font-semibold transition no-underline"
-                    >
-                        Creează
-                    </a>
+                     data-i18n="nav_create">{{ t("nav_create") }}</a>
+
+                    <button onclick="switchLang('ro')"  class="text-slate-400 hover:text-white {% if session.get('lang', 'ro') == 'ro' %}font-bold text-cyan-400{% endif %} ml-2" translate="no" id="lang-toggle-ro">RO</button>
+                    <span class="text-slate-600">|</span>
+                    <button onclick="switchLang('en')"  class="text-slate-400 hover:text-white {% if session.get('lang', 'ro') == 'en' %}font-bold text-cyan-400{% endif %}" translate="no" id="lang-toggle-en">EN</button>
 
                 </div>
 
@@ -178,19 +176,19 @@
                 <!-- Guest -->
                 <div class="flex items-center gap-4 text-sm font-medium">
 
+                    <button onclick="switchLang('ro')"  class="text-slate-400 hover:text-white {% if session.get('lang', 'ro') == 'ro' %}font-bold text-cyan-400{% endif %}" translate="no" id="lang-toggle-ro">RO</button>
+                    <span class="text-slate-600">|</span>
+                    <button onclick="switchLang('en')"  class="text-slate-400 hover:text-white {% if session.get('lang', 'ro') == 'en' %}font-bold text-cyan-400{% endif %}" translate="no" id="lang-toggle-en">EN</button>
+
                     <a
                         href="/login"
-                        class="text-slate-300 hover:text-cyan-400 transition no-underline"
-                    >
-                        Intră în cont
-                    </a>
+                        class="text-slate-300 hover:text-cyan-400 transition no-underline ml-2"
+                     data-i18n="nav_login">{{ t("nav_login") }}</a>
 
                     <a
                         href="/register"
                         class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-4 py-2 rounded-xl font-semibold transition no-underline"
-                    >
-                        Înregistrează-te
-                    </a>
+                     data-i18n="nav_register">{{ t("nav_register") }}</a>
 
                 </div>
 
@@ -221,32 +219,24 @@
 
     <div class="max-w-7xl mx-auto px-6 py-6 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-500">
 
-        <p>
-            © 2026 Profu' Eficient. Toate drepturile rezervate.
-        </p>
+        <p data-i18n="footer_rights">{{ t("footer_rights") }}</p>
 
         <div class="flex items-center gap-4">
 
             <a
                 href="/documentation"
                 class="hover:text-cyan-400 transition no-underline text-slate-500"
-            >
-                Ghid
-            </a>
+             data-i18n="nav_guide">{{ t("nav_guide") }}</a>
 
             <a
                 href="/login"
                 class="hover:text-cyan-400 transition no-underline text-slate-500"
-            >
-                Intra in cont
-            </a>
+             data-i18n="nav_login">{{ t("nav_login") }}</a>
 
             <a
                 href="/register"
                 class="hover:text-cyan-400 transition no-underline text-slate-500"
-            >
-                Inregistreaza-te
-            </a>
+             data-i18n="nav_register">{{ t("nav_register") }}</a>
 
         </div>
 
@@ -256,6 +246,8 @@
 {% endblock %}
 
 
+    <script src="/static/i18n.js"></script>
+<script src="/static/copyMath.js"></script>
 </body>
 
 </html>
