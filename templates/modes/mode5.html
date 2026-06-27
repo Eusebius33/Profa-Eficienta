@@ -8,9 +8,9 @@ Generator BAC
 {% block main %}
 
 <!-- BACKGROUND -->
-<div class="min-h-[calc(100vh-150px)] bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 p-6">
+<div class="min-h-0 h-[calc(100dvh-80px)] bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 p-6 overflow-hidden">
             <!-- WRAPPER -->
-    <div class="w-full max-w-[1850px] mx-auto bg-white border border-slate-200 rounded-[2rem] shadow-2xl p-3 flex gap-3">
+    <div class="w-full max-w-[1850px] mx-auto h-full bg-white border border-slate-200 rounded-[2rem] shadow-2xl p-3 flex gap-3 overflow-hidden">
 
         <!-- STANGA - CONVERSATII -->
         <div class="w-72 bg-slate-950 border border-slate-800 rounded-3xl p-4 flex flex-col shadow-xl">
@@ -20,15 +20,18 @@ Generator BAC
             </h2>
 
             <div class="space-y-2 overflow-y-auto">
+                {% for conv in conversations %}
+                    <a href="/mode5/{{ conv['id'] }}"
+                    class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">
 
-                <a class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="m5_bac_mate">BAC Mate INFO</a>
+                        {% if conv["title"] == "Conversație nouă" %}
+                            <span data-i18n="new_chat">Conversație nouă</span>
+                        {% else %}
+                            {{ conv["title"] }}
+                        {% endif %}
 
-                <a class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="m5_trig_bac">Trigonometrie BAC</a>
-
-                <a class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="m5_ex_int">Exerciții integrale</a>
-
-                <a class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="m5_sim_2025">Simulare 2025</a>
-
+                    </a>
+                {% endfor %}
             </div>
 
             <!-- ACCOUNT -->
@@ -56,7 +59,7 @@ Generator BAC
         </div>
 
         <!-- CENTRU -->
-        <div class="flex-1 bg-slate-950 border border-slate-800 rounded-3xl p-6 flex flex-col shadow-xl">
+        <div class="flex-1 bg-slate-950 border border-slate-800 rounded-3xl p-6 flex flex-col shadow-xl h-full min-h-0 overflow-hidden">
 
             <!-- HEADER -->
             <div class="mb-6 flex items-start justify-between gap-4">
@@ -71,14 +74,14 @@ Generator BAC
                     <div class="text-slate-400 text-sm" data-i18n="m5_bac_active">BAC activ:</div>
 
                     <div class="text-white font-bold text-lg">
-                        {{ bac }}M_tehnologic
+                        {{ bac }} M_Tehnologic
                     </div>
                 </div>
 
             </div>
 
             <!-- CONTENT -->
-            <div class="flex-1 bg-white rounded-3xl border border-slate-700 p-6 flex flex-col shadow-inner h-[calc(100vh-300px)]">
+            <div class="flex-1 bg-white rounded-3xl border border-slate-700 p-6 flex flex-col shadow-inner min-h-0 overflow-hidden">
 
                 <!-- INFO -->
                 <div class="grid grid-cols-3 gap-4 mb-6">
@@ -104,63 +107,44 @@ Generator BAC
                 </div>
 
                 <!-- CHAT / OUTPUT -->
-                <div class="flex-1 overflow-y-auto space-y-4">
+                <div id="chat" class="flex-1 overflow-y-auto space-y-4 pr-2 min-h-0 mb-2">
 
-                    <!-- AI MESSAGE -->
-                    <div class="bg-slate-100 text-slate-900 p-5 rounded-2xl hover:shadow-md transition-shadow max-w-3xl border border-slate-200 relative group">
+                    {% for message in messages %}
 
-                        
-                        <!-- COPY BUTTON -->
-                        <button type="button" class="copy-math-btn absolute top-3 right-3 text-slate-500 hover:text-slate-900 bg-slate-200 hover:bg-slate-300 p-1.5 rounded-lg transition flex items-center gap-1"
-                                onclick="copyMathToClipboard(this, this.parentElement.querySelector('.msg-content-container'))" title="Copy Math to Word">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                        </button>
+                        {% if message["role"] == "user" %}
 
-                        <div class="flex items-center justify-between mb-3">
-                            <h3 class="font-bold text-slate-900" data-i18n="m5_variant_gen">Variantă BAC generată</h3>
+                            <div class="bg-cyan-100 text-slate-900 p-4 rounded-2xl hover:shadow-md transition-shadow w-fit max-w-xl ml-auto border border-cyan-200">
+                                {{ message["content"]|safe }}
+                            </div>
 
-                            <span class="text-xs bg-cyan-500 text-slate-950 px-2 py-1 rounded-lg font-bold">
-                                AI Generated
-                            </span>
-                        </div>
+                        {% else %}
 
-                        <div class="space-y-3 text-slate-700 text-sm leading-relaxed msg-content-container">
+                            <div class="bg-slate-100 text-slate-900 p-5 rounded-2xl hover:shadow-md transition-shadow max-w-3xl border border-slate-200">
 
-                            <p>
-                                SUBIECTUL I
-                            </p>
+                                <!-- Copy button -->
 
-                            <p>
-                                1. Calculați determinantul matricii...
-                            </p>
+                                <div class="flex items-center justify-between mb-3">
+                                    <h3 class="font-bold text-slate-900">
+                                        <span data-i18n="m5_variant_gen">
+                                            Variantă BAC generată
+                                        </span>
+                                    </h3>
+                                </div>
 
-                            <p>
-                                2. Rezolvați ecuația...
-                            </p>
+                                <div class="text-slate-700 text-sm leading-relaxed whitespace-pre-line msg-content-container">
+                                    {{ message["content"]|safe }}
+                                </div>
 
-                            <p>
-                                3. Determinați domeniul funcției...
-                            </p>
+                            </div>
 
-                            <p>
-                                SUBIECTUL II
-                            </p>
+                        {% endif %}
 
-                            <p>
-                                1. Demonstrați că...
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                    <!-- USER -->
-                    <div class="bg-cyan-100 text-slate-900 p-4 rounded-2xl hover:shadow-md transition-shadow w-fit max-w-xl ml-auto border border-cyan-200" data-i18n="m5_user_msg">Generează variantă BAC fără integrale și accent pe trigonometrie</div>
+                    {% endfor %}
 
                 </div>
 
                 <!-- QUICK ACTIONS -->
-                <div class="flex flex-wrap justify-end gap-2 mt-5 mb-3">
+                <div class="flex flex-wrap justify-end gap-2 mt-auto mb-3 flex-shrink-0">
 
                     <button
                         class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm"
@@ -186,7 +170,7 @@ Generator BAC
                 </div>
 
                 <!-- INPUT -->
-                <form action="/" method="post" class="flex gap-3">
+                <form action="/mode5/{{ conversation_id }}" method="post" class="flex gap-3">
 
                     <textarea
                         name="prompt"
@@ -325,5 +309,4 @@ Generator BAC
 
 
 {% endblock %}
-
 

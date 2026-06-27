@@ -81,9 +81,7 @@ def style_function(apology, db, connect):
     return render_template("style.html", user=user)
 
 def login_function(db, apology):
-    lang = session.get("lang", "ro")
     session.clear()
-    session["lang"] = lang
 
     if request.method == "POST":
 
@@ -95,10 +93,10 @@ def login_function(db, apology):
         # =========================
 
         if not email:
-            return apology(app.t("err_must_provide_email"), 400)
+            return apology("must provide email", 400)
 
         if not password:
-            return apology(app.t("err_must_provide_password"), 400)
+            return apology("must provide password", 400)
 
         # =========================
         # FIND USER
@@ -116,7 +114,7 @@ def login_function(db, apology):
         if len(rows) != 1:
 
             return apology(
-                app.t("err_invalid_credentials"),
+                "invalid email and/or password",
                 400
             )
 
@@ -132,7 +130,7 @@ def login_function(db, apology):
         ):
 
             return apology(
-                app.t("err_invalid_credentials"),
+                "invalid email and/or password",
                 400
             )
 
@@ -149,9 +147,7 @@ def login_function(db, apology):
     return render_template("login.html")
 
 def register_function(db, connect, apology):
-    lang = session.get("lang", "ro")
     session.clear()
-    session["lang"] = lang
 
     if request.method == "POST":
 
@@ -171,22 +167,22 @@ def register_function(db, connect, apology):
         # =========================
 
         if not email:
-            return apology(app.t("err_must_provide_email"), 400)
+            return apology("must provide email", 400)
 
         if not password:
-            return apology(app.t("err_must_provide_password"), 400)
+            return apology("must provide password", 400)
 
         if not username:
-            return apology(app.t("err_must_provide_username"), 400)
+            return apology("must provide username", 400)
 
         if not gender:
-            return apology(app.t("err_must_provide_gender"), 400)
+            return apology("must provide gender", 400)
 
         if not tehnologie:
-            return apology(app.t("err_must_provide_tech"), 400)
+            return apology("must provide tehnologie", 400)
 
         if not liceu:
-            return apology(app.t("err_must_provide_highschool"), 400)
+            return apology("must provide liceu", 400)
 
         # =========================
         # HASH PASSWORD
@@ -232,7 +228,7 @@ def register_function(db, connect, apology):
         except sqlite3.IntegrityError:
 
             return apology(
-                app.t("err_user_exists"),
+                "user already registered",
                 400
             )
 
@@ -253,15 +249,32 @@ def account_function(db):
 def password_function(db, connect, apology):
     if request.method == "POST":
 
+        current_password = request.form.get("current_password")
         password = request.form.get("password")
+        confirmation = request.form.get("confirmation")
+
+        if not current_password:
+            return apology("trebuie să introduci parola curentă", 400)
 
         if not password:
+            return apology("trebuie să introduci parola nouă", 400)
 
-            return apology(
-                "must provide password",
-                400
-            )
+        if not confirmation:
+            return apology("trebuie să confirmi parola nouă", 400)
 
+        if password != confirmation:
+            return apology("parolele nu coincid", 400)
+
+        # verify current password
+        user = db.execute(
+            "SELECT * FROM users WHERE id = ?",
+            (session["user_id"],)
+        ).fetchone()
+
+        if not user or not check_password_hash(user["hash"], current_password):
+            return apology("parola curentă este incorectă", 400)
+
+        # update password
         hash_password = generate_password_hash(
             password,
             method="scrypt",
@@ -280,4 +293,4 @@ def password_function(db, connect, apology):
 
         return redirect("/account")
 
-    return render_template("account.html")
+    return render_template("passwordchange.html")

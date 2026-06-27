@@ -1,9 +1,10 @@
 import sqlite3
 from functools import wraps
+import json
 import os
 from werkzeug.utils import secure_filename
 import uuid
-from flask import Flask, redirect, render_template, request, session
+from flask import Flask, jsonify, redirect, render_template, request, session
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 #import markdown
@@ -12,9 +13,7 @@ from PyPDF2 import PdfReader
 from docx import Document
 from secondary import ai, docs, ocr, accounts
 from secondary import model_route
-from flask import request
 import traceback
-import json
 
 app = Flask(__name__)
 os.makedirs("uploads", exist_ok=True)
@@ -23,43 +22,31 @@ app.config["SESSION_TYPE"] = "filesystem"
 
 Session(app)
 
-# =========================================================
-# TRANSLATIONS
-# =========================================================
-try:
-    with open("translations.json", "r", encoding="utf-8") as f:
-        translations = json.load(f)
-except Exception as e:
-    print(f"Could not load translations: {e}")
-    translations = {}
+def load_translations():
+    with open("translations.json", "r", encoding="utf-8") as file:
+        return json.load(file)
 
-def t(key):
-    lang = session.get("lang", "ro")
-    return translations.get(key, {}).get(lang, key)
+translations = load_translations()
 
 @app.context_processor
-def inject_t():
-    return dict(t=t)
+def inject_translations():
+    def t(key):
+        lang = request.cookies.get("lang", session.get("lang", "ro"))
+        return translations.get(key, {}).get(lang, translations.get(key, {}).get("ro", key))
 
-from flask import jsonify
+    return {"t": t}
 
 @app.route("/api/translations")
-def get_translations():
-    try:
-        with open("translations.json", "r", encoding="utf-8") as f:
-            return jsonify(json.load(f))
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+def api_translations():
+    return jsonify(translations)
 
-@app.route("/set_lang/<lang>")
-def set_lang(lang):
-    if lang in ["ro", "en"]:
-        session["lang"] = lang
-        
-    response = redirect(request.referrer or "/")
-    response.set_cookie('lang', lang, max_age=31536000) # 1 year
+@app.after_request
+def after_request(response):
+    """Prevent browser from caching pages — fixes back-button after logout."""
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Expires"] = 0
+    response.headers["Pragma"] = "no-cache"
     return response
-
 
 # =========================================================
 # DATABASE & TABLES
@@ -139,7 +126,7 @@ except:
     pass
 connect.commit()
 
-ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "pdf", "docx"}
+ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "pdf", "docx", "txt"}
 def allowed_file(filename):
 
     return ("." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS)
@@ -390,7 +377,7 @@ def mode3(conversation_id):
 # MODE4
 # =========================================================
 #TODO
-@app.route("/create_mode4", methods=["POST"])
+@app.route("/create_mode4", methods=["GET", "POST"])
 @login_required
 def create_mode4():
 
@@ -408,30 +395,64 @@ def create_mode4():
     return redirect(f"/mode4/{conversation_id}")
 
 
-@app.route("/mode4", methods=["GET", "POST"])
+@app.route("/mode4")
 @login_required
-def mode4():
+def mode4_latest():
+    conversation = db.execute(
+        """
+        SELECT * FROM conversations WHERE user_id = ? AND mode = ?
+        ORDER BY created_at DESC LIMIT 1
+        """,
+        (session["user_id"], "mode4")
+    ).fetchone()
 
-    response = None
+    if not conversation:
+        return redirect("/menu")
 
-    if request.method == "POST":
+    return redirect(f"/mode4/{conversation['id']}")
 
-        prompt = request.form.get("prompt")
-        differences = request.form.get("differences")
 
-        file = request.files["file"]
+@app.route("/mode4/<int:conversation_id>", methods=["GET", "POST"])
+@login_required
+def mode4(conversation_id):
+    conversation = db.execute(
+        """
+        SELECT * FROM conversations WHERE id = ? AND user_id = ? AND mode = ?
+        """,
+        (conversation_id, session["user_id"], "mode4")
+    ).fetchone()
 
-        filename = f"static/uploads/{session['user_id']}.png"
-        file.save(filename)
+    if not conversation:
+        return apology("conversație inexistentă", 404)
 
-        response = ai.handwriting(prompt, differences)
+    messages = db.execute(
+        """
+        SELECT * FROM messages WHERE conversation_id = ? ORDER BY id ASC
+        """,
+        (conversation_id,)
+    ).fetchall()
 
-    return render_template("modes/mode4.html", response=response)
+    conversations = db.execute(
+        """
+        SELECT * FROM conversations WHERE user_id = ? AND mode = ? ORDER BY created_at DESC
+        """,
+        (session["user_id"], "mode4")
+    ).fetchall()
+
+    return render_template(
+        "modes/mode4.html",
+        conversations=conversations,
+        conversation=conversation,
+        messages=messages,
+        conversation_id=conversation_id,
+        **{"class": conversation["school_class"] if "school_class" in conversation.keys() else "—"},
+        bac=conversation["bac"] if "bac" in conversation.keys() else "—"
+    )
 # =========================================================
 # MODE5
 # =========================================================
 #TODO
-@app.route("/create_mode5", methods=["POST"])
+@app.route("/create_mode5", methods=["GET", "POST"])
 @login_required
 def create_mode5():
 
@@ -448,20 +469,70 @@ def create_mode5():
 
     return redirect(f"/mode5/{conversation_id}")
 
-@app.route("/mode5", methods=["GET", "POST"])
+@app.route("/mode5")
 @login_required
-def mode5():
+def mode5_latest():
+    conversation = db.execute(
+        """
+        SELECT * FROM conversations WHERE user_id = ? AND mode = ?
+        ORDER BY created_at DESC LIMIT 1
+        """,
+        (session["user_id"], "mode5")
+    ).fetchone()
 
-    response = None
+    if not conversation:
+        return redirect("/menu")
+
+    return redirect(f"/mode5/{conversation['id']}")
+
+
+@app.route("/mode5/<int:conversation_id>", methods=["GET", "POST"])
+@login_required
+def mode5(conversation_id):
+    conversation = db.execute(
+        """
+        SELECT * FROM conversations WHERE id = ? AND user_id = ? AND mode = ?
+        """,
+        (conversation_id, session["user_id"], "mode5")
+    ).fetchone()
+
+    if not conversation:
+        return apology("conversație inexistentă", 404)
 
     if request.method == "POST":
+        prompt = request.form.get("prompt")
+        if prompt and prompt.strip():
+            db.execute(
+                """
+                INSERT INTO messages (conversation_id, role, content)
+                VALUES (?, ?, ?)
+                """,
+                (conversation_id, "user", prompt)
+            )
+            connect.commit()
 
-        lessons = request.form.get("lessons")
-        avoid = request.form.get("avoid")
+    messages = db.execute(
+        """
+        SELECT * FROM messages WHERE conversation_id = ? ORDER BY id ASC
+        """,
+        (conversation_id,)
+    ).fetchall()
 
-        response = ai.bac_generator(lessons, avoid)
+    conversations = db.execute(
+        """
+        SELECT * FROM conversations WHERE user_id = ? AND mode = ? ORDER BY created_at DESC
+        """,
+        (session["user_id"], "mode5")
+    ).fetchall()
 
-    return render_template("modes/mode5.html", response=response)
+    return render_template(
+        "modes/mode5.html",
+        messages=messages,
+        conversations=conversations,
+        conversation=conversation,
+        conversation_id=conversation_id,
+        bac=conversation["bac"] if "bac" in conversation.keys() else "M3"
+    )
 
 # =========================================================
 # RUN
@@ -470,5 +541,3 @@ def mode5():
 if __name__ == "__main__":
 
     app.run(debug=True)
-
-
