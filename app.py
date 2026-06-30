@@ -106,24 +106,45 @@ CREATE TABLE IF NOT EXISTS styles (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )
 """)
-try:
-    db.execute("ALTER TABLE styles ADD COLUMN style_name TEXT")
-except:
-    pass
-try:
-    db.execute("ALTER TABLE conversations ADD COLUMN style_id INTEGER")
-except:
-    pass
 
-try:
-    db.execute("ALTER TABLE conversations ADD COLUMN school_class TEXT")
-except:
-    pass
+migrations = [
+    "ALTER TABLE messages ADD COLUMN action_type TEXT",
+    "ALTER TABLE styles ADD COLUMN style_name TEXT",
+    "ALTER TABLE conversations ADD COLUMN school_class TEXT",
+    "ALTER TABLE conversations ADD COLUMN style_id INTEGER",
+    "ALTER TABLE conversations ADD COLUMN bac TEXT",
+]
 
-try:
-    db.execute("ALTER TABLE conversations ADD COLUMN bac TEXT")
-except:
-    pass
+for sql in migrations:
+    try:
+        db.execute(sql)
+    except Exception as e:
+        if "duplicate column name" not in str(e).lower():
+            raise
+
+# try:
+#     db.execute("ALTER TABLE messages ADD COLUMN action_type TEXT")
+# except Exception as e:
+#     if "duplicate column name" not in str(e).lower():
+#         raise
+# try:
+#     db.execute("ALTER TABLE styles ADD COLUMN style_name TEXT")
+# except:
+#     pass
+# try:
+#     db.execute("ALTER TABLE conversations ADD COLUMN style_id INTEGER")
+# except:
+#     pass
+
+# try:
+#     db.execute("ALTER TABLE conversations ADD COLUMN school_class TEXT")
+# except:
+#     pass
+
+# try:
+#     db.execute("ALTER TABLE conversations ADD COLUMN bac TEXT")
+# except:
+#     pass
 connect.commit()
 
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "pdf", "docx", "txt"}

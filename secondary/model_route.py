@@ -2,6 +2,7 @@ import markdown
 import os
 from flask import request, redirect, render_template, session
 from secondary import ai
+from secondary import adjacent
 def mode3_chat(db, connect, apology, conversation_id, file_read, upload_folder):
 
     conversation = db.execute(
@@ -164,9 +165,11 @@ def mode2_chat(db, connect, apology, conversation_id):
         connect.commit()
 
     # ---- Handle user POST ----
+# ---- Handle user POST ----
     if request.method == "POST":
 
         prompt = request.form.get("prompt")
+        action_type = request.form.get("action_type", "normal")
 
         if not prompt or not prompt.strip():
             return redirect(f"/mode2/{conversation_id}")
@@ -181,13 +184,37 @@ def mode2_chat(db, connect, apology, conversation_id):
         )
         connect.commit()
 
-        # AI response
-        response = ai.translate_math(
-            prompt,
-            conversation["style_description"],
-            conversation["school_class"],
-            conversation["bac"]
-        )
+        # ---- AI response: pick the right pipeline ----
+        if action_type == "generate":
+            n_raw = request.form.get("exercise_count", "5")
+            try:
+                n = int(n_raw)
+            except (TypeError, ValueError):
+                n = 5
+            n = max(1, min(n, 50))  # sanity cap
+
+            response = adjacent.generate_exercises_free(
+                n,
+                conversation["style_description"],
+                conversation["school_class"],
+                conversation["bac"]
+            )
+
+        elif action_type == "solve":
+            response = adjacent.solve_step_by_step(
+                prompt,
+                conversation["style_description"],
+                conversation["school_class"],
+                conversation["bac"]
+            )
+
+        else:  # "normal" -> textarea input, keep strict translate_math
+            response = ai.translate_math(
+                prompt,
+                conversation["style_description"],
+                conversation["school_class"],
+                conversation["bac"]
+            )
 
         # save assistant message
         db.execute(

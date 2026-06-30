@@ -1,7 +1,12 @@
 {% extends "layout1.html" %}
 
 {% block title %}
-    Selectează Mod
+    Selectează Mod |
+        {% if user and user["gender"] == "F" %}
+        Profa Eficientă
+    {% else %}
+        Proful Eficient
+    {% endif %}
 {% endblock %}
 
 {% block main %}

@@ -17,9 +17,13 @@
         <!-- header -->
         <div class="text-center mb-10">
 
-            <h1 class="text-4xl font-bold text-slate-900 mb-2" data-i18n="acc_title">Contul tău</h1>
+            <h1 class="text-4xl font-bold text-slate-900 mb-2">
+                Contul tău
+            </h1>
 
-            <p class="text-slate-700" data-i18n="acc_subtitle">Gestionează datele contului și setările tale</p>
+            <p class="text-slate-700">
+                Gestionează datele contului și setările tale
+            </p>
 
         </div>
 
@@ -27,17 +31,17 @@
         <div class="space-y-5 mb-10">
 
             <div class="bg-white border border-slate-700 rounded-2xl p-4">
-                <p class="text-slate-900 text-sm" data-i18n="acc_username">Username</p>
+                <p class="text-slate-900 text-sm">Username</p>
                 <p class="text-slate-900 text-lg font-semibold">{{ username }}</p>
             </div>
 
             <div class="bg-white border border-slate-700 rounded-2xl p-4">
-                <p class="text-slate-900 text-sm" data-i18n="acc_email">Email</p>
+                <p class="text-slate-900 text-sm">Email</p>
                 <p class="text-slate-900 text-lg font-semibold">{{ email }}</p>
             </div>
 
             <div class="bg-white border border-slate-700 rounded-2xl p-4">
-                <p class="text-slate-900 text-sm" data-i18n="acc_password">Parolă</p>
+                <p class="text-slate-900 text-sm">Parolă</p>
                 <p class="text-slate-900 text-lg font-semibold">••••••••</p>
             </div>
 
@@ -47,18 +51,22 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
             <!-- change password -->
-            <form action="/passwordchange" method="post" class="w-full">
+            <a href="/passwordchange" class="w-full">
                 <button
-                    type="submit"
-                    class="w-full rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold hover:scale-105 active:scale-95 transition-all shadow-md hover:shadow-cyan-500/30 py-4 transition"
-                 data-i18n="acc_change_pw">Schimbă parola</button>
-            </form>
+                    type="button"
+                    class="w-full rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-4 transition"
+                >
+                    Schimbă parola
+                </button>
+            </a>
 
             <!-- logout -->
             <a href="/logout">
                 <button
                     class="w-full rounded-2xl bg-slate-900 hover:bg-red-400 text-white font-bold py-4 transition"
-                 data-i18n="acc_logout">Ieși din cont</button>
+                >
+                    Ieși din cont
+                </button>
             </a>
 
         </div>
@@ -67,7 +75,9 @@
 <!-- STYLE SETTINGS -->
 <div class="mt-10 border-t border-slate-700 pt-8">
 
-    <h2 class="text-xl font-bold text-slate-900 mb-4" data-i18n="acc_style_pref">Stil & Preferințe</h2>
+    <h2 class="text-xl font-bold text-slate-900 mb-4">
+        Stil & Preferințe
+    </h2>
 
     <form action="/style" method="post">
 
@@ -80,7 +90,7 @@
                     type="text"
                     name="style_name"
                     required
-                    data-i18n-placeholder="acc_style_name" placeholder="Nume stil"
+                    placeholder="Nume stil"
                     class="w-full rounded-2xl bg-white border border-slate-700 px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                 >
 
@@ -89,10 +99,10 @@
                     required
                     class="w-full rounded-2xl bg-white border border-slate-700 px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                 >
-                    <option disabled selected value="" data-i18n="acc_test_type">Tip teste</option>
-                    <option value="theory" data-i18n="acc_theory">Teoretice</option>
-                    <option value="practice" data-i18n="acc_practice">Practice</option>
-                    <option value="bac_full" data-i18n="acc_bac_model">Model BAC</option>
+                    <option disabled selected value="">Tip teste</option>
+                    <option value="theory">Teoretice</option>
+                    <option value="practice">Practice</option>
+                    <option value="bac_full">Model BAC</option>
                 </select>
 
             </div>
@@ -104,14 +114,16 @@
                     name="style_description"
                     required
                     rows="4"
-                    data-i18n-placeholder="acc_style_desc" placeholder="Descrie modul în care vrei să fie generate testele..."
+                    placeholder="Descrie modul în care vrei să fie generate testele..."
                     class="w-full rounded-2xl bg-white border border-slate-700 px-4 py-3 text-slate-900 resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500"
                 ></textarea>
 
                 <button
                     type="submit"
-                    class="w-full rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold hover:scale-105 active:scale-95 transition-all shadow-md hover:shadow-cyan-500/30 py-4 transition"
-                 data-i18n="acc_save">Salvează setările</button>
+                    class="w-full rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-4 transition"
+                >
+                    Salvează setările
+                </button>
 
             </div>
 

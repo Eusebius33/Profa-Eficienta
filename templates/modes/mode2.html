@@ -1,7 +1,12 @@
 {% extends "layout.html" %}
 
 {% block title %}
-<span data-i18n="m2_page_title">Traducere în limbaj matematic</span>
+Traducere în limbaj matematic |
+    {% if user and user["gender"] == "F" %}
+        Profa Eficientă
+    {% else %}
+        Proful Eficient
+    {% endif %}
 {% endblock %}
 
 {% block footer %}
@@ -88,22 +93,30 @@
 
                 <!-- QUICK ACTIONS -->
                 <div class="flex flex-wrap justify-end gap-2 mt-auto mb-3 flex-shrink-0">
-                    <button class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm">
+                    <button type="button" onclick="solvePreviousExercise(this)"
+                            class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm">
                         <span data-i18n="m2_sol_prev">Soluție exercițiu anterior</span>
                     </button>
-                    <button class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold py-2 px-4 rounded-xl text-sm">
-                        <span data-i18n="m2_gen_ex">Genereaza</span> <input type="number" placeholder="  X" style="width:20px;"> <span data-i18n="m2_ex_suffix">exercitii</span></button>
+                    <button type="button" onclick="generateExercises(this)"
+                            class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold py-2 px-4 rounded-xl text-sm">
+                        <span data-i18n="m2_gen_ex">Genereaza</span>
+                        <input type="number" id="exCount" min="1" max="50" value="5" placeholder="X" style="width:40px;" class="text-white rounded px-1 mx-1">
+                        <span data-i18n="m2_ex_suffix">exercitii</span>
+                    </button>
                 </div>
 
                 <!-- INPUT -->
-                <form action="/mode2/{{ conversation_id }}" method="post" class="flex gap-3">
+                <form id="chatForm" action="/mode2/{{ conversation_id }}" method="post" class="flex gap-3">
+                    <input type="hidden" id="actionType" name="action_type" value="normal">
+                    <input type="hidden" id="exerciseCount" name="exercise_count" value="5">
                     <textarea
+                        id="promptInput"
                         name="prompt"
                         rows="1"
                         placeholder='Ex: "integrala din x la pătrat plus radical din 3"...'
-                        class="flex-1 text-slate-950 border border-slate-300 rounded-2xl p-4 resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                        class="flex-1 text-white border border-slate-300 rounded-2xl p-4 resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500"
                     ></textarea>
-                    <button type="submit" onclick="this.disabled=true; this.form.submit();"
+                    <button type="submit" onclick="document.getElementById('actionType').value='normal'; this.disabled=true; this.form.submit();"
                         class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold px-8 rounded-2xl" data-i18n="m2_translate_btn">Tradu</button>
                 </form>
 
@@ -190,9 +203,77 @@
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
+function getLastUserMessage() {
+    const bubbles = document.querySelectorAll('#chat .bg-cyan-100');
+    if (!bubbles.length) return null;
+    return bubbles[bubbles.length - 1].textContent.trim();
+}
 
-function cleanLatex(latex) {
-    return (latex || "").replace(/\$\$/g, "").replace(/\$/g, "").trim();
+function solvePreviousExercise(btn) {
+    const lastExercise = getLastUserMessage();
+    if (!lastExercise) {
+        alert('Nu există niciun exercițiu anterior în această conversație.');
+        return;
+    }
+    document.getElementById('actionType').value = 'solve';
+    document.getElementById('promptInput').value = lastExercise;
+    btn.disabled = true;
+    document.getElementById('chatForm').submit();
+}
+
+function generateExercises(btn) {
+    const input = document.getElementById('exCount');
+    let n = parseInt(input.value, 10);
+    if (!n || n < 1) n = 1;
+    if (n > 50) n = 50;
+
+    document.getElementById('actionType').value = 'generate';
+    document.getElementById('exerciseCount').value = n;
+    document.getElementById('promptInput').value = `Generează ${n} exerciții noi.`;
+    btn.disabled = true;
+    document.getElementById('chatForm').submit();
+}
+</script>
+<script>
+
+function renderMixedMath(raw) {
+    const frag = document.createDocumentFragment();
+    if (!raw) return frag;
+
+    const regex = /\$\$([\s\S]*?)\$\$/g;
+    let lastIndex = 0;
+    let match;
+
+    while ((match = regex.exec(raw)) !== null) {
+        if (match.index > lastIndex) {
+            frag.appendChild(document.createTextNode(raw.slice(lastIndex, match.index)));
+        }
+
+        const mathSrc = match[1].trim();
+        const span = document.createElement('span');
+        span.className = 'math-block';
+
+        if (mathSrc) {
+            try {
+                katex.render(mathSrc, span, {
+                    displayMode: true,
+                    throwOnError: false,
+                    output: "html"
+                });
+            } catch (e) {
+                span.textContent = mathSrc;
+            }
+        }
+        frag.appendChild(span);
+
+        lastIndex = regex.lastIndex;
+    }
+
+    if (lastIndex < raw.length) {
+        frag.appendChild(document.createTextNode(raw.slice(lastIndex)));
+    }
+
+    return frag;
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -203,23 +284,8 @@ document.addEventListener("DOMContentLoaded", function () {
     // Renderare KaTeX pentru fiecare mesaj AI
     document.querySelectorAll(".math-content").forEach(function (el) {
         const raw = el.dataset.math || "";
-
-        if (!raw.includes("$")) {
-            el.textContent = raw;
-            return;
-        }
-
-        const latex = cleanLatex(raw);
-        if (!latex) return;
-        try {
-            katex.render(latex, el, {
-                displayMode: true,
-                throwOnError: false,
-                output: "html"
-            });
-        } catch (e) {
-            el.textContent = latex;
-        }
+        el.innerHTML = "";
+        el.appendChild(renderMixedMath(raw));
     });
 
     // Auto-expand textarea

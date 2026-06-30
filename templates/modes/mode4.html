@@ -1,7 +1,12 @@
 {% extends "layout.html" %}
 
 {% block title %}
-Transcriere exerciții scrise de mână
+Transcriere exerciții scrise de mână |
+    {% if user and user["gender"] == "F" %}
+        Profa Eficientă
+    {% else %}
+        Proful Eficient
+    {% endif %}
 {% endblock %}
 
 {% block footer %}
