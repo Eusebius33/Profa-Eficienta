@@ -1,0 +1,10 @@
+Flask
+Flask-Session
+Werkzeug
+PyPDF2
+python-docx
+Pillow
+python-dotenv
+markdown
+google-genai
+sentence-transformers
