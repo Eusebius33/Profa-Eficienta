@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 from pathlib import Path
 from PIL import Image
 import os
-from sentence_transformers import SentenceTransformer
 import sqlite3
 from PyPDF2 import PdfReader
 import json
@@ -257,111 +256,27 @@ def handwriting(prompt, differences):
 # =========================================================
 # MODE 5 - BAC GENERATOR
 # =========================================================
-# db.execute("""
-# CREATE TABLE IF NOT EXISTS exam_chunks (
-#     id INTEGER PRIMARY KEY AUTOINCREMENT,
-#     conversation_id INTEGER,
-#     source_file TEXT,
-#     subject TEXT,
-#     lesson TEXT,
-#     difficulty TEXT,
-#     content TEXT
-# )
-# """)
-# db.execute("""
-# CREATE VIRTUAL TABLE exam_chunks_vss USING vss0(
-#     embedding(384)
-# );
-# """)
-def split_exercises(content):
-    exercises = []
-    current = []
-    lines = content.splitlines()
-
-    for line in lines:
-        stripped = line.strip()
-
-        if not stripped:
-            continue
-        # detect new exercise
-        if stripped.startswith("$$") and current:
-            exercises.append("\n".join(current))
-            current = []
-
-        current.append(stripped)
-
-    if current:
-        exercises.append("\n".join(current))
-
-    return exercises
-
-def ingest_bac_folder(folder_path):
-    for filename in os.listdir(folder_path):
-
-        if not filename.endswith(".pdf"):
-            continue
-
-        filepath = os.path.join(folder_path, filename)
-        raw = file_read(filepath)
-        latex = ai.convert_file_to_latex(raw)
-        exercises = split_exercises(latex)
-
-        for ex in exercises:
-            vector = embedding_model.encode(ex)
-            save_to_sqlite(ex, vector, filename)
 
 def bac_generator(lessons, avoid):
-    #pdf delivery & encoding
-    embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
-    embedding = embedding_model.encode(exercise)
-
-    db.execute(
-    """
-    INSERT INTO exam_chunks (conversation_id, source_file, content)
-    VALUES (?, ?, ?)
-    """,
-    (conversation_id, filename, exercise)
-    )
-    chunk_id = db.lastrowid
-
-    db.execute(
-    """
-    INSERT INTO exam_chunks_vss (rowid, embedding) VALUES (?, ?)
-    """,(chunk_id, json.dumps(vector.tolist()))
-    )
-    #encode user input
-    query_vector = embedding_model.encode(user_prompt)
-    db.execute("""
-    SELECT exam_chunks.content FROM exam_chunks_vss
-    JOIN exam_chunks ON exam_chunks.id = exam_chunks_vss.rowid
-    WHERE vss_search(embedding, ?) LIMIT 10;
-    """)
-    #AI Model
     prompt = f"""
     Lectii importante:
     {lessons}
 
-    Lectii de omis:
+    Lectii de evitat:
     {avoid}
     """
 
     return generate_content(
-
         model="gemini-2.5-flash",
-
         contents=prompt,
-
         config=types.GenerateContentConfig(
-
             system_instruction="""
-            Genereaza o varianta completa de BAC matematica.
-            Respecta structura oficiala romana.
-            -pt matematica folosesti LaTex
-            Cand scrii matematica:
-            - formule mari foloseste $$...$$
-            - nu folosi alte delimitatoare latex-
-            """,
+            Genereaza o varianta completa de BAC la matematica.
 
+            Respecta structura oficiala.
+            Foloseste delimitatori $$ $$ pentru LaTeX.
+            Nu adauga explicatii inutile.
+            """,
             temperature=0.8
         )
     )
