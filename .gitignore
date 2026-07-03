@@ -5,4 +5,4 @@ flask_session/
 uploads/
 *.db
 venv/
-.venv/
+.venv/venv/
