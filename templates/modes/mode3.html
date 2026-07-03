@@ -76,14 +76,16 @@ Creează după Model |
                                 {{ message["content"] | safe }}
                             </div>
                         {% else %}
-                            <div class="bg-slate-100 p-5 rounded-2xl max-w-3xl border border-slate-200 overflow-hidden">
-                                <div class="flex items-center justify-between mb-3">
-                                    <h3 class="font-bold text-slate-900">Test generat</h3>
-                                    <button class="copy-btn text-xs bg-cyan-500 text-slate-950 px-2 py-1 rounded-lg font-bold"
-                                        data-content="{{ message['content'] | e }}">Copiaza</button>
-                                </div>
-                                <div class="math-content text-slate-700 text-sm leading-relaxed whitespace-pre-wrap break-words max-w-full overflow-x-auto">
-                                    {{ message["content"] }}
+                            <div class="bg-slate-100 p-5 rounded-2xl max-w-3xl border border-slate-200 overflow-hidden relative group">
+                                <!-- COPY BUTTON -->
+                                <button type="button" class="copy-math-btn absolute top-3 right-3 text-slate-500 hover:text-slate-900 bg-slate-200 hover:bg-slate-300 p-1.5 rounded-lg transition flex items-center gap-1"
+                                        onclick="copyMathToClipboard(this, this.parentElement.querySelector('.msg-content-container'))" title="Copiaza">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                                </button>
+
+                                <h3 class="font-bold text-slate-900 mb-3">Test generat</h3>
+                                <div class="text-slate-700 text-sm leading-relaxed whitespace-pre-wrap break-words max-w-full overflow-x-auto msg-content-container">
+                                    <div class="math-content">{{ message["content"] }}</div>
                                 </div>
                             </div>
                         {% endif %}
@@ -187,22 +189,13 @@ document.addEventListener("DOMContentLoaded", function () {
             this.style.height = this.scrollHeight + "px";
         });
     }
-});
 
-// Copy button
-document.addEventListener("click", async function (e) {
-    const btn = e.target.closest(".copy-btn");
-    if (!btn) return;
-    const raw = btn.dataset.content || "";
-    try {
-        await navigator.clipboard.writeText(raw);
-        btn.innerText = "Copiat ✓";
-        setTimeout(() => { btn.innerText = "Copiaza"; }, 1200);
-    } catch (err) {
-        btn.innerText = "Eroare";
-        setTimeout(() => { btn.innerText = "Copiaza"; }, 1200);
+    // Enhance copy buttons with format dropdown (from copyMath.js)
+    if (window.enhanceCopyButtons) {
+        setTimeout(() => window.enhanceCopyButtons(), 100);
     }
 });
 </script>
+
 
 {% endblock %}

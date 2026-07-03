@@ -76,8 +76,8 @@ Traducere în limbaj matematic |
                             <div class="bg-slate-100 text-slate-900 p-5 rounded-2xl hover:shadow-md transition-shadow max-w-3xl border border-slate-200 overflow-hidden relative group">
                                 
                         <!-- COPY BUTTON -->
-                        <button type="button" class="copy-btn absolute top-3 right-3 text-slate-500 hover:text-slate-900 bg-slate-200 hover:bg-slate-300 p-1.5 rounded-lg transition flex items-center gap-1"
-                                data-content="{{ message['content'] | e }}" title="Copiaza pentru Word">
+                        <button type="button" class="copy-math-btn absolute top-3 right-3 text-slate-500 hover:text-slate-900 bg-slate-200 hover:bg-slate-300 p-1.5 rounded-lg transition flex items-center gap-1"
+                                onclick="copyMathToClipboard(this, this.parentElement.querySelector('.msg-content-container'))" title="Copiaza">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
                         </button>
 
@@ -321,59 +321,6 @@ function cleanLatex(raw) {
         .trim();
 }
 
-function setCopyButtonState(btn, label, restoreDelay) {
-    if (!btn) return;
-    if (!btn.dataset.originalHtml) btn.dataset.originalHtml = btn.innerHTML;
-    btn.textContent = label;
-    setTimeout(() => {
-        btn.innerHTML = btn.dataset.originalHtml;
-    }, restoreDelay || 1200);
-}
-
-document.addEventListener("click", async function (e) {
-    const btn = e.target.closest(".copy-btn");
-    if (!btn) return;
-    if (!btn.dataset.originalHtml) btn.dataset.originalHtml = btn.innerHTML;
-
-    const latex = cleanLatex(btn.dataset.content);
-
-    try {
-        const html = katex.renderToString(latex, {
-            displayMode: true,
-            throwOnError: false,
-            output: "mathml" // ← pure MathML output only
-        });
-
-        // Extract just the <math> element
-        const mathEl = new DOMParser()
-            .parseFromString(html, "text/html")
-            .querySelector("math");
-        
-        if (!mathEl) throw new Error("No MathML generated");
-
-        // Word requires the namespace attribute on <math>
-        mathEl.setAttribute("xmlns", "http://www.w3.org/1998/Math/MathML");
-
-        const mathML = mathEl.outerHTML;
-
-        if (window.ClipboardItem && navigator.clipboard.write) {
-            await navigator.clipboard.write([
-                new ClipboardItem({
-                    "text/plain": new Blob([mathML], { type: "text/plain" })
-                })
-            ]);
-        } else {
-            await navigator.clipboard.writeText(mathML);
-        }
-
-        setCopyButtonState(btn, "Copiat ✓", 1200);
-    } catch (err) {
-        console.error(err);
-        // Graceful fallback: copy raw LaTeX
-        await navigator.clipboard.writeText(latex);
-        setCopyButtonState(btn, "Copiat (LaTeX) ✓", 1200);
-    }
-});
 </script>
 
 {% endblock %}

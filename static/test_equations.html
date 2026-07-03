@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Copy Math — Equation Test Harness</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: system-ui, sans-serif; background: #0f172a; color: #e2e8f0; }
+    .test-card { background: #fff; border-radius: 16px; padding: 20px 24px; margin-bottom: 16px; color: #1e293b; position: relative; }
+    .test-card h3 { margin: 0 0 8px; font-weight: 700; font-size: 14px; color: #475569; text-transform: uppercase; letter-spacing: 0.05em; }
+    .katex-display { margin: 0.3em 0 !important; }
+    .msg-content-container { min-height: 30px; }
+    .result-badge { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+    .badge-pass { background: #d1fae5; color: #065f46; }
+    .badge-fail { background: #fee2e2; color: #991b1b; }
+    .badge-pending { background: #e0e7ff; color: #3730a3; }
+    #clipboard-output { white-space: pre-wrap; word-break: break-all; max-height: 400px; overflow-y: auto; background: #1e293b; color: #a5f3fc; padding: 16px; border-radius: 12px; font-size: 13px; font-family: "Fira Code", monospace; }
+    .copy-format-wrap { display: inline-flex !important; }
+  </style>
+</head>
+<body class="p-8">
+  <div class="max-w-5xl mx-auto">
+    <h1 class="text-3xl font-bold text-white mb-2">📐 Equation Clipboard Test Harness</h1>
+    <p class="text-slate-400 mb-6">Tests all equation types across all five copy formats. Click each copy button or use the dropdown to switch format.</p>
+
+    <!-- Format selector + clipboard viewer -->
+    <div class="bg-slate-800 rounded-2xl p-6 mb-8 border border-slate-700">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-bold text-white">Active Format: <span id="active-format" class="text-cyan-400">—</span></h2>
+        <button onclick="readClipboard()" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-4 py-2 rounded-xl text-sm transition">
+          📋 Read Clipboard
+        </button>
+      </div>
+      <div id="clipboard-output">Click "Read Clipboard" after copying to see what was placed on the clipboard.</div>
+    </div>
+
+    <!-- Test cards -->
+    <div id="tests" class="space-y-4"></div>
+
+    <!-- Results summary -->
+    <div class="bg-slate-800 rounded-2xl p-6 mt-8 border border-slate-700">
+      <h2 class="text-lg font-bold text-white mb-4">Results Summary</h2>
+      <div id="summary" class="text-slate-300">Run tests to see summary.</div>
+    </div>
+  </div>
+
+  <!-- KaTeX -->
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+  <!-- copyMath.js from the app -->
+  <script src="/static/copyMath.js"></script>
+
+  <script>
+  // ─── Test definitions ──────────────────────────────────────────────────────
+  const TESTS = [
+    { id: "inline",       title: "Inline Equation",          latex: "Soluția este \\(x = \\frac{-b \\pm \\sqrt{b^2-4ac}}{2a}\\)" },
+    { id: "fraction",     title: "Fractions",                 latex: "$$\\frac{x^2 + 3x + 2}{x + 1} = x + 2$$" },
+    { id: "sqrt",         title: "Square Roots",              latex: "$$\\sqrt{a^2 + b^2} = c$$" },
+    { id: "power",        title: "Powers / Exponents",        latex: "$$2^{n+1} = 2 \\cdot 2^n$$" },
+    { id: "integral",     title: "Integrals",                 latex: "$$\\int_0^1 x^2 \\, dx = \\frac{1}{3}$$" },
+    { id: "double_int",   title: "Double Integrals",          latex: "$$\\iint_D (x^2 + y^2) \\, dA$$" },
+    { id: "derivative",   title: "Derivatives",               latex: "$$\\frac{d}{dx}\\left(x^3 + 2x\\right) = 3x^2 + 2$$" },
+    { id: "limit",        title: "Limits",                    latex: "$$\\lim_{x \\to 0} \\frac{\\sin x}{x} = 1$$" },
+    { id: "sum",          title: "Summations",                latex: "$$\\sum_{k=1}^{n} k = \\frac{n(n+1)}{2}$$" },
+    { id: "matrix",       title: "Matrices",                  latex: "$$A = \\begin{pmatrix} 1 & 2 & 3 \\\\ 4 & 5 & 6 \\\\ 7 & 8 & 9 \\end{pmatrix}$$" },
+    { id: "determinant",  title: "Determinants",              latex: "$$\\det(A) = \\begin{vmatrix} a & b \\\\ c & d \\end{vmatrix} = ad - bc$$" },
+    { id: "piecewise",    title: "Piecewise / Cases",         latex: "$$f(x) = \\begin{cases} x^2 & \\text{if } x \\geq 0 \\\\ -x & \\text{if } x < 0 \\end{cases}$$" },
+    { id: "function",     title: "Functions (composed)",      latex: "$$(f \\circ g)(x) = f(g(x)) = \\sin(x^2 + 1)$$" },
+    { id: "nested",       title: "Nested Expressions",        latex: "$$\\frac{\\displaystyle\\sum_{i=1}^{n} x_i^2}{\\sqrt{\\left(\\int_0^1 f(t)\\,dt\\right)^2 + 1}}$$" },
+    { id: "system",       title: "System of Equations",       latex: "$$\\begin{cases} 2x + 3y = 7 \\\\ x - y = 1 \\end{cases}$$" },
+    { id: "product",      title: "Products",                  latex: "$$\\prod_{i=1}^{n} \\frac{1}{1+x_i}$$" },
+  ];
+
+  // ─── Build test cards ──────────────────────────────────────────────────────
+  const container = document.getElementById("tests");
+  TESTS.forEach(t => {
+    const card = document.createElement("div");
+    card.className = "test-card group";
+    card.id = "test-" + t.id;
+    card.innerHTML = `
+      <button type="button" class="copy-math-btn absolute top-3 right-3 text-slate-500 hover:text-slate-900 bg-slate-200 hover:bg-slate-300 p-1.5 rounded-lg transition flex items-center gap-1"
+              onclick="copyMathToClipboard(this, this.parentElement.querySelector('.msg-content-container'))" title="Copiaza">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+      </button>
+      <h3>${t.id.toUpperCase()} — ${t.title}</h3>
+      <div class="msg-content-container">
+        <div class="math-content">${t.latex}</div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+
+  // ─── Render KaTeX ──────────────────────────────────────────────────────────
+  document.querySelectorAll(".math-content").forEach(el => {
+    renderMathInElement(el, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "\\(", right: "\\)", display: false },
+      ],
+      throwOnError: false,
+    });
+  });
+
+  // ─── Enhance with dropdowns ────────────────────────────────────────────────
+  setTimeout(() => {
+    if (window.enhanceCopyButtons) window.enhanceCopyButtons();
+    updateFormatDisplay();
+  }, 200);
+
+  // ─── Clipboard reader ──────────────────────────────────────────────────────
+  async function readClipboard() {
+    const out = document.getElementById("clipboard-output");
+    try {
+      // Try reading all clipboard items
+      const items = await navigator.clipboard.read();
+      let result = "";
+      for (const item of items) {
+        for (const type of item.types) {
+          if (type.startsWith("image/")) {
+            const blob = await item.getType(type);
+            const url = URL.createObjectURL(blob);
+            result += `[${type}] → Image blob (${blob.size} bytes)\n`;
+            result += `  Preview: <img src="${url}" style="max-width:400px;border:1px solid #334155;border-radius:8px;margin:8px 0;">\n`;
+          } else {
+            const blob = await item.getType(type);
+            const text = await blob.text();
+            result += `━━━ ${type} ━━━\n${text}\n\n`;
+          }
+        }
+      }
+      out.innerHTML = result || "(clipboard empty)";
+    } catch (e) {
+      // Fallback to text-only
+      try {
+        const text = await navigator.clipboard.readText();
+        out.textContent = `━━━ text/plain ━━━\n${text}`;
+      } catch (e2) {
+        out.textContent = `Error: ${e.message}\n\nTip: clipboard read requires user gesture. Try clicking the button again.`;
+      }
+    }
+  }
+
+  function updateFormatDisplay() {
+    const fmt = localStorage.getItem("copiaza_format") || "word_modern";
+    document.getElementById("active-format").textContent = fmt;
+  }
+
+  // Monitor format changes
+  setInterval(updateFormatDisplay, 500);
+  </script>
+</body>
+</html>
