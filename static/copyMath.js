@@ -86,13 +86,13 @@
     const clone = containerElement.cloneNode(true);
     clone.querySelectorAll(".copy-math-btn, .copy-format-wrap").forEach(el => el.remove());
 
-    // Replace each KaTeX root element with its LaTeX source
+    // Replace each KaTeX root element with its LaTeX source.
+    // Wrap both inline and display equations in $$ delimiters for Auto-LaTeX Equations add-on.
     clone.querySelectorAll(".katex").forEach(katexEl => {
       const ann = katexEl.querySelector('annotation[encoding="application/x-tex"]');
       if (ann) {
         const latex = ann.textContent.trim();
-        const isDisplay = katexEl.closest(".katex-display") !== null || katexEl.classList.contains("katex-display");
-        const wrapped = isDisplay ? `\\[${latex}\\]` : `$$${latex}$$`;
+        const wrapped = `$$${latex}$$`;
         const node = document.createTextNode(wrapped);
         katexEl.parentNode.replaceChild(node, katexEl);
       }
@@ -103,8 +103,7 @@
       const ann = m.querySelector('annotation[encoding="application/x-tex"]');
       if (ann) {
         const latex = ann.textContent.trim();
-        const isDisplay = m.getAttribute("display") === "block";
-        const wrapped = isDisplay ? `\\[${latex}\\]` : `$$${latex}$$`;
+        const wrapped = `$$${latex}$$`;
         m.parentNode.replaceChild(document.createTextNode(wrapped), m);
       } else {
         m.remove();
@@ -115,6 +114,25 @@
       .replace(/\u00a0/g, " ")
       .replace(/[ \t]+\n/g, "\n")
       .trim();
+  }
+
+  let cachedKatexCSS = "";
+
+  async function getKatexCSS() {
+    if (cachedKatexCSS) return cachedKatexCSS;
+    const katexLink = document.querySelector('link[href*="katex"]');
+    const cssHref = katexLink ? katexLink.href : "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css";
+    try {
+      const response = await fetch(cssHref);
+      if (response.ok) {
+        let css = await response.text();
+        css = css.replace(new RegExp("@font-face\\s*\\x7b[^\\x7d]*\\x7d", "g"), "");
+        cachedKatexCSS = css;
+      }
+    } catch (e) {
+      console.error("copyMath: failed to fetch KaTeX CSS for inlining", e);
+    }
+    return cachedKatexCSS;
   }
 
   /**
@@ -128,15 +146,14 @@
     const clone = containerElement.cloneNode(true);
     clone.querySelectorAll(".copy-math-btn, .copy-format-wrap").forEach(el => el.remove());
 
-    // Build a standalone HTML fragment with the KaTeX CSS inlined
-    const katexCSS = document.querySelector('link[href*="katex"]');
-    const cssHref = katexCSS ? katexCSS.href : "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css";
+    // Fetch CSS to inline it (ensures canvas is not tainted by external stylesheet links)
+    const cssText = await getKatexCSS();
 
     const htmlStr = `
       <html><head>
         <meta charset="utf-8">
-        <link rel="stylesheet" href="${cssHref}">
         <style>
+          ${cssText}
           body { margin: 16px; background: white; font-size: 18px;
                  font-family: "KaTeX_Main", "Times New Roman", serif; }
           .katex-display { margin: 0.5em 0; }
@@ -275,6 +292,10 @@
         await navigator.clipboard.write([
           new ClipboardItem({ "image/png": blob })
         ]);
+      } else if (format === "google_docs") {
+        // Google Docs LaTeX is pure plain text, use writeText for max browser compatibility
+        const text = extractLaTeXText(containerElement);
+        await navigator.clipboard.writeText(text);
       } else {
         const item = buildClipboardItem(format, containerElement);
         await navigator.clipboard.write([item]);
