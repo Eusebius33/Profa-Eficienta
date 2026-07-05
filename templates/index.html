@@ -13,17 +13,17 @@ Panou Control |
 {% block main %}
 
 <!-- BACKGROUND -->
-<div class="min-h-0 h-[calc(100dvh-80px)] bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 p-6 overflow-hidden">
-    <div class="w-full max-w-[1850px] mx-auto h-full bg-white border border-slate-200 rounded-[2rem] shadow-2xl p-3 flex gap-3 overflow-hidden">
+<div class="min-h-0 h-[calc(100dvh-80px)] bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 p-3 lg:p-6 overflow-y-auto lg:overflow-hidden">
+    <div class="w-full max-w-[1850px] mx-auto bg-white border border-slate-200 rounded-[2rem] shadow-2xl p-3 flex flex-col lg:flex-row gap-3 lg:h-full lg:overflow-hidden">
 
         <!-- SIDEBAR STANGA (CARD) -->
-        <div class="w-72 bg-slate-950 border border-slate-800 rounded-3xl p-4 flex flex-col shadow-xl">
+        <div class="w-full lg:w-72 bg-slate-950 border border-slate-800 rounded-3xl p-4 flex flex-col shadow-xl">
 
             <h2 class="text-white text-lg font-bold mb-4">
                 <span data-i18n="idx_conversations">Conversații</span>
             </h2>
 
-            <div class="space-y-2 overflow-y-auto">
+            <div class="space-y-2 overflow-y-auto max-h-40 lg:max-h-none">
                 {% for conv in conversations %}
                     <a href="/mode1/{{ conv['id'] }}"
                     class="block bg-slate-50 hover:bg-slate-400 text-slate-950 px-3 py-2 rounded-xl">
@@ -65,7 +65,7 @@ Panou Control |
 
 
         <!-- CENTRU (CARD PRINCIPAL) -->
-        <div class="flex-1 bg-slate-950 border border-slate-800 rounded-3xl p-6 flex flex-col shadow-xl h-full min-h-0 overflow-hidden">
+        <div class="flex-1 bg-slate-950 border border-slate-800 rounded-3xl p-4 lg:p-6 flex flex-col shadow-xl min-h-[500px] lg:h-full lg:min-h-0 lg:overflow-hidden">
 
             <!-- HEADER -->
             <div class="mb-6">
@@ -75,7 +75,7 @@ Panou Control |
                 </p>
             </div>
 
-            <div class="flex-1 bg-white rounded-3xl border border-slate-700 p-6 flex flex-col shadow-inner min-h-0 overflow-hidden">
+            <div class="flex-1 bg-white rounded-3xl border border-slate-700 p-4 lg:p-6 flex flex-col shadow-inner min-h-0 overflow-hidden">
                 <!-- CHAT AREA -->
                 <div id="chat" class="flex-1 overflow-y-auto space-y-4 pr-2 min-h-0 mb-2">
 
@@ -121,10 +121,10 @@ Panou Control |
         </div>
 
         <!-- DREAPTA -->
-        <div class="w-80 flex flex-col gap-3">
+        <div class="w-full lg:w-80 flex flex-col gap-3">
 
             <!-- FIȘIERE -->
-            <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 shadow-xl h-[calc(100vh-430px)] overflow-y-auto">
+            <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 shadow-xl h-56 lg:h-[calc(100vh-430px)] overflow-y-auto">
                 <h2 class="text-white font-bold mb-3" data-i18n="idx_gen_files">Fișiere generate</h2>
 
                 <ul class="space-y-2 text-slate-300 text-sm">
@@ -136,7 +136,7 @@ Panou Control |
 
 
             <!-- EXERCIȚII SALVATE -->
-            <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 shadow-xl h-[calc(100vh-670px)] overflow-y-auto">
+            <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 shadow-xl h-36 lg:h-[calc(100vh-670px)] overflow-y-auto">
                 <h2 class="text-white font-bold mb-3" data-i18n="idx_saved_ex">Exerciții salvate</h2>
 
                 <div class="text-slate-300 text-sm space-y-2">

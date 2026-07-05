@@ -19,6 +19,8 @@ app = Flask(__name__)
 os.makedirs("uploads", exist_ok=True)
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
+app.config['TEMPLATES_AUTO_RELOAD'] = True
+
 
 Session(app)
 
@@ -38,7 +40,7 @@ def inject_translations():
 
 @app.route("/api/translations")
 def api_translations():
-    return jsonify(translations)
+    return jsonify(load_translations())
 
 @app.after_request
 def after_request(response):

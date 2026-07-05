@@ -17,11 +17,11 @@
         <!-- header -->
         <div class="text-center mb-10">
 
-            <h1 class="text-4xl font-bold text-slate-900 mb-2">
+            <h1 class="text-4xl font-bold text-slate-900 mb-2" data-i18n="acc_title">
                 Contul tău
             </h1>
 
-            <p class="text-slate-700">
+            <p class="text-slate-700" data-i18n="acc_subtitle">
                 Gestionează datele contului și setările tale
             </p>
 
@@ -31,17 +31,17 @@
         <div class="space-y-5 mb-10">
 
             <div class="bg-white border border-slate-700 rounded-2xl p-4">
-                <p class="text-slate-900 text-sm">Username</p>
+                <p class="text-slate-900 text-sm" data-i18n="acc_username">Username</p>
                 <p class="text-slate-900 text-lg font-semibold">{{ username }}</p>
             </div>
 
             <div class="bg-white border border-slate-700 rounded-2xl p-4">
-                <p class="text-slate-900 text-sm">Email</p>
+                <p class="text-slate-900 text-sm" data-i18n="acc_email">Email</p>
                 <p class="text-slate-900 text-lg font-semibold">{{ email }}</p>
             </div>
 
             <div class="bg-white border border-slate-700 rounded-2xl p-4">
-                <p class="text-slate-900 text-sm">Parolă</p>
+                <p class="text-slate-900 text-sm" data-i18n="acc_password">Parolă</p>
                 <p class="text-slate-900 text-lg font-semibold">••••••••</p>
             </div>
 
@@ -56,7 +56,7 @@
                     type="button"
                     class="w-full rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-4 transition"
                 >
-                    Schimbă parola
+                    <span data-i18n="acc_change_pw">Schimbă parola</span>
                 </button>
             </a>
 
@@ -65,7 +65,7 @@
                 <button
                     class="w-full rounded-2xl bg-slate-900 hover:bg-red-400 text-white font-bold py-4 transition"
                 >
-                    Ieși din cont
+                    <span data-i18n="acc_logout">Ieși din cont</span>
                 </button>
             </a>
 
@@ -75,7 +75,7 @@
 <!-- STYLE SETTINGS -->
 <div class="mt-10 border-t border-slate-700 pt-8">
 
-    <h2 class="text-xl font-bold text-slate-900 mb-4">
+    <h2 class="text-xl font-bold text-slate-900 mb-4" data-i18n="acc_style_pref">
         Stil & Preferințe
     </h2>
 
@@ -91,6 +91,7 @@
                     name="style_name"
                     required
                     placeholder="Nume stil"
+                    data-i18n-placeholder="acc_style_name"
                     class="w-full rounded-2xl bg-white border border-slate-700 px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                 >
 
@@ -99,10 +100,10 @@
                     required
                     class="w-full rounded-2xl bg-white border border-slate-700 px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                 >
-                    <option disabled selected value="">Tip teste</option>
-                    <option value="theory">Teoretice</option>
-                    <option value="practice">Practice</option>
-                    <option value="bac_full">Model BAC</option>
+                    <option disabled selected value="" data-i18n="acc_test_type">Tip teste</option>
+                    <option value="theory" data-i18n="acc_theory">Teoretice</option>
+                    <option value="practice" data-i18n="acc_practice">Practice</option>
+                    <option value="bac_full" data-i18n="acc_bac_model">Model BAC</option>
                 </select>
 
             </div>
@@ -115,6 +116,7 @@
                     required
                     rows="4"
                     placeholder="Descrie modul în care vrei să fie generate testele..."
+                    data-i18n-placeholder="acc_style_desc"
                     class="w-full rounded-2xl bg-white border border-slate-700 px-4 py-3 text-slate-900 resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500"
                 ></textarea>
 
@@ -122,7 +124,7 @@
                     type="submit"
                     class="w-full rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-4 transition"
                 >
-                    Salvează setările
+                    <span data-i18n="acc_save">Salvează setările</span>
                 </button>
 
             </div>

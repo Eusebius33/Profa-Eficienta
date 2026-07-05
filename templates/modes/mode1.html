@@ -14,19 +14,19 @@
 {% block main %}
 
 <!-- BACKGROUND -->
-<div class="h-[calc(100vh-80px)] bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 p-6 overflow-hidden">
+<div class="h-[calc(100vh-80px)] bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 p-3 lg:p-6 overflow-y-auto lg:overflow-hidden">
 
     <!-- WRAPPER -->
-    <div class="w-full max-w-[1850px] mx-auto h-full bg-white border border-slate-200 rounded-[2rem] shadow-2xl p-3 flex gap-3 overflow-hidden">
+    <div class="w-full max-w-[1850px] mx-auto bg-white border border-slate-200 rounded-[2rem] shadow-2xl p-3 flex flex-col lg:flex-row gap-3 lg:h-full lg:overflow-hidden">
 
         <!-- STANGA - CONVERSATII -->
-        <div class="w-72 bg-slate-950 border border-slate-800 rounded-3xl p-4 flex flex-col shadow-xl">
+        <div class="w-full lg:w-72 bg-slate-950 border border-slate-800 rounded-3xl p-4 flex flex-col shadow-xl">
 
             <h2 class="text-white text-lg font-bold mb-4" data-i18n="conversations_title">
                 Conversații
             </h2>
 
-        <div class="space-y-2 overflow-y-auto">
+        <div class="space-y-2 overflow-y-auto max-h-40 lg:max-h-none">
 
             {% for conv in conversations %}
 
@@ -65,7 +65,7 @@
         </div>
 
         <!-- CENTRU -->
-<div class="flex-1 bg-slate-950 border border-slate-800 rounded-3xl p-6 flex flex-col shadow-xl h-full min-h-0 overflow-hidden">
+<div class="flex-1 bg-slate-950 border border-slate-800 rounded-3xl p-4 lg:p-6 flex flex-col shadow-xl min-h-[500px] lg:h-full lg:min-h-0 lg:overflow-hidden">
 
     <!-- HEADER -->
     <div class="mb-6">
@@ -75,7 +75,7 @@
     </div>
 
     <!-- CONTENT -->
-    <div class="flex-1 bg-white rounded-3xl border border-slate-700 p-6 flex flex-col shadow-inner min-h-0 overflow-hidden">
+    <div class="flex-1 bg-white rounded-3xl border border-slate-700 p-4 lg:p-6 flex flex-col shadow-inner min-h-0 overflow-hidden">
 
         <!-- CHAT -->
         <div id="chat" class="flex-1 overflow-y-auto space-y-4 pr-2 min-h-0 mb-2">
@@ -123,7 +123,7 @@
         </div>-->
 
         <!-- ACTION BUTTONS -->
-        <div class="flex flex-wrap justify-end gap-2 mt-auto mb-3 flex-shrink-0">
+        <div class="flex flex-wrap justify-end gap-2 mt-auto mb-3 flex-shrink-0 text-xs sm:text-sm">
 
             <button class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm" data-i18n="m1_sol_prev">Soluție exercițiu anterior</button>
 
@@ -134,7 +134,7 @@
         </div>
 
         <!-- INPUT -->
-        <form action="/mode1/{{ conversation_id }}"  method="post" class="flex gap-3">
+        <form action="/mode1/{{ conversation_id }}"  method="post" class="flex gap-2 sm:gap-3">
 
             <textarea
                 name="prompt"
@@ -145,7 +145,7 @@
 
             <button
                 type="submit" onclick="this.disabled=true; this.form.submit();"
-                class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold px-8 rounded-2xl"
+                class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold px-4 sm:px-8 rounded-2xl text-sm sm:text-base"
              data-i18n="m1_send">Trimite</button>
 
         </form>
@@ -155,10 +155,10 @@
 </div>
 
         <!-- DREAPTA - SIMBOLURI -->
-        <div class="w-80 flex flex-col gap-3">
+        <div class="w-full lg:w-80 flex flex-col gap-3">
 
             <!-- SIMBOLURI -->
-            <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 shadow-xl h-[calc(100vh-430px)] overflow-y-auto">
+            <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 shadow-xl h-56 lg:h-[calc(100vh-430px)] overflow-y-auto">
 
 <div class="flex items-center justify-between mb-4">
 
@@ -247,7 +247,7 @@
             </div>
 
             <!-- EXERCITII SALVATE -->
-            <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 shadow-xl h-[calc(100vh-670px)] overflow-y-auto">
+            <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 shadow-xl h-36 lg:h-[calc(100vh-670px)] overflow-y-auto">
 
                 <h2 class="text-white font-bold mb-3" data-i18n="m1_saved_ex">Exerciții salvate</h2>
 
