@@ -173,8 +173,19 @@ def login_required(f):
 # =========================================================
 
 def apology(message, code=400):
-    #TODO frontend with variable message
     return render_template("apology.html", top=code, bottom=message), code
+
+@app.errorhandler(404)
+def not_found(e):
+    return apology("page not found", 404)
+
+@app.errorhandler(403)
+def forbidden(e):
+    return apology("access forbidden", 403)
+
+@app.errorhandler(500)
+def server_error(e):
+    return apology("an unexpected error occurred", 500)
 
 # =========================================================
 # LANDING
