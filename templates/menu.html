@@ -1,9 +1,9 @@
 {% extends "layout1.html" %}
 
 {% block title %}
-    Selectează Mod |
+    SelecteazÄƒ Mod |
         {% if user and user["gender"] == "F" %}
-        Profa Eficientă
+        Profa EficientÄƒ
     {% else %}
         Proful Eficient
     {% endif %}
@@ -17,12 +17,12 @@
     <div class="max-w-7xl mx-auto text-center mb-12">
 
         <h1 class="text-5xl font-bold text-white mb-4">
-            Generare Teste & Fișe de Lucru
+            Generare Teste & FiÈ™e de Lucru
         </h1>
 
         <p class="text-slate-400 text-lg max-w-3xl mx-auto">
-            Alege modul potrivit pentru generarea materialelor educaționale,
-            conversații asistate și variante personalizate de BAC.
+            Alege modul potrivit pentru generarea materialelor educaÈ›ionale,
+            conversaÈ›ii asistate È™i variante personalizate de BAC.
         </p>
 
     </div>
@@ -34,15 +34,15 @@
 <div class="flex flex-col gap-5">
 
     <!-- MODE 2 -->
-    <div class="bg-white border border-slate-200 rounded-3xl p-7 shadow-xl min-h-[670px] flex flex-col">
+    <div class="mode-card mode-card--recommended bg-white border border-slate-200 rounded-3xl p-7 shadow-xl min-h-[670px] flex flex-col">
 
         <div class="mb-6">
             <h2 class="text-2xl font-bold text-slate-900 mb-3">
-                Limbaj Natural → Matematic
+                Limbaj Natural â†’ Matematic
             </h2>
 
             <p class="text-slate-600 leading-relaxed">
-                Scrii exercițiul în limbaj normal și primești automat forma matematică corectă.
+                Scrii exerciÈ›iul Ã®n limbaj normal È™i primeÈ™ti automat forma matematicÄƒ corectÄƒ.
             </p>
         </div>
 
@@ -51,7 +51,7 @@
             <label class="text-sm font-medium text-slate-700">Stil generare</label>
             <select name="style" required
                 class="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900">
-                <option disabled selected value="">Selectează stilul</option>
+                <option disabled selected value="">SelecteazÄƒ stilul</option>
                 <option>Stil implicit</option>
                 {% for style in styles %}
                     <option value="{{ style['id'] }}">
@@ -64,7 +64,7 @@
             <select name="school_class" required
                 class="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900">
 
-                <option disabled selected value="">Selectează clasa</option>
+                <option disabled selected value="">SelecteazÄƒ clasa</option>
                 <option value="9">Clasa a IX-a</option>
                 <option value="10">Clasa a X-a</option>
                 <option value="11">Clasa a XI-a</option>
@@ -83,7 +83,7 @@
 
             <button type="submit"
                 class="mt-2 rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-4 transition">
-                Începe Generarea
+                ÃŽncepe Generarea
             </button>
 
         </form>
@@ -104,18 +104,18 @@
         <div class="flex flex-col gap-5">
 
             <!-- MODE 3 -->
-            <div class="bg-white border border-slate-200 rounded-3xl p-7 shadow-xl min-h-[800px] flex flex-col">
+            <div class="mode-card mode-card--new bg-white border border-slate-200 rounded-3xl p-7 shadow-xl min-h-[800px] flex flex-col">
 
                 <div class="mb-6">
 
                     <h2 class="text-2xl font-bold text-slate-900 mb-3">
-                        Creează după Model
+                        CreeazÄƒ dupÄƒ Model
                     </h2>
 
                     <p class="text-slate-600 leading-relaxed">
-                        Încarci un model de test existent în format Word sau PDF.
-                        AI-ul extrage exercițiile, le afișează pentru verificare,
-                        apoi generează un test nou similar.
+                        ÃŽncarci un model de test existent Ã®n format Word sau PDF.
+                        AI-ul extrage exerciÈ›iile, le afiÈ™eazÄƒ pentru verificare,
+                        apoi genereazÄƒ un test nou similar.
                     </p>
 
                 </div>
@@ -123,36 +123,36 @@
                 <form action="/create_mode3" method="post" enctype="multipart/form-data"
                     class="flex flex-col gap-4 mt-auto">
 
-                    <label class="text-sm font-medium text-slate-700">Fișier model</label>
+                    <label class="text-sm font-medium text-slate-700">FiÈ™ier model</label>
 
                     <label id="drop3" 
                         class="border-2 border-dashed border-slate-200 hover:border-cyan-400 transition rounded-3xl p-6 text-center cursor-pointer bg-slate-50">
 
-                        <p class="text-slate-900 font-medium">Încarcă modelul</p>
+                        <p class="text-slate-900 font-medium">ÃŽncarcÄƒ modelul</p>
                         <p class="text-slate-500 text-sm">Drag & Drop sau click (.pdf, .docx, .txt)</p>
 
                         <input type="file" required name="file" class="hidden"
                             accept=".pdf,.docx,.txt,.png,.jpg,.jpeg">
 
                     </label>
-                    <label class="text-sm font-medium text-slate-700" data-i18n="instructions">Instrucțiuni</label>
+                    <label class="text-sm font-medium text-slate-700" data-i18n="instructions">InstrucÈ›iuni</label>
                     <textarea rows="3" name="prompt" required
-                        data-i18n-placeholder="inst_ph" placeholder="Ex: generează un test cu dificultate medie..."
+                        data-i18n-placeholder="inst_ph" placeholder="Ex: genereazÄƒ un test cu dificultate medie..."
                         class="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900 resize-none"></textarea>
 
-                    <label class="text-sm font-medium text-slate-700" data-i18n="diff_model">Diferențe față de model</label>
+                    <label class="text-sm font-medium text-slate-700" data-i18n="diff_model">DiferenÈ›e faÈ›Äƒ de model</label>
                     <textarea rows="3" name="differences" required
-                        data-i18n-placeholder="diff_ph" placeholder="Ex: mai multe exerciții de algebră..."
+                        data-i18n-placeholder="diff_ph" placeholder="Ex: mai multe exerciÈ›ii de algebrÄƒ..."
                         class="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900 resize-none"></textarea>
 
 
                     <p class="text-slate-500 text-xs">
-                        După încărcare, vei vedea exercițiile extrase și vei putea cere modificări sau genera un test nou.
+                        DupÄƒ Ã®ncÄƒrcare, vei vedea exerciÈ›iile extrase È™i vei putea cere modificÄƒri sau genera un test nou.
                     </p>
 
                     <button type="submit"
                         class="rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-4 transition">
-                        Analizează fișierul
+                        AnalizeazÄƒ fiÈ™ierul
                     </button>
 
                 </form>
@@ -163,17 +163,17 @@
 
         <!-- COL 3 -->
         <div class="flex flex-col gap-5">
-            <div class="bg-white border border-slate-200 rounded-3xl p-7 shadow-xl min-h-[520px] flex flex-col">
+            <div class="mode-card mode-card--beta bg-white border border-slate-200 rounded-3xl p-7 shadow-xl min-h-[520px] flex flex-col">
 
                 <div class="mb-6">
 
                     <h2 class="text-2xl font-bold text-slate-900 mb-3">
-                        Transcriere test scris de mână
+                        Transcriere test scris de mÃ¢nÄƒ
                     </h2>
 
                     <p class="text-slate-600 leading-relaxed">
-                        Încarci o fișă scrisă de mână și o transformăm automat în format digital,
-                        cu structurare și generare de variantă nouă.
+                        ÃŽncarci o fiÈ™Äƒ scrisÄƒ de mÃ¢nÄƒ È™i o transformÄƒm automat Ã®n format digital,
+                        cu structurare È™i generare de variantÄƒ nouÄƒ.
                     </p>
 
                 </div>
@@ -182,13 +182,13 @@
 
                     <!-- UPLOAD -->
                     <label class="text-sm font-medium text-slate-700">
-                        Fișă exerciții (poză / PDF)
+                        FiÈ™Äƒ exerciÈ›ii (pozÄƒ / PDF)
                     </label>
 
                     <label id="drop4" class="border-2 border-dashed border-slate-200 hover:border-cyan-400 transition rounded-3xl p-6 text-center cursor-pointer bg-slate-50">
 
                         <p class="text-slate-900 font-medium">
-                            Încarcă fișa ta
+                            ÃŽncarcÄƒ fiÈ™a ta
                         </p>
 
                         <p class="text-slate-500 text-sm">
@@ -201,23 +201,23 @@
 
                     <!-- INSTRUCTIUNI -->
                     <label class="text-sm font-medium text-slate-700">
-                        Instrucțiuni generare
+                        InstrucÈ›iuni generare
                     </label>
 
                     <textarea name="prompt" required
                         rows="3"
-                        placeholder="Ex: transformă în test BAC cu dificultate medie..."
+                        placeholder="Ex: transformÄƒ Ã®n test BAC cu dificultate medie..."
                         class="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900 resize-none outline-none focus:ring-2 focus:ring-cyan-500"
                     ></textarea>
 
                     <!-- DIFERENTE -->
                     <label class="text-sm font-medium text-slate-700">
-                        Diferențe față de original
+                        DiferenÈ›e faÈ›Äƒ de original
                     </label>
 
                     <textarea name="differences" required
                         rows="3"
-                        placeholder="Ex: adaugă exerciții noi din algebră..."
+                        placeholder="Ex: adaugÄƒ exerciÈ›ii noi din algebrÄƒ..."
                         class="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900 resize-none outline-none focus:ring-2 focus:ring-cyan-500"
                     ></textarea>
 
@@ -229,7 +229,7 @@
                     <select
                         class="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900 outline-none focus:ring-2 focus:ring-cyan-500">
 
-                        <option disabled selected>Selectează clasa</option>
+                        <option disabled selected>SelecteazÄƒ clasa</option>
                         <option>Clasa a IX-a</option>
                         <option>Clasa a X-a</option>
                         <option>Clasa a XI-a</option>
@@ -252,7 +252,7 @@
 
                     <!-- BUTTON -->
                     <button type="submit" class="mt-2 rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-4 transition">
-                        Începe Generarea
+                        ÃŽncepe Generarea
                     </button>
 
                 </form>
@@ -269,7 +269,7 @@
     <div class="flex flex-col gap-3">
 
         <!-- MODE 5 -->
-        <div class="bg-white border border-slate-200 rounded-3xl p-7 shadow-xl min-h-[534px] flex flex-col">
+        <div class="mode-card mode-card--new bg-white border border-slate-200 rounded-3xl p-7 shadow-xl min-h-[534px] flex flex-col">
 
             <div class="mb-5">
                 <h2 class="text-2xl font-bold text-slate-900 mb-2">
@@ -277,29 +277,29 @@
                 </h2>
 
                 <p class="text-slate-600">
-                    Creează variante personalizate de BAC.
+                    CreeazÄƒ variante personalizate de BAC.
                 </p>
             </div>
 
             <form action="/create_mode5" method="post" class="flex flex-col gap-3 mt-auto">
 
-                <label class="text-sm font-medium text-slate-700">Lecții principale</label>
+                <label class="text-sm font-medium text-slate-700">LecÈ›ii principale</label>
                 <textarea rows="2" name="lessons" required
                     class="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900"></textarea>
 
-                <label class="text-sm font-medium text-slate-700">Lecții de omis</label>
+                <label class="text-sm font-medium text-slate-700">LecÈ›ii de omis</label>
                 <textarea rows="2" name="avoid" required
                     class="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900"></textarea>
 
                 <button class="rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-4">
-                    Generează BAC
+                    GenereazÄƒ BAC
                 </button>
 
             </form>
         </div>
 
         <!-- MODE 1 (ASISTENT AI) -->
-        <div class="bg-white border border-slate-200 rounded-3xl p-3 shadow-xl min-h-[250px] flex flex-col">
+        <div class="mode-card mode-card--quick bg-white border border-slate-200 rounded-3xl p-3 shadow-xl min-h-[250px] flex flex-col">
 
             <div class="mb-5">
                 <h2 class="text-2xl font-bold text-slate-900 mb-2">
@@ -307,7 +307,7 @@
                 </h2>
 
                 <p class="text-slate-600">
-                    Conversație educațională.
+                    ConversaÈ›ie educaÈ›ionalÄƒ.
                 </p>
             </div>
 
@@ -315,7 +315,7 @@
 
                 <button
                     class="mt-4 w-full rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-4">
-                    Începe
+                    ÃŽncepe
                 </button>
 
             </form>
@@ -339,7 +339,7 @@
         dt.items.add(file);
         input.files = dt.files;
         titleP.textContent = file.name;
-        subtitleP.textContent = 'Fișier selectat ✓';
+        subtitleP.textContent = 'FiÈ™ier selectat âœ“';
         label.classList.add('border-cyan-400', 'bg-cyan-50');
         label.classList.remove('border-slate-200', 'bg-slate-50');
     }
