@@ -107,6 +107,19 @@ Profa-Eficienta/
 
 ---
 
+## BAC Exam Generator (Mode 5)
+
+The BAC Exam Generator is a fully programmatic, production-ready system that constructs unique mock exams following the official Romanian national "M_tehnologic" format.
+
+### How it works:
+1. **Selection & Randomization**: For each of the 10 exam slots, the generator picks from multiple pre-defined templates (Algebra, Geometry, Matrices, Composition Laws, Differential and Integral Calculus) and randomizes their parameters (coefficients, constants, equations).
+2. **Custom Lesson Filtering**: The teacher can select specific lessons in the sidebar. The generator adapts the variants generated to target only the requested topics.
+3. **Verification Pipeline**: Each generated exercise is dynamically checked against division-by-zero, negative square root arguments, non-positive logarithm base/arguments, and singular matrices to ensure mathematical correctness.
+4. **Duplicate Prevention**: The system normalized the exercise texts (replacing variables and constants with `[NUM]` tokens), hashes the templates, and calculates the similarity index across current and past exams to guarantee that no duplicate exams are produced.
+5. **A4 PDF Compilation**: Using ReportLab, the platform produces print-ready A4 PDFs for both the Student exam sheet and the Teacher sheet (complete with step-by-step solutions / barem), using standard TrueType fonts for complete Romanian diacritics support.
+
+---
+
 ## Verification
 
 To confirm your API key and AI connection are configured correctly without starting the web server, run the built-in validation script:
@@ -115,16 +128,10 @@ To confirm your API key and AI connection are configured correctly without start
 python test_gemini.py
 ```
 
-**Sample Output:**
-```text
-Checking environment variables...
-GEMINI_API_KEY found: AQ.Ab...
-Importing secondary.ai...
-Testing translate_math function...
---- GEMINI RESPONSE ---
-$$ (x^3)' $$
------------------------
-Test PASSED! Gemini API key is working successfully.
+To run the automated tests for the BAC Exam Generator, execute:
+
+```powershell
+python -m unittest tests/test_bac_generator.py
 ```
 
 ---
@@ -143,5 +150,5 @@ Test PASSED! Gemini API key is working successfully.
 ## Current Limitations
 
 *   **Mode 4 (Handwriting OCR)**: The frontend image upload input is not yet functional. The backend references a static mockup file.
-*   **Mode 5 (BAC Generator)**: The lesson selection UI does not connect to the generation backend.
 *   **Error Rendering**: The `apology.html` template must remain in the `templates/` directory to prevent system crashes when validation warnings occur.
+

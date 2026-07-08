@@ -1410,5 +1410,17 @@
     "start_btn": {
         "ro": "Începe",
         "en": "Start"
+    },
+    "download_subject_pdf": {
+        "ro": "Descarcă Subiect (PDF)",
+        "en": "Download Subject (PDF)"
+    },
+    "download_solution_pdf": {
+        "ro": "Descarcă Barem (PDF)",
+        "en": "Download Solution (PDF)"
+    },
+    "toggle_solution_btn": {
+        "ro": "Afișează/Ascunde Barem",
+        "en": "Show/Hide Solution"
     }
 }
