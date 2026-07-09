@@ -424,5 +424,122 @@
         "template_param_hash": "8e7ebb4d3ca871859d471ff5c774f778414fba86fe61b870bbb61dec67c321bb"
       }
     ]
+  },
+  {
+    "timestamp": "2026-07-09T15:12:37.488618+00:00",
+    "seed": null,
+    "generator_version": "3.0.0",
+    "selected_lessons": [
+      "Radicali",
+      "Puteri",
+      "Progresii",
+      "Probabilități",
+      "Funcții",
+      "Logaritmi",
+      "Numere complexe",
+      "Trigonometrie",
+      "Matrici",
+      "Legi de compoziție",
+      "Limite",
+      "Derivate",
+      "Integrale definite",
+      "Polinoame"
+    ],
+    "validation_status": "verified",
+    "diversity_score": 0.9259,
+    "attempts_required": 1,
+    "duplicate_rejections_so_far": 0,
+    "exercise_fingerprints": [
+      {
+        "id": "s1_ex1_radical_simplify",
+        "template_id": "s1_radical_simplify",
+        "param_signature": "a=3;b=5;expr_val=45",
+        "topic": "Simplificarea expresiilor cu radicali",
+        "difficulty": "medium",
+        "exact_hash": "4daac20fef0847fe9bcb86abffa1a538df9e5fc9d0027d9ffdb3fa3c5599cf0d",
+        "template_param_hash": "ad79940026d9b6445af89fb9eb9420c8e6ce0959f2adef500c7b5af7a4e9e805"
+      },
+      {
+        "id": "s1_ex2_func_intersect",
+        "template_id": "s1_func_graph_intersection",
+        "param_signature": "a=0;b=3;c=3;d=3;x1=0;x2=3",
+        "topic": "Intersecția graficelor a două funcții",
+        "difficulty": "medium",
+        "exact_hash": "7a7fd6196822c43740dcffbe265699c9fa6b1f9e36973841544745838ab206c1",
+        "template_param_hash": "428e0ec8a3f19eb64c3a13e5bffc9a5698e82f3313ccb68cf639e776594c1ff9"
+      },
+      {
+        "id": "s1_ex3_poly_divisibility",
+        "template_id": "s1_polynomial_divisibility",
+        "param_signature": "c=-12;m=2;p1=-2;r=2",
+        "topic": "Divizibilitatea polinoamelor",
+        "difficulty": "medium",
+        "exact_hash": "dc3d9221b8fa014717fadd544abbc1afab825a52d559aa6e9063d4ded1472455",
+        "template_param_hash": "18435f7b62bc1e0bdffdf52ad0190696c1e093b772c93c837f1399d1708077fc"
+      },
+      {
+        "id": "s1_ex4_comb",
+        "template_id": "s1_combinatorics_CnA",
+        "param_signature": "amp=12;cnk=6;m=4;n=4;val=-6",
+        "topic": "Combinări și aranjamente",
+        "difficulty": "medium",
+        "exact_hash": "b182b876f8e84a6d2f200a4fa5ea0b5c15759149918a4f5575d49a173789c27f",
+        "template_param_hash": "5c0bd77190256fbecf3dde984f64f8ae226dbd8e1576e5c0f42008e1ca775223"
+      },
+      {
+        "id": "s1_ex5_distance",
+        "template_id": "s1_distance_point_to_line",
+        "param_signature": "a=12;b=12;c=-2;dist_num=10;x0=-1;y0=2",
+        "topic": "Distanța de la un punct la o dreaptă",
+        "difficulty": "medium",
+        "exact_hash": "2f41651aa524a2c164abc5e06d5d44a8d2f003e2c3bae1b7df2ef345e43403d5",
+        "template_param_hash": "e4c83fea05bab3e78c30a4ab8c8dc98e8f0c00f44767ddfc6304beeeb817e6cd"
+      },
+      {
+        "id": "s1_ex6_trig_calc",
+        "template_id": "s1_trig_special_values",
+        "param_signature": "expr=4\\cos^2 45^\\circ + 2\\sin 30^\\circ - \\cos 180^\\circ;result=4",
+        "topic": "Calcul cu valori trigonometrice remarcabile",
+        "difficulty": "easy",
+        "exact_hash": "d585e4ef2326202ed579baa27b694482feb4c4e7e832e94b900ffc2eae1f3d33",
+        "template_param_hash": "638796b73a09da9659f31e97d23e71bb79bb9a09d5d5d82f8525e07bafcc318d"
+      },
+      {
+        "id": "s2_ex1_mat_nilpotent",
+        "template_id": "s2_matrix_nilpotent_inverse",
+        "param_signature": "k=1;m=3;n=4",
+        "topic": "Matrici nilpotente – inversa prin formula Newton",
+        "difficulty": "hard",
+        "exact_hash": "8e9da12f6949281151e4740345f7241cf26c0701ccceaaf5250680ce410b904d",
+        "template_param_hash": "7f4bcc796a7a595767648326a84bee607ffa5c82ccfbd2a45835d12d26209af7"
+      },
+      {
+        "id": "s2_ex2_law_inverse",
+        "template_id": "s2_law_inverse_element",
+        "param_signature": "e=4;k=4;sym_kp1=3",
+        "topic": "Legi de compoziție – element simetric",
+        "difficulty": "hard",
+        "exact_hash": "4ebc0d39cfa6a2fccff10f76efc50f82cad26c8804dcdc3aaa467cf8064cc9d5",
+        "template_param_hash": "e54a3b947a545a6e78916a6300dceb658149076b005296c3acda4f53da8b60b8"
+      },
+      {
+        "id": "s3_ex1_limit_rational",
+        "template_id": "s3_limit_rational_infinity",
+        "param_signature": "a=1;b=1;c=5",
+        "topic": "Limita unei funcții raționale la infinit",
+        "difficulty": "hard",
+        "exact_hash": "6e608b60154ae39a1770c294e977e6d8bd02813188c461ca533c0be13a0962c2",
+        "template_param_hash": "9517a73f670b1aec0183161fe51b7e15eeacb99ee28db5efc3836e47ddf0d672"
+      },
+      {
+        "id": "s3_ex2_int_by_parts",
+        "template_id": "s3_integral_by_parts_exponential",
+        "param_signature": "n=1",
+        "topic": "Integrare prin părți – funcții exponențiale",
+        "difficulty": "hard",
+        "exact_hash": "945b51c7d0b4f8598f1c6f0af1c2b9b14bb3d0a05398bb5b1c266cfe64e0903d",
+        "template_param_hash": "7fad52ddf0e00dd0f68ebf6b04ba022008da03cc13119fcb8785aaece4c1a551"
+      }
+    ]
   }
 ]
