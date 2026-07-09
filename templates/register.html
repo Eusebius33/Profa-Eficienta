@@ -74,12 +74,11 @@
                         class="w-full rounded-xl bg-slate-800 border border-slate-700 px-4 py-3 pr-14 text-white placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition"
                     >
 
-                    <button
-                        type="button"
-                        id="togglePassword"
-                        class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition"
-                    >
-                        👁
+                    <button type="button" id="togglePassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition password-toggle" aria-label="Arata parola">
+                        <svg class="password-toggle-icon" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M2.25 12s3.5-6.25 9.75-6.25S21.75 12 21.75 12 18.25 18.25 12 18.25 2.25 12 2.25 12Z"></path>
+                            <circle cx="12" cy="12" r="2.75"></circle>
+                        </svg>
                     </button>
                 </div>
             </div>
@@ -140,3 +139,4 @@
     </div>
 </div>
 {% endblock %}
+{% block footer %}{% endblock %}
