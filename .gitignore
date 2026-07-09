@@ -16,6 +16,7 @@ instance/
 .env
 .flaskenv
 *.env
+flask_session/
 
 # Operating System Files
 .DS_Store
