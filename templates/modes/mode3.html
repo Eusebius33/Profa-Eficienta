@@ -94,18 +94,41 @@ Creează după Model |
 
                 <!-- QUICK ACTIONS -->
                 <div class="flex flex-wrap justify-end gap-2 mt-auto mb-3 flex-shrink-0">
-                    <button class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm">Rezolvare test</button>
-                    <button class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm">Generează similare</button>
-                    <button class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm">Generează rand 2</button>
+                    <button type="button"
+                            onclick="solveGeneratedTest(this)"
+                            class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm">
+                        Rezolvare test
+                    </button>
+                
+                    <button type="button"
+                            onclick="generateSimilarTest(this)"
+                            class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm">
+                        Generează similare
+                    </button>
+                
+                    <button type="button"
+                            onclick="generateSecondVersion(this)"
+                            class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm">
+                        Generează rand 2
+                    </button>
                 </div>
-
+               
                 <!-- INPUT -->
-                <form action="/mode3/{{ conversation_id }}" method="post" class="flex gap-3 flex-shrink-0">
-                    <textarea name="prompt" rows="1"
+                <form id="chatForm" action="/mode3/{{ conversation_id }}" method="post" class="flex gap-3 flex-shrink-0">
+                    <input type="hidden" id="actionType" name="action_type" value="normal">
+                    <input type="hidden" id="exerciseCount" name="exercise_count" value="5">
+                
+                    <textarea
+                        id="promptInput"
+                        name="prompt"
+                        rows="1"
                         placeholder="Modifică modelul: ex. scoate trigonometria, adaugă matrici..."
                         class="flex-1 text-white border border-slate-300 rounded-2xl p-4 resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500"
                     ></textarea>
-                    <button type="submit" onclick="this.disabled=true; this.form.submit();"
+                
+                    <button
+                        type="submit"
+                        onclick="document.getElementById('actionType').value='normal'; this.disabled=true; this.form.submit();"
                         class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold px-8 rounded-2xl">
                         Generează
                     </button>
