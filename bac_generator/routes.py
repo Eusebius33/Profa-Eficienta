@@ -78,6 +78,19 @@ def download_pdf(message_id):
         (message_id,)
     ).fetchone()
     
+    bac_profile = "M3"
+    if message:
+        try:
+            conv = cursor.execute(
+                "SELECT bac FROM conversations WHERE id = ?",
+                (message["conversation_id"],)
+            ).fetchone()
+            if conv and conv["bac"]:
+                bac_profile = conv["bac"]
+        except sqlite3.OperationalError:
+            # Fallback if conversations table doesn't exist (e.g. in routes unit tests)
+            pass
+            
     conn.close()
     
     if not message or not message["exam_data"]:
@@ -93,7 +106,7 @@ def download_pdf(message_id):
     include_solutions = (pdf_type == "solution")
     
     # Build the PDF
-    build_pdf(filepath, exam_data, include_solutions=include_solutions)
+    build_pdf(filepath, exam_data, include_solutions=include_solutions, bac=bac_profile)
     
     return send_file(
         filepath,

@@ -92,11 +92,15 @@ Transcriere exerciții scrise de mână |
                 <!-- INFO -->
                 <div class="grid grid-cols-3 gap-4 mb-6">
 
-                    <div class="bg-slate-100 text-slate-900 rounded-2xl hover:shadow-md transition-shadow p-4 border border-slate-200">
+                    <div onclick="document.getElementById('m4-file-input').click();" class="bg-slate-100 text-slate-900 rounded-2xl hover:shadow-md transition-shadow p-4 border border-slate-200 cursor-pointer">
 
                         <p class="text-xs uppercase tracking-wide text-slate-500 mb-1" data-i18n="m4_upload">Upload</p>
 
                         <p class="font-semibold text-slate-900" data-i18n="m4_photo_pdf">Poză sau PDF</p>
+
+                        <form id="m4-upload-form" action="/mode4/upload/{{ conversation_id }}" method="post" enctype="multipart/form-data" class="hidden">
+                            <input type="file" id="m4-file-input" name="file" accept="image/*,application/pdf" onchange="document.getElementById('m4-upload-form').submit();">
+                        </form>
 
                     </div>
 

@@ -186,5 +186,15 @@ def gen_s1_ex6_trig_identity(rng=random):
     return {"id": "s1_ex6_trig_identity", "text": text, "solution": solution,
             "points": 5, "params": {"expr": expr}, "lesson": "Trigonometrie"}
 
+@registry.register(slot=6)
+@template("s1_trig_equation", "Ecuații trigonometrice", "medium")
+def gen_s1_ex6_trig_eq(rng=random):
+    text = "Rezolvați în intervalul $[0, \\pi]$ ecuația $\\sin(2x) = \\frac{{1}}{{2}}$."
+    solution = (f"$\\sin(2x) = \\frac{{1}}{{2}} \\Rightarrow 2x \\in \\left\\{{\\frac{{\\pi}}{{6}}, \\frac{{5\\pi}}{{6}}\\right\\}}$ pe $[0, 2\\pi]$.\n"
+                f"Împărțind cu 2, obținem soluțiile în $[0, \\pi]$:\n"
+                f"$x \\in \\left\\{{\\frac{{\\pi}}{{12}}, \\frac{{5\\pi}}{{12}}\\right\\}}$.")
+    return {"id": "s1_ex6_trig_eq", "text": text, "solution": solution,
+            "points": 5, "params": {}, "lesson": "Trigonometrie"}
+
 def gen_s1_ex6(rng=random):
     return rng.choice(registry.get_generators(6))(rng)

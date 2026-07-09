@@ -35,6 +35,7 @@
     { id: "word_legacy",      label: "Word <2011",              icon: "📄", desc: "MathML for legacy Word" },
     { id: "word_web",         label: "Word Web",                icon: "🌐", desc: "Word Online / Office 365" },
     { id: "google_docs",      label: "Google Docs (LaTeX)",     icon: "📝", desc: "Paste + Auto-LaTeX add-on" },
+    { id: "google_docs_eq",   label: "Google Docs Equation",    icon: "📐", desc: "Plain LaTeX for Equation Editor" },
     { id: "google_docs_img",  label: "Google Docs (image)",     icon: "🖼️", desc: "High-res image fallback" },
   ];
 
@@ -105,6 +106,36 @@
         const latex = ann.textContent.trim();
         const wrapped = `$$${latex}$$`;
         m.parentNode.replaceChild(document.createTextNode(wrapped), m);
+      } else {
+        m.remove();
+      }
+    });
+
+    return clone.innerText
+      .replace(/\u00a0/g, " ")
+      .replace(/[ \t]+\n/g, "\n")
+      .trim();
+  }
+  function extractCleanLaTeXText(containerElement) {
+    const clone = containerElement.cloneNode(true);
+    clone.querySelectorAll(".copy-math-btn, .copy-format-wrap").forEach(el => el.remove());
+
+    // Replace each KaTeX root element with its LaTeX source (raw, no $$ delimiters).
+    clone.querySelectorAll(".katex").forEach(katexEl => {
+      const ann = katexEl.querySelector('annotation[encoding="application/x-tex"]');
+      if (ann) {
+        const latex = ann.textContent.trim();
+        const node = document.createTextNode(latex);
+        katexEl.parentNode.replaceChild(node, katexEl);
+      }
+    });
+
+    // Fallback: raw <math> elements
+    clone.querySelectorAll("math").forEach(m => {
+      const ann = m.querySelector('annotation[encoding="application/x-tex"]');
+      if (ann) {
+        const latex = ann.textContent.trim();
+        m.parentNode.replaceChild(document.createTextNode(latex), m);
       } else {
         m.remove();
       }
@@ -249,6 +280,13 @@
       });
     }
 
+    if (format === "google_docs_eq") {
+      const text = extractCleanLaTeXText(containerElement);
+      return new ClipboardItem({
+        "text/plain": new Blob([text], { type: "text/plain" }),
+      });
+    }
+
     // ── Word formats (MathML-based) ──────────────────────────────────────
     const { html, text } = extractMathML(containerElement);
 
@@ -295,6 +333,10 @@
       } else if (format === "google_docs") {
         // Google Docs LaTeX is pure plain text, use writeText for max browser compatibility
         const text = extractLaTeXText(containerElement);
+        await navigator.clipboard.writeText(text);
+      } else if (format === "google_docs_eq") {
+        // Plain LaTeX for Equation Editor
+        const text = extractCleanLaTeXText(containerElement);
         await navigator.clipboard.writeText(text);
       } else {
         const item = buildClipboardItem(format, containerElement);
