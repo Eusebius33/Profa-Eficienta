@@ -124,32 +124,47 @@
 
         <!-- ACTION BUTTONS -->
         <div class="flex flex-wrap justify-end gap-2 mt-auto mb-3 flex-shrink-0">
-
-            <button class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm" data-i18n="m1_sol_prev">Soluție exercițiu anterior</button>
-
-            <button class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm" data-i18n="m1_gen_similar">Generează exerciții similare</button>
-
-            <button class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold py-2 px-4 rounded-xl text-sm" data-i18n="m1_teach_class">Cum predau la clasă</button>
-
+            <button type="button"
+                    onclick="solvePreviousExercise(this)"
+                    class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm">
+                <span data-i18n="m1_sol_prev">Soluție exercițiu anterior</span>
+            </button>
+        
+            <button type="button"
+                    onclick="generateSimilarExercises(this)"
+                    class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm">
+                <span data-i18n="m1_gen_similar">Generează exerciții similare</span>
+            </button>
+        
+            <button type="button"
+                    onclick="teachInClass(this)"
+                    class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold py-2 px-4 rounded-xl text-sm">
+                <span data-i18n="m1_teach_class">Cum predau la clasă</span>
+            </button>
         </div>
 
         <!-- INPUT -->
-        <form action="/mode1/{{ conversation_id }}"  method="post" class="flex gap-3">
-
+        <form id="chatForm" action="/mode1/{{ conversation_id }}" method="post" class="flex gap-3">
+            <input type="hidden" id="actionType" name="action_type" value="normal">
+            <input type="hidden" id="exerciseCount" name="exercise_count" value="5">
+        
             <textarea
+                id="promptInput"
                 name="prompt"
                 rows="1"
-                data-i18n-placeholder="m1_write_ex" placeholder="Scrie exercițiul sau întrebarea..."
+                data-i18n-placeholder="m1_write_ex"
+                placeholder="Scrie exercițiul sau întrebarea..."
                 class="flex-1 text-slate-950 border border-slate-300 rounded-2xl p-4 resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500"
             ></textarea>
-
+        
             <button
-                type="submit" onclick="this.disabled=true; this.form.submit();"
+                type="submit"
+                onclick="document.getElementById('actionType').value='normal'; this.disabled=true; this.form.submit();"
                 class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold px-8 rounded-2xl"
-             data-i18n="m1_send">Trimite</button>
-
+                data-i18n="m1_send">
+                Trimite
+            </button>
         </form>
-
     </div>
 
 </div>
@@ -282,4 +297,85 @@
 
 </div>
 
+<script>
+function getLastUserMessage() {
+    const bubbles = document.querySelectorAll('#chat .bg-cyan-100');
+    if (!bubbles.length) return null;
+    return bubbles[bubbles.length - 1].textContent.trim();
+}
+
+function submitQuickAction(btn, actionType, promptText) {
+    const actionInput = document.getElementById('actionType');
+    const promptInput = document.getElementById('promptInput');
+    const chatForm = document.getElementById('chatForm');
+
+    if (!actionInput || !promptInput || !chatForm) {
+        alert("Formularul nu a fost găsit.");
+        return;
+    }
+
+    actionInput.value = actionType;
+    promptInput.value = promptText;
+    btn.disabled = true;
+    chatForm.submit();
+}
+
+function solvePreviousExercise(btn) {
+    const lastMessage = getLastUserMessage();
+
+    if (!lastMessage) {
+        alert("Nu există niciun exercițiu anterior în această conversație.");
+        return;
+    }
+
+    const promptText =
+        "Rezolvă pas cu pas următorul exercițiu și explică metoda clar pentru un elev:\n\n" +
+        lastMessage;
+
+    submitQuickAction(btn, "solve", promptText);
+}
+
+function generateSimilarExercises(btn) {
+    const lastMessage = getLastUserMessage();
+
+    if (!lastMessage) {
+        alert("Nu există niciun exercițiu anterior pe baza căruia să generez exerciții similare.");
+        return;
+    }
+
+    const promptText =
+        "Generează 5 exerciții similare cu următorul exercițiu. Include răspunsurile la final:\n\n" +
+        lastMessage;
+
+    submitQuickAction(btn, "generate_similar", promptText);
+}
+
+function teachInClass(btn) {
+    const lastMessage = getLastUserMessage();
+
+    if (!lastMessage) {
+        alert("Scrie mai întâi un exercițiu sau o întrebare.");
+        return;
+    }
+
+    const promptText =
+        "Explică cum aș putea preda la clasă următorul exercițiu sau subiect. Include pași, întrebări pentru elevi și greșeli comune:\n\n" +
+        lastMessage;
+
+    submitQuickAction(btn, "teach_class", promptText);
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    const chat = document.getElementById("chat");
+    if (chat) chat.scrollTop = chat.scrollHeight;
+
+    const ta = document.querySelector("textarea[name='prompt']");
+    if (ta) {
+        ta.addEventListener("input", function () {
+            this.style.height = "auto";
+            this.style.height = this.scrollHeight + "px";
+        });
+    }
+});
+</script>
 {% endblock %}
