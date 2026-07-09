@@ -2,6 +2,7 @@ import sqlite3
 from functools import wraps
 import json
 import os
+from types import SimpleNamespace
 from werkzeug.utils import secure_filename
 import uuid
 from flask import Flask, jsonify, redirect, render_template, request, session
@@ -33,13 +34,53 @@ def load_translations():
 
 translations = load_translations()
 
+
+def _normalize_lang(lang):
+    if lang in {"ro", "en"}:
+        return lang
+    return "ro"
+
+
+def _humanize_key(key):
+    if not key:
+        return ""
+    text = str(key).replace("_", " ")
+    text = text.replace("ai", "AI")
+    text = text.replace("bac", "BAC")
+    return text.strip().title()
+
+
+@app.before_request
+def apply_language():
+    lang = _normalize_lang(request.args.get("lang") or request.cookies.get("lang") or session.get("lang") or "ro")
+    session["lang"] = lang
+
+
 @app.context_processor
 def inject_translations():
     def t(key):
-        lang = request.cookies.get("lang", session.get("lang", "ro"))
-        return translations.get(key, {}).get(lang, translations.get(key, {}).get("ro", key))
+        lang = _normalize_lang(request.cookies.get("lang") or session.get("lang") or "ro")
+        session["lang"] = lang
+        entry = translations.get(key, {})
+        if isinstance(entry, dict):
+            if lang in entry:
+                return entry[lang]
+            if "ro" in entry:
+                return entry["ro"]
+        return _humanize_key(key)
 
-    return {"t": t}
+    def _(key):
+        lang = _normalize_lang(request.cookies.get("lang") or session.get("lang") or "ro")
+        session["lang"] = lang
+        entry = translations.get(key, {})
+        if isinstance(entry, dict):
+            if lang in entry:
+                return entry[lang]
+            if "ro" in entry:
+                return entry["ro"]
+        return _humanize_key(key) or key
+
+    return {"t": t, "_": _}
 
 @app.route("/api/translations")
 def api_translations():
@@ -202,14 +243,110 @@ def server_error(e):
 def landing():
     return render_template("landing.html")
     #TODO
+
+@app.route("/chat")
+@app.route("/chat/<int:conversation_id>")
+def chat(conversation_id=None):
+    if conversation_id is not None:
+        return redirect(f"/mode1/{conversation_id}")
+    return redirect("/dashboard")
+
+@app.route("/text_to_math")
+def text_to_math():
+    return redirect("/menu")
+
+@app.route("/upload_to_math")
+def upload_to_math():
+    return redirect("/menu")
+
+@app.route("/bac_generator")
+def bac_generator():
+    return redirect("/menu")
+
+@app.route("/conversations")
+def conversations():
+    return redirect("/dashboard")
+
+@app.route("/materials")
+def materials():
+    return redirect("/dashboard")
+
+@app.route("/handwriting_ocr")
+def handwriting_ocr():
+    return redirect("/menu")
+
+@app.route("/materials/<int:id>/edit")
+def edit_material(id):
+    return redirect("/dashboard")
+
+@app.route("/materials/<int:id>/download")
+def download_material(id):
+    return redirect("/dashboard")
+
 # =========================================================
 # INDEX
 # =========================================================
 
 @app.route("/")
-@login_required
 def index():
-    return render_template("index.html")
+    return render_template("landing.html")
+
+@app.route("/dashboard")
+@login_required
+def dashboard():
+    user = db.execute(
+        "SELECT * FROM users WHERE id = ?",
+        (session["user_id"],)
+    ).fetchone()
+
+    conversations = db.execute(
+        """
+        SELECT * FROM conversations
+        WHERE user_id = ?
+        ORDER BY created_at DESC
+        """,
+        (session["user_id"],)
+    ).fetchall()
+
+    latest_conversation = db.execute(
+        """
+        SELECT * FROM conversations
+        WHERE user_id = ?
+        ORDER BY created_at DESC
+        LIMIT 1
+        """,
+        (session["user_id"],)
+    ).fetchone()
+
+    messages = []
+    mod = "—"
+
+    if latest_conversation is not None:
+        messages = db.execute(
+            """
+            SELECT * FROM messages
+            WHERE conversation_id = ?
+            ORDER BY id ASC
+            """,
+            (latest_conversation["id"],)
+        ).fetchall()
+        mod = latest_conversation["mode"] if latest_conversation["mode"] else "—"
+
+    current_user = SimpleNamespace(name=user["username"] if user else "Teacher")
+
+    return render_template(
+        "index.html",
+        user=user,
+        current_user=current_user,
+        conversations=conversations,
+        messages=messages,
+        mod=mod,
+        recent_conversations=conversations,
+        recent_materials=[],
+        active_conversations_count=len(conversations),
+        generated_materials_count=0,
+        weekly_activity_count=0,
+    )
 
 # =========================================================
 # REGISTER
@@ -229,7 +366,7 @@ def login():
 @app.route("/logout")
 def logout():
     session.clear()
-    return redirect("/login")
+    return redirect("/landing")
 # =========================================================
 # ACCOUNT
 # =========================================================

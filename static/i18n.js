@@ -77,6 +77,7 @@ function switchLang(lang) {
         currentLang = lang;
         setCookie('lang', lang, 365); // Save for 1 year
         applyTranslations();
+        window.location.reload();
     }
 }
 

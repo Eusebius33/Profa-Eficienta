@@ -45,7 +45,7 @@
     <title>
         {% block title %}{% endblock %} |
 
-        {% if session["gender"] == "F" %}
+        {% if session.get("gender") == "F" %}
             {{ t("app_name_f") }}
         {% else %}
             {{ t("app_name_m") }}
@@ -77,16 +77,16 @@
 
 </head>
 
-<body style="margin: 0; min-height: 100%;" class="bg-slate-950 text-white min-h-screen flex flex-col">
+<body style="margin: 0; min-height: 100%; overflow-x: hidden;" class="bg-slate-950 text-white min-h-screen flex flex-col">
 
     <!-- Navbar -->
     <nav class="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
 
-        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between mobile-nav-bar">
-            {% if session["user_id"] %}
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            {% if session.get("user_id") %}
             <!-- Logo -->
             <a
-                href="/"
+                href="{{ url_for('dashboard') }}"
                 class="flex items-center gap-3 text-white no-underline"
             >
 
@@ -101,14 +101,14 @@
 
 <span class="text-2xl font-bold tracking-tight">
 
-    {% if session["gender"] == "F" %}
+    {% if session.get("gender") == "F" %}
         Profa
     {% else %}
         Proful
     {% endif %}
 
     <span class="text-cyan-400">
-        Eficient{% if session["gender"] == "F" %}&#259;{% endif %}
+        Eficient{% if session.get("gender") == "F" %}ă{% endif %}
     </span>
 
 </span>
@@ -143,7 +143,7 @@
                 <span></span><span></span><span></span>
             </button>
 
-            {% if session["user_id"] %}
+            {% if session.get("user_id") %}
 
                 <!-- Logged -->
                 <div id="mobile-nav-menu" class="mobile-nav-links flex items-center gap-6 text-sm font-medium">
@@ -228,7 +228,7 @@
 
         <!-- MOBILE DROPDOWN -->
         <div id="nav-menu" class="hidden lg:hidden border-t border-slate-800 bg-slate-950/95">
-            {% if session["user_id"] %}
+            {% if session.get("user_id") %}
             <div class="flex flex-col px-4 py-3 gap-1">
                 <form action="/create_mode1" method="post" class="m-0">
                     <button type="submit" class="w-full text-left text-slate-300 hover:text-cyan-400 hover:bg-slate-800 transition px-3 py-2.5 rounded-xl bg-transparent border-0" data-i18n="nav_conversation">{{ t("nav_conversation") }}</button>
@@ -267,7 +267,7 @@
     {% endif %}
 
     <!-- Main -->
-    <main class="flex-1">
+    <main class="flex-1 overflow-y-auto">
         {% block main %}{% endblock %}
     </main>
 
@@ -305,6 +305,7 @@
 {% endblock %}
 
 
+    {% block scripts %}{% endblock %}
     <script src="/static/i18n.js"></script>
 <script src="/static/copyMath.js"></script>
 </body>

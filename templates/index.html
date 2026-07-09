@@ -1,164 +1,440 @@
 {% extends "layout.html" %}
 
-{% block title %}
-Panou Control |     
-{% if user and user["gender"] == "F" %}
-        Profa Eficientă
-    {% else %}
-        Proful Eficient
-    {% endif %}
-{% endblock %}
-{% block footer %}
-{% endblock %}
+{% block title %}{{ t('dashboard_title') }} - Profa Eficientă{% endblock %}
+
 {% block main %}
-
-<!-- BACKGROUND -->
-<div class="min-h-0 h-[calc(100dvh-80px)] bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 p-3 lg:p-6 overflow-y-auto lg:overflow-hidden">
-    <div class="w-full max-w-[1850px] mx-auto bg-white border border-slate-200 rounded-[2rem] shadow-2xl p-3 flex flex-col lg:flex-row gap-3 lg:h-full lg:overflow-hidden">
-
-        <!-- SIDEBAR STANGA (CARD) -->
-        <div class="w-full lg:w-72 bg-slate-950 border border-slate-800 rounded-3xl p-4 flex flex-col shadow-xl">
-
-            <h2 class="text-white text-lg font-bold mb-4">
-                <span data-i18n="idx_conversations">Conversații</span>
-            </h2>
-
-            <div class="space-y-2 overflow-y-auto max-h-40 lg:max-h-none">
-                {% for conv in conversations %}
-                    <a href="/mode1/{{ conv['id'] }}"
-                    class="block bg-slate-50 hover:bg-slate-400 text-slate-950 px-3 py-2 rounded-xl">
-
-                        {% if conv["title"] == "Conversație nouă" %}
-                            <span data-i18n="new_chat">Conversație nouă</span>
-                        {% else %}
-                            {{ conv["title"] }}
-                        {% endif %}
-
+<div class="min-h-screen bg-[#020617] text-[#f8fafc] overflow-y-auto">
+    
+    <!-- Hero / Welcome Section -->
+    <section class="relative overflow-hidden border-b border-[#1e293b]">
+        <div class="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 opacity-60"></div>
+        <div class="absolute top-0 right-0 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+        <div class="absolute bottom-0 left-0 w-72 h-72 bg-cyan-400/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
+        
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500 to-cyan-600 flex items-center justify-center shadow-lg shadow-cyan-500/20 flex-shrink-0">
+                        <span class="text-xl font-bold text-white">
+                            {{ current_user.name[0]|upper if current_user.name else 'P' }}
+                        </span>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">
+                            {{ t('dashboard_welcome_back') }}, 
+                            <span class="text-cyan-400">{{ current_user.name.split()[0] if current_user.name else t('dashboard_teacher') }}</span>
+                        </h1>
+                        <p class="mt-1 text-[#94a3b8] text-sm sm:text-base max-w-xl">
+                            {{ t('dashboard_intro') }}
+                        </p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl bg-[#0f172a] border border-[#1e293b]">
+                        <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
+                        <span class="text-xs text-[#94a3b8]">{{ t('dashboard_ai_ready') }}</span>
+                    </div>
+                    <a href="{{ url_for('chat') }}" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-[#020617] font-semibold text-sm transition-all duration-200 shadow-lg shadow-cyan-500/20 hover:shadow-cyan-400/30">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                        {{ t('dashboard_new_chat') }}
                     </a>
-                {% endfor %}
+                </div>
             </div>
-
-<div class="mt-auto pt-4 border-t border-slate-800">
-
-    <a
-        href="/account"
-        class="flex items-center gap-3 p-2 rounded-2xl bg-slate-50 text-slate-900 hover:bg-slate-400 transition"
-    >
-
-        <div class="w-10 h-10 rounded-full bg-cyan-500 flex items-center justify-center text-slate-950 font-bold">
-            A
         </div>
+    </section>
 
-        <div class="flex flex-col">
-            <span class="text-sm font-semibold text-slate-950" data-i18n="idx_account">Cont</span>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
 
-            <span class="text-xs text-slate-950" data-i18n="idx_manage">Gestioneaza</span>
-        </div>
+        <!-- Quick Actions Grid -->
+        <section>
+            <h2 class="text-lg font-semibold text-[#f8fafc] mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+                {{ t('dashboard_quick_actions') }}
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                
+                <!-- Start Conversation -->
+                <a href="{{ url_for('chat') }}" class="group relative overflow-hidden rounded-2xl bg-[#0f172a] border border-[#1e293b] p-6 hover:border-cyan-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/5">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-cyan-500/5 rounded-full blur-2xl group-hover:bg-cyan-500/10 transition-all"></div>
+                    <div class="relative">
+                        <div class="w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center mb-4 group-hover:bg-cyan-500/20 transition-colors">
+                            <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="font-semibold text-[#f8fafc] mb-1">{{ t('dashboard_start_conversation') }}</h3>
+                        <p class="text-sm text-[#94a3b8]">{{ t('dashboard_start_conversation_desc') }}</p>
+                    </div>
+                </a>
 
-    </a>
+                <!-- Generate Math -->
+                <a href="{{ url_for('text_to_math') }}" class="group relative overflow-hidden rounded-2xl bg-[#0f172a] border border-[#1e293b] p-6 hover:border-cyan-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/5">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-cyan-500/5 rounded-full blur-2xl group-hover:bg-cyan-500/10 transition-all"></div>
+                    <div class="relative">
+                        <div class="w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center mb-4 group-hover:bg-cyan-500/20 transition-colors">
+                            <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="font-semibold text-[#f8fafc] mb-1">{{ t('dashboard_text_to_math') }}</h3>
+                        <p class="text-sm text-[#94a3b8]">{{ t('dashboard_text_to_math_desc') }}</p>
+                    </div>
+                </a>
 
-</div>
+                <!-- Upload Document -->
+                <a href="{{ url_for('upload_to_math') }}" class="group relative overflow-hidden rounded-2xl bg-[#0f172a] border border-[#1e293b] p-6 hover:border-cyan-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/5">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-cyan-500/5 rounded-full blur-2xl group-hover:bg-cyan-500/10 transition-all"></div>
+                    <div class="relative">
+                        <div class="w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center mb-4 group-hover:bg-cyan-500/20 transition-colors">
+                            <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                            </svg>
+                        </div>
+                        <h3 class="font-semibold text-[#f8fafc] mb-1">{{ t('dashboard_upload_document') }}</h3>
+                        <p class="text-sm text-[#94a3b8]">{{ t('dashboard_upload_document_desc') }}</p>
+                    </div>
+                </a>
 
-
-
-        </div>
-
-
-        <!-- CENTRU (CARD PRINCIPAL) -->
-        <div class="flex-1 bg-slate-950 border border-slate-800 rounded-3xl p-4 lg:p-6 flex flex-col shadow-xl min-h-[500px] lg:h-full lg:min-h-0 lg:overflow-hidden">
-
-            <!-- HEADER -->
-            <div class="mb-6">
-                <h1 class="text-3xl font-bold text-white" data-i18n="idx_continue">Continuă conversația</h1>
-                <p class="text-slate-400">
-                    <span data-i18n="idx_active_mode">mod activ:</span> {{ mod }}
-                </p>
+                <!-- BAC Variant -->
+                <a href="{{ url_for('bac_generator') }}" class="group relative overflow-hidden rounded-2xl bg-[#0f172a] border border-[#1e293b] p-6 hover:border-cyan-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/5">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-cyan-500/5 rounded-full blur-2xl group-hover:bg-cyan-500/10 transition-all"></div>
+                    <div class="relative">
+                        <div class="w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center mb-4 group-hover:bg-cyan-500/20 transition-colors">
+                            <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="font-semibold text-[#f8fafc] mb-1">{{ t('dashboard_bac_variant') }}</h3>
+                        <p class="text-sm text-[#94a3b8]">{{ t('dashboard_bac_variant_desc') }}</p>
+                    </div>
+                </a>
             </div>
+        </section>
 
-            <div class="flex-1 bg-white rounded-3xl border border-slate-700 p-4 lg:p-6 flex flex-col shadow-inner min-h-0 overflow-hidden">
-                <!-- CHAT AREA -->
-                <div id="chat" class="flex-1 overflow-y-auto space-y-4 pr-2 min-h-0 mb-2">
-
-
-                    {% for message in messages %}
-
-                        {% if message["role"] == "user" %}
-
-                            <div class="bg-cyan-100 text-slate-900 p-4 rounded-2xl hover:shadow-md transition-shadow w-fit max-w-xl ml-auto border border-cyan-200">
-                                {{ message["content"]|safe }}
-                            </div>
-
+        <!-- Main Dashboard Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Left Column: Recent Conversations -->
+            <section class="lg:col-span-2 space-y-8">
+                
+                <!-- Recent Conversations -->
+                <div class="rounded-2xl bg-[#0f172a] border border-[#1e293b] overflow-hidden">
+                    <div class="px-6 py-5 border-b border-[#1e293b] flex items-center justify-between">
+                        <h2 class="text-lg font-semibold text-[#f8fafc] flex items-center gap-2">
+                            <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            {{ t('dashboard_recent_conversations') }}
+                        </h2>
+                        <a href="{{ url_for('conversations') }}" class="text-sm text-cyan-400 hover:text-cyan-300 transition-colors">
+                            {{ t('dashboard_view_all') }} →
+                        </a>
+                    </div>
+                    
+                    <div class="divide-y divide-[#1e293b]">
+                        {% if recent_conversations %}
+                            {% for conv in recent_conversations[:5] %}
+                            <a href="{{ url_for('chat', conversation_id=conv.id) }}" class="group flex items-center gap-4 px-6 py-4 hover:bg-[#111827] transition-colors">
+                                <div class="w-10 h-10 rounded-xl bg-[#1e293b] flex items-center justify-center flex-shrink-0 group-hover:bg-cyan-500/10 transition-colors">
+                                    <svg class="w-5 h-5 text-[#94a3b8] group-hover:text-cyan-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+                                    </svg>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="text-sm font-medium text-[#f8fafc] truncate group-hover:text-cyan-400 transition-colors">
+                                        {{ conv.title or t('dashboard_untitled_conversation') }}
+                                    </h4>
+                                    <p class="text-xs text-[#64748b] mt-0.5">
+                                        {{ conv.updated_at.strftime('%d %b %Y, %H:%M') if conv.updated_at else '' }}
+                                    </p>
+                                </div>
+                                <svg class="w-4 h-4 text-[#475569] group-hover:text-cyan-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </a>
+                            {% endfor %}
                         {% else %}
-
-                            <div class="bg-slate-100 text-slate-900 p-5 rounded-2xl hover:shadow-md transition-shadow max-w-3xl border border-slate-200">
-                                {{ message["content"]|safe }}
+                            <div class="px-6 py-12 text-center">
+                                <div class="w-16 h-16 rounded-full bg-[#1e293b] flex items-center justify-center mx-auto mb-3">
+                                    <svg class="w-8 h-8 text-[#475569]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                                    </svg>
+                                </div>
+                                <p class="text-[#94a3b8] text-sm">{{ t('dashboard_no_conversations') }}</p>
+                                <a href="{{ url_for('chat') }}" class="inline-block mt-2 text-sm text-cyan-400 hover:text-cyan-300">
+                                    {{ t('dashboard_start_first_conversation') }}
+                                </a>
                             </div>
-
                         {% endif %}
-
-                    {% endfor %}
-
+                    </div>
                 </div>
 
-                <!-- INPUT -->
-                <form action="/create_mode1" method="post" class="flex gap-3">
+                <!-- Workflows / Capabilities -->
+                <div class="rounded-2xl bg-[#0f172a] border border-[#1e293b] overflow-hidden">
+                    <div class="px-6 py-5 border-b border-[#1e293b]">
+                        <h2 class="text-lg font-semibold text-[#f8fafc] flex items-center gap-2">
+                            <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+                            </svg>
+                            {{ t('dashboard_create_content') }}
+                        </h2>
+                    </div>
+                    <div class="p-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        
+                        <!-- AI Teacher Assistant -->
+                        <a href="{{ url_for('chat') }}" class="flex items-start gap-4 p-4 rounded-xl bg-[#111827] border border-[#1e293b] hover:border-cyan-500/40 transition-all group">
+                            <div class="w-10 h-10 rounded-lg bg-cyan-500/10 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-[#f8fafc] group-hover:text-cyan-400 transition-colors">{{ t('dashboard_ai_teacher_assistant') }}</h4>
+                                <p class="text-xs text-[#94a3b8] mt-1">{{ t('dashboard_ai_teacher_assistant_desc') }}</p>
+                            </div>
+                        </a>
 
-                    <textarea
-                        class="flex-1 text-slate-900 border border-slate-300 rounded-2xl p-4 resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                        rows="1"
-                        data-i18n-placeholder="idx_write_req" placeholder="Scrie cererea ta..."
-                    ></textarea>
+                        <!-- Text to Math -->
+                        <a href="{{ url_for('text_to_math') }}" class="flex items-start gap-4 p-4 rounded-xl bg-[#111827] border border-[#1e293b] hover:border-cyan-500/40 transition-all group">
+                            <div class="w-10 h-10 rounded-lg bg-cyan-500/10 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-[#f8fafc] group-hover:text-cyan-400 transition-colors">{{ t('dashboard_text_to_math_latex') }}</h4>
+                                <p class="text-xs text-[#94a3b8] mt-1">{{ t('dashboard_text_to_math_latex_desc') }}</p>
+                            </div>
+                        </a>
 
-                    <button
-                        class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold transition px-8 rounded-2xl"
-                        type="submit"
-                     data-i18n="idx_send">Trimite</button>
+                        <!-- Document to Math -->
+                        <a href="{{ url_for('upload_to_math') }}" class="flex items-start gap-4 p-4 rounded-xl bg-[#111827] border border-[#1e293b] hover:border-cyan-500/40 transition-all group">
+                            <div class="w-10 h-10 rounded-lg bg-cyan-500/10 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-[#f8fafc] group-hover:text-cyan-400 transition-colors">{{ t('dashboard_document_to_math') }}</h4>
+                                <p class="text-xs text-[#94a3b8] mt-1">{{ t('dashboard_document_to_math_desc') }}</p>
+                            </div>
+                        </a>
 
-                </form>
+                        <!-- Test & BAC Generation -->
+                        <a href="{{ url_for('bac_generator') }}" class="flex items-start gap-4 p-4 rounded-xl bg-[#111827] border border-[#1e293b] hover:border-cyan-500/40 transition-all group">
+                            <div class="w-10 h-10 rounded-lg bg-cyan-500/10 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-[#f8fafc] group-hover:text-cyan-400 transition-colors">{{ t('dashboard_tests_bac') }}</h4>
+                                <p class="text-xs text-[#94a3b8] mt-1">{{ t('dashboard_tests_bac_desc') }}</p>
+                            </div>
+                        </a>
 
-            </div>
+                        <!-- Handwriting OCR -->
+                        <a href="{{ url_for('handwriting_ocr') }}" class="flex items-start gap-4 p-4 rounded-xl bg-[#111827] border border-[#1e293b] hover:border-cyan-500/40 transition-all group">
+                            <div class="w-10 h-10 rounded-lg bg-cyan-500/10 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-[#f8fafc] group-hover:text-cyan-400 transition-colors">{{ t('dashboard_handwriting_ocr') }}</h4>
+                                <p class="text-xs text-[#94a3b8] mt-1">{{ t('dashboard_handwriting_ocr_desc') }}</p>
+                            </div>
+                        </a>
 
-        </div>
-
-        <!-- DREAPTA -->
-        <div class="w-full lg:w-80 flex flex-col gap-3">
-
-            <!-- FIȘIERE -->
-            <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 shadow-xl h-56 lg:h-[calc(100vh-430px)] overflow-y-auto">
-                <h2 class="text-white font-bold mb-3" data-i18n="idx_gen_files">Fișiere generate</h2>
-
-                <ul class="space-y-2 text-slate-300 text-sm">
-                    <li class="block bg-slate-50 hover:bg-slate-400 text-slate-950 px-3 py-2 rounded-xl">2024-2025 Proba E</li>
-                    <li class="block bg-slate-50 hover:bg-slate-400 text-slate-950 px-3 py-2 rounded-xl">BAC Simulare 1</li>
-                    <li class="block bg-slate-50 hover:bg-slate-400 text-slate-950 px-3 py-2 rounded-xl" data-i18n="idx_tests_trig">Teste trigonometrie</li>
-                </ul>
-            </div>
-
-
-            <!-- EXERCIȚII SALVATE -->
-            <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 shadow-xl h-36 lg:h-[calc(100vh-670px)] overflow-y-auto">
-                <h2 class="text-white font-bold mb-3" data-i18n="idx_saved_ex">Exerciții salvate</h2>
-
-                <div class="text-slate-300 text-sm space-y-2">
-
-                    <div class="block bg-slate-50 hover:bg-slate-400 text-slate-950 px-3 py-2 rounded-xl" data-i18n="idx_cls9_rad">Clasa IX - radicali</div>
-
-                    <div class="block bg-slate-50 hover:bg-slate-400 text-slate-950 px-3 py-2 rounded-xl" data-i18n="idx_trig_base">Trigonometrie - baze</div>
-
-                    <div class="block bg-slate-50 hover:bg-slate-400 text-slate-950 px-3 py-2 rounded-xl" data-i18n="idx_equations">Ecuații</div>
-
+                        <!-- Saved Materials -->
+                        <a href="{{ url_for('materials') }}" class="flex items-start gap-4 p-4 rounded-xl bg-[#111827] border border-[#1e293b] hover:border-cyan-500/40 transition-all group">
+                            <div class="w-10 h-10 rounded-lg bg-cyan-500/10 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-[#f8fafc] group-hover:text-cyan-400 transition-colors">{{ t('dashboard_saved_materials') }}</h4>
+                                <p class="text-xs text-[#94a3b8] mt-1">{{ t('dashboard_saved_materials_desc') }}</p>
+                            </div>
+                        </a>
+                    </div>
                 </div>
 
-            </div>
+                <!-- Recent Generated Files -->
+                <div class="rounded-2xl bg-[#0f172a] border border-[#1e293b] overflow-hidden">
+                    <div class="px-6 py-5 border-b border-[#1e293b] flex items-center justify-between">
+                        <h2 class="text-lg font-semibold text-[#f8fafc] flex items-center gap-2">
+                            <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            {{ t('dashboard_recent_generated_files') }}
+                        </h2>
+                        <a href="{{ url_for('materials') }}" class="text-sm text-cyan-400 hover:text-cyan-300 transition-colors">
+                            {{ t('dashboard_view_all') }} →
+                        </a>
+                    </div>
+                    <div class="divide-y divide-[#1e293b]">
+                        {% if recent_materials %}
+                            {% for material in recent_materials[:4] %}
+                            <div class="flex items-center gap-4 px-6 py-4 hover:bg-[#111827] transition-colors group">
+                                <div class="w-10 h-10 rounded-xl bg-[#1e293b] flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-5 h-5 text-[#94a3b8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="text-sm font-medium text-[#f8fafc] truncate">{{ material.title or t('dashboard_untitled') }}</h4>
+                                    <p class="text-xs text-[#64748b] mt-0.5">{{ material.type or t('dashboard_material') }} • {{ material.created_at.strftime('%d %b %Y') if material.created_at else '' }}</p>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <a href="{{ url_for('edit_material', id=material.id) }}" class="p-2 rounded-lg hover:bg-[#1e293b] text-[#94a3b8] hover:text-cyan-400 transition-colors" title="{{ t('dashboard_edit') }}">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                        </svg>
+                                    </a>
+                                    <a href="{{ url_for('download_material', id=material.id) }}" class="p-2 rounded-lg hover:bg-[#1e293b] text-[#94a3b8] hover:text-cyan-400 transition-colors" title="{{ t('dashboard_download') }}">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="px-6 py-12 text-center">
+                                <p class="text-[#94a3b8] text-sm">{{ t('dashboard_no_generated_files') }}</p>
+                                <p class="text-xs text-[#64748b] mt-1">{{ t('dashboard_no_generated_files_desc') }}</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </section>
 
+            <!-- Right Column: Insights & Status -->
+            <aside class="space-y-6">
+                
+                <!-- Stats Card -->
+                <div class="rounded-2xl bg-[#0f172a] border border-[#1e293b] p-6">
+                    <h3 class="text-sm font-semibold text-[#94a3b8] uppercase tracking-wider mb-4">{{ t('dashboard_your_activity') }}</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center">
+                                    <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+                                    </svg>
+                                </div>
+                                <span class="text-sm text-[#cbd5e1]">{{ t('dashboard_active_conversations') }}</span>
+                            </div>
+                            <span class="text-lg font-bold text-[#f8fafc]">{{ active_conversations_count or 0 }}</span>
+                        </div>
+                        <div class="h-px bg-[#1e293b]"></div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center">
+                                    <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                </div>
+                                <span class="text-sm text-[#cbd5e1]">{{ t('dashboard_generated_materials') }}</span>
+                            </div>
+                            <span class="text-lg font-bold text-[#f8fafc]">{{ generated_materials_count or 0 }}</span>
+                        </div>
+                        <div class="h-px bg-[#1e293b]"></div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center">
+                                    <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                                <span class="text-sm text-[#cbd5e1]">{{ t('dashboard_this_week') }}</span>
+                            </div>
+                            <span class="text-lg font-bold text-[#f8fafc]">{{ weekly_activity_count or 0 }}</span>
+                        </div>
+                    </div>
+                </div>
 
-            <!-- TIP -->
-            <div class="text-xs text-slate-500 px-1" data-i18n="idx_tip">Tip: apasa pe exercitiu pentru a il lipi in conversatie, si apasa pe document pentru a il descarca</div>
+                <!-- Quick Tips -->
+                <div class="rounded-2xl bg-gradient-to-br from-cyan-500/5 to-transparent border border-cyan-500/10 p-6">
+                    <h3 class="text-sm font-semibold text-cyan-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        {{ t('dashboard_teacher_tip') }}
+                    </h3>
+                    <p class="text-sm text-[#cbd5e1] leading-relaxed">
+                        {{ t('dashboard_teacher_tip_text') }}
+                    </p>
+                </div>
 
+                <!-- Keyboard Shortcuts -->
+                <div class="rounded-2xl bg-[#0f172a] border border-[#1e293b] p-6">
+                    <h3 class="text-sm font-semibold text-[#94a3b8] uppercase tracking-wider mb-4">{{ t('dashboard_shortcuts') }}</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-[#94a3b8]">{{ t('dashboard_new_chat') }}</span>
+                            <kbd class="px-2 py-1 rounded-md bg-[#1e293b] border border-[#334155] text-xs text-[#cbd5e1] font-mono">N</kbd>
+                        </div>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-[#94a3b8]">{{ t('dashboard_text_to_math') }}</span>
+                            <kbd class="px-2 py-1 rounded-md bg-[#1e293b] border border-[#334155] text-xs text-[#cbd5e1] font-mono">T</kbd>
+                        </div>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-[#94a3b8]">{{ t('dashboard_upload') }}</span>
+                            <kbd class="px-2 py-1 rounded-md bg-[#1e293b] border border-[#334155] text-xs text-[#cbd5e1] font-mono">U</kbd>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pro Tip / Feature Highlight -->
+                <div class="rounded-2xl bg-[#111827] border border-[#1e293b] p-6 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-cyan-500/5 rounded-full blur-2xl"></div>
+                    <h3 class="text-sm font-semibold text-[#f8fafc] mb-2">{{ t('dashboard_did_you_know') }}</h3>
+                    <p class="text-sm text-[#94a3b8] leading-relaxed mb-4">
+                        {{ t('dashboard_did_you_know_text') }}
+                    </p>
+                    <a href="{{ url_for('handwriting_ocr') }}" class="inline-flex items-center text-sm text-cyan-400 hover:text-cyan-300 font-medium transition-colors">
+                        {{ t('dashboard_try_handwriting_ocr') }}
+                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                        </svg>
+                    </a>
+                </div>
+            </aside>
         </div>
-
     </div>
-
 </div>
+{% endblock %}
 
+{% block scripts %}
+<script>
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+        
+        switch(e.key.toLowerCase()) {
+            case 'n':
+                if (!e.ctrlKey && !e.metaKey && !e.altKey) {
+                    window.location.href = "{{ url_for('chat') }}";
+                }
+                break;
+            case 't':
+                if (!e.ctrlKey && !e.metaKey && !e.altKey) {
+                    window.location.href = "{{ url_for('text_to_math') }}";
+                }
+                break;
+            case 'u':
+                if (!e.ctrlKey && !e.metaKey && !e.altKey) {
+                    window.location.href = "{{ url_for('upload_to_math') }}";
+                }
+                break;
+        }
+    });
+</script>
 {% endblock %}
