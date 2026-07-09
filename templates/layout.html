@@ -141,9 +141,8 @@
 
             {% if session["user_id"] %}
 
-                <!-- Logged -->
-                <div class="flex items-center gap-6 text-sm font-medium">
-
+                <!-- Logged - Desktop -->
+                <div class="hidden lg:flex items-center gap-6 text-sm font-medium">
 
                     <form action="/create_mode1" method="post" class="m-0">
                         <button
@@ -173,10 +172,22 @@
 
                 </div>
 
+                <!-- Hamburger (mobile only) -->
+                <button
+                    id="nav-toggle"
+                    onclick="document.getElementById('nav-menu').classList.toggle('hidden')"
+                    class="lg:hidden flex flex-col justify-center gap-1.5 w-9 h-9 rounded-xl hover:bg-slate-800 transition"
+                    aria-label="Menu"
+                >
+                    <span class="w-5 h-0.5 bg-white mx-auto block"></span>
+                    <span class="w-5 h-0.5 bg-white mx-auto block"></span>
+                    <span class="w-5 h-0.5 bg-white mx-auto block"></span>
+                </button>
+
             {% else %}
 
-                <!-- Guest -->
-                <div class="flex items-center gap-4 text-sm font-medium">
+                <!-- Guest - Desktop -->
+                <div class="hidden lg:flex items-center gap-4 text-sm font-medium">
 
                     <button onclick="switchLang('ro')"  class="text-slate-400 hover:text-white {% if request.cookies.get('lang', session.get('lang', 'ro')) == 'ro' %}font-bold text-cyan-400{% endif %}" translate="no" id="lang-toggle-ro">RO</button>
                     <span class="text-slate-600">|</span>
@@ -194,8 +205,49 @@
 
                 </div>
 
+                <!-- Hamburger (mobile only) -->
+                <button
+                    id="nav-toggle"
+                    onclick="document.getElementById('nav-menu').classList.toggle('hidden')"
+                    class="lg:hidden flex flex-col justify-center gap-1.5 w-9 h-9 rounded-xl hover:bg-slate-800 transition"
+                    aria-label="Menu"
+                >
+                    <span class="w-5 h-0.5 bg-white mx-auto block"></span>
+                    <span class="w-5 h-0.5 bg-white mx-auto block"></span>
+                    <span class="w-5 h-0.5 bg-white mx-auto block"></span>
+                </button>
+
             {% endif %}
 
+        </div>
+
+        <!-- MOBILE DROPDOWN -->
+        <div id="nav-menu" class="hidden lg:hidden border-t border-slate-800 bg-slate-950/95">
+            {% if session["user_id"] %}
+            <div class="flex flex-col px-4 py-3 gap-1">
+                <form action="/create_mode1" method="post" class="m-0">
+                    <button type="submit" class="w-full text-left text-slate-300 hover:text-cyan-400 hover:bg-slate-800 transition px-3 py-2.5 rounded-xl bg-transparent border-0" data-i18n="nav_conversation">{{ t("nav_conversation") }}</button>
+                </form>
+                <a href="/account" class="text-slate-300 hover:text-cyan-400 hover:bg-slate-800 transition px-3 py-2.5 rounded-xl no-underline" data-i18n="nav_account">{{ t("nav_account") }}</a>
+                <a href="/documentation" class="text-slate-300 hover:text-cyan-400 hover:bg-slate-800 transition px-3 py-2.5 rounded-xl no-underline" data-i18n="nav_guide">{{ t("nav_guide") }}</a>
+                <a href="/menu" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-3 py-2.5 rounded-xl font-semibold transition no-underline text-center mt-1" data-i18n="nav_create">{{ t("nav_create") }}</a>
+                <div class="flex items-center gap-2 px-3 pt-3 mt-1 border-t border-slate-800">
+                    <button onclick="switchLang('ro')" class="text-slate-400 hover:text-white {% if session.get('lang', 'ro') == 'ro' %}font-bold text-cyan-400{% endif %}" translate="no">RO</button>
+                    <span class="text-slate-600">|</span>
+                    <button onclick="switchLang('en')" class="text-slate-400 hover:text-white {% if session.get('lang', 'ro') == 'en' %}font-bold text-cyan-400{% endif %}" translate="no">EN</button>
+                </div>
+            </div>
+            {% else %}
+            <div class="flex flex-col px-4 py-3 gap-1">
+                <a href="/login" class="text-slate-300 hover:text-cyan-400 hover:bg-slate-800 transition px-3 py-2.5 rounded-xl no-underline" data-i18n="nav_login">{{ t("nav_login") }}</a>
+                <a href="/register" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-3 py-2.5 rounded-xl font-semibold transition no-underline text-center mt-1" data-i18n="nav_register">{{ t("nav_register") }}</a>
+                <div class="flex items-center gap-2 px-3 pt-3 mt-1 border-t border-slate-800">
+                    <button onclick="switchLang('ro')" class="text-slate-400 hover:text-white {% if session.get('lang', 'ro') == 'ro' %}font-bold text-cyan-400{% endif %}" translate="no">RO</button>
+                    <span class="text-slate-600">|</span>
+                    <button onclick="switchLang('en')" class="text-slate-400 hover:text-white {% if session.get('lang', 'ro') == 'en' %}font-bold text-cyan-400{% endif %}" translate="no">EN</button>
+                </div>
+            </div>
+            {% endif %}
         </div>
 
     </nav>
