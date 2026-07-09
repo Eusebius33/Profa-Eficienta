@@ -16,7 +16,6 @@
     <!-- Header -->
     <div class="max-w-7xl mx-auto text-center mb-12">
 
-<<<<<<< HEAD
         <h1 class="text-5xl font-bold text-white mb-4" data-i18n="menu_title">
             Generare Teste & Fișe de Lucru
         </h1>
@@ -24,15 +23,6 @@
         <p class="text-slate-400 text-lg max-w-3xl mx-auto" data-i18n="menu_subtitle">
             Alege modul potrivit pentru generarea materialelor educaționale,
             conversații asistate și variante personalizate de BAC.
-=======
-        <h1 class="text-5xl font-bold text-white mb-4">
-            Generare Teste & FiÈ™e de Lucru
-        </h1>
-
-        <p class="text-slate-400 text-lg max-w-3xl mx-auto">
-            Alege modul potrivit pentru generarea materialelor educaÈ›ionale,
-            conversaÈ›ii asistate È™i variante personalizate de BAC.
->>>>>>> efce68ee9681adce6d48ed8aeb13ed756270719f
         </p>
 
     </div>
@@ -47,21 +37,12 @@
     <div class="mode-card mode-card--recommended bg-white border border-slate-200 rounded-3xl p-7 shadow-xl min-h-[670px] flex flex-col">
 
         <div class="mb-6">
-<<<<<<< HEAD
             <h2 class="text-2xl font-bold text-slate-900 mb-3" data-i18n="mode2_title">
                 Limbaj Natural → Matematic
             </h2>
 
             <p class="text-slate-600 leading-relaxed" data-i18n="mode2_desc">
                 Scrii exercițiul în limbaj normal și primești automat forma matematică corectă.
-=======
-            <h2 class="text-2xl font-bold text-slate-900 mb-3">
-                Limbaj Natural â†’ Matematic
-            </h2>
-
-            <p class="text-slate-600 leading-relaxed">
-                Scrii exerciÈ›iul Ã®n limbaj normal È™i primeÈ™ti automat forma matematicÄƒ corectÄƒ.
->>>>>>> efce68ee9681adce6d48ed8aeb13ed756270719f
             </p>
         </div>
 
@@ -70,13 +51,8 @@
             <label class="text-sm font-medium text-slate-700" data-i18n="style_label">Stil generare</label>
             <select name="style" required
                 class="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900">
-<<<<<<< HEAD
                 <option disabled selected value="" data-i18n="style_placeholder">Selectează stilul</option>
                 <option data-i18n="style_default">Stil implicit</option>
-=======
-                <option disabled selected value="">SelecteazÄƒ stilul</option>
-                <option>Stil implicit</option>
->>>>>>> efce68ee9681adce6d48ed8aeb13ed756270719f
                 {% for style in styles %}
                     <option value="{{ style['id'] }}">
                         {{ style["style_name"] }}
@@ -88,19 +64,11 @@
             <select name="school_class" required
                 class="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900">
 
-<<<<<<< HEAD
                 <option disabled selected value="" data-i18n="class_placeholder">Selectează clasa</option>
                 <option value="9" data-i18n="class_9">Clasa a IX-a</option>
                 <option value="10" data-i18n="class_10">Clasa a X-a</option>
                 <option value="11" data-i18n="class_11">Clasa a XI-a</option>
                 <option value="12" data-i18n="class_12">Clasa a XII-a</option>
-=======
-                <option disabled selected value="">SelecteazÄƒ clasa</option>
-                <option value="9">Clasa a IX-a</option>
-                <option value="10">Clasa a X-a</option>
-                <option value="11">Clasa a XI-a</option>
-                <option value="12">Clasa a XII-a</option>
->>>>>>> efce68ee9681adce6d48ed8aeb13ed756270719f
 
             </select>
 
@@ -114,14 +82,9 @@
             </select>
 
             <button type="submit"
-<<<<<<< HEAD
                 class="mt-2 rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-4 transition"
                 data-i18n="start_gen">
                 Începe Generarea
-=======
-                class="mt-2 rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-4 transition">
-                ÃŽncepe Generarea
->>>>>>> efce68ee9681adce6d48ed8aeb13ed756270719f
             </button>
 
         </form>
@@ -147,7 +110,6 @@
 
                 <div class="mb-6">
 
-<<<<<<< HEAD
                     <h2 class="text-2xl font-bold text-slate-900 mb-3" data-i18n="m3_title">
                         Creează după Model
                     </h2>
@@ -156,16 +118,6 @@
                         Încarci un model de test existent în format Word sau PDF.
                         AI-ul extrage exercițiile, le afișează pentru verificare,
                         apoi generează un test nou similar.
-=======
-                    <h2 class="text-2xl font-bold text-slate-900 mb-3">
-                        CreeazÄƒ dupÄƒ Model
-                    </h2>
-
-                    <p class="text-slate-600 leading-relaxed">
-                        ÃŽncarci un model de test existent Ã®n format Word sau PDF.
-                        AI-ul extrage exerciÈ›iile, le afiÈ™eazÄƒ pentru verificare,
-                        apoi genereazÄƒ un test nou similar.
->>>>>>> efce68ee9681adce6d48ed8aeb13ed756270719f
                     </p>
 
                 </div>
@@ -173,22 +125,13 @@
                 <form action="/create_mode3" method="post" enctype="multipart/form-data"
                     class="flex flex-col gap-4 mt-auto">
 
-<<<<<<< HEAD
                     <label class="text-sm font-medium text-slate-700" data-i18n="file_model">Fișier model</label>
-=======
-                    <label class="text-sm font-medium text-slate-700">FiÈ™ier model</label>
->>>>>>> efce68ee9681adce6d48ed8aeb13ed756270719f
 
                     <label id="drop3" 
                         class="border-2 border-dashed border-slate-200 hover:border-cyan-400 transition rounded-3xl p-6 text-center cursor-pointer bg-slate-50">
 
-<<<<<<< HEAD
                         <p class="text-slate-900 font-medium" data-i18n="load_model">Încarcă modelul</p>
                         <p class="text-slate-500 text-sm" data-i18n="menu_m3_drag">Drag & Drop sau click (.pdf, .docx, .txt)</p>
-=======
-                        <p class="text-slate-900 font-medium">ÃŽncarcÄƒ modelul</p>
-                        <p class="text-slate-500 text-sm">Drag & Drop sau click (.pdf, .docx, .txt)</p>
->>>>>>> efce68ee9681adce6d48ed8aeb13ed756270719f
 
                         <input type="file" required name="file" class="hidden"
                             accept=".pdf,.docx,.txt,.png,.jpg,.jpeg">
@@ -205,7 +148,6 @@
                         class="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900 resize-none"></textarea>
 
 
-<<<<<<< HEAD
                     <p class="text-slate-500 text-xs" data-i18n="menu_m3_note">
                         După încărcare, vei vedea exercițiile extrase și vei putea cere modificări sau genera un test nou.
                     </p>
@@ -214,15 +156,6 @@
                         class="rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-4 transition"
                         data-i18n="menu_m3_analyze">
                         Analizează fișierul
-=======
-                    <p class="text-slate-500 text-xs">
-                        DupÄƒ Ã®ncÄƒrcare, vei vedea exerciÈ›iile extrase È™i vei putea cere modificÄƒri sau genera un test nou.
-                    </p>
-
-                    <button type="submit"
-                        class="rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-4 transition">
-                        AnalizeazÄƒ fiÈ™ierul
->>>>>>> efce68ee9681adce6d48ed8aeb13ed756270719f
                     </button>
 
                 </form>
@@ -237,7 +170,6 @@
 
                 <div class="mb-6">
 
-<<<<<<< HEAD
                     <h2 class="text-2xl font-bold text-slate-900 mb-3" data-i18n="doc_m4_title">
                         Transcriere test scris de mână
                     </h2>
@@ -245,15 +177,6 @@
                     <p class="text-slate-600 leading-relaxed" data-i18n="menu_m4_desc">
                         Încarci o fișă scrisă de mână și o transformăm automat în format digital,
                         cu structurare și generare de variantă nouă.
-=======
-                    <h2 class="text-2xl font-bold text-slate-900 mb-3">
-                        Transcriere test scris de mÃ¢nÄƒ
-                    </h2>
-
-                    <p class="text-slate-600 leading-relaxed">
-                        ÃŽncarci o fiÈ™Äƒ scrisÄƒ de mÃ¢nÄƒ È™i o transformÄƒm automat Ã®n format digital,
-                        cu structurare È™i generare de variantÄƒ nouÄƒ.
->>>>>>> efce68ee9681adce6d48ed8aeb13ed756270719f
                     </p>
 
                 </div>
@@ -261,24 +184,14 @@
                 <form action="/create_mode4" method="post" enctype="multipart/form-data" class="flex flex-col gap-4 mt-auto">
 
                     <!-- UPLOAD -->
-<<<<<<< HEAD
                     <label class="text-sm font-medium text-slate-700" data-i18n="fisa_ex">
                         Fișă exerciții (poză / PDF)
-=======
-                    <label class="text-sm font-medium text-slate-700">
-                        FiÈ™Äƒ exerciÈ›ii (pozÄƒ / PDF)
->>>>>>> efce68ee9681adce6d48ed8aeb13ed756270719f
                     </label>
 
                     <label id="drop4" class="border-2 border-dashed border-slate-200 hover:border-cyan-400 transition rounded-3xl p-6 text-center cursor-pointer bg-slate-50">
 
-<<<<<<< HEAD
                         <p class="text-slate-900 font-medium" data-i18n="load_fisa">
                             Încarcă fișa ta
-=======
-                        <p class="text-slate-900 font-medium">
-                            ÃŽncarcÄƒ fiÈ™a ta
->>>>>>> efce68ee9681adce6d48ed8aeb13ed756270719f
                         </p>
 
                         <p class="text-slate-500 text-sm" data-i18n="drag_drop_up">
@@ -290,44 +203,26 @@
                     </label>
 
                     <!-- INSTRUCTIUNI -->
-<<<<<<< HEAD
                     <label class="text-sm font-medium text-slate-700" data-i18n="inst_gen">
                         Instrucțiuni generare
-=======
-                    <label class="text-sm font-medium text-slate-700">
-                        InstrucÈ›iuni generare
->>>>>>> efce68ee9681adce6d48ed8aeb13ed756270719f
                     </label>
 
                     <textarea name="prompt" required
                         rows="3"
-<<<<<<< HEAD
                         placeholder="Ex: transformă în test BAC cu dificultate medie..."
                         data-i18n-placeholder="inst_gen_ph"
-=======
-                        placeholder="Ex: transformÄƒ Ã®n test BAC cu dificultate medie..."
->>>>>>> efce68ee9681adce6d48ed8aeb13ed756270719f
                         class="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900 resize-none outline-none focus:ring-2 focus:ring-cyan-500"
                     ></textarea>
 
                     <!-- DIFERENTE -->
-<<<<<<< HEAD
                     <label class="text-sm font-medium text-slate-700" data-i18n="diff_orig">
                         Diferențe față de original
-=======
-                    <label class="text-sm font-medium text-slate-700">
-                        DiferenÈ›e faÈ›Äƒ de original
->>>>>>> efce68ee9681adce6d48ed8aeb13ed756270719f
                     </label>
 
                     <textarea name="differences" required
                         rows="3"
-<<<<<<< HEAD
                         placeholder="Ex: adaugă exerciții noi din algebră..."
                         data-i18n-placeholder="diff_orig_ph"
-=======
-                        placeholder="Ex: adaugÄƒ exerciÈ›ii noi din algebrÄƒ..."
->>>>>>> efce68ee9681adce6d48ed8aeb13ed756270719f
                         class="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900 resize-none outline-none focus:ring-2 focus:ring-cyan-500"
                     ></textarea>
 
@@ -361,13 +256,8 @@
                     </select>-->
 
                     <!-- BUTTON -->
-<<<<<<< HEAD
                     <button type="submit" class="mt-2 rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-4 transition" data-i18n="start_gen">
                         Începe Generarea
-=======
-                    <button type="submit" class="mt-2 rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-4 transition">
-                        ÃŽncepe Generarea
->>>>>>> efce68ee9681adce6d48ed8aeb13ed756270719f
                     </button>
 
                 </form>
@@ -391,19 +281,13 @@
                     Generator BAC
                 </h2>
 
-<<<<<<< HEAD
                 <p class="text-slate-600" data-i18n="m5_desc">
                     Creează variante personalizate de BAC.
-=======
-                <p class="text-slate-600">
-                    CreeazÄƒ variante personalizate de BAC.
->>>>>>> efce68ee9681adce6d48ed8aeb13ed756270719f
                 </p>
             </div>
 
             <form action="/create_mode5" method="post" class="flex flex-col gap-3 mt-auto">
 
-<<<<<<< HEAD
                 <label class="text-sm font-medium text-slate-700" data-i18n="main_lessons">Lecții principale</label>
                 <textarea rows="2" name="lessons" required
                     class="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900"></textarea>
@@ -414,18 +298,6 @@
 
                 <button class="rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-4" data-i18n="gen_bac">
                     Generează BAC
-=======
-                <label class="text-sm font-medium text-slate-700">LecÈ›ii principale</label>
-                <textarea rows="2" name="lessons" required
-                    class="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900"></textarea>
-
-                <label class="text-sm font-medium text-slate-700">LecÈ›ii de omis</label>
-                <textarea rows="2" name="avoid" required
-                    class="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900"></textarea>
-
-                <button class="rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-4">
-                    GenereazÄƒ BAC
->>>>>>> efce68ee9681adce6d48ed8aeb13ed756270719f
                 </button>
 
             </form>
@@ -439,27 +311,17 @@
                     Asistent AI
                 </h2>
 
-<<<<<<< HEAD
                 <p class="text-slate-600" data-i18n="ai_desc">
                     Conversație educațională.
-=======
-                <p class="text-slate-600">
-                    ConversaÈ›ie educaÈ›ionalÄƒ.
->>>>>>> efce68ee9681adce6d48ed8aeb13ed756270719f
                 </p>
             </div>
 
             <form action="/create_mode1" method="post" class="mt-auto">
 
                 <button
-<<<<<<< HEAD
                     class="mt-4 w-full rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-4"
                     data-i18n="start_btn">
                     Începe
-=======
-                    class="mt-4 w-full rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-4">
-                    ÃŽncepe
->>>>>>> efce68ee9681adce6d48ed8aeb13ed756270719f
                 </button>
 
             </form>
