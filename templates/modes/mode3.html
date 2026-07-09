@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block title %}
-Creează după Model |
+{{ t("mode3_title") }} |
     {% if user and user["gender"] == "F" %}
         Profa Eficientă
     {% else %}
@@ -18,7 +18,7 @@ Creează după Model |
 
         <!-- STANGA - CONVERSATII -->
         <div class="w-72 bg-slate-950 border border-slate-800 rounded-3xl p-4 flex flex-col shadow-xl">
-            <h2 class="text-white text-lg font-bold mb-4">Conversații</h2>
+            <h2 class="text-white text-lg font-bold mb-4" data-i18n="mode3_conversations">{{ t("mode3_conversations") }}</h2>
             <div class="space-y-2 overflow-y-auto">
                 {% for conv in conversations %}
                     <a href="/mode3/{{ conv['id'] }}" class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">
@@ -30,8 +30,8 @@ Creează după Model |
                 <a href="/account" class="flex items-center gap-3 p-2 rounded-2xl bg-slate-50 hover:bg-slate-400 transition">
                     <div class="w-10 h-10 rounded-full bg-cyan-500 flex items-center justify-center text-slate-950 font-bold">A</div>
                     <div class="flex flex-col">
-                        <span class="text-sm font-semibold text-slate-950">Cont</span>
-                        <span class="text-xs text-slate-950">Gestioneaza</span>
+                        <span class="text-sm font-semibold text-slate-950" data-i18n="mode3_account">{{ t("mode3_account") }}</span>
+                        <span class="text-xs text-slate-950" data-i18n="mode3_manage">{{ t("mode3_manage") }}</span>
                     </div>
                 </a>
             </div>
@@ -41,11 +41,11 @@ Creează după Model |
         <div class="flex-1 bg-slate-950 border border-slate-800 rounded-3xl p-6 flex flex-col shadow-xl h-full min-h-0 overflow-hidden">
             <div class="mb-6 flex items-start justify-between gap-4">
                 <div>
-                    <h1 class="text-3xl font-bold text-white">Creează după Model</h1>
-                    <p class="text-slate-400 mt-1">Generezi automat un test nou pe baza modelului încărcat</p>
+                    <h1 class="text-3xl font-bold text-white" data-i18n="mode3_title">{{ t("mode3_title") }}</h1>
+                    <p class="text-slate-400 mt-1" data-i18n="mode3_subtitle">{{ t("mode3_subtitle") }}</p>
                 </div>
                 <div class="bg-slate-900 border border-slate-700 rounded-2xl px-4 py-3 min-w-[220px]">
-                    <div class="text-slate-400 text-sm">Fișier încărcat:</div>
+                    <div class="text-slate-400 text-sm" data-i18n="mode3_uploaded_file">{{ t("mode3_uploaded_file") }}</div>
                     <div class="text-white font-bold text-sm truncate">{{ conversation["title"] }}</div>
                 </div>
             </div>
@@ -55,16 +55,16 @@ Creează după Model |
                 <!-- INFO -->
                 <div class="grid grid-cols-3 gap-4 mb-6 flex-shrink-0">
                     <div class="bg-slate-100 rounded-2xl p-4 border border-slate-200">
-                        <p class="text-xs uppercase tracking-wide text-slate-500 mb-1">Model încărcat</p>
+                        <p class="text-xs uppercase tracking-wide text-slate-500 mb-1" data-i18n="mode3_model_loaded">{{ t("mode3_model_loaded") }}</p>
                         <p class="font-semibold text-slate-900 truncate">{{ conversation["title"] }}</p>
                     </div>
                     <div class="bg-slate-100 rounded-2xl p-4 border border-slate-200">
-                        <p class="text-xs uppercase tracking-wide text-slate-500 mb-1">Modificări</p>
-                        <p class="font-semibold text-slate-900">Exerciții regenerate</p>
+                        <p class="text-xs uppercase tracking-wide text-slate-500 mb-1" data-i18n="mode3_changes">{{ t("mode3_changes") }}</p>
+                        <p class="font-semibold text-slate-900" data-i18n="mode3_changes_value">{{ t("mode3_changes_value") }}</p>
                     </div>
                     <div class="bg-slate-100 rounded-2xl p-4 border border-slate-200">
-                        <p class="text-xs uppercase tracking-wide text-slate-500 mb-1">Output</p>
-                        <p class="font-semibold text-slate-900">Variantă nouă</p>
+                        <p class="text-xs uppercase tracking-wide text-slate-500 mb-1" data-i18n="mode3_output">{{ t("mode3_output") }}</p>
+                        <p class="font-semibold text-slate-900" data-i18n="mode3_output_value">{{ t("mode3_output_value") }}</p>
                     </div>
                 </div>
 
@@ -78,9 +78,12 @@ Creează după Model |
                         {% else %}
                             <div class="bg-slate-100 p-5 rounded-2xl max-w-3xl border border-slate-200 overflow-hidden">
                                 <div class="flex items-center justify-between mb-3">
-                                    <h3 class="font-bold text-slate-900">Test generat</h3>
+                                    <h3 class="font-bold text-slate-900" data-i18n="mode3_generated_test">{{ t("mode3_generated_test") }}</h3>
                                     <button class="copy-btn text-xs bg-cyan-500 text-slate-950 px-2 py-1 rounded-lg font-bold"
-                                        data-content="{{ message['content'] | e }}">Copiaza</button>
+                                        data-content="{{ message['content'] | e }}"
+                                        data-copy-label="{{ t('mode3_copy') }}"
+                                        data-copied-label="{{ t('mode3_copied') }}"
+                                        data-error-label="{{ t('mode3_error') }}">{{ t("mode3_copy") }}</button>
                                 </div>
                                 <div class="math-content text-slate-700 text-sm leading-relaxed whitespace-pre-wrap break-words max-w-full overflow-x-auto">
                                     {{ message["content"] }}
@@ -92,20 +95,21 @@ Creează după Model |
 
                 <!-- QUICK ACTIONS -->
                 <div class="flex flex-wrap justify-end gap-2 mt-auto mb-3 flex-shrink-0">
-                    <button class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm">Rezolvare test</button>
-                    <button class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm">Generează similare</button>
-                    <button class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm">Generează rand 2</button>
+                    <button class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm" data-i18n="mode3_solve_test">{{ t("mode3_solve_test") }}</button>
+                    <button class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm" data-i18n="mode3_generate_similar">{{ t("mode3_generate_similar") }}</button>
+                    <button class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm" data-i18n="mode3_generate_row2">{{ t("mode3_generate_row2") }}</button>
                 </div>
 
                 <!-- INPUT -->
                 <form action="/mode3/{{ conversation_id }}" method="post" class="flex gap-3 flex-shrink-0">
                     <textarea name="prompt" rows="1"
-                        placeholder="Modifică modelul: ex. scoate trigonometria, adaugă matrici..."
+                        placeholder="{{ t('mode3_placeholder') }}"
+                        data-i18n-placeholder="mode3_placeholder"
                         class="flex-1 text-white border border-slate-300 rounded-2xl p-4 resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500"
                     ></textarea>
                     <button type="submit" onclick="this.disabled=true; this.form.submit();"
-                        class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold px-8 rounded-2xl">
-                        Generează
+                        class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold px-8 rounded-2xl" data-i18n="mode3_generate">
+                        {{ t("mode3_generate") }}
                     </button>
                 </form>
 
@@ -116,56 +120,56 @@ Creează după Model |
         <div class="w-80 flex flex-col gap-3">
 
             <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 shadow-xl h-[calc(100vh-430px)] overflow-y-auto">
-                <h2 class="text-white font-bold mb-4">Selectează lecții</h2>
+                <h2 class="text-white font-bold mb-4" data-i18n="mode3_select_lessons">{{ t("mode3_select_lessons") }}</h2>
                 <div class="space-y-5 text-sm">
                     <div>
-                        <h3 class="text-cyan-400 font-bold mb-2">Clasa a IX-a</h3>
+                        <h3 class="text-cyan-400 font-bold mb-2" data-i18n="mode3_class_9">{{ t("mode3_class_9") }}</h3>
                         <div class="space-y-2">
-                            <label class="flex items-center gap-2 text-slate-300"><input type="checkbox"> Radicali</label>
-                            <label class="flex items-center gap-2 text-slate-300"><input type="checkbox"> Puteri</label>
-                            <label class="flex items-center gap-2 text-slate-300"><input type="checkbox"> Fracții</label>
+                            <label class="flex items-center gap-2 text-slate-300"><input type="checkbox"> {{ t("mode3_lesson_radicals") }}</label>
+                            <label class="flex items-center gap-2 text-slate-300"><input type="checkbox"> {{ t("mode3_lesson_powers") }}</label>
+                            <label class="flex items-center gap-2 text-slate-300"><input type="checkbox"> {{ t("mode3_lesson_fractions") }}</label>
                         </div>
                     </div>
                     <div>
-                        <h3 class="text-cyan-400 font-bold mb-2">Clasa a X-a</h3>
+                        <h3 class="text-cyan-400 font-bold mb-2" data-i18n="mode3_class_10">{{ t("mode3_class_10") }}</h3>
                         <div class="space-y-2">
-                            <label class="flex items-center gap-2 text-slate-300"><input type="checkbox"> Matrici</label>
-                            <label class="flex items-center gap-2 text-slate-300"><input type="checkbox"> Trigonometrie</label>
-                            <label class="flex items-center gap-2 text-slate-300"><input type="checkbox"> Numere complexe</label>
+                            <label class="flex items-center gap-2 text-slate-300"><input type="checkbox"> {{ t("mode3_lesson_matrices") }}</label>
+                            <label class="flex items-center gap-2 text-slate-300"><input type="checkbox"> {{ t("mode3_lesson_trig") }}</label>
+                            <label class="flex items-center gap-2 text-slate-300"><input type="checkbox"> {{ t("mode3_lesson_complex") }}</label>
                         </div>
                     </div>
                     <div>
-                        <h3 class="text-cyan-400 font-bold mb-2">Clasa a XI-a</h3>
+                        <h3 class="text-cyan-400 font-bold mb-2" data-i18n="mode3_class_11">{{ t("mode3_class_11") }}</h3>
                         <div class="space-y-2">
-                            <label class="flex items-center gap-2 text-slate-300"><input type="checkbox"> Limite</label>
-                            <label class="flex items-center gap-2 text-slate-300"><input type="checkbox"> Derivate</label>
+                            <label class="flex items-center gap-2 text-slate-300"><input type="checkbox"> {{ t("mode3_lesson_limits") }}</label>
+                            <label class="flex items-center gap-2 text-slate-300"><input type="checkbox"> {{ t("mode3_lesson_derivatives") }}</label>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 shadow-xl h-[calc(100vh-670px)] overflow-y-auto">
-                <h2 class="text-white font-bold mb-3">Descarcă variante BAC</h2>
+                <h2 class="text-white font-bold mb-3" data-i18n="mode3_download_bac">{{ t("mode3_download_bac") }}</h2>
                 <div class="space-y-2 text-sm">
-                    <a class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">2024 - Proba E</a>
-                    <a class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">Simulare BAC 2025</a>
-                    <a class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">Test trigonometrie</a>
+                    <a class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">{{ t("mode3_lesson_bac_2024") }}</a>
+                    <a class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">{{ t("mode3_lesson_bac_sim") }}</a>
+                    <a class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">{{ t("mode3_lesson_trig_test") }}</a>
                 </div>
             </div>
 
             <div class="flex flex-col gap-2">
                 <button onclick="window.location.href='/menu'"
-                    class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold py-3 rounded-xl">
-                    Schimbă mod
+                    class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold py-3 rounded-xl" data-i18n="mode3_change_mode">
+                    {{ t("mode3_change_mode") }}
                 </button>
                 <button onclick="window.location.href='/menu'"
-                    class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-3 rounded-xl">
-                    Conversație nouă
+                    class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-3 rounded-xl" data-i18n="mode3_new_conversation">
+                    {{ t("mode3_new_conversation") }}
                 </button>
             </div>
 
-            <div class="text-xs text-slate-500 px-1">
-                Tip: apasă pe o lecție pentru a o include în generarea variantei BAC.
+            <div class="text-xs text-slate-500 px-1" data-i18n="mode3_tip">
+                {{ t("mode3_tip") }}
             </div>
 
         </div>
@@ -194,13 +198,16 @@ document.addEventListener("click", async function (e) {
     const btn = e.target.closest(".copy-btn");
     if (!btn) return;
     const raw = btn.dataset.content || "";
+    const copyLabel = btn.dataset.copyLabel || "Copy";
+    const copiedLabel = btn.dataset.copiedLabel || "Copied ✓";
+    const errorLabel = btn.dataset.errorLabel || "Error";
     try {
         await navigator.clipboard.writeText(raw);
-        btn.innerText = "Copiat ✓";
-        setTimeout(() => { btn.innerText = "Copiaza"; }, 1200);
+        btn.innerText = copiedLabel;
+        setTimeout(() => { btn.innerText = copyLabel; }, 1200);
     } catch (err) {
-        btn.innerText = "Eroare";
-        setTimeout(() => { btn.innerText = "Copiaza"; }, 1200);
+        btn.innerText = errorLabel;
+        setTimeout(() => { btn.innerText = copyLabel; }, 1200);
     }
 });
 </script>

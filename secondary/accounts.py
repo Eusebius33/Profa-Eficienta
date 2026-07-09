@@ -141,8 +141,8 @@ def login_function(db, apology):
         session["user_id"] = user["id"]
         session["gender"] = user["gender"]
 
-        # login -> menu
-        return redirect("/menu")
+        # login -> dashboard
+        return redirect("/dashboard")
 
     return render_template("login.html")
 

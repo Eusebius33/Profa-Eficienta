@@ -1,15 +1,148 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    {% if user and user["gender"] == "F" %}
-        Profa Eficientă
-    {% else %}
-        Proful Eficient
-    {% endif %}
+    {{ t("landing_title") }}
 {% endblock %}
 
 {% block main %}
+<div class="min-h-screen overflow-y-auto bg-[radial-gradient(circle_at_top_left,rgba(6,182,212,0.18),transparent_30%),linear-gradient(135deg,#020617_0%,#0f172a_45%,#111827_100%)]">
+    <div class="mx-auto max-w-7xl px-6 py-12 lg:px-8 lg:py-20">
+        <section class="grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
+            <div class="max-w-3xl">
+                <div class="mb-6 inline-flex items-center rounded-full border border-cyan-400/30 bg-cyan-500/10 px-3 py-1 text-sm font-medium text-cyan-300">
+                    {{ t("landing_badge") }}
+                </div>
 
-    <!--momentan e ultimul lucru de facut pe lista, poti genera text publicitar de pe pozele trimise de mine + functiile siteului and stuff-->
+                <h1 class="text-4xl font-black leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">
+                    {{ t("landing_title") }}
+                </h1>
 
+                <p class="mt-6 text-lg leading-8 text-slate-300 sm:text-xl">
+                    {{ t("landing_subtitle") }}
+                </p>
+
+                <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+                    {% if session.get("user_id") %}
+                    <a href="/menu" class="inline-flex items-center justify-center rounded-2xl bg-cyan-500 px-6 py-3 text-base font-semibold text-slate-950 transition hover:bg-cyan-400">
+                        {{ t("landing_cta_primary") }}
+                    </a>
+                    {% else %}
+                    <a href="/register" class="inline-flex items-center justify-center rounded-2xl bg-cyan-500 px-6 py-3 text-base font-semibold text-slate-950 transition hover:bg-cyan-400">
+                        {{ t("landing_cta_primary") }}
+                    </a>
+                    {% endif %}
+                    <a href="/login" class="inline-flex items-center justify-center rounded-2xl border border-slate-700 bg-slate-900/70 px-6 py-3 text-base font-semibold text-white transition hover:border-cyan-400 hover:text-cyan-300">
+                        {{ t("landing_cta_secondary") }}
+                    </a>
+                </div>
+
+                <div class="mt-8 flex flex-wrap gap-3 text-sm text-slate-400">
+                    <span class="rounded-full border border-slate-800 bg-slate-900/60 px-3 py-1">✓ {{ t("landing_feature_1") }}</span>
+                    <span class="rounded-full border border-slate-800 bg-slate-900/60 px-3 py-1">✓ {{ t("landing_feature_2") }}</span>
+                    <span class="rounded-full border border-slate-800 bg-slate-900/60 px-3 py-1">✓ {{ t("landing_feature_3") }}</span>
+                </div>
+            </div>
+
+            <div class="rounded-[2rem] border border-slate-800 bg-slate-950/80 p-6 shadow-2xl backdrop-blur">
+                <div class="flex items-center justify-between">
+                    <div class="text-sm font-semibold uppercase tracking-[0.25em] text-cyan-400">{{ t("landing_example_label") }}</div>
+                    <div class="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-xs font-medium text-cyan-300">{{ t("landing_example_live") }}</div>
+                </div>
+
+                <div class="mt-5 rounded-2xl border border-slate-800 bg-slate-900/80 p-5">
+                    <p class="text-sm text-slate-400">“{{ t("landing_example_prompt") }}”</p>
+                    <div class="mt-4 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 p-4">
+                        <p class="text-xs uppercase tracking-[0.3em] text-cyan-300">{{ t("landing_example_result") }}</p>
+                        <p class="mt-2 text-2xl font-semibold text-white">∫ x² dx = x³/3 + C</p>
+                    </div>
+                    <p class="mt-4 text-sm leading-7 text-slate-400">{{ t("landing_example_note") }}</p>
+                </div>
+
+                <div class="mt-4 space-y-3">
+                    <div class="rounded-2xl border border-slate-800 bg-slate-900/80 p-4">
+                        <div class="font-semibold text-white">{{ t("landing_panel_item_1") }}</div>
+                        <div class="mt-1 text-sm text-slate-400">{{ t("landing_panel_item_1_desc") }}</div>
+                    </div>
+                    <div class="rounded-2xl border border-slate-800 bg-slate-900/80 p-4">
+                        <div class="font-semibold text-white">{{ t("landing_panel_item_2") }}</div>
+                        <div class="mt-1 text-sm text-slate-400">{{ t("landing_panel_item_2_desc") }}</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mt-16 grid gap-6 md:grid-cols-3">
+            <div class="rounded-3xl border border-slate-800 bg-slate-900/70 p-6 shadow-lg">
+                <h3 class="text-xl font-semibold text-white">{{ t("landing_card_1_title") }}</h3>
+                <p class="mt-3 text-sm leading-7 text-slate-400">{{ t("landing_card_1_desc") }}</p>
+            </div>
+
+            <div class="rounded-3xl border border-slate-800 bg-slate-900/70 p-6 shadow-lg">
+                <h3 class="text-xl font-semibold text-white">{{ t("landing_card_2_title") }}</h3>
+                <p class="mt-3 text-sm leading-7 text-slate-400">{{ t("landing_card_2_desc") }}</p>
+            </div>
+
+            <div class="rounded-3xl border border-slate-800 bg-slate-900/70 p-6 shadow-lg">
+                <h3 class="text-xl font-semibold text-white">{{ t("landing_card_3_title") }}</h3>
+                <p class="mt-3 text-sm leading-7 text-slate-400">{{ t("landing_card_3_desc") }}</p>
+            </div>
+        </section>
+
+        <section class="mt-16 grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
+            <div class="rounded-[2rem] border border-slate-800 bg-slate-950/70 p-8 shadow-xl backdrop-blur">
+                <h2 class="text-2xl font-semibold text-white">{{ t("landing_how_title") }}</h2>
+                <p class="mt-3 text-sm leading-7 text-slate-400">{{ t("landing_how_subtitle") }}</p>
+
+                <div class="mt-6 space-y-4">
+                    <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
+                        <div class="text-sm font-semibold text-cyan-300">01 • {{ t("landing_step_1_title") }}</div>
+                        <p class="mt-2 text-sm leading-7 text-slate-400">{{ t("landing_step_1_desc") }}</p>
+                    </div>
+                    <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
+                        <div class="text-sm font-semibold text-cyan-300">02 • {{ t("landing_step_2_title") }}</div>
+                        <p class="mt-2 text-sm leading-7 text-slate-400">{{ t("landing_step_2_desc") }}</p>
+                    </div>
+                    <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
+                        <div class="text-sm font-semibold text-cyan-300">03 • {{ t("landing_step_3_title") }}</div>
+                        <p class="mt-2 text-sm leading-7 text-slate-400">{{ t("landing_step_3_desc") }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="rounded-[2rem] border border-slate-800 bg-slate-900/70 p-8 shadow-xl">
+                <h2 class="text-2xl font-semibold text-white">{{ t("landing_usecases_title") }}</h2>
+                <div class="mt-6 grid gap-4 md:grid-cols-2">
+                    <div class="rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
+                        <h3 class="font-semibold text-white">{{ t("landing_usecase_1_title") }}</h3>
+                        <p class="mt-2 text-sm leading-7 text-slate-400">{{ t("landing_usecase_1_desc") }}</p>
+                    </div>
+                    <div class="rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
+                        <h3 class="font-semibold text-white">{{ t("landing_usecase_2_title") }}</h3>
+                        <p class="mt-2 text-sm leading-7 text-slate-400">{{ t("landing_usecase_2_desc") }}</p>
+                    </div>
+                    <div class="rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
+                        <h3 class="font-semibold text-white">{{ t("landing_usecase_3_title") }}</h3>
+                        <p class="mt-2 text-sm leading-7 text-slate-400">{{ t("landing_usecase_3_desc") }}</p>
+                    </div>
+                    <div class="rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
+                        <h3 class="font-semibold text-white">{{ t("landing_usecase_4_title") }}</h3>
+                        <p class="mt-2 text-sm leading-7 text-slate-400">{{ t("landing_usecase_4_desc") }}</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mt-16 rounded-[2rem] border border-cyan-500/20 bg-cyan-500/10 p-8 shadow-xl backdrop-blur">
+            <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+                <div class="max-w-2xl">
+                    <h2 class="text-2xl font-semibold text-white">{{ t("landing_final_title") }}</h2>
+                    <p class="mt-3 text-sm leading-7 text-slate-300">{{ t("landing_final_subtitle") }}</p>
+                </div>
+                <a href="/register" class="inline-flex items-center justify-center rounded-2xl bg-cyan-500 px-6 py-3 text-base font-semibold text-slate-950 transition hover:bg-cyan-400">
+                    {{ t("landing_final_cta") }}
+                </a>
+            </div>
+        </section>
+    </div>
+</div>
 {% endblock %}

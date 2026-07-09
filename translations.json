@@ -31,6 +31,190 @@
         "ro": "Înregistrare",
         "en": "Register"
     },
+    "landing_badge": {
+        "ro": "AI pentru profesori de matematică",
+        "en": "AI for mathematics teachers"
+    },
+    "landing_title": {
+        "ro": "Creează teste, exerciții și variante BAC în câteva minute",
+        "en": "Create tests, exercises and BAC variants in minutes"
+    },
+    "landing_subtitle": {
+        "ro": "Proful Eficient transformă ideile tale în materiale gata de folosit, cu asistență AI pentru lecții, evaluări și pregătire pentru examen.",
+        "en": "Proful Eficient turns your ideas into ready-to-use materials with AI assistance for lessons, assessments and exam preparation."
+    },
+    "landing_cta_primary": {
+        "ro": "Începe acum",
+        "en": "Start now"
+    },
+    "landing_cta_secondary": {
+        "ro": "Autentificare",
+        "en": "Login"
+    },
+    "landing_feature_1": {
+        "ro": "Text → Mate",
+        "en": "Text → Math"
+    },
+    "landing_feature_2": {
+        "ro": "Document → Mate",
+        "en": "Document → Math"
+    },
+    "landing_feature_3": {
+        "ro": "Variante BAC personalizate",
+        "en": "Personalized BAC variants"
+    },
+    "landing_panel_title": {
+        "ro": "Ce poți face în aplicație",
+        "en": "What you can do in the app"
+    },
+    "landing_panel_item_1": {
+        "ro": "Conversații asistate",
+        "en": "Assisted conversations"
+    },
+    "landing_panel_item_1_desc": {
+        "ro": "Pregătește explicații, exerciții și idei de lecție în timp real.",
+        "en": "Prepare explanations, exercises and lesson ideas in real time."
+    },
+    "landing_panel_item_2": {
+        "ro": "Generare de conținut matematic",
+        "en": "Mathematical content generation"
+    },
+    "landing_panel_item_2_desc": {
+        "ro": "Transformă descrieri simple în expresii și formule corecte, gata de folosit.",
+        "en": "Turn simple descriptions into correct expressions and formulas, ready to use."
+    },
+    "landing_panel_item_3": {
+        "ro": "Teste și variante pentru clasă",
+        "en": "Tests and class variants"
+    },
+    "landing_panel_item_3_desc": {
+        "ro": "Creează fișe, simulări și materiale adaptate nivelului elevilor tăi.",
+        "en": "Create worksheets, simulations and materials tailored to your students' level."
+    },
+    "landing_card_1_title": {
+        "ro": "Asistent AI",
+        "en": "AI Assistant"
+    },
+    "landing_card_1_desc": {
+        "ro": "Discută liber cu aplicația pentru idei de lecții, explicații și răspunsuri rapide.",
+        "en": "Chat freely with the app for lesson ideas, explanations and quick support."
+    },
+    "landing_card_2_title": {
+        "ro": "Text și documente",
+        "en": "Text and documents"
+    },
+    "landing_card_2_desc": {
+        "ro": "Foloseste textul sau fișierele încărcate pentru a genera conținut matematic gata de copiat.",
+        "en": "Use text or uploaded files to generate mathematical content ready to copy."
+    },
+    "landing_card_3_title": {
+        "ro": "Pregătire pentru evaluări",
+        "en": "Assessment preparation"
+    },
+    "landing_card_3_desc": {
+        "ro": "Construiește variante BAC, teste și exerciții personalizate pentru fiecare clasă.",
+        "en": "Build BAC variants, tests and personalized exercises for each class."
+    },
+    "landing_example_label": {
+        "ro": "Exemplu live",
+        "en": "Live example"
+    },
+    "landing_example_live": {
+        "ro": "Generare instant",
+        "en": "Instant generation"
+    },
+    "landing_example_prompt": {
+        "ro": "Integrarea unei funcții în jurul unui punct",
+        "en": "Integrating a function around a point"
+    },
+    "landing_example_result": {
+        "ro": "Rezultat generat",
+        "en": "Generated result"
+    },
+    "landing_example_note": {
+        "ro": "Poți transforma idei rapide în formulări exacte, însoțite de explicații sau variante suplimentare.",
+        "en": "You can turn quick ideas into precise formulations, with explanations or additional variants."
+    },
+    "landing_how_title": {
+        "ro": "Cum funcționează",
+        "en": "How it works"
+    },
+    "landing_how_subtitle": {
+        "ro": "Trei etape simple pentru a trece de la idee la material gata de folosit.",
+        "en": "Three simple steps to move from idea to ready-to-use material."
+    },
+    "landing_step_1_title": {
+        "ro": "Descrie cerința",
+        "en": "Describe the request"
+    },
+    "landing_step_1_desc": {
+        "ro": "Scrie în limbaj natural ce vrei să generezi: exercițiu, explicație, variantă sau fișă de lucru.",
+        "en": "Write in natural language what you want to generate: an exercise, explanation, variant or worksheet."
+    },
+    "landing_step_2_title": {
+        "ro": "AI transformă textul",
+        "en": "AI transforms the text"
+    },
+    "landing_step_2_desc": {
+        "ro": "Platforma creează formulări matematice corecte, în format clar și gata pentru clasă.",
+        "en": "The platform creates correct mathematical formulations in a clear format ready for class."
+    },
+    "landing_step_3_title": {
+        "ro": "Reutilizează și personalizează",
+        "en": "Reuse and personalize"
+    },
+    "landing_step_3_desc": {
+        "ro": "Salvează, adaptează și folosește rezultatele pentru lecții, evaluări sau pregătirea pentru examen.",
+        "en": "Save, adapt and use the results for lessons, assessments or exam preparation."
+    },
+    "landing_usecases_title": {
+        "ro": "Ideal pentru",
+        "en": "Ideal for"
+    },
+    "landing_usecase_1_title": {
+        "ro": "Lecții și explicații",
+        "en": "Lessons and explanations"
+    },
+    "landing_usecase_1_desc": {
+        "ro": "Pregătește exemple clare și rapid accesibile pentru elevi.",
+        "en": "Prepare clear and quickly accessible examples for students."
+    },
+    "landing_usecase_2_title": {
+        "ro": "Evaluări și teste",
+        "en": "Assessments and tests"
+    },
+    "landing_usecase_2_desc": {
+        "ro": "Generează variante diferite pentru clasă sau pentru verificări rapide.",
+        "en": "Generate different variants for class or quick checks."
+    },
+    "landing_usecase_3_title": {
+        "ro": "Pregătire BAC",
+        "en": "BAC preparation"
+    },
+    "landing_usecase_3_desc": {
+        "ro": "Creează exerciții și simulări adaptate nivelului elevilor tăi.",
+        "en": "Create exercises and simulations adapted to your students' level."
+    },
+    "landing_usecase_4_title": {
+        "ro": "Documente și fișiere",
+        "en": "Documents and files"
+    },
+    "landing_usecase_4_desc": {
+        "ro": "Transformă materialele încărcate în conținut matematic gata de folosit.",
+        "en": "Transform uploaded materials into ready-to-use mathematical content."
+    },
+    "landing_final_title": {
+        "ro": "Gata să reduci timpul petrecut pe pregătire?",
+        "en": "Ready to reduce the time spent on preparation?"
+    },
+    "landing_final_subtitle": {
+        "ro": "Începe cu un cont și construiește primul set de materiale în câteva minute.",
+        "en": "Start with an account and build your first set of materials in minutes."
+    },
+    "landing_final_cta": {
+        "ro": "Creează contul meu",
+        "en": "Create my account"
+    },
     "footer_rights": {
         "ro": "© 2025 Proful Eficient. Toate drepturile rezervate.",
         "en": "© 2025 Proful Eficient. All rights reserved."
@@ -230,6 +414,158 @@
     "mode3_desc": {
         "ro": "Încarci o poză cu un exercițiu și primești textul prelucrat, gata de copiat.",
         "en": "Upload a picture of an exercise and get the processed text, ready to copy."
+    },
+    "mode3_conversations": {
+        "ro": "Conversații",
+        "en": "Conversations"
+    },
+    "mode3_account": {
+        "ro": "Cont",
+        "en": "Account"
+    },
+    "mode3_manage": {
+        "ro": "Gestionează",
+        "en": "Manage"
+    },
+    "mode3_subtitle": {
+        "ro": "Generezi automat un test nou pe baza modelului încărcat",
+        "en": "You automatically generate a new test based on the uploaded model"
+    },
+    "mode3_uploaded_file": {
+        "ro": "Fișier încărcat:",
+        "en": "Uploaded file:"
+    },
+    "mode3_model_loaded": {
+        "ro": "Model încărcat",
+        "en": "Loaded model"
+    },
+    "mode3_changes": {
+        "ro": "Modificări",
+        "en": "Changes"
+    },
+    "mode3_changes_value": {
+        "ro": "Exerciții regenerate",
+        "en": "Regenerated exercises"
+    },
+    "mode3_output": {
+        "ro": "Output",
+        "en": "Output"
+    },
+    "mode3_output_value": {
+        "ro": "Variantă nouă",
+        "en": "New variant"
+    },
+    "mode3_generated_test": {
+        "ro": "Test generat",
+        "en": "Generated test"
+    },
+    "mode3_copy": {
+        "ro": "Copiază",
+        "en": "Copy"
+    },
+    "mode3_copied": {
+        "ro": "Copiat ✓",
+        "en": "Copied ✓"
+    },
+    "mode3_error": {
+        "ro": "Eroare",
+        "en": "Error"
+    },
+    "mode3_solve_test": {
+        "ro": "Rezolvare test",
+        "en": "Solve test"
+    },
+    "mode3_generate_similar": {
+        "ro": "Generează similare",
+        "en": "Generate similar"
+    },
+    "mode3_generate_row2": {
+        "ro": "Generează rând 2",
+        "en": "Generate row 2"
+    },
+    "mode3_placeholder": {
+        "ro": "Modifică modelul: ex. scoate trigonometria, adaugă matrici...",
+        "en": "Modify the model: e.g. remove trigonometry, add matrices..."
+    },
+    "mode3_generate": {
+        "ro": "Generează",
+        "en": "Generate"
+    },
+    "mode3_select_lessons": {
+        "ro": "Selectează lecții",
+        "en": "Select lessons"
+    },
+    "mode3_class_9": {
+        "ro": "Clasa a IX-a",
+        "en": "9th Grade"
+    },
+    "mode3_class_10": {
+        "ro": "Clasa a X-a",
+        "en": "10th Grade"
+    },
+    "mode3_class_11": {
+        "ro": "Clasa a XI-a",
+        "en": "11th Grade"
+    },
+    "mode3_download_bac": {
+        "ro": "Descarcă variante BAC",
+        "en": "Download BAC variants"
+    },
+    "mode3_change_mode": {
+        "ro": "Schimbă mod",
+        "en": "Change mode"
+    },
+    "mode3_new_conversation": {
+        "ro": "Conversație nouă",
+        "en": "New conversation"
+    },
+    "mode3_tip": {
+        "ro": "Tip: apasă pe o lecție pentru a o include în generarea variantei BAC.",
+        "en": "Tip: click a lesson to include it in BAC variant generation."
+    },
+    "mode3_lesson_radicals": {
+        "ro": "Radicali",
+        "en": "Radicals"
+    },
+    "mode3_lesson_powers": {
+        "ro": "Puteri",
+        "en": "Powers"
+    },
+    "mode3_lesson_fractions": {
+        "ro": "Fracții",
+        "en": "Fractions"
+    },
+    "mode3_lesson_matrices": {
+        "ro": "Matrice",
+        "en": "Matrices"
+    },
+    "mode3_lesson_trig": {
+        "ro": "Trigonometrie",
+        "en": "Trigonometry"
+    },
+    "mode3_lesson_complex": {
+        "ro": "Numere complexe",
+        "en": "Complex numbers"
+    },
+    "mode3_lesson_limits": {
+        "ro": "Limite",
+        "en": "Limits"
+    },
+    "mode3_lesson_derivatives": {
+        "ro": "Derivate",
+        "en": "Derivatives"
+    },
+    "mode3_lesson_bac_2024": {
+        "ro": "2024 - Proba E",
+        "en": "2024 - Proba E"
+    },
+    "mode3_lesson_bac_sim": {
+        "ro": "Simulare BAC 2025",
+        "en": "BAC Simulation 2025"
+    },
+    "mode3_lesson_trig_test": {
+        "ro": "Test trigonometrie",
+        "en": "Trigonometry test"
     },
     "mode5_title": {
         "ro": "Generare Varianta BAC",
@@ -694,6 +1030,210 @@
     "idx_manage": {
         "ro": "Gestioneaza",
         "en": "Manage"
+    },
+    "dashboard_title": {
+        "ro": "Panou de control",
+        "en": "Dashboard"
+    },
+    "dashboard_welcome_back": {
+        "ro": "Bine ai revenit",
+        "en": "Welcome back"
+    },
+    "dashboard_teacher": {
+        "ro": "Profesor",
+        "en": "Teacher"
+    },
+    "dashboard_intro": {
+        "ro": "Ești gata să creezi ceva minunat pentru elevii tăi astăzi?",
+        "en": "Ready to create something amazing for your students today?"
+    },
+    "dashboard_ai_ready": {
+        "ro": "AI gata",
+        "en": "AI Ready"
+    },
+    "dashboard_new_chat": {
+        "ro": "Conversație nouă",
+        "en": "New Chat"
+    },
+    "dashboard_quick_actions": {
+        "ro": "Acțiuni rapide",
+        "en": "Quick Actions"
+    },
+    "dashboard_start_conversation": {
+        "ro": "Începe conversația",
+        "en": "Start Conversation"
+    },
+    "dashboard_start_conversation_desc": {
+        "ro": "Discută cu AI-ul pentru sprijin la lecții",
+        "en": "Chat with AI for lesson support"
+    },
+    "dashboard_text_to_math": {
+        "ro": "Text în matematică",
+        "en": "Text to Math"
+    },
+    "dashboard_text_to_math_desc": {
+        "ro": "Convertește limbajul natural în LaTeX",
+        "en": "Convert natural language to LaTeX"
+    },
+    "dashboard_upload_document": {
+        "ro": "Încarcă document",
+        "en": "Upload Document"
+    },
+    "dashboard_upload_document_desc": {
+        "ro": "Extrage matematică din fișiere și imagini",
+        "en": "Extract math from files & images"
+    },
+    "dashboard_bac_variant": {
+        "ro": "Creează variantă BAC",
+        "en": "Create BAC Variant"
+    },
+    "dashboard_bac_variant_desc": {
+        "ro": "Generează materiale pentru examen BAC",
+        "en": "Generate BAC exam materials"
+    },
+    "dashboard_recent_conversations": {
+        "ro": "Conversații recente",
+        "en": "Recent Conversations"
+    },
+    "dashboard_view_all": {
+        "ro": "Vezi tot",
+        "en": "View all"
+    },
+    "dashboard_untitled_conversation": {
+        "ro": "Conversație fără titlu",
+        "en": "Untitled Conversation"
+    },
+    "dashboard_no_conversations": {
+        "ro": "Nu există conversații încă",
+        "en": "No conversations yet"
+    },
+    "dashboard_start_first_conversation": {
+        "ro": "Începe prima conversație",
+        "en": "Start your first conversation"
+    },
+    "dashboard_create_content": {
+        "ro": "Creează conținut",
+        "en": "Create Content"
+    },
+    "dashboard_ai_teacher_assistant": {
+        "ro": "Asistent profesor AI",
+        "en": "AI Teacher Assistant"
+    },
+    "dashboard_ai_teacher_assistant_desc": {
+        "ro": "Obține ajutor pentru lecții, explicații și strategii de predare",
+        "en": "Get help with lessons, explanations, and teaching strategies"
+    },
+    "dashboard_text_to_math_latex": {
+        "ro": "Text în matematică / LaTeX",
+        "en": "Text to Math / LaTeX"
+    },
+    "dashboard_text_to_math_latex_desc": {
+        "ro": "Transformă textul simplu în expresii matematice formate",
+        "en": "Transform plain text into formatted mathematical expressions"
+    },
+    "dashboard_document_to_math": {
+        "ro": "Document în matematică",
+        "en": "Document to Math"
+    },
+    "dashboard_document_to_math_desc": {
+        "ro": "Încarcă PDF-uri, imagini sau documente și extrage conținut matematic",
+        "en": "Upload PDFs, images, or docs and extract math content"
+    },
+    "dashboard_tests_bac": {
+        "ro": "Teste și generator BAC",
+        "en": "Tests & BAC Generator"
+    },
+    "dashboard_tests_bac_desc": {
+        "ro": "Creează variante de examen și teste de practică automat",
+        "en": "Create exam variants and practice tests automatically"
+    },
+    "dashboard_handwriting_ocr": {
+        "ro": "OCR pentru scris de mână",
+        "en": "Handwriting OCR"
+    },
+    "dashboard_handwriting_ocr_desc": {
+        "ro": "Convertește matematica scrisă de mână în LaTeX digital",
+        "en": "Convert handwritten math to digital LaTeX"
+    },
+    "dashboard_saved_materials": {
+        "ro": "Materiale salvate",
+        "en": "Saved Materials"
+    },
+    "dashboard_saved_materials_desc": {
+        "ro": "Răsfoiește și gestionează tot conținutul tău generat",
+        "en": "Browse and manage all your generated content"
+    },
+    "dashboard_recent_generated_files": {
+        "ro": "Fișiere generate recent",
+        "en": "Recent Generated Files"
+    },
+    "dashboard_untitled": {
+        "ro": "Fără titlu",
+        "en": "Untitled"
+    },
+    "dashboard_material": {
+        "ro": "Material",
+        "en": "Material"
+    },
+    "dashboard_no_generated_files": {
+        "ro": "Nu există fișiere generate încă",
+        "en": "No generated files yet"
+    },
+    "dashboard_no_generated_files_desc": {
+        "ro": "Începe să creezi conținut pentru a-l vedea aici",
+        "en": "Start creating content to see it here"
+    },
+    "dashboard_your_activity": {
+        "ro": "Activitatea ta",
+        "en": "Your Activity"
+    },
+    "dashboard_active_conversations": {
+        "ro": "Conversații active",
+        "en": "Active Conversations"
+    },
+    "dashboard_generated_materials": {
+        "ro": "Materiale generate",
+        "en": "Generated Materials"
+    },
+    "dashboard_this_week": {
+        "ro": "Săptămâna aceasta",
+        "en": "This Week"
+    },
+    "dashboard_teacher_tip": {
+        "ro": "Sfat pentru profesor",
+        "en": "Teacher Tip"
+    },
+    "dashboard_teacher_tip_text": {
+        "ro": "Încearcă să folosești asistentul AI pentru a genera exerciții diferențiate pentru clasa ta. Cere trei niveluri de dificultate pentru același subiect!",
+        "en": "Try using the AI assistant to generate differentiated exercises for your class. Ask for three difficulty levels on the same topic!"
+    },
+    "dashboard_shortcuts": {
+        "ro": "Scurtături",
+        "en": "Shortcuts"
+    },
+    "dashboard_upload": {
+        "ro": "Încarcă",
+        "en": "Upload"
+    },
+    "dashboard_did_you_know": {
+        "ro": "Știai că?",
+        "en": "Did you know?"
+    },
+    "dashboard_did_you_know_text": {
+        "ro": "Poți încărca probleme matematice scrise de mână și OCR-ul le va transforma în LaTeX editabil în câteva secunde.",
+        "en": "You can upload handwritten math problems and our OCR will convert them to editable LaTeX in seconds."
+    },
+    "dashboard_try_handwriting_ocr": {
+        "ro": "Încearcă OCR pentru scris de mână",
+        "en": "Try Handwriting OCR"
+    },
+    "dashboard_edit": {
+        "ro": "Editează",
+        "en": "Edit"
+    },
+    "dashboard_download": {
+        "ro": "Descarcă",
+        "en": "Download"
     },
     "idx_greeting": {
         "ro": "Salut, Profesorule! 👋",
