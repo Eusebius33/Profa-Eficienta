@@ -1,10 +1,10 @@
-Flask
-Flask-Session
-Werkzeug
+flask
+flask-session
 PyPDF2
 python-docx
-Pillow
-python-dotenv
-markdown
 google-genai
-
+python-dotenv
+pillow
+sentence-transformers
+markdown
+werkzeug
