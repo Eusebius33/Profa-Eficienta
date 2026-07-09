@@ -84,7 +84,7 @@
             {% if session.get("user_id") %}
             <!-- Logo -->
             <a
-                href="/"
+                href="{{ url_for('dashboard') }}"
                 class="flex items-center gap-3 text-white no-underline"
             >
 
