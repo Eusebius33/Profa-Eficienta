@@ -9,6 +9,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!--KaTeX-->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -19,11 +23,17 @@
                 extend: {
                     colors: {
                         primary: "#06b6d4"
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                        display: ['Outfit', 'ui-sans-serif', 'system-ui', 'sans-serif']
                     }
                 }
             }
         }
     </script>
+    <!-- Motion system -->
+    <link href="{{ url_for('static', filename='animations.css') }}" rel="stylesheet">
 
     <!-- Bootstrap (optional, poti sa-l stergi daca ramai full Tailwind) -->
     <link
@@ -99,7 +109,7 @@
                 >
                 -->
 
-<span class="text-2xl font-bold tracking-tight">
+<span class="font-display text-2xl font-bold tracking-tight">
 
     {% if session.get("gender") == "F" %}
         Profa
@@ -129,7 +139,7 @@
                 >
                 -->
 
-                <span class="text-2xl font-bold tracking-tight">
+                <span class="font-display text-2xl font-bold tracking-tight">
                     Proful
                     <span class="text-cyan-400">
                         Eficient
@@ -308,6 +318,7 @@
     {% block scripts %}{% endblock %}
     <script src="/static/i18n.js"></script>
 <script src="/static/copyMath.js"></script>
+<script src="{{ url_for('static', filename='animations.js') }}"></script>
 </body>
 
 </html>

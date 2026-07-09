@@ -9,4 +9,5 @@ sentence-transformers
 markdown
 werkzeug
 reportlab
+gunicorn
 

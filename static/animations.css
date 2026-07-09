@@ -1,0 +1,343 @@
+/* =============================================
+   MOTION SYSTEM — shared across landing, dashboard,
+   documentation. Reveal-on-scroll, counters, tilt,
+   accordion, decorative motion. Transform/opacity only.
+   ============================================= */
+
+:root {
+    --ease-enter: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-move: cubic-bezier(0.25, 1, 0.5, 1);
+    --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+/* ---------- Reveal-on-scroll ---------- */
+
+.reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 700ms var(--ease-enter), transform 700ms var(--ease-enter);
+    transition-delay: calc(var(--stagger-index, 0) * 60ms);
+}
+
+.reveal.is-visible {
+    opacity: 1;
+    transform: none;
+}
+
+.reveal-left {
+    transform: translate(-32px, 0);
+}
+
+.reveal-left.is-visible {
+    transform: none;
+}
+
+.reveal-right {
+    transform: translate(32px, 0);
+}
+
+.reveal-right.is-visible {
+    transform: none;
+}
+
+.reveal-scale {
+    transform: scale(0.92);
+}
+
+.reveal-scale.is-visible {
+    transform: scale(1);
+}
+
+/* ---------- Decorative ambient motion ---------- */
+
+.orb {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(60px);
+    pointer-events: none;
+    will-change: transform;
+    animation: orb-float var(--orb-duration, 12s) ease-in-out infinite;
+    animation-delay: var(--orb-delay, 0s);
+}
+
+@keyframes orb-float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(var(--orb-x, 24px), var(--orb-y, -20px)) scale(1.06); }
+}
+
+.math-glyph {
+    position: absolute;
+    pointer-events: none;
+    will-change: transform;
+    animation: glyph-drift var(--glyph-duration, 9s) ease-in-out infinite;
+    animation-delay: var(--glyph-delay, 0s);
+}
+
+@keyframes glyph-drift {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-16px) rotate(var(--glyph-rotate, 6deg)); }
+}
+
+/* ---------- Gradient text ---------- */
+
+.gradient-text {
+    background: linear-gradient(90deg, #22d3ee, #38bdf8, #22d3ee);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: gradient-shift 6s ease-in-out infinite;
+}
+
+@keyframes gradient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+/* ---------- Shimmer sweep (loading / skeleton) ---------- */
+
+.shimmer {
+    position: relative;
+    overflow: hidden;
+}
+
+.shimmer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+    animation: shimmer-sweep 1.4s ease-in-out infinite;
+}
+
+@keyframes shimmer-sweep {
+    100% { transform: translateX(100%); }
+}
+
+/* ---------- Typing demo ---------- */
+
+.typing-caret {
+    display: inline-block;
+    width: 2px;
+    margin-left: 2px;
+    background: currentColor;
+    animation: caret-blink 1s steps(1) infinite;
+}
+
+@keyframes caret-blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+}
+
+.demo-fade-swap {
+    animation: demo-materialize 520ms var(--ease-enter);
+}
+
+@keyframes demo-materialize {
+    from { opacity: 0; transform: translateY(6px) scale(0.98); }
+    to { opacity: 1; transform: none; }
+}
+
+/* ---------- Tilt + spotlight cards ---------- */
+
+.tilt-card {
+    transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    transition: transform 400ms var(--ease-enter), box-shadow 400ms var(--ease-enter), border-color 300ms ease;
+    position: relative;
+}
+
+.tilt-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(360px circle at var(--x, 50%) var(--y, 50%), rgba(6, 182, 212, 0.12), transparent 55%);
+    opacity: 0;
+    transition: opacity 300ms ease;
+    pointer-events: none;
+}
+
+.tilt-card:hover::before {
+    opacity: 1;
+}
+
+/* ---------- Numbered badge pop ---------- */
+
+.badge-pop.is-visible {
+    animation: badge-pop 560ms var(--ease-enter) backwards;
+    animation-delay: calc(var(--stagger-index, 0) * 80ms);
+}
+
+@keyframes badge-pop {
+    0% { opacity: 0; transform: scale(0.6); }
+    70% { opacity: 1; transform: scale(1.08); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+/* ---------- Marquee strip ---------- */
+
+.marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 26s linear infinite;
+}
+
+.marquee-track:hover {
+    animation-play-state: paused;
+}
+
+@keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+}
+
+/* ---------- Draw-in line (SVG path) ---------- */
+
+.draw-line path {
+    stroke-dasharray: 100 100;
+    stroke-dashoffset: 100;
+    transition: stroke-dashoffset 1400ms var(--ease-move);
+}
+
+.draw-line.is-visible path {
+    stroke-dashoffset: 0;
+}
+
+/* ---------- Step connector fill ---------- */
+
+.step-fill {
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 900ms var(--ease-move);
+    transition-delay: calc(var(--stagger-index, 0) * 140ms);
+}
+
+.step-fill.is-visible {
+    transform: scaleX(1);
+}
+
+[dir="rtl"] .step-fill,
+.step-fill.step-fill--vertical {
+    transform: scaleY(0);
+    transform-origin: top;
+}
+
+.step-fill.step-fill--vertical.is-visible {
+    transform: scaleY(1);
+}
+
+/* ---------- Accordion (FAQ) ---------- */
+
+[data-accordion-panel] {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 360ms var(--ease-enter);
+}
+
+[data-accordion-item].is-open [data-accordion-panel] {
+    grid-template-rows: 1fr;
+}
+
+[data-accordion-panel] > div {
+    overflow: hidden;
+}
+
+[data-accordion-chevron] {
+    transition: transform 320ms var(--ease-enter);
+}
+
+[data-accordion-item].is-open [data-accordion-chevron] {
+    transform: rotate(180deg);
+}
+
+[data-accordion-trigger] {
+    cursor: pointer;
+}
+
+/* ---------- Nav scroll state ---------- */
+
+nav.is-scrolled {
+    box-shadow: 0 12px 30px -18px rgba(2, 6, 23, 0.55);
+}
+
+/* ---------- Count-up numerals ---------- */
+
+[data-count-to] {
+    font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Texture utilities ---------- */
+
+.bg-grid-dots {
+    background-image: radial-gradient(rgba(148, 163, 184, 0.35) 1px, transparent 1px);
+    background-size: 26px 26px;
+}
+
+/* ---------- Scrollspy TOC ---------- */
+
+[data-toc-link] {
+    position: relative;
+    transition: color 200ms ease, border-color 200ms ease;
+}
+
+[data-toc-link].is-active {
+    color: #22d3ee;
+    border-color: rgba(34, 211, 238, 0.4);
+    background: rgba(6, 182, 212, 0.12);
+}
+
+.hover-lift {
+    transition: transform 300ms var(--ease-enter), box-shadow 300ms var(--ease-enter), border-color 300ms ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-4px);
+}
+
+/* ---------- Reduced motion: kill non-essential movement ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    .reveal,
+    .reveal-left,
+    .reveal-right,
+    .reveal-scale {
+        transition: opacity 200ms linear;
+        transform: none !important;
+    }
+
+    .orb,
+    .math-glyph,
+    .gradient-text,
+    .marquee-track,
+    .shimmer::after,
+    .typing-caret {
+        animation: none !important;
+    }
+
+    .badge-pop.is-visible {
+        animation: none !important;
+    }
+
+    .tilt-card {
+        transform: none !important;
+        transition: box-shadow 200ms ease, border-color 200ms ease;
+    }
+
+    .demo-fade-swap {
+        animation: none !important;
+    }
+
+    .animate-ping,
+    .animate-pulse,
+    .animate-bounce {
+        animation: none !important;
+    }
+}

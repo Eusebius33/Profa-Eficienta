@@ -2067,5 +2067,20 @@
     "doc_faq_a5": { "ro": "Momentan este disponibilă varianta <strong>M_Tehnologic</strong>. Suportul pentru alte profiluri va fi adăugat în versiunile viitoare.", "en": "Currently the <strong>M_Tehnologic</strong> variant is available. Support for other profiles will be added in future versions." },
     "doc_cta_title": { "ro": "Gata să începi?", "en": "Ready to start?" },
     "doc_cta_sub": { "ro": "Alege un mod și generează primul tău material educațional.", "en": "Choose a mode and generate your first educational material." },
-    "doc_cta_btn": { "ro": "Mergi la meniu →", "en": "Go to menu →" }
+    "doc_cta_btn": { "ro": "Mergi la meniu →", "en": "Go to menu →" },
+    "doc_toc_label": { "ro": "Cuprins", "en": "Contents" },
+
+    "landing_hero_note": { "ro": "Fără costuri ascunse. Îți creezi contul în câteva minute.", "en": "No hidden costs. Set up your account in just a few minutes." },
+    "landing_demo_1_prompt": { "ro": "Integrala din x la puterea a doua", "en": "The integral of x squared" },
+    "landing_demo_2_prompt": { "ro": "Derivata funcției sin de x la pătrat", "en": "The derivative of sine of x squared" },
+    "landing_demo_3_prompt": { "ro": "Formula rezolvantă pentru o ecuație de gradul doi", "en": "The quadratic formula for a second-degree equation" },
+    "landing_demo_4_prompt": { "ro": "Identitatea fundamentală a trigonometriei", "en": "The fundamental trigonometric identity" },
+    "landing_trust_title": { "ro": "Platforma pe scurt", "en": "The platform at a glance" },
+    "landing_trust_modes_label": { "ro": "Moduri de generare", "en": "Generation modes" },
+    "landing_trust_languages_label": { "ro": "Limbi disponibile", "en": "Available languages" },
+    "landing_trust_ai_label": { "ro": "Motor AI", "en": "AI engine" },
+    "landing_trust_ai_value": { "ro": "Google Gemini", "en": "Google Gemini" },
+    "landing_trust_export_label": { "ro": "Export compatibil", "en": "Export compatible" },
+    "landing_trust_export_value": { "ro": "Microsoft Word", "en": "Microsoft Word" },
+    "landing_final_note": { "ro": "Gratuit la înregistrare. Nu este necesar niciun card bancar.", "en": "Free to sign up. No credit card required." }
 }

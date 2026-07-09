@@ -1,196 +1,200 @@
-﻿{% extends "layout1.html" %}
+{% extends "layout1.html" %}
 
 {% block title %}
-    DocumentaÈ›ie
+    Documentație
 {% endblock %}
 
 {% block main %}
 
-<div class="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 px-4 py-12">
-    <div class="max-w-5xl mx-auto space-y-8">
+<div class="min-h-screen overflow-x-clip bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 px-4 py-12">
+    <div class="pointer-events-none fixed inset-0 z-0" aria-hidden="true">
+        <div class="orb bg-cyan-500/10" style="width:20rem;height:20rem;top:-4rem;right:-6rem;--orb-duration:16s;--orb-x:-20px;--orb-y:24px;"></div>
+    </div>
 
-        <!-- â”€â”€ HERO â”€â”€ -->
-        <div class="text-center mb-4">
-            <span class="inline-block bg-cyan-500/20 text-cyan-400 text-sm font-semibold px-4 py-1.5 rounded-full mb-4" data-i18n="doc_badge">
-                Ghid de utilizare
+    <div class="relative mx-auto max-w-5xl space-y-6">
+
+        <!-- ── HERO ── -->
+        <div class="mb-2 text-center">
+            <span class="reveal inline-block rounded-full bg-cyan-500/20 px-4 py-1.5 text-sm font-semibold text-cyan-400">
+                {{ t("doc_badge") }}
             </span>
-            <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
-                {% if user and user["gender"] == "F" %}Profa EficientÄƒ{% else %}Proful Eficient{% endif %}
+            <h1 class="reveal font-display mt-4 text-4xl font-bold text-white md:text-5xl" style="--stagger-index:1;">
+                {% if user and user["gender"] == "F" %}Profa Eficientă{% else %}Proful Eficient{% endif %}
             </h1>
-            <p class="text-slate-400 text-lg max-w-2xl mx-auto" data-i18n="doc_subtitle">
-                PlatformÄƒ AI pentru profesorii de matematicÄƒ â€” generare de teste, fiÈ™e de lucru È™i variante de BAC, cu asistenÈ›Äƒ conversaÈ›ionalÄƒ integratÄƒ.
+            <p class="reveal mx-auto mt-4 max-w-2xl text-lg text-slate-400" style="--stagger-index:2;">
+                {{ t("doc_subtitle") }}
             </p>
         </div>
 
-        <!-- â”€â”€ GETTING STARTED â”€â”€ -->
-        <div class="bg-white border border-slate-200 rounded-3xl p-7 md:p-8 shadow-xl">
-            <h2 class="text-2xl font-bold text-slate-900 mb-1" data-i18n="doc_start_title">Cum sÄƒ Ã®ncepi</h2>
-            <p class="text-slate-500 text-sm mb-6" data-i18n="doc_start_sub">UrmeazÄƒ cei patru paÈ™i pentru a folosi platforma prima datÄƒ.</p>
-            <ol class="space-y-5">
+        <!-- ── TOC ── -->
+        <nav aria-label="{{ t('doc_toc_label') }}" class="sticky top-[72px] z-40 -mx-4 overflow-x-auto border-y border-slate-800/60 bg-slate-950/90 px-4 py-3 backdrop-blur md:mx-0 md:rounded-2xl md:border">
+            <div class="flex max-w-5xl gap-2 whitespace-nowrap">
+                <a href="#getting-started" data-toc-link="getting-started" class="rounded-full border border-transparent px-4 py-1.5 text-sm font-medium text-slate-300 no-underline transition hover:text-cyan-300">{{ t("doc_start_title") }}</a>
+                <a href="#modes" data-toc-link="modes" class="rounded-full border border-transparent px-4 py-1.5 text-sm font-medium text-slate-300 no-underline transition hover:text-cyan-300">{{ t("doc_modes_title") }}</a>
+                <a href="#styles" data-toc-link="styles" class="rounded-full border border-transparent px-4 py-1.5 text-sm font-medium text-slate-300 no-underline transition hover:text-cyan-300">{{ t("doc_styles_title") }}</a>
+                <a href="#faq" data-toc-link="faq" class="rounded-full border border-transparent px-4 py-1.5 text-sm font-medium text-slate-300 no-underline transition hover:text-cyan-300">{{ t("doc_faq_title") }}</a>
+            </div>
+        </nav>
 
-                <li class="flex gap-4 items-start">
-                    <span class="flex-shrink-0 w-8 h-8 bg-cyan-500 text-white font-bold rounded-full flex items-center justify-center text-sm">1</span>
+        <!-- ── GETTING STARTED ── -->
+        <div id="getting-started" class="reveal hover-lift scroll-mt-32 rounded-3xl border border-slate-200 bg-white p-7 shadow-xl md:p-8">
+            <h2 class="text-2xl font-bold text-slate-900 mb-1">{{ t("doc_start_title") }}</h2>
+            <p class="text-slate-500 text-sm mb-6">{{ t("doc_start_sub") }}</p>
+            <ol class="space-y-5" data-reveal-group>
+
+                <li class="reveal flex gap-4 items-start">
+                    <span class="badge-pop flex-shrink-0 w-8 h-8 bg-cyan-500 text-white font-bold rounded-full flex items-center justify-center text-sm">1</span>
                     <div>
-                        <p class="font-semibold text-slate-900" data-i18n="doc_step1_title">CreeazÄƒ un cont</p>
-                        <p class="text-slate-600 text-sm mt-0.5" data-i18n="doc_step1_desc">ÃŽnregistreazÄƒ-te cu email, nume, liceu È™i gen. Contul tÄƒu salveazÄƒ conversaÈ›iile, stilurile È™i toate setÄƒrile.</p>
+                        <p class="font-semibold text-slate-900">{{ t("doc_step1_title") }}</p>
+                        <p class="text-slate-600 text-sm mt-0.5">{{ t("doc_step1_desc") }}</p>
                     </div>
                 </li>
 
-                <li class="flex gap-4 items-start">
-                    <span class="flex-shrink-0 w-8 h-8 bg-cyan-500 text-white font-bold rounded-full flex items-center justify-center text-sm">2</span>
+                <li class="reveal flex gap-4 items-start">
+                    <span class="badge-pop flex-shrink-0 w-8 h-8 bg-cyan-500 text-white font-bold rounded-full flex items-center justify-center text-sm">2</span>
                     <div>
-                        <p class="font-semibold text-slate-900" data-i18n="doc_step2_title">Alege un mod de lucru</p>
-                        <p class="text-slate-600 text-sm mt-0.5" data-i18n="doc_step2_desc">Din meniul principal poÈ›i alege unul dintre cele 5 moduri disponibile Ã®n funcÈ›ie de nevoie.</p>
+                        <p class="font-semibold text-slate-900">{{ t("doc_step2_title") }}</p>
+                        <p class="text-slate-600 text-sm mt-0.5">{{ t("doc_step2_desc") }}</p>
                     </div>
                 </li>
 
-                <li class="flex gap-4 items-start">
-                    <span class="flex-shrink-0 w-8 h-8 bg-cyan-500 text-white font-bold rounded-full flex items-center justify-center text-sm">3</span>
+                <li class="reveal flex gap-4 items-start">
+                    <span class="badge-pop flex-shrink-0 w-8 h-8 bg-cyan-500 text-white font-bold rounded-full flex items-center justify-center text-sm">3</span>
                     <div>
-                        <p class="font-semibold text-slate-900" data-i18n="doc_step3_title">GenereazÄƒ materiale</p>
-                        <p class="text-slate-600 text-sm mt-0.5" data-i18n="doc_step3_desc">UrmÄƒreÈ™ti paÈ™ii din interfaÈ›Äƒ È™i primeÈ™ti Ã®n cÃ¢teva secunde teste, fiÈ™e sau rÄƒspunsuri generate de AI.</p>
+                        <p class="font-semibold text-slate-900">{{ t("doc_step3_title") }}</p>
+                        <p class="text-slate-600 text-sm mt-0.5">{{ t("doc_step3_desc") }}</p>
                     </div>
                 </li>
 
-                <li class="flex gap-4 items-start">
-                    <span class="flex-shrink-0 w-8 h-8 bg-cyan-500 text-white font-bold rounded-full flex items-center justify-center text-sm">4</span>
+                <li class="reveal flex gap-4 items-start">
+                    <span class="badge-pop flex-shrink-0 w-8 h-8 bg-cyan-500 text-white font-bold rounded-full flex items-center justify-center text-sm">4</span>
                     <div>
-                        <p class="font-semibold text-slate-900" data-i18n="doc_step4_title">CopiazÄƒ È™i exportÄƒ</p>
-                        <p class="text-slate-600 text-sm mt-0.5" data-i18n="doc_step4_desc">Materialele generate pot fi copiate cu formulele matematice pÄƒstrate (compatibil Word) sau salvate Ã®n conversaÈ›ie.</p>
+                        <p class="font-semibold text-slate-900">{{ t("doc_step4_title") }}</p>
+                        <p class="text-slate-600 text-sm mt-0.5">{{ t("doc_step4_desc") }}</p>
                     </div>
                 </li>
 
             </ol>
         </div>
 
-        <!-- â”€â”€ MODES â”€â”€ -->
-        <div>
-            <h2 class="text-3xl font-bold text-white mb-5" data-i18n="doc_modes_title">Moduri disponibile</h2>
-            <div class="space-y-5">
+        <!-- ── MODES ── -->
+        <div id="modes" class="scroll-mt-32 pt-6">
+            <h2 class="reveal font-display text-3xl font-bold text-white mb-5">{{ t("doc_modes_title") }}</h2>
+            <div class="space-y-5" data-reveal-group>
 
                 <!-- MODE 1 -->
-                <div class="bg-white border border-slate-200 rounded-3xl p-7 shadow-xl">
+                <div class="reveal hover-lift rounded-3xl border border-slate-200 bg-white p-7 shadow-xl">
                     <div class="flex flex-col sm:flex-row items-start gap-4">
-                        <div class="w-12 h-12 bg-cyan-500 rounded-2xl flex items-center justify-center text-white text-xl font-bold flex-shrink-0">1</div>
+                        <div class="badge-pop w-12 h-12 bg-cyan-500 rounded-2xl flex items-center justify-center text-white text-xl font-bold flex-shrink-0">1</div>
                         <div class="flex-1">
                             <div class="flex flex-wrap items-center gap-2 mb-3">
-                                <h3 class="text-xl font-bold text-slate-900" data-i18n="m1_ai_assistant">Asistent AI</h3>
-                                <span class="text-xs font-semibold text-cyan-600 bg-cyan-50 border border-cyan-100 rounded-full px-3 py-0.5" data-i18n="doc_m1_badge">ConversaÈ›ie</span>
+                                <h3 class="text-xl font-bold text-slate-900">{{ t("m1_ai_assistant") }}</h3>
+                                <span class="text-xs font-semibold text-cyan-600 bg-cyan-50 border border-cyan-100 rounded-full px-3 py-0.5">{{ t("doc_m1_badge") }}</span>
                             </div>
-                            <p class="text-slate-600 mb-4" data-i18n="doc_m1_longdesc">
-                                Asistent virtual specializat pentru matematicÄƒ È™i gestionarea elevilor. PoÈ›i pune Ã®ntrebÄƒri despre exerciÈ›ii, strategii de predare sau despre cum funcÈ›ioneazÄƒ platforma.
-                            </p>
-                            <h4 class="font-semibold text-slate-800 mb-2 text-sm" data-i18n="doc_what_you_can_do">Ce poÈ›i face:</h4>
+                            <p class="text-slate-600 mb-4">{{ t("doc_m1_longdesc") }}</p>
+                            <h4 class="font-semibold text-slate-800 mb-2 text-sm">{{ t("doc_what_you_can_do") }}</h4>
                             <ul class="list-disc list-inside text-slate-600 text-sm space-y-1">
-                                <li data-i18n="doc_m1_feat1">ÃŽntreabÄƒ despre exerciÈ›ii matematice din orice capitol</li>
-                                <li data-i18n="doc_m1_feat2">PrimeÈ™ti soluÈ›ii detaliate pas cu pas, cu formule KaTeX</li>
-                                <li data-i18n="doc_m1_feat3">Generezi exerciÈ›ii similare cu un singur click</li>
-                                <li data-i18n="doc_m1_feat4">PrimeÈ™ti sugestii despre cum sÄƒ predai un subiect la clasÄƒ</li>
-                                <li data-i18n="doc_m1_feat5">Accesezi rapid simboluri matematice din panoul lateral</li>
+                                <li>{{ t("doc_m1_feat1") }}</li>
+                                <li>{{ t("doc_m1_feat2") }}</li>
+                                <li>{{ t("doc_m1_feat3") }}</li>
+                                <li>{{ t("doc_m1_feat4") }}</li>
+                                <li>{{ t("doc_m1_feat5") }}</li>
                             </ul>
                             <div class="mt-4 bg-slate-50 border border-slate-200 rounded-2xl p-4">
-                                <p class="text-xs font-semibold text-slate-500 mb-1" data-i18n="doc_example">Exemplu</p>
-                                <p class="text-sm text-slate-700 italic" data-i18n="doc_m1_example">"Cum rezolv o ecuaÈ›ie de gradul 2 cu discriminant negativ? ExplicÄƒ pentru clasa a X-a."</p>
+                                <p class="text-xs font-semibold text-slate-500 mb-1">{{ t("doc_example") }}</p>
+                                <p class="text-sm text-slate-700 italic">{{ t("doc_m1_example") }}</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- MODE 2 -->
-                <div class="bg-white border border-slate-200 rounded-3xl p-7 shadow-xl">
+                <div class="reveal hover-lift rounded-3xl border border-slate-200 bg-white p-7 shadow-xl">
                     <div class="flex flex-col sm:flex-row items-start gap-4">
-                        <div class="w-12 h-12 bg-slate-800 rounded-2xl flex items-center justify-center text-white text-xl font-bold flex-shrink-0">2</div>
+                        <div class="badge-pop w-12 h-12 bg-slate-800 rounded-2xl flex items-center justify-center text-white text-xl font-bold flex-shrink-0">2</div>
                         <div class="flex-1">
                             <div class="flex flex-wrap items-center gap-2 mb-3">
-                                <h3 class="text-xl font-bold text-slate-900" data-i18n="mode2_title">Limbaj Natural â†’ Matematic</h3>
-                                <span class="text-xs font-semibold text-slate-600 bg-slate-100 border border-slate-200 rounded-full px-3 py-0.5" data-i18n="doc_m2_badge">Generare teste</span>
+                                <h3 class="text-xl font-bold text-slate-900">{{ t("mode2_title") }}</h3>
+                                <span class="text-xs font-semibold text-slate-600 bg-slate-100 border border-slate-200 rounded-full px-3 py-0.5">{{ t("doc_m2_badge") }}</span>
                             </div>
-                            <p class="text-slate-600 mb-4" data-i18n="doc_m2_longdesc">
-                                Descrii exerciÈ›iul Ã®n limbaj normal È™i primeÈ™ti forma matematicÄƒ corectÄƒ, formatatÄƒ pentru tipÄƒrire sau uz digital.
-                            </p>
-                            <h4 class="font-semibold text-slate-800 mb-2 text-sm" data-i18n="doc_m2_params">Parametri de configurare:</h4>
+                            <p class="text-slate-600 mb-4">{{ t("doc_m2_longdesc") }}</p>
+                            <h4 class="font-semibold text-slate-800 mb-2 text-sm">{{ t("doc_m2_params") }}</h4>
                             <ul class="list-disc list-inside text-slate-600 text-sm space-y-1">
-                                <li data-i18n="doc_m2_param1"><strong>Stil generare</strong> â€” alege un stil salvat sau stilul implicit</li>
-                                <li data-i18n="doc_m2_param2"><strong>Clasa</strong> â€” IX, X, XI sau XII pentru adaptarea nivelului de dificultate</li>
-                                <li data-i18n="doc_m2_param3"><strong>Versiune BAC</strong> â€” M_Tehnologic (disponibil momentan)</li>
+                                <li>{{ t("doc_m2_param1") | safe }}</li>
+                                <li>{{ t("doc_m2_param2") | safe }}</li>
+                                <li>{{ t("doc_m2_param3") | safe }}</li>
                             </ul>
                             <div class="mt-4 bg-slate-50 border border-slate-200 rounded-2xl p-4">
-                                <p class="text-xs font-semibold text-slate-500 mb-1" data-i18n="doc_example">Exemplu</p>
-                                <p class="text-sm text-slate-700 italic" data-i18n="doc_m2_example">"Scrie un exerciÈ›iu cu radicali de ordinul 2 cu simplificare È™i calcul numeric final."</p>
+                                <p class="text-xs font-semibold text-slate-500 mb-1">{{ t("doc_example") }}</p>
+                                <p class="text-sm text-slate-700 italic">{{ t("doc_m2_example") }}</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- MODE 3 -->
-                <div class="bg-white border border-slate-200 rounded-3xl p-7 shadow-xl">
+                <div class="reveal hover-lift rounded-3xl border border-slate-200 bg-white p-7 shadow-xl">
                     <div class="flex flex-col sm:flex-row items-start gap-4">
-                        <div class="w-12 h-12 bg-slate-800 rounded-2xl flex items-center justify-center text-white text-xl font-bold flex-shrink-0">3</div>
+                        <div class="badge-pop w-12 h-12 bg-slate-800 rounded-2xl flex items-center justify-center text-white text-xl font-bold flex-shrink-0">3</div>
                         <div class="flex-1">
                             <div class="flex flex-wrap items-center gap-2 mb-3">
-                                <h3 class="text-xl font-bold text-slate-900" data-i18n="m3_title">CreeazÄƒ dupÄƒ Model</h3>
-                                <span class="text-xs font-semibold text-slate-600 bg-slate-100 border border-slate-200 rounded-full px-3 py-0.5" data-i18n="doc_m3_badge">Upload fiÈ™ier</span>
+                                <h3 class="text-xl font-bold text-slate-900">{{ t("m3_title") }}</h3>
+                                <span class="text-xs font-semibold text-slate-600 bg-slate-100 border border-slate-200 rounded-full px-3 py-0.5">{{ t("doc_m3_badge") }}</span>
                             </div>
-                            <p class="text-slate-600 mb-4" data-i18n="doc_m3_longdesc">
-                                ÃŽncarci un test existent (Word sau PDF), AI-ul extrage exerciÈ›iile È™i le afiÈ™eazÄƒ pentru verificare, dupÄƒ care poÈ›i cere modificÄƒri sau genera un test nou similar.
-                            </p>
+                            <p class="text-slate-600 mb-4">{{ t("doc_m3_longdesc") }}</p>
                             <div class="flex flex-wrap gap-2 mb-4">
                                 <span class="bg-cyan-50 text-cyan-700 border border-cyan-100 rounded-lg px-3 py-1 text-xs font-medium">.pdf</span>
                                 <span class="bg-cyan-50 text-cyan-700 border border-cyan-100 rounded-lg px-3 py-1 text-xs font-medium">.docx</span>
                                 <span class="bg-cyan-50 text-cyan-700 border border-cyan-100 rounded-lg px-3 py-1 text-xs font-medium">.txt</span>
                             </div>
-                            <h4 class="font-semibold text-slate-800 mb-2 text-sm" data-i18n="doc_m3_workflow">Flux de lucru:</h4>
+                            <h4 class="font-semibold text-slate-800 mb-2 text-sm">{{ t("doc_m3_workflow") }}</h4>
                             <ol class="list-decimal list-inside text-slate-600 text-sm space-y-1">
-                                <li data-i18n="doc_m3_step1">ÃŽncarcÄƒ fiÈ™ierul model prin drag &amp; drop sau click</li>
-                                <li data-i18n="doc_m3_step2">AdaugÄƒ instrucÈ›iuni (dificultate, numÄƒr de exerciÈ›ii etc.)</li>
-                                <li data-i18n="doc_m3_step3">SpecificÄƒ diferenÈ›ele faÈ›Äƒ de modelul original</li>
-                                <li data-i18n="doc_m3_step4">PrimeÈ™ti testul generat adaptat cerinÈ›elor tale</li>
+                                <li>{{ t("doc_m3_step1") }}</li>
+                                <li>{{ t("doc_m3_step2") }}</li>
+                                <li>{{ t("doc_m3_step3") }}</li>
+                                <li>{{ t("doc_m3_step4") }}</li>
                             </ol>
                         </div>
                     </div>
                 </div>
 
                 <!-- MODE 4 -->
-                <div class="bg-white border border-slate-200 rounded-3xl p-7 shadow-xl">
+                <div class="reveal hover-lift rounded-3xl border border-slate-200 bg-white p-7 shadow-xl">
                     <div class="flex flex-col sm:flex-row items-start gap-4">
-                        <div class="w-12 h-12 bg-slate-800 rounded-2xl flex items-center justify-center text-white text-xl font-bold flex-shrink-0">4</div>
+                        <div class="badge-pop w-12 h-12 bg-slate-800 rounded-2xl flex items-center justify-center text-white text-xl font-bold flex-shrink-0">4</div>
                         <div class="flex-1">
                             <div class="flex flex-wrap items-center gap-2 mb-3">
-                                <h3 class="text-xl font-bold text-slate-900" data-i18n="doc_m4_title">Transcriere Test Scris de MÃ¢nÄƒ</h3>
-                                <span class="text-xs font-semibold text-slate-600 bg-slate-100 border border-slate-200 rounded-full px-3 py-0.5" data-i18n="doc_m4_badge">OCR + Generare</span>
+                                <h3 class="text-xl font-bold text-slate-900">{{ t("doc_m4_title") }}</h3>
+                                <span class="text-xs font-semibold text-slate-600 bg-slate-100 border border-slate-200 rounded-full px-3 py-0.5">{{ t("doc_m4_badge") }}</span>
                             </div>
-                            <p class="text-slate-600 mb-4" data-i18n="doc_m4_longdesc">
-                                ÃŽncarci o fotografie sau un PDF al unei fiÈ™e scrise de mÃ¢nÄƒ. Platforma o transformÄƒ automat Ã®n format digital, structureazÄƒ exerciÈ›iile È™i genereazÄƒ o variantÄƒ nouÄƒ.
-                            </p>
+                            <p class="text-slate-600 mb-4">{{ t("doc_m4_longdesc") }}</p>
                             <div class="flex flex-wrap gap-2 mb-4">
                                 <span class="bg-cyan-50 text-cyan-700 border border-cyan-100 rounded-lg px-3 py-1 text-xs font-medium">.jpg</span>
                                 <span class="bg-cyan-50 text-cyan-700 border border-cyan-100 rounded-lg px-3 py-1 text-xs font-medium">.png</span>
                                 <span class="bg-cyan-50 text-cyan-700 border border-cyan-100 rounded-lg px-3 py-1 text-xs font-medium">.pdf</span>
                             </div>
                             <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4">
-                                <p class="text-xs font-semibold text-amber-700 mb-1" data-i18n="doc_m4_tip_title">Sfat pentru rezultate optime</p>
-                                <p class="text-sm text-amber-800" data-i18n="doc_m4_tip_text">FoloseÈ™te poze clare, bine iluminate, cu scriere lizibilÄƒ È™i contrast bun faÈ›Äƒ de foaie.</p>
+                                <p class="text-xs font-semibold text-amber-700 mb-1">{{ t("doc_m4_tip_title") }}</p>
+                                <p class="text-sm text-amber-800">{{ t("doc_m4_tip_text") }}</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- MODE 5 -->
-                <div class="bg-white border border-slate-200 rounded-3xl p-7 shadow-xl">
+                <div class="reveal hover-lift rounded-3xl border border-slate-200 bg-white p-7 shadow-xl">
                     <div class="flex flex-col sm:flex-row items-start gap-4">
-                        <div class="w-12 h-12 bg-cyan-500 rounded-2xl flex items-center justify-center text-white text-xl font-bold flex-shrink-0">5</div>
+                        <div class="badge-pop w-12 h-12 bg-cyan-500 rounded-2xl flex items-center justify-center text-white text-xl font-bold flex-shrink-0">5</div>
                         <div class="flex-1">
                             <div class="flex flex-wrap items-center gap-2 mb-3">
-                                <h3 class="text-xl font-bold text-slate-900" data-i18n="doc_m5_title">Generator BAC</h3>
-                                <span class="text-xs font-semibold text-cyan-600 bg-cyan-50 border border-cyan-100 rounded-full px-3 py-0.5" data-i18n="doc_m5_badge">Variante personalizate</span>
+                                <h3 class="text-xl font-bold text-slate-900">{{ t("doc_m5_title") }}</h3>
+                                <span class="text-xs font-semibold text-cyan-600 bg-cyan-50 border border-cyan-100 rounded-full px-3 py-0.5">{{ t("doc_m5_badge") }}</span>
                             </div>
-                            <p class="text-slate-600 mb-4" data-i18n="doc_m5_longdesc">
-                                CreeazÄƒ variante personalizate de BAC adaptate clasei tale. Specifici lecÈ›iile principale È™i pe cele de omis, iar AI-ul genereazÄƒ o variantÄƒ completÄƒ.
-                            </p>
-                            <h4 class="font-semibold text-slate-800 mb-2 text-sm" data-i18n="doc_m5_params">Parametri:</h4>
+                            <p class="text-slate-600 mb-4">{{ t("doc_m5_longdesc") }}</p>
+                            <h4 class="font-semibold text-slate-800 mb-2 text-sm">{{ t("doc_m5_params") }}</h4>
                             <ul class="list-disc list-inside text-slate-600 text-sm space-y-1">
-                                <li data-i18n="doc_m5_param1"><strong>LecÈ›ii principale</strong> â€” capitolele pe care vrei sÄƒ se axeze subiectul</li>
-                                <li data-i18n="doc_m5_param2"><strong>LecÈ›ii de omis</strong> â€” subiecte pe care doreÈ™ti sÄƒ le excluzi din variantÄƒ</li>
+                                <li>{{ t("doc_m5_param1") | safe }}</li>
+                                <li>{{ t("doc_m5_param2") | safe }}</li>
                             </ul>
                         </div>
                     </div>
@@ -199,67 +203,98 @@
             </div>
         </div>
 
-        <!-- â”€â”€ STILURI â”€â”€ -->
-        <div class="bg-white border border-slate-200 rounded-3xl p-7 md:p-8 shadow-xl">
-            <h2 class="text-2xl font-bold text-slate-900 mb-1" data-i18n="doc_styles_title">Stiluri de generare</h2>
-            <p class="text-slate-600 mb-4" data-i18n="doc_styles_desc">
-                Stilurile Ã®È›i permit sÄƒ salvezi preferinÈ›ele de formatare È™i structurÄƒ. OdatÄƒ creat un stil, Ã®l poÈ›i reutiliza Ã®n orice sesiune de generare (Modul 2).
-            </p>
-            <h4 class="font-semibold text-slate-800 mb-2 text-sm" data-i18n="doc_styles_sub">Ce defineÈ™ti Ã®ntr-un stil:</h4>
+        <!-- ── STILURI ── -->
+        <div id="styles" class="reveal hover-lift scroll-mt-32 rounded-3xl border border-slate-200 bg-white p-7 md:p-8 shadow-xl">
+            <h2 class="text-2xl font-bold text-slate-900 mb-1">{{ t("doc_styles_title") }}</h2>
+            <p class="text-slate-600 mb-4">{{ t("doc_styles_desc") }}</p>
+            <h4 class="font-semibold text-slate-800 mb-2 text-sm">{{ t("doc_styles_sub") }}</h4>
             <ul class="list-disc list-inside text-slate-600 text-sm space-y-1 mb-5">
-                <li data-i18n="doc_styles_item1">Numele stilului â€” ex: <em>"Test clasic clasa a X-a"</em></li>
-                <li data-i18n="doc_styles_item2">Tipul testului â€” tezÄƒ, lucrare, fiÈ™Äƒ de lucru</li>
-                <li data-i18n="doc_styles_item3">Descrierea stilului â€” instrucÈ›iuni detaliate pentru AI</li>
-                <li data-i18n="doc_styles_item4">Documente de referinÈ›Äƒ (opÈ›ional) â€” context suplimentar</li>
+                <li>{{ t("doc_styles_item1") | safe }}</li>
+                <li>{{ t("doc_styles_item2") }}</li>
+                <li>{{ t("doc_styles_item3") }}</li>
+                <li>{{ t("doc_styles_item4") }}</li>
             </ul>
             <a href="/style"
-               class="inline-block bg-cyan-500 hover:bg-cyan-400 transition text-white font-bold px-6 py-2.5 rounded-2xl text-sm"
-               data-i18n="doc_styles_btn">
-                CreeazÄƒ un stil nou â†’
+               class="inline-block bg-cyan-500 hover:bg-cyan-400 transition text-white font-bold px-6 py-2.5 rounded-2xl text-sm">
+                {{ t("doc_styles_btn") }}
             </a>
         </div>
 
-        <!-- â”€â”€ FAQ â”€â”€ -->
-        <div class="bg-white border border-slate-200 rounded-3xl p-7 md:p-8 shadow-xl">
-            <h2 class="text-2xl font-bold text-slate-900 mb-6" data-i18n="doc_faq_title">ÃŽntrebÄƒri frecvente</h2>
-            <div class="space-y-5">
+        <!-- ── FAQ ── -->
+        <div id="faq" class="reveal hover-lift scroll-mt-32 rounded-3xl border border-slate-200 bg-white p-7 md:p-8 shadow-xl">
+            <h2 class="text-2xl font-bold text-slate-900 mb-4">{{ t("doc_faq_title") }}</h2>
+            <div class="divide-y divide-slate-100" data-accordion>
 
-                <div class="border-b border-slate-100 pb-5">
-                    <p class="font-semibold text-slate-900 mb-1" data-i18n="doc_faq_q1">Ce formate de fiÈ™ier sunt acceptate?</p>
-                    <p class="text-slate-600 text-sm" data-i18n="doc_faq_a1">Platforma acceptÄƒ <code class="bg-slate-100 px-1.5 py-0.5 rounded">.pdf</code>, <code class="bg-slate-100 px-1.5 py-0.5 rounded">.docx</code>, <code class="bg-slate-100 px-1.5 py-0.5 rounded">.txt</code>, <code class="bg-slate-100 px-1.5 py-0.5 rounded">.png</code>, <code class="bg-slate-100 px-1.5 py-0.5 rounded">.jpg</code> È™i <code class="bg-slate-100 px-1.5 py-0.5 rounded">.jpeg</code>.</p>
+                <div data-accordion-item>
+                    <button type="button" data-accordion-trigger class="flex w-full items-center justify-between gap-4 py-4 text-left">
+                        <span class="font-semibold text-slate-900">{{ t("doc_faq_q1") }}</span>
+                        <svg data-accordion-chevron class="h-5 w-5 flex-shrink-0 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div data-accordion-panel>
+                        <div>
+                            <p class="text-slate-600 text-sm pb-4">{{ t("doc_faq_a1") | safe }}</p>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="border-b border-slate-100 pb-5">
-                    <p class="font-semibold text-slate-900 mb-1" data-i18n="doc_faq_q2">ConversaÈ›iile sunt salvate automat?</p>
-                    <p class="text-slate-600 text-sm" data-i18n="doc_faq_a2">Da. Fiecare conversaÈ›ie este salvatÄƒ Ã®n contul tÄƒu È™i accesibilÄƒ din panoul lateral stÃ¢ng Ã®n Modul 1. PoÈ›i crea oricÃ¢nd o conversaÈ›ie nouÄƒ cu butonul dedicat.</p>
+                <div data-accordion-item>
+                    <button type="button" data-accordion-trigger class="flex w-full items-center justify-between gap-4 py-4 text-left">
+                        <span class="font-semibold text-slate-900">{{ t("doc_faq_q2") }}</span>
+                        <svg data-accordion-chevron class="h-5 w-5 flex-shrink-0 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div data-accordion-panel>
+                        <div>
+                            <p class="text-slate-600 text-sm pb-4">{{ t("doc_faq_a2") | safe }}</p>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="border-b border-slate-100 pb-5">
-                    <p class="font-semibold text-slate-900 mb-1" data-i18n="doc_faq_q3">Cum schimb limba interfeÈ›ei?</p>
-                    <p class="text-slate-600 text-sm" data-i18n="doc_faq_a3">FoloseÈ™te selectorul de limbÄƒ din bara de navigare pentru a comuta Ã®ntre romÃ¢nÄƒ È™i englezÄƒ.</p>
+                <div data-accordion-item>
+                    <button type="button" data-accordion-trigger class="flex w-full items-center justify-between gap-4 py-4 text-left">
+                        <span class="font-semibold text-slate-900">{{ t("doc_faq_q3") }}</span>
+                        <svg data-accordion-chevron class="h-5 w-5 flex-shrink-0 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div data-accordion-panel>
+                        <div>
+                            <p class="text-slate-600 text-sm pb-4">{{ t("doc_faq_a3") | safe }}</p>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="border-b border-slate-100 pb-5">
-                    <p class="font-semibold text-slate-900 mb-1" data-i18n="doc_faq_q4">Pot copia formulele matematice Ã®n Word?</p>
-                    <p class="text-slate-600 text-sm" data-i18n="doc_faq_a4">Da. Fiecare rÄƒspuns AI are un buton de copiere care preia conÈ›inutul cu formulele matematice pÄƒstrate Ã®n format compatibil cu Microsoft Word.</p>
+                <div data-accordion-item>
+                    <button type="button" data-accordion-trigger class="flex w-full items-center justify-between gap-4 py-4 text-left">
+                        <span class="font-semibold text-slate-900">{{ t("doc_faq_q4") }}</span>
+                        <svg data-accordion-chevron class="h-5 w-5 flex-shrink-0 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div data-accordion-panel>
+                        <div>
+                            <p class="text-slate-600 text-sm pb-4">{{ t("doc_faq_a4") | safe }}</p>
+                        </div>
+                    </div>
                 </div>
 
-                <div>
-                    <p class="font-semibold text-slate-900 mb-1" data-i18n="doc_faq_q5">Ce versiuni de BAC sunt disponibile?</p>
-                    <p class="text-slate-600 text-sm" data-i18n="doc_faq_a5">Momentan este disponibilÄƒ varianta <strong>M_Tehnologic</strong>. Suportul pentru alte profiluri va fi adÄƒugat Ã®n versiunile viitoare.</p>
+                <div data-accordion-item>
+                    <button type="button" data-accordion-trigger class="flex w-full items-center justify-between gap-4 py-4 text-left">
+                        <span class="font-semibold text-slate-900">{{ t("doc_faq_q5") }}</span>
+                        <svg data-accordion-chevron class="h-5 w-5 flex-shrink-0 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div data-accordion-panel>
+                        <div>
+                            <p class="text-slate-600 text-sm pb-4">{{ t("doc_faq_a5") | safe }}</p>
+                        </div>
+                    </div>
                 </div>
 
             </div>
         </div>
 
-        <!-- â”€â”€ CTA â”€â”€ -->
-        <div class="bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-3xl p-8 text-center shadow-xl">
-            <h2 class="text-2xl font-bold text-white mb-2" data-i18n="doc_cta_title">Gata sÄƒ Ã®ncepi?</h2>
-            <p class="text-cyan-100 mb-6" data-i18n="doc_cta_sub">Alege un mod È™i genereazÄƒ primul tÄƒu material educaÈ›ional.</p>
+        <!-- ── CTA ── -->
+        <div class="reveal-scale rounded-3xl bg-gradient-to-br from-cyan-500 to-cyan-600 p-8 text-center shadow-xl">
+            <h2 class="text-2xl font-bold text-white mb-2">{{ t("doc_cta_title") }}</h2>
+            <p class="text-cyan-100 mb-6">{{ t("doc_cta_sub") }}</p>
             <a href="/menu"
-               class="inline-block bg-white text-cyan-600 hover:bg-cyan-50 transition font-bold px-8 py-3 rounded-2xl"
-               data-i18n="doc_cta_btn">
-                Mergi la meniu â†’
+               class="inline-block bg-white text-cyan-600 hover:bg-cyan-50 transition font-bold px-8 py-3 rounded-2xl">
+                {{ t("doc_cta_btn") }}
             </a>
         </div>
 
@@ -267,4 +302,3 @@
 </div>
 
 {% endblock %}
-

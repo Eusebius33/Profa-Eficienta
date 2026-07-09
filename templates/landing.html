@@ -5,144 +5,409 @@
 {% endblock %}
 
 {% block main %}
-<div class="min-h-screen overflow-y-auto bg-[radial-gradient(circle_at_top_left,rgba(6,182,212,0.18),transparent_30%),linear-gradient(135deg,#020617_0%,#0f172a_45%,#111827_100%)]">
-    <div class="mx-auto max-w-7xl px-6 py-12 lg:px-8 lg:py-20">
-        <section class="grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
-            <div class="max-w-3xl">
-                <div class="mb-6 inline-flex items-center rounded-full border border-cyan-400/30 bg-cyan-500/10 px-3 py-1 text-sm font-medium text-cyan-300">
-                    {{ t("landing_badge") }}
+<div class="min-h-screen overflow-x-clip bg-[radial-gradient(circle_at_top_left,rgba(6,182,212,0.18),transparent_30%),linear-gradient(135deg,#020617_0%,#0f172a_45%,#111827_100%)]">
+
+    <!-- ================= HERO ================= -->
+    <section class="relative overflow-hidden">
+        <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+            <div class="bg-grid-dots absolute inset-0 opacity-[0.12] [mask-image:radial-gradient(ellipse_at_center,black_10%,transparent_65%)]"></div>
+
+            <div class="orb bg-cyan-500/20" style="width:22rem;height:22rem;top:-6rem;left:-6rem;--orb-duration:14s;--orb-x:30px;--orb-y:24px;"></div>
+            <div class="orb bg-blue-500/15" style="width:26rem;height:26rem;top:6rem;right:-8rem;--orb-duration:18s;--orb-delay:2s;--orb-x:-24px;--orb-y:30px;"></div>
+            <div class="orb bg-cyan-400/10" style="width:16rem;height:16rem;bottom:-4rem;left:38%;--orb-duration:11s;--orb-delay:1s;--orb-x:18px;--orb-y:-22px;"></div>
+
+            <div class="math-glyph hidden sm:block font-display text-5xl font-bold text-cyan-400/10" style="top:12%;left:6%;--glyph-duration:8s;--glyph-rotate:-8deg;" aria-hidden="true">&sum;</div>
+            <div class="math-glyph hidden sm:block font-display text-6xl font-bold text-slate-400/10" style="top:66%;left:11%;--glyph-duration:10s;--glyph-delay:1.2s;--glyph-rotate:10deg;" aria-hidden="true">&pi;</div>
+            <div class="math-glyph hidden md:block font-display text-5xl font-bold text-cyan-400/10" style="top:20%;right:8%;--glyph-duration:9s;--glyph-delay:0.6s;--glyph-rotate:6deg;" aria-hidden="true">&int;</div>
+            <div class="math-glyph hidden md:block font-display text-4xl font-bold text-slate-400/10" style="top:78%;right:18%;--glyph-duration:12s;--glyph-delay:2.4s;--glyph-rotate:-10deg;" aria-hidden="true">&radic;x</div>
+            <div class="math-glyph hidden lg:block font-display text-4xl font-bold text-cyan-400/10" style="top:46%;left:1%;--glyph-duration:13s;--glyph-delay:1.8s;--glyph-rotate:12deg;" aria-hidden="true">&theta;</div>
+        </div>
+
+        <div class="relative mx-auto max-w-7xl px-6 pt-14 pb-16 lg:px-8 lg:pt-20 lg:pb-24">
+            <div class="grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
+
+                <div class="max-w-3xl">
+                    <div class="reveal mb-6 inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-500/10 px-3 py-1.5 text-sm font-medium text-cyan-300">
+                        <span class="relative flex h-2 w-2">
+                            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-400 opacity-75"></span>
+                            <span class="relative inline-flex h-2 w-2 rounded-full bg-cyan-400"></span>
+                        </span>
+                        {{ t("landing_badge") }}
+                    </div>
+
+                    <h1 class="reveal font-display text-4xl font-extrabold leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-6xl" style="--stagger-index:1;">
+                        {{ t("landing_title") }}
+                    </h1>
+
+                    <p class="reveal mt-6 max-w-2xl text-lg leading-8 text-slate-300 sm:text-xl" style="--stagger-index:2;">
+                        {{ t("landing_subtitle") }}
+                    </p>
+
+                    <div class="reveal mt-8 flex flex-col gap-3 sm:flex-row" style="--stagger-index:3;">
+                        {% if session.get("user_id") %}
+                        <a href="/menu" class="group inline-flex items-center justify-center gap-2 rounded-2xl bg-cyan-500 px-6 py-3.5 text-base font-semibold text-slate-950 shadow-lg shadow-cyan-500/25 transition duration-200 hover:-translate-y-0.5 hover:bg-cyan-400 hover:shadow-cyan-400/30">
+                            {{ t("landing_cta_primary") }}
+                            <svg class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                        </a>
+                        {% else %}
+                        <a href="/register" class="group inline-flex items-center justify-center gap-2 rounded-2xl bg-cyan-500 px-6 py-3.5 text-base font-semibold text-slate-950 shadow-lg shadow-cyan-500/25 transition duration-200 hover:-translate-y-0.5 hover:bg-cyan-400 hover:shadow-cyan-400/30">
+                            {{ t("landing_cta_primary") }}
+                            <svg class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                        </a>
+                        {% endif %}
+                        <a href="/login" class="inline-flex items-center justify-center rounded-2xl border border-slate-700 bg-slate-900/70 px-6 py-3.5 text-base font-semibold text-white transition duration-200 hover:-translate-y-0.5 hover:border-cyan-400 hover:text-cyan-300">
+                            {{ t("landing_cta_secondary") }}
+                        </a>
+                    </div>
+
+                    <p class="reveal mt-4 text-sm text-slate-500" style="--stagger-index:4;">{{ t("landing_hero_note") }}</p>
+
+                    <div class="reveal mt-8 flex flex-wrap gap-3 text-sm text-slate-300" style="--stagger-index:5;">
+                        <span class="inline-flex items-center gap-1.5 rounded-full border border-slate-700/80 bg-slate-900/60 px-3 py-1.5">
+                            <svg class="h-3.5 w-3.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                            {{ t("landing_feature_1") }}
+                        </span>
+                        <span class="inline-flex items-center gap-1.5 rounded-full border border-slate-700/80 bg-slate-900/60 px-3 py-1.5">
+                            <svg class="h-3.5 w-3.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                            {{ t("landing_feature_2") }}
+                        </span>
+                        <span class="inline-flex items-center gap-1.5 rounded-full border border-slate-700/80 bg-slate-900/60 px-3 py-1.5">
+                            <svg class="h-3.5 w-3.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                            {{ t("landing_feature_3") }}
+                        </span>
+                    </div>
                 </div>
 
-                <h1 class="text-4xl font-black leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">
-                    {{ t("landing_title") }}
-                </h1>
+                <!-- Live demo panel -->
+                <div id="hero-demo" class="reveal-scale rounded-[2rem] border border-slate-200 bg-white p-6 shadow-2xl shadow-cyan-500/10" style="--stagger-index:2;">
+                    <div class="flex items-center justify-between">
+                        <div class="text-sm font-bold uppercase tracking-[0.2em] text-cyan-600">{{ t("landing_example_label") }}</div>
+                        <div class="inline-flex items-center gap-1.5 rounded-full border border-cyan-200 bg-cyan-50 px-3 py-1 text-xs font-semibold text-cyan-700">
+                            <span class="relative flex h-1.5 w-1.5">
+                                <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-500 opacity-75"></span>
+                                <span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-cyan-500"></span>
+                            </span>
+                            {{ t("landing_example_live") }}
+                        </div>
+                    </div>
 
-                <p class="mt-6 text-lg leading-8 text-slate-300 sm:text-xl">
-                    {{ t("landing_subtitle") }}
-                </p>
+                    <div class="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-5">
+                        <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">{{ t("nav_conversation") }}</p>
+                        <p class="mt-2 min-h-[3rem] text-base font-medium text-slate-800">
+                            <span id="demo-prompt-text">{{ t("landing_demo_1_prompt") }}</span><span id="demo-caret" class="typing-caret h-5 align-middle" aria-hidden="true"></span>
+                        </p>
 
-                <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-                    {% if session.get("user_id") %}
-                    <a href="/menu" class="inline-flex items-center justify-center rounded-2xl bg-cyan-500 px-6 py-3 text-base font-semibold text-slate-950 transition hover:bg-cyan-400">
-                        {{ t("landing_cta_primary") }}
-                    </a>
-                    {% else %}
-                    <a href="/register" class="inline-flex items-center justify-center rounded-2xl bg-cyan-500 px-6 py-3 text-base font-semibold text-slate-950 transition hover:bg-cyan-400">
-                        {{ t("landing_cta_primary") }}
-                    </a>
-                    {% endif %}
-                    <a href="/login" class="inline-flex items-center justify-center rounded-2xl border border-slate-700 bg-slate-900/70 px-6 py-3 text-base font-semibold text-white transition hover:border-cyan-400 hover:text-cyan-300">
-                        {{ t("landing_cta_secondary") }}
-                    </a>
-                </div>
+                        <div id="demo-result" class="demo-fade-swap mt-4 min-h-[4.5rem] overflow-x-auto rounded-2xl border border-cyan-100 bg-cyan-50/70 p-4 text-center text-xl font-semibold text-slate-900">
+                            <div class="math-content">$$\int x^{2}\,dx = \dfrac{x^{3}}{3} + C$$</div>
+                        </div>
+                        <p class="mt-3 text-xs leading-5 text-slate-400">{{ t("landing_example_note") }}</p>
+                    </div>
 
-                <div class="mt-8 flex flex-wrap gap-3 text-sm text-slate-400">
-                    <span class="rounded-full border border-slate-800 bg-slate-900/60 px-3 py-1">✓ {{ t("landing_feature_1") }}</span>
-                    <span class="rounded-full border border-slate-800 bg-slate-900/60 px-3 py-1">✓ {{ t("landing_feature_2") }}</span>
-                    <span class="rounded-full border border-slate-800 bg-slate-900/60 px-3 py-1">✓ {{ t("landing_feature_3") }}</span>
+                    <div class="mt-4 space-y-3">
+                        <div class="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4">
+                            <div class="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                            </div>
+                            <div>
+                                <div class="font-semibold text-slate-900">{{ t("landing_panel_item_1") }}</div>
+                                <div class="mt-0.5 text-sm text-slate-500">{{ t("landing_panel_item_1_desc") }}</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4">
+                            <div class="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                            </div>
+                            <div>
+                                <div class="font-semibold text-slate-900">{{ t("landing_panel_item_2") }}</div>
+                                <div class="mt-0.5 text-sm text-slate-500">{{ t("landing_panel_item_2_desc") }}</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4">
+                            <div class="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z"></path></svg>
+                            </div>
+                            <div>
+                                <div class="font-semibold text-slate-900">{{ t("landing_panel_item_3") }}</div>
+                                <div class="mt-0.5 text-sm text-slate-500">{{ t("landing_panel_item_3_desc") }}</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </div>
+    </section>
 
-            <div class="rounded-[2rem] border border-slate-800 bg-slate-950/80 p-6 shadow-2xl backdrop-blur">
-                <div class="flex items-center justify-between">
-                    <div class="text-sm font-semibold uppercase tracking-[0.25em] text-cyan-400">{{ t("landing_example_label") }}</div>
-                    <div class="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-xs font-medium text-cyan-300">{{ t("landing_example_live") }}</div>
-                </div>
-
-                <div class="mt-5 rounded-2xl border border-slate-800 bg-slate-900/80 p-5">
-                    <p class="text-sm text-slate-400">“{{ t("landing_example_prompt") }}”</p>
-                    <div class="mt-4 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 p-4">
-                        <p class="text-xs uppercase tracking-[0.3em] text-cyan-300">{{ t("landing_example_result") }}</p>
-                        <p class="mt-2 text-2xl font-semibold text-white">∫ x² dx = x³/3 + C</p>
+    <!-- ================= TRUST STRIP ================= -->
+    <section class="relative mx-auto max-w-7xl px-6 pb-4 lg:px-8">
+        <div class="reveal-scale rounded-[2rem] border border-slate-200 bg-white p-6 shadow-xl md:p-8">
+            <p class="text-center text-xs font-bold uppercase tracking-[0.3em] text-slate-400 md:text-left">
+                {{ t("landing_trust_title") }}
+            </p>
+            <div class="mt-5 grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6" data-reveal-group>
+                <div class="flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-4">
+                    <div class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-600">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5" stroke-width="2"></rect><rect x="13" y="4" width="7" height="7" rx="1.5" stroke-width="2"></rect><rect x="4" y="13" width="7" height="7" rx="1.5" stroke-width="2"></rect><rect x="13" y="13" width="7" height="7" rx="1.5" stroke-width="2"></rect></svg>
                     </div>
-                    <p class="mt-4 text-sm leading-7 text-slate-400">{{ t("landing_example_note") }}</p>
-                </div>
-
-                <div class="mt-4 space-y-3">
-                    <div class="rounded-2xl border border-slate-800 bg-slate-900/80 p-4">
-                        <div class="font-semibold text-white">{{ t("landing_panel_item_1") }}</div>
-                        <div class="mt-1 text-sm text-slate-400">{{ t("landing_panel_item_1_desc") }}</div>
-                    </div>
-                    <div class="rounded-2xl border border-slate-800 bg-slate-900/80 p-4">
-                        <div class="font-semibold text-white">{{ t("landing_panel_item_2") }}</div>
-                        <div class="mt-1 text-sm text-slate-400">{{ t("landing_panel_item_2_desc") }}</div>
+                    <div>
+                        <div class="font-display text-2xl font-extrabold text-slate-900"><span data-count-to="5">0</span></div>
+                        <div class="text-xs font-medium text-slate-500">{{ t("landing_trust_modes_label") }}</div>
                     </div>
                 </div>
-            </div>
-        </section>
-
-        <section class="mt-16 grid gap-6 md:grid-cols-3">
-            <div class="rounded-3xl border border-slate-800 bg-slate-900/70 p-6 shadow-lg">
-                <h3 class="text-xl font-semibold text-white">{{ t("landing_card_1_title") }}</h3>
-                <p class="mt-3 text-sm leading-7 text-slate-400">{{ t("landing_card_1_desc") }}</p>
-            </div>
-
-            <div class="rounded-3xl border border-slate-800 bg-slate-900/70 p-6 shadow-lg">
-                <h3 class="text-xl font-semibold text-white">{{ t("landing_card_2_title") }}</h3>
-                <p class="mt-3 text-sm leading-7 text-slate-400">{{ t("landing_card_2_desc") }}</p>
-            </div>
-
-            <div class="rounded-3xl border border-slate-800 bg-slate-900/70 p-6 shadow-lg">
-                <h3 class="text-xl font-semibold text-white">{{ t("landing_card_3_title") }}</h3>
-                <p class="mt-3 text-sm leading-7 text-slate-400">{{ t("landing_card_3_desc") }}</p>
-            </div>
-        </section>
-
-        <section class="mt-16 grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-            <div class="rounded-[2rem] border border-slate-800 bg-slate-950/70 p-8 shadow-xl backdrop-blur">
-                <h2 class="text-2xl font-semibold text-white">{{ t("landing_how_title") }}</h2>
-                <p class="mt-3 text-sm leading-7 text-slate-400">{{ t("landing_how_subtitle") }}</p>
-
-                <div class="mt-6 space-y-4">
-                    <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
-                        <div class="text-sm font-semibold text-cyan-300">01 • {{ t("landing_step_1_title") }}</div>
-                        <p class="mt-2 text-sm leading-7 text-slate-400">{{ t("landing_step_1_desc") }}</p>
+                <div class="flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-4">
+                    <div class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-600">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke-width="2"></circle><ellipse cx="12" cy="12" rx="3.6" ry="8.5" stroke-width="2"></ellipse><path stroke-width="2" d="M3.5 12h17"></path></svg>
                     </div>
-                    <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
-                        <div class="text-sm font-semibold text-cyan-300">02 • {{ t("landing_step_2_title") }}</div>
-                        <p class="mt-2 text-sm leading-7 text-slate-400">{{ t("landing_step_2_desc") }}</p>
+                    <div>
+                        <div class="font-display text-2xl font-extrabold text-slate-900"><span data-count-to="2">0</span></div>
+                        <div class="text-xs font-medium text-slate-500">{{ t("landing_trust_languages_label") }}</div>
                     </div>
-                    <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
-                        <div class="text-sm font-semibold text-cyan-300">03 • {{ t("landing_step_3_title") }}</div>
-                        <p class="mt-2 text-sm leading-7 text-slate-400">{{ t("landing_step_3_desc") }}</p>
+                </div>
+                <div class="flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-4">
+                    <div class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-600">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2" stroke-width="2"></rect><path stroke-width="2" stroke-linecap="round" d="M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3"></path></svg>
+                    </div>
+                    <div>
+                        <div class="font-display text-lg font-extrabold text-slate-900">{{ t("landing_trust_ai_value") }}</div>
+                        <div class="text-xs font-medium text-slate-500">{{ t("landing_trust_ai_label") }}</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-4">
+                    <div class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-600">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    </div>
+                    <div>
+                        <div class="font-display text-lg font-extrabold text-slate-900">{{ t("landing_trust_export_value") }}</div>
+                        <div class="text-xs font-medium text-slate-500">{{ t("landing_trust_export_label") }}</div>
                     </div>
                 </div>
             </div>
+        </div>
+    </section>
 
-            <div class="rounded-[2rem] border border-slate-800 bg-slate-900/70 p-8 shadow-xl">
-                <h2 class="text-2xl font-semibold text-white">{{ t("landing_usecases_title") }}</h2>
-                <div class="mt-6 grid gap-4 md:grid-cols-2">
-                    <div class="rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
-                        <h3 class="font-semibold text-white">{{ t("landing_usecase_1_title") }}</h3>
-                        <p class="mt-2 text-sm leading-7 text-slate-400">{{ t("landing_usecase_1_desc") }}</p>
-                    </div>
-                    <div class="rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
-                        <h3 class="font-semibold text-white">{{ t("landing_usecase_2_title") }}</h3>
-                        <p class="mt-2 text-sm leading-7 text-slate-400">{{ t("landing_usecase_2_desc") }}</p>
-                    </div>
-                    <div class="rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
-                        <h3 class="font-semibold text-white">{{ t("landing_usecase_3_title") }}</h3>
-                        <p class="mt-2 text-sm leading-7 text-slate-400">{{ t("landing_usecase_3_desc") }}</p>
-                    </div>
-                    <div class="rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
-                        <h3 class="font-semibold text-white">{{ t("landing_usecase_4_title") }}</h3>
-                        <p class="mt-2 text-sm leading-7 text-slate-400">{{ t("landing_usecase_4_desc") }}</p>
-                    </div>
+    <!-- ================= FEATURES ================= -->
+    <section class="relative mx-auto max-w-7xl px-6 py-20 lg:px-8 lg:py-28">
+        <div class="reveal mx-auto max-w-2xl text-center">
+            <h2 class="font-display text-3xl font-extrabold text-white sm:text-4xl">{{ t("landing_panel_title") }}</h2>
+            <svg class="draw-line mx-auto mt-4 h-2 w-24" viewBox="0 0 100 8" preserveAspectRatio="none" aria-hidden="true">
+                <path d="M 2 4 L 98 4" pathLength="100" stroke="#22d3ee" stroke-width="4" stroke-linecap="round" fill="none"></path>
+            </svg>
+        </div>
+
+        <div class="mt-12 grid gap-6 md:grid-cols-3" data-reveal-group>
+            <div class="tilt-card reveal rounded-3xl border border-slate-200 bg-white p-7 shadow-lg">
+                <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-50 text-cyan-600">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
                 </div>
+                <h3 class="mt-5 text-xl font-bold text-slate-900">{{ t("landing_card_1_title") }}</h3>
+                <p class="mt-3 text-sm leading-7 text-slate-600">{{ t("landing_card_1_desc") }}</p>
             </div>
-        </section>
 
-        <section class="mt-16 rounded-[2rem] border border-cyan-500/20 bg-cyan-500/10 p-8 shadow-xl backdrop-blur">
-            <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-                <div class="max-w-2xl">
-                    <h2 class="text-2xl font-semibold text-white">{{ t("landing_final_title") }}</h2>
-                    <p class="mt-3 text-sm leading-7 text-slate-300">{{ t("landing_final_subtitle") }}</p>
+            <div class="tilt-card reveal rounded-3xl border border-slate-200 bg-white p-7 shadow-lg">
+                <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-50 text-cyan-600">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                 </div>
-                <a href="/register" class="inline-flex items-center justify-center rounded-2xl bg-cyan-500 px-6 py-3 text-base font-semibold text-slate-950 transition hover:bg-cyan-400">
-                    {{ t("landing_final_cta") }}
+                <h3 class="mt-5 text-xl font-bold text-slate-900">{{ t("landing_card_2_title") }}</h3>
+                <p class="mt-3 text-sm leading-7 text-slate-600">{{ t("landing_card_2_desc") }}</p>
+            </div>
+
+            <div class="tilt-card reveal rounded-3xl border border-slate-200 bg-white p-7 shadow-lg">
+                <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-50 text-cyan-600">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke-width="2"></circle><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"></path></svg>
+                </div>
+                <h3 class="mt-5 text-xl font-bold text-slate-900">{{ t("landing_card_3_title") }}</h3>
+                <p class="mt-3 text-sm leading-7 text-slate-600">{{ t("landing_card_3_desc") }}</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= HOW IT WORKS ================= -->
+    <section class="relative mx-auto max-w-7xl px-6 pb-20 lg:px-8 lg:pb-28">
+        <div class="reveal mx-auto max-w-2xl text-center">
+            <h2 class="font-display text-3xl font-extrabold text-white sm:text-4xl">{{ t("landing_how_title") }}</h2>
+            <p class="mt-3 text-slate-300">{{ t("landing_how_subtitle") }}</p>
+        </div>
+
+        <div class="mt-12 hidden gap-3 md:flex" aria-hidden="true">
+            <div class="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-800">
+                <div class="step-fill h-full rounded-full bg-gradient-to-r from-cyan-400 to-blue-400" data-stagger-index="0"></div>
+            </div>
+            <div class="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-800">
+                <div class="step-fill h-full rounded-full bg-gradient-to-r from-cyan-400 to-blue-400" data-stagger-index="1"></div>
+            </div>
+            <div class="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-800">
+                <div class="step-fill h-full rounded-full bg-gradient-to-r from-cyan-400 to-blue-400" data-stagger-index="2"></div>
+            </div>
+        </div>
+
+        <div class="mt-4 grid gap-6 md:mt-6 md:grid-cols-3" data-reveal-group>
+            <div class="reveal rounded-3xl border border-slate-200 bg-white p-7 shadow-lg">
+                <span class="badge-pop flex h-10 w-10 items-center justify-center rounded-full bg-cyan-500 font-display text-base font-bold text-slate-950 shadow-lg shadow-cyan-500/30">01</span>
+                <h3 class="mt-5 text-lg font-bold text-slate-900">{{ t("landing_step_1_title") }}</h3>
+                <p class="mt-2 text-sm leading-7 text-slate-600">{{ t("landing_step_1_desc") }}</p>
+            </div>
+            <div class="reveal rounded-3xl border border-slate-200 bg-white p-7 shadow-lg">
+                <span class="badge-pop flex h-10 w-10 items-center justify-center rounded-full bg-cyan-500 font-display text-base font-bold text-slate-950 shadow-lg shadow-cyan-500/30">02</span>
+                <h3 class="mt-5 text-lg font-bold text-slate-900">{{ t("landing_step_2_title") }}</h3>
+                <p class="mt-2 text-sm leading-7 text-slate-600">{{ t("landing_step_2_desc") }}</p>
+            </div>
+            <div class="reveal rounded-3xl border border-slate-200 bg-white p-7 shadow-lg">
+                <span class="badge-pop flex h-10 w-10 items-center justify-center rounded-full bg-cyan-500 font-display text-base font-bold text-slate-950 shadow-lg shadow-cyan-500/30">03</span>
+                <h3 class="mt-5 text-lg font-bold text-slate-900">{{ t("landing_step_3_title") }}</h3>
+                <p class="mt-2 text-sm leading-7 text-slate-600">{{ t("landing_step_3_desc") }}</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= USE CASES ================= -->
+    <section class="relative mx-auto max-w-7xl px-6 pb-20 lg:px-8 lg:pb-28">
+        <div class="reveal mx-auto max-w-2xl text-center">
+            <h2 class="font-display text-3xl font-extrabold text-white sm:text-4xl">{{ t("landing_usecases_title") }}</h2>
+        </div>
+
+        <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4" data-reveal-group>
+            <div class="tilt-card reveal rounded-3xl border border-slate-200 bg-white p-6 shadow-lg">
+                <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 18h6M10 21h4M12 3a6 6 0 00-6 6c0 2.2 1.2 3.6 2.2 4.6.6.6 1 1.4 1.1 2.4h5.4c.1-1 .5-1.8 1.1-2.4C16.8 12.6 18 11.2 18 9a6 6 0 00-6-6z"></path></svg>
+                </div>
+                <h3 class="mt-4 font-bold text-slate-900">{{ t("landing_usecase_1_title") }}</h3>
+                <p class="mt-2 text-sm leading-6 text-slate-600">{{ t("landing_usecase_1_desc") }}</p>
+            </div>
+            <div class="tilt-card reveal rounded-3xl border border-slate-200 bg-white p-6 shadow-lg">
+                <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="4" width="12" height="16" rx="2" stroke-width="2"></rect><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 4V3a1 1 0 011-1h4a1 1 0 011 1v1"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13l2 2 4-4"></path></svg>
+                </div>
+                <h3 class="mt-4 font-bold text-slate-900">{{ t("landing_usecase_2_title") }}</h3>
+                <p class="mt-2 text-sm leading-6 text-slate-600">{{ t("landing_usecase_2_desc") }}</p>
+            </div>
+            <div class="tilt-card reveal rounded-3xl border border-slate-200 bg-white p-6 shadow-lg">
+                <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v18"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 4h13l-3 4 3 4H5"></path></svg>
+                </div>
+                <h3 class="mt-4 font-bold text-slate-900">{{ t("landing_usecase_3_title") }}</h3>
+                <p class="mt-2 text-sm leading-6 text-slate-600">{{ t("landing_usecase_3_desc") }}</p>
+            </div>
+            <div class="tilt-card reveal rounded-3xl border border-slate-200 bg-white p-6 shadow-lg">
+                <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z"></path></svg>
+                </div>
+                <h3 class="mt-4 font-bold text-slate-900">{{ t("landing_usecase_4_title") }}</h3>
+                <p class="mt-2 text-sm leading-6 text-slate-600">{{ t("landing_usecase_4_desc") }}</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= FINAL CTA ================= -->
+    <section class="relative mx-auto max-w-7xl px-6 pb-20 lg:px-8 lg:pb-28">
+        <div class="reveal-scale rounded-[2rem] bg-gradient-to-br from-cyan-500 via-cyan-500 to-blue-600 p-10 text-center shadow-2xl shadow-cyan-500/20 md:p-14">
+            <h2 class="font-display text-3xl font-extrabold text-white sm:text-4xl">{{ t("landing_final_title") }}</h2>
+            <p class="mx-auto mt-4 max-w-xl text-cyan-50">{{ t("landing_final_subtitle") }}</p>
+            <div class="mt-8 flex flex-col items-center gap-3">
+                {% if session.get("user_id") %}
+                <a href="/menu" class="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-8 py-3.5 text-base font-bold text-cyan-700 shadow-xl transition duration-200 hover:-translate-y-0.5 hover:bg-cyan-50">
+                    {{ t("landing_cta_primary") }}
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                 </a>
+                {% else %}
+                <a href="/register" class="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-8 py-3.5 text-base font-bold text-cyan-700 shadow-xl transition duration-200 hover:-translate-y-0.5 hover:bg-cyan-50">
+                    {{ t("landing_final_cta") }}
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                </a>
+                <p class="text-sm text-cyan-100">{{ t("landing_final_note") }}</p>
+                {% endif %}
             </div>
-        </section>
-    </div>
+        </div>
+    </section>
+
 </div>
+
+<script>
+(function () {
+    var promptTarget = document.getElementById("demo-prompt-text");
+    var resultWrap = document.getElementById("demo-result");
+    var demoSection = document.getElementById("hero-demo");
+    if (!promptTarget || !resultWrap) return;
+
+    var DEMOS = [
+        { prompt: {{ t('landing_demo_1_prompt') | tojson }}, latex: "\\int x^{2}\\,dx = \\dfrac{x^{3}}{3} + C" },
+        { prompt: {{ t('landing_demo_2_prompt') | tojson }}, latex: "f(x)=\\sin\\left(x^{2}\\right) \\Rightarrow f'(x)=2x\\cos\\left(x^{2}\\right)" },
+        { prompt: {{ t('landing_demo_3_prompt') | tojson }}, latex: "ax^{2}+bx+c=0 \\Rightarrow x_{1,2}=\\dfrac{-b\\pm\\sqrt{\\Delta}}{2a}" },
+        { prompt: {{ t('landing_demo_4_prompt') | tojson }}, latex: "\\sin^{2}(x)+\\cos^{2}(x)=1" }
+    ];
+
+    var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var visible = true;
+
+    if (demoSection && "IntersectionObserver" in window) {
+        new IntersectionObserver(function (entries) {
+            entries.forEach(function (e) { visible = e.isIntersecting; });
+        }, { threshold: 0.1 }).observe(demoSection);
+    }
+
+    function renderLatex(el, latex) {
+        if (window.katex) {
+            try {
+                katex.render(latex, el, { throwOnError: false, displayMode: true });
+                return;
+            } catch (err) { /* fall through */ }
+        }
+        el.textContent = latex;
+    }
+
+    function wait(ms) {
+        return new Promise(function (resolve) { setTimeout(resolve, ms); });
+    }
+
+    function typeText(text) {
+        return new Promise(function (resolve) {
+            if (reducedMotion) { promptTarget.textContent = text; resolve(); return; }
+            var i = 0;
+            promptTarget.textContent = "";
+            (function step() {
+                if (!visible) { promptTarget.textContent = text; resolve(); return; }
+                promptTarget.textContent = text.slice(0, i);
+                i += 1;
+                if (i <= text.length) { setTimeout(step, 34); } else { resolve(); }
+            })();
+        });
+    }
+
+    function eraseText() {
+        return new Promise(function (resolve) {
+            if (reducedMotion) { promptTarget.textContent = ""; resolve(); return; }
+            (function step() {
+                var current = promptTarget.textContent;
+                if (!visible || current.length === 0) { promptTarget.textContent = ""; resolve(); return; }
+                promptTarget.textContent = current.slice(0, -1);
+                setTimeout(step, 16);
+            })();
+        });
+    }
+
+    function showResult(latex) {
+        resultWrap.classList.remove("demo-fade-swap");
+        resultWrap.classList.add("shimmer");
+        return wait(reducedMotion ? 0 : 500).then(function () {
+            resultWrap.classList.remove("shimmer");
+            renderLatex(resultWrap, latex);
+            void resultWrap.offsetWidth;
+            resultWrap.classList.add("demo-fade-swap");
+        });
+    }
+
+    function run(index) {
+        var demo = DEMOS[index % DEMOS.length];
+        typeText(demo.prompt)
+            .then(function () { return wait(400); })
+            .then(function () { return showResult(demo.latex); })
+            .then(function () {
+                if (reducedMotion) return;
+                return wait(2800)
+                    .then(function () { return eraseText(); })
+                    .then(function () { run(index + 1); });
+            });
+    }
+
+    run(0);
+})();
+</script>
 {% endblock %}
