@@ -1,0 +1,428 @@
+[
+  {
+    "timestamp": "2026-07-09T14:29:52.164336+00:00",
+    "seed": 100,
+    "generator_version": "3.0.0",
+    "selected_lessons": [],
+    "validation_status": "verified",
+    "diversity_score": 0.8816,
+    "attempts_required": 1,
+    "duplicate_rejections_so_far": 0,
+    "exercise_fingerprints": [
+      {
+        "id": "s1_ex1_prog_geom",
+        "template_id": "s1_geom_seq_nth_term",
+        "param_signature": "b1=4;bn=36;n=3;q=3",
+        "topic": "Progresii geometrice",
+        "difficulty": "easy",
+        "exact_hash": "27746060f4bd5ddc2ae93028a17c2cd2336c6358993dcb574423120a3b21a22a",
+        "template_param_hash": "5fc89ea1ba442bc834a55765557ab5ca831b2a6fdf04e48db7a22e3c98dafbd5"
+      },
+      {
+        "id": "s1_ex2_vieta",
+        "template_id": "s1_quadratic_roots_vieta",
+        "param_signature": "b=-2;c=-8;s2=20;x1=-2;x2=4",
+        "topic": "Suma și produsul rădăcinilor – relațiile lui Viète",
+        "difficulty": "medium",
+        "exact_hash": "4133567211b67db96aa1af50d9079ec782433f14522414200ac78d6441012c9c",
+        "template_param_hash": "ae476ba046a907fcab5218fa933f2e35a2703716f214b618fec6e3756732a729"
+      },
+      {
+        "id": "s1_ex3_eq_quadratic",
+        "template_id": "s1_quadratic_equation_discriminant",
+        "param_signature": "b=-2;c=-15;disc=64;x1=-3;x2=5",
+        "topic": "Ecuații de gradul al doilea – discriminant",
+        "difficulty": "easy",
+        "exact_hash": "76c7c9aecc7008cdaaf7a479aadca607191e1ddbbd81c4fc55be0333b59fdabd",
+        "template_param_hash": "f7cb8813dbb63ac52aecb8e4e32d60db21da3a19ee35e241dac23ec29ba9bf5d"
+      },
+      {
+        "id": "s1_ex4_prob",
+        "template_id": "s1_classical_probability",
+        "param_signature": "fav=11;k=8;total=90",
+        "topic": "Probabilitate clasică",
+        "difficulty": "easy",
+        "exact_hash": "1f92afd80c5d47a6e06958929681d194644368597f71fe965a8c5b5ae7f73dba",
+        "template_param_hash": "916adbf0f44bf6cbdd87fe659039871edce7cf38fb4fc515c123e2bbafdb281f"
+      },
+      {
+        "id": "s1_ex5_line_two_points",
+        "template_id": "s1_line_equation_two_points",
+        "param_signature": "dx=3;dy=6;x1=-1;x2=2;y1=-3;y2=3",
+        "topic": "Ecuația dreptei prin două puncte date",
+        "difficulty": "easy",
+        "exact_hash": "443843fe96ffc2187bb39ce0045477d945a67dd834d34ecf0ccb4ff72b80fbfd",
+        "template_param_hash": "ad8e4c42d70085eb91c5b2f2f60cbf57b036c2384d8f409a8a65e6698810d6d1"
+      },
+      {
+        "id": "s1_ex6_area",
+        "template_id": "s1_triangle_area_formula",
+        "param_signature": "AB=8;AC=4;area=8",
+        "topic": "Aria triunghiului cu sin",
+        "difficulty": "easy",
+        "exact_hash": "6ec5f3d1215d23397d7b2f339511636c41d904096c74dc121616021c3593945c",
+        "template_param_hash": "504d3397b11c13b1bb64b3f530ca6cfbcac57ecd4ff28b8a919aef5905e428eb"
+      },
+      {
+        "id": "s2_ex1_mat_symmetric",
+        "template_id": "s2_matrix_symmetric_determinant",
+        "param_signature": "variant=det_0",
+        "topic": "Matrici simetrice – determinant factorizat",
+        "difficulty": "hard",
+        "exact_hash": "af59aab7f1a46375135d5184cfae3dee99c0667407f147280cb9b0c7c5ff6c5e",
+        "template_param_hash": "c9c9e93cf6e93f95938044e9e4b08f9eb72935fa8dd60e3a21786e7877ea6769"
+      },
+      {
+        "id": "s2_ex2_law_assoc",
+        "template_id": "s2_law_associative_exponential",
+        "param_signature": "c_rhs=2;k=4",
+        "topic": "Legi de compoziție asociative – ecuații exponențiale",
+        "difficulty": "hard",
+        "exact_hash": "cb05f720b645db56edf247d9c25a0f93a7ae86b52dda453140d9c330e3227c9b",
+        "template_param_hash": "9107a6f821c6d7155f9c331edd963eb59440864f379250bef6b3848b18746f11"
+      },
+      {
+        "id": "s3_ex1_deriv_rational",
+        "template_id": "s3_derivative_rational_monotonicity",
+        "param_signature": "a=4;b=2",
+        "topic": "Derivata fracției raționale – monotonie",
+        "difficulty": "hard",
+        "exact_hash": "87578724f973050a365724b6281b6e94c822a4f079579b2eff56624ac7ebd0ef",
+        "template_param_hash": "1f30cacdd0f1cf5a03191dd62bc21a5dbd7168fdfb9569dcf320191a33cfa268"
+      },
+      {
+        "id": "s3_ex2_int_by_parts",
+        "template_id": "s3_integral_by_parts_exponential",
+        "param_signature": "n=2",
+        "topic": "Integrare prin părți – funcții exponențiale",
+        "difficulty": "hard",
+        "exact_hash": "20b7cb1ef29214667fe8843785feac7ba56b9e20ba00f407817e8762727d37ed",
+        "template_param_hash": "18a70a3364db31c5c571b10175d5ee7a127eb6c5f8332c318afb608b60e83699"
+      }
+    ]
+  },
+  {
+    "timestamp": "2026-07-09T14:29:52.175821+00:00",
+    "seed": null,
+    "generator_version": "3.0.0",
+    "selected_lessons": [],
+    "validation_status": "verified",
+    "diversity_score": 0.8889,
+    "attempts_required": 1,
+    "duplicate_rejections_so_far": 0,
+    "exercise_fingerprints": [
+      {
+        "id": "s1_ex1_prog_geom",
+        "template_id": "s1_geom_seq_nth_term",
+        "param_signature": "b1=2;bn=32;n=5;q=2",
+        "topic": "Progresii geometrice",
+        "difficulty": "easy",
+        "exact_hash": "0b0b231a8e703aee9a587f633ca0cdd1c91b4e0a1035ef329fc3a2a1ebe48941",
+        "template_param_hash": "f9f4c0bb2f00adf6a9af1782a0004d77d9c4af1da69b5c0cb478f78eeeea62f0"
+      },
+      {
+        "id": "s1_ex2_func_intersect",
+        "template_id": "s1_func_graph_intersection",
+        "param_signature": "a=4;b=7;c=1;d=3;x1=1;x2=4",
+        "topic": "Intersecția graficelor a două funcții",
+        "difficulty": "medium",
+        "exact_hash": "56dabcefca42d05da6b313a3674e473b4f7ac7bd153a1a0552c6db27c95a0d96",
+        "template_param_hash": "8bd7bdc6ccf5443a5a6f9dede7f1af5d9033e799cbd364ebdf3ea4f5ff146519"
+      },
+      {
+        "id": "s1_ex3_poly_divisibility",
+        "template_id": "s1_polynomial_divisibility",
+        "param_signature": "c=-5;m=4;p1=0;r=1",
+        "topic": "Divizibilitatea polinoamelor",
+        "difficulty": "medium",
+        "exact_hash": "f7ef53a48af9671deeb322fbedb1c9bdb2cbc49992874bfafa9e62f3d865ab70",
+        "template_param_hash": "bd250ff4e00db330817c41adf2691bfd301be366fe5026bfc6d8aeb20816ff2e"
+      },
+      {
+        "id": "s1_ex4_prob",
+        "template_id": "s1_classical_probability",
+        "param_signature": "fav=6;k=15;total=90",
+        "topic": "Probabilitate clasică",
+        "difficulty": "easy",
+        "exact_hash": "bf1ac9cb9ead3080cc7a479b4faf5b2510c3c055a1b6beacf187013d7000a240",
+        "template_param_hash": "3e8d8a4312f1db4a86a9c7ab9401bd05cb5eb16f1ccd1a5022fd0833f79b5eaa"
+      },
+      {
+        "id": "s1_ex5_vectors",
+        "template_id": "s1_collinear_vectors_condition",
+        "param_signature": "a=6;b=8;c=3;d=4",
+        "topic": "Condiția de coliniaritate a vectorilor",
+        "difficulty": "medium",
+        "exact_hash": "3c62fef0eff7a82c4d3f449848c214ffe36c5b76c059469fb5e9e7a408b992b6",
+        "template_param_hash": "995b985db9b17cb9018e3d8e70d55646a0a4c9319c3e08d9216db04329a2aba4"
+      },
+      {
+        "id": "s1_ex6_law_cos",
+        "template_id": "s1_law_of_cosines",
+        "param_signature": "a=7;b=3;c=8;cosA=1/2",
+        "topic": "Teorema cosinusului",
+        "difficulty": "medium",
+        "exact_hash": "a089072fd05b3a3b1a332b5cf86d8d5a42f6f7fc5170de0c2f4ece27181aea96",
+        "template_param_hash": "49acf105728cbb9edbf1dd5c958fe3834b3dc77c5fbfb232e3eabcfe5e0e630d"
+      },
+      {
+        "id": "s2_ex1_mat_nilpotent",
+        "template_id": "s2_matrix_nilpotent_inverse",
+        "param_signature": "k=1;m=2;n=3",
+        "topic": "Matrici nilpotente – inversa prin formula Newton",
+        "difficulty": "hard",
+        "exact_hash": "4435621315c8ce6125f55ae3a7313676272a6e23ce5a17f0771bc8a1ea64685d",
+        "template_param_hash": "5899c05deb646083ed42c5415badafb101135149643a0d846556d5165db5e0b8"
+      },
+      {
+        "id": "s2_ex2_law_inverse",
+        "template_id": "s2_law_inverse_element",
+        "param_signature": "e=4;k=4;sym_kp1=3",
+        "topic": "Legi de compoziție – element simetric",
+        "difficulty": "hard",
+        "exact_hash": "4ebc0d39cfa6a2fccff10f76efc50f82cad26c8804dcdc3aaa467cf8064cc9d5",
+        "template_param_hash": "e54a3b947a545a6e78916a6300dceb658149076b005296c3acda4f53da8b60b8"
+      },
+      {
+        "id": "s3_ex1_deriv_implicit",
+        "template_id": "s3_derivative_implicit_tangent",
+        "param_signature": "a=2;slope=0;x0=0;y0=1",
+        "topic": "Tangenta la graficul unei funcții implicite",
+        "difficulty": "hard",
+        "exact_hash": "7ab2a4dc873d60a589848861d7775cc8d3e83ad9fca33a67a42fe26311878205",
+        "template_param_hash": "f76bc539118ff0610bcd7790a7bd87d53ef0ef01b577221dcd38603a1a2a3097"
+      },
+      {
+        "id": "s3_ex2_int_by_parts",
+        "template_id": "s3_integral_by_parts_exponential",
+        "param_signature": "n=3",
+        "topic": "Integrare prin părți – funcții exponențiale",
+        "difficulty": "hard",
+        "exact_hash": "445647b208583c5ccec136faa7379776df645f17516bf8483e2175372984ea05",
+        "template_param_hash": "a55174465127a14af451219e7050b5ad7112e3f84ff3892bc231bac550294e4b"
+      }
+    ]
+  },
+  {
+    "timestamp": "2026-07-09T14:29:52.264378+00:00",
+    "seed": null,
+    "generator_version": "3.0.0",
+    "selected_lessons": [
+      "Limite",
+      "Derivate"
+    ],
+    "validation_status": "verified",
+    "diversity_score": 0.8796,
+    "attempts_required": 1,
+    "duplicate_rejections_so_far": 0,
+    "exercise_fingerprints": [
+      {
+        "id": "s1_ex1_prog_geom",
+        "template_id": "s1_geom_seq_nth_term",
+        "param_signature": "b1=4;bn=16;n=3;q=2",
+        "topic": "Progresii geometrice",
+        "difficulty": "easy",
+        "exact_hash": "7b437820b8f313a656219ac3668671d295056f87b10653060d000b8325b60531",
+        "template_param_hash": "70be59d47215e08b2851bf24e1fdc2f55f1813c5ec53222a27602ba6e2fdb9e7"
+      },
+      {
+        "id": "s1_ex2_func_intersect",
+        "template_id": "s1_func_graph_intersection",
+        "param_signature": "a=1;b=-2;c=1;d=1;x1=-1;x2=3",
+        "topic": "Intersecția graficelor a două funcții",
+        "difficulty": "medium",
+        "exact_hash": "dcbb23237ce950fa3c8f1b31ee6db98b0705f98360b51b497219cc5d92b6f91b",
+        "template_param_hash": "f301811f18f7e5c76fdf9c3427b6af0655adb980014ea5968db1c6001f5f2609"
+      },
+      {
+        "id": "s1_ex3_eq_exponential",
+        "template_id": "s1_exponential_equation",
+        "param_signature": "a=5;b=2;c=-2;d=2;rhs=25;x=2",
+        "topic": "Ecuații exponențiale",
+        "difficulty": "medium",
+        "exact_hash": "c613cdea6b1eb6c7a5f5e1b3daedf83622b4de5629726b1d68420bac7518ea8c",
+        "template_param_hash": "43d5d67775c84c5c9cfdd357e99d52c8dd42c3d44edef271ee6633354b93a746"
+      },
+      {
+        "id": "s1_ex4_geom_prob",
+        "template_id": "s1_geometric_probability",
+        "param_signature": "k=1;n=6",
+        "topic": "Probabilitate geometrică",
+        "difficulty": "medium",
+        "exact_hash": "54733fa9849926d477a1d29d81dab5014fc9672e11faf61f2d31363636a1f51a",
+        "template_param_hash": "d29d89047938ae6f1fb64efb4ba5fd91a8291bd8269a3277d76f35a0c694ecb7"
+      },
+      {
+        "id": "s1_ex5_vectors",
+        "template_id": "s1_collinear_vectors_condition",
+        "param_signature": "a=4;b=8;c=2;d=4",
+        "topic": "Condiția de coliniaritate a vectorilor",
+        "difficulty": "medium",
+        "exact_hash": "7d5ebbc8b8e5d33f0d8e4b6e9a792e3be702eb6e79afc6cf5bcc3f7f0bea23cb",
+        "template_param_hash": "9fafd706173d4ba1e640a96ecffcbf16fe5371ad67070694a1ed60481eb05923"
+      },
+      {
+        "id": "s1_ex6_trig_identity",
+        "template_id": "s1_trig_identity_simplification",
+        "param_signature": "expr=(\\sin x + \\cos x)^2 + (\\sin x - \\cos x)^2",
+        "topic": "Simplificarea identităților trigonometrice",
+        "difficulty": "hard",
+        "exact_hash": "bc0f770bcc9fe6de264725575c06666330ba0303616e922e277bc652bc04d450",
+        "template_param_hash": "879dd183fa358d003286bf3de84ae9fe3dc0d87f2d23deba8aed8c53d82b05f0"
+      },
+      {
+        "id": "s2_ex1_mat_symmetric",
+        "template_id": "s2_matrix_symmetric_determinant",
+        "param_signature": "variant=factored",
+        "topic": "Matrici simetrice – determinant factorizat",
+        "difficulty": "hard",
+        "exact_hash": "af59aab7f1a46375135d5184cfae3dee99c0667407f147280cb9b0c7c5ff6c5e",
+        "template_param_hash": "84733cf9787cea44be930a56a8598653b049197bd10b007df2bcac0416f303b4"
+      },
+      {
+        "id": "s2_ex2_law_inverse",
+        "template_id": "s2_law_inverse_element",
+        "param_signature": "e=1;k=1;sym_kp1=0",
+        "topic": "Legi de compoziție – element simetric",
+        "difficulty": "hard",
+        "exact_hash": "35d9b6c9b38c98dd32e87a6301446eb91c5f18df43929439ba3d6cd96f8e1f8e",
+        "template_param_hash": "8b11103a305f345c13820c1088444e71bff97026688fef5ddbccd51ad44d14d5"
+      },
+      {
+        "id": "s3_ex1_deriv_rational",
+        "template_id": "s3_derivative_rational_monotonicity",
+        "param_signature": "a=5;b=4",
+        "topic": "Derivata fracției raționale – monotonie",
+        "difficulty": "hard",
+        "exact_hash": "5a2e8ef6197fcf87eaebf7c2e791c78366cc304f16af43b0bfd432879281dfe5",
+        "template_param_hash": "d6fc662bac8503b60cfb64502978a5db0a1d45dbca032c66da0b5f78edbbc98f"
+      },
+      {
+        "id": "s3_ex2_int_by_parts",
+        "template_id": "s3_integral_by_parts_exponential",
+        "param_signature": "n=1",
+        "topic": "Integrare prin părți – funcții exponențiale",
+        "difficulty": "hard",
+        "exact_hash": "945b51c7d0b4f8598f1c6f0af1c2b9b14bb3d0a05398bb5b1c266cfe64e0903d",
+        "template_param_hash": "7fad52ddf0e00dd0f68ebf6b04ba022008da03cc13119fcb8785aaece4c1a551"
+      }
+    ]
+  },
+  {
+    "timestamp": "2026-07-09T14:31:34.473329+00:00",
+    "seed": null,
+    "generator_version": "3.0.0",
+    "selected_lessons": [
+      "Radicali",
+      "Puteri",
+      "Progresii",
+      "Probabilități",
+      "Funcții",
+      "Logaritmi",
+      "Numere complexe",
+      "Trigonometrie",
+      "Matrici",
+      "Legi de compoziție",
+      "Limite",
+      "Derivate",
+      "Integrale definite",
+      "Polinoame"
+    ],
+    "validation_status": "verified",
+    "diversity_score": 0.9454,
+    "attempts_required": 1,
+    "duplicate_rejections_so_far": 0,
+    "exercise_fingerprints": [
+      {
+        "id": "s1_ex1_arith_sum",
+        "template_id": "s1_arith_seq_sum",
+        "param_signature": "a1=3;d=1;n=10;sn=75",
+        "topic": "Progresii aritmetice – suma primilor n termeni",
+        "difficulty": "medium",
+        "exact_hash": "5aa33249bc8431eeb4d4580f43a0534f3488c2fccb4a3ca36b6470c9ca1b4180",
+        "template_param_hash": "94dfd522496b86bb1f39ca4cef65870b0d8940ceed1c346ea8ed0fb427fe775c"
+      },
+      {
+        "id": "s1_ex2_vieta",
+        "template_id": "s1_quadratic_roots_vieta",
+        "param_signature": "b=-2;c=-3;s2=10;x1=-1;x2=3",
+        "topic": "Suma și produsul rădăcinilor – relațiile lui Viète",
+        "difficulty": "medium",
+        "exact_hash": "152193a0e89134845fb6a0043cab169db898cd8689c29e7f7a3f49d794c73bdf",
+        "template_param_hash": "80fb13e8441421e6ea248c6366e768259c3bc8c3105dc66e1d50d27a04c39c6b"
+      },
+      {
+        "id": "s1_ex3_poly_divisibility",
+        "template_id": "s1_polynomial_divisibility",
+        "param_signature": "c=-3;m=4;p1=-2;r=1",
+        "topic": "Divizibilitatea polinoamelor",
+        "difficulty": "medium",
+        "exact_hash": "abab72b4bd99e8cc3c75e2fe3750918fd14f9fee56a6812a295bcccd2a45dc56",
+        "template_param_hash": "56348d687de539b7e09783794a1d6043f1dba536a58af026d89ff4f4b2aabcc9"
+      },
+      {
+        "id": "s1_ex4_prob_union",
+        "template_id": "s1_mixed_events_probability",
+        "param_signature": "denom=10;p_a=2;p_b=1;p_union_num=2",
+        "topic": "Probabilitatea reuniunii evenimentelor",
+        "difficulty": "medium",
+        "exact_hash": "5d147980a18e89030bd805a30e45e3cc1cf23b0a1d1370e013131b617dc15ee1",
+        "template_param_hash": "3c8a30cc9f1a8166530f25225f9ce7fcc4f22e58b40072b3166b8fea161fbb16"
+      },
+      {
+        "id": "s1_ex5_midpoint",
+        "template_id": "s1_midpoint_segment",
+        "param_signature": "mx=1;my=0;x1=2;x2=0;y1=2;y2=-2",
+        "topic": "Geometrie analitică – mijlocul unui segment",
+        "difficulty": "easy",
+        "exact_hash": "7a3bd6f4952338213848d0efe4ff30dfecdfb7118db4034a5179b1a1bf90810d",
+        "template_param_hash": "b7ab271e8d96fbef4c2fb50cec1dfd805220457cdedc82ba9607d4e48560660c"
+      },
+      {
+        "id": "s1_ex6_area",
+        "template_id": "s1_triangle_area_formula",
+        "param_signature": "AB=4;AC=3;area=3",
+        "topic": "Aria triunghiului cu sin",
+        "difficulty": "easy",
+        "exact_hash": "ecb12c62778b51a3e7cf5adbc22f22f1d9934d9ce1b31b365abd76f0de2dc6ff",
+        "template_param_hash": "6a1922310460abb5a1488ca45b96d2610783f0428e0609adb49b78791bae4a6e"
+      },
+      {
+        "id": "s2_ex1_mat_param",
+        "template_id": "s2_matrix_parametric_power",
+        "param_signature": "b=2;c_val=10;k=3",
+        "topic": "Matrice parametrizate – determinant și produs",
+        "difficulty": "hard",
+        "exact_hash": "ce79364ab88ccfd8516628acdd5bec70d4da28106216cc900317d4e310a99661",
+        "template_param_hash": "a44d8d8da00381ddedd7a6bcc4a84ef693a540a83260c2ac5ed67e49853f52f0"
+      },
+      {
+        "id": "s2_ex2_law_neutral",
+        "template_id": "s2_law_neutral_element",
+        "param_signature": "a=4;b=1;e=1",
+        "topic": "Legi de compoziție – element neutru",
+        "difficulty": "hard",
+        "exact_hash": "85631a0c87d37cc486ed0ac469fe3695a48d830a9ade11be1f200b02f59256de",
+        "template_param_hash": "a4794bf149b88daba13fcfdb649fe21952c2c8dd11067b25dcf971fec4be1519"
+      },
+      {
+        "id": "s3_ex1_limit_remarkable",
+        "template_id": "s3_limit_remarkable_sine",
+        "param_signature": "k=3;m=3",
+        "topic": "Limite remarcabile – sin(x)/x",
+        "difficulty": "hard",
+        "exact_hash": "f73f3d21b474dcf3eee07f35f23958e543de8cc9031bc8f6d3c871b4937c8514",
+        "template_param_hash": "afd39f2783d0e885c7a40a6b36afdb77261a067d755be205482073a8c7ff3deb"
+      },
+      {
+        "id": "s3_ex2_int_area",
+        "template_id": "s3_integral_area_between_curves",
+        "param_signature": "a=3;area_den=6;area_num=27;b=6",
+        "topic": "Aria suprafeței dintre două curbe",
+        "difficulty": "hard",
+        "exact_hash": "afece35351c04ac02bfd71e08bfd2c57561d4f526ca70d02ce680f2a16806897",
+        "template_param_hash": "8e7ebb4d3ca871859d471ff5c774f778414fba86fe61b870bbb61dec67c321bb"
+      }
+    ]
+  }
+]

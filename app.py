@@ -13,9 +13,12 @@ from PyPDF2 import PdfReader
 from docx import Document
 from secondary import ai, docs, ocr, accounts
 from secondary import model_route
+from bac_generator.routes import bac_generator_bp
+from bac_generator.generator import BACExamGenerator
 import traceback
 
 app = Flask(__name__)
+app.register_blueprint(bac_generator_bp)
 os.makedirs("uploads", exist_ok=True)
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
@@ -113,7 +116,9 @@ migrations = [
     "ALTER TABLE conversations ADD COLUMN school_class TEXT",
     "ALTER TABLE conversations ADD COLUMN style_id INTEGER",
     "ALTER TABLE conversations ADD COLUMN bac TEXT",
+    "ALTER TABLE messages ADD COLUMN exam_data TEXT",
 ]
+
 
 for sql in migrations:
     try:
@@ -488,6 +493,26 @@ def create_mode5():
 
     conversation_id = db.lastrowid
 
+    # Generate the first BAC variant right away so the user doesn't land on an empty chat
+    default_lessons = [
+        "Radicali", "Puteri", "Progresii", "Probabilități",
+        "Funcții", "Logaritmi", "Numere complexe", "Trigonometrie",
+        "Matrici", "Legi de compoziție", "Limite", "Derivate",
+        "Integrale definite", "Polinoame",
+    ]
+    generator = BACExamGenerator()
+    exam_data = generator.generate_exam(default_lessons)
+
+    db.execute(
+        """
+        INSERT INTO messages (conversation_id, role, content, exam_data)
+        VALUES (?, ?, ?, ?)
+        """,
+        (conversation_id, "assistant", exam_data["html_preview"], json.dumps(exam_data))
+    )
+
+    connect.commit()
+
     return redirect(f"/mode5/{conversation_id}")
 
 @app.route("/mode5")
@@ -532,12 +557,28 @@ def mode5(conversation_id):
             )
             connect.commit()
 
-    messages = db.execute(
+    raw_messages = db.execute(
         """
         SELECT * FROM messages WHERE conversation_id = ? ORDER BY id ASC
         """,
         (conversation_id,)
     ).fetchall()
+
+    import markdown
+    messages = []
+    for msg in raw_messages:
+        msg_dict = dict(msg)
+        msg_dict["content"] = markdown.markdown(msg_dict["content"])
+        if msg_dict.get("exam_data"):
+            try:
+                msg_dict["exam_data_parsed"] = json.loads(msg_dict["exam_data"])
+                if msg_dict["exam_data_parsed"].get("solution_preview"):
+                    msg_dict["exam_data_parsed"]["solution_preview"] = markdown.markdown(
+                        msg_dict["exam_data_parsed"]["solution_preview"]
+                    )
+            except Exception:
+                msg_dict["exam_data_parsed"] = None
+        messages.append(msg_dict)
 
     conversations = db.execute(
         """
@@ -555,8 +596,9 @@ def mode5(conversation_id):
         bac=conversation["bac"] if "bac" in conversation.keys() else "M3"
     )
 
+
 # =========================================================
-# RUN
+# RUN (Reloaded to refresh translations JSON keys)
 # =========================================================
 
 if __name__ == "__main__":

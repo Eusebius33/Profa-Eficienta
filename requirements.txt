@@ -8,3 +8,5 @@ pillow
 sentence-transformers
 markdown
 werkzeug
+reportlab
+

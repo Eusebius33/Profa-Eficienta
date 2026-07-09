@@ -1,3 +1,4 @@
+
 # Equation Compatibility Report
 
 This report documents the compatibility, rendering quality, and editability behavior of the copied mathematical equations across Microsoft Word and Google Docs.

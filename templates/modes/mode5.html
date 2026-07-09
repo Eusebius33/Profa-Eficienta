@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block title %}
-Generator BAC | 
+Generator BAC |
     {% if user and user["gender"] == "F" %}
         Profa Eficientă
     {% else %}
@@ -140,6 +140,23 @@ Generator BAC |
                                     {{ message["content"]|safe }}
                                 </div>
 
+                                {% if message.get("exam_data_parsed") %}
+                                    <div class="mt-4 flex flex-wrap gap-2 border-t border-slate-200 pt-3">
+                                        <a href="/generate-bac/download/{{ message['id'] }}?type=subject" class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold py-1.5 px-3 rounded-lg text-xs" data-i18n="download_subject_pdf">
+                                            {{ t("download_subject_pdf") }}
+                                        </a>
+                                        <a href="/generate-bac/download/{{ message['id'] }}?type=solution" class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-1.5 px-3 rounded-lg text-xs" data-i18n="download_solution_pdf">
+                                            {{ t("download_solution_pdf") }}
+                                        </a>
+                                        <button onclick="toggleSolution('{{ message['id'] }}')" class="bg-emerald-100 hover:bg-emerald-200 transition text-emerald-700 font-bold py-1.5 px-3 rounded-lg text-xs border border-emerald-200" data-i18n="toggle_solution_btn">
+                                            {{ t("toggle_solution_btn") }}
+                                        </button>
+                                    </div>
+                                    <div id="solution-{{ message['id'] }}" class="hidden mt-4 p-4 bg-white border border-slate-200 rounded-xl text-slate-700 text-sm leading-relaxed whitespace-pre-line msg-content-container">
+                                        {{ message["exam_data_parsed"]["solution_preview"]|safe }}
+                                    </div>
+                                {% endif %}
+
                             </div>
 
                         {% endif %}
@@ -152,6 +169,7 @@ Generator BAC |
                 <div class="flex flex-wrap justify-end gap-2 mt-auto mb-3 flex-shrink-0">
 
                     <button
+                        onclick="const lastBarem = document.querySelector('[id^=\'solution-\']'); if(lastBarem) toggleSolution(lastBarem.id.replace('solution-', ''));"
                         class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm"
                      data-i18n="m5_solve_test">Rezolvare test</button>
 
@@ -163,7 +181,7 @@ Generator BAC |
                         class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm"
                      data-i18n="m5_gen_row2">Generează rand 2</button>
 
-                    <form action="/mode5/{{ conversation_id }}"  method="post">
+                    <form action="/generate-bac/{{ conversation_id }}" method="post" id="gen-alt-form">
 
                         <button
                             type="submit"
@@ -175,7 +193,7 @@ Generator BAC |
                 </div>
 
                 <!-- INPUT -->
-                <form action="/mode5/{{ conversation_id }}" method="post" class="flex gap-3">
+                <form action="/generate-bac/{{ conversation_id }}" method="post" class="flex gap-3" id="main-gen-form">
 
                     <textarea
                         name="prompt"
@@ -213,13 +231,16 @@ Generator BAC |
                         <div class="space-y-2">
 
                             <label class="flex items-center gap-2 text-slate-300">
-                                <input type="checkbox" data-i18n="m_radicals">Radicali</label>
+                                <input type="checkbox" class="lesson-checkbox accent-cyan-500" name="lessons" value="Radicali" checked data-i18n="m_radicals">Radicali</label>
 
                             <label class="flex items-center gap-2 text-slate-300">
-                                <input type="checkbox" data-i18n="m_powers">Puteri</label>
+                                <input type="checkbox" class="lesson-checkbox accent-cyan-500" name="lessons" value="Puteri" checked data-i18n="m_powers">Puteri</label>
 
                             <label class="flex items-center gap-2 text-slate-300">
-                                <input type="checkbox" data-i18n="m_fractions">Fracții</label>
+                                <input type="checkbox" class="lesson-checkbox accent-cyan-500" name="lessons" value="Progresii" checked data-i18n="m_progressions">Progresii</label>
+
+                            <label class="flex items-center gap-2 text-slate-300">
+                                <input type="checkbox" class="lesson-checkbox accent-cyan-500" name="lessons" value="Probabilități" checked data-i18n="m_probability">Probabilități</label>
 
                         </div>
 
@@ -233,13 +254,16 @@ Generator BAC |
                         <div class="space-y-2">
 
                             <label class="flex items-center gap-2 text-slate-300">
-                                <input type="checkbox" data-i18n="m_matrices">Matrici</label>
+                                <input type="checkbox" class="lesson-checkbox accent-cyan-500" name="lessons" value="Funcții" checked data-i18n="m_functions">Funcții</label>
 
                             <label class="flex items-center gap-2 text-slate-300">
-                                <input type="checkbox" data-i18n="m_trig">Trigonometrie</label>
+                                <input type="checkbox" class="lesson-checkbox accent-cyan-500" name="lessons" value="Logaritmi" checked data-i18n="m_logarithms">Logaritmi</label>
 
                             <label class="flex items-center gap-2 text-slate-300">
-                                <input type="checkbox" data-i18n="m_complex">Numere complexe</label>
+                                <input type="checkbox" class="lesson-checkbox accent-cyan-500" name="lessons" value="Numere complexe" checked data-i18n="m_complex">Numere complexe</label>
+
+                            <label class="flex items-center gap-2 text-slate-300">
+                                <input type="checkbox" class="lesson-checkbox accent-cyan-500" name="lessons" value="Trigonometrie" checked data-i18n="m_trig">Trigonometrie</label>
 
                         </div>
 
@@ -253,10 +277,33 @@ Generator BAC |
                         <div class="space-y-2">
 
                             <label class="flex items-center gap-2 text-slate-300">
-                                <input type="checkbox" data-i18n="m_limits">Limite</label>
+                                <input type="checkbox" class="lesson-checkbox accent-cyan-500" name="lessons" value="Matrici" checked data-i18n="m_matrices">Matrici</label>
 
                             <label class="flex items-center gap-2 text-slate-300">
-                                <input type="checkbox" data-i18n="m_deriv">Derivate</label>
+                                <input type="checkbox" class="lesson-checkbox accent-cyan-500" name="lessons" value="Legi de compoziție" checked data-i18n="m_composition">Legi de compoziție</label>
+
+                            <label class="flex items-center gap-2 text-slate-300">
+                                <input type="checkbox" class="lesson-checkbox accent-cyan-500" name="lessons" value="Limite" checked data-i18n="m_limits">Limite</label>
+
+                            <label class="flex items-center gap-2 text-slate-300">
+                                <input type="checkbox" class="lesson-checkbox accent-cyan-500" name="lessons" value="Derivate" checked data-i18n="m_deriv">Derivate</label>
+
+                        </div>
+
+                    </div>
+
+                    <!-- XII -->
+                    <div>
+
+                        <h3 class="text-cyan-400 font-bold mb-2" data-i18n="grade_12">Clasa a XII-a</h3>
+
+                        <div class="space-y-2">
+
+                            <label class="flex items-center gap-2 text-slate-300">
+                                <input type="checkbox" class="lesson-checkbox accent-cyan-500" name="lessons" value="Integrale definite" checked data-i18n="m_integrals">Integrale definite</label>
+
+                            <label class="flex items-center gap-2 text-slate-300">
+                                <input type="checkbox" class="lesson-checkbox accent-cyan-500" name="lessons" value="Polinoame" checked data-i18n="m_polynomials">Polinoame</label>
 
                         </div>
 
@@ -312,6 +359,42 @@ Generator BAC |
 
 </div>
 
+<script>
+function toggleSolution(id) {
+    const el = document.getElementById('solution-' + id);
+    if (el) {
+        el.classList.toggle('hidden');
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    // Scroll chat to bottom
+    const chat = document.getElementById("chat");
+    if (chat) {
+        chat.scrollTop = chat.scrollHeight;
+    }
+
+    const forms = [document.getElementById("main-gen-form"), document.getElementById("gen-alt-form")];
+    forms.forEach(form => {
+        if (form) {
+            form.addEventListener("submit", function(e) {
+                // Clear any existing lessons hidden inputs in this form first
+                const existing = form.querySelectorAll("input[type='hidden'][name='lessons']");
+                existing.forEach(el => el.remove());
+
+                // Find all checked lesson checkboxes and append to the form
+                const checkboxes = document.querySelectorAll(".lesson-checkbox:checked");
+                checkboxes.forEach(cb => {
+                    const hidden = document.createElement("input");
+                    hidden.type = "hidden";
+                    hidden.name = "lessons";
+                    hidden.value = cb.value;
+                    form.appendChild(hidden);
+                });
+            });
+        }
+    });
+});
+</script>
 
 {% endblock %}
-

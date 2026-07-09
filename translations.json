@@ -1315,6 +1315,34 @@
         "ro": "Derivate",
         "en": "Derivatives"
     },
+    "m_progressions": {
+        "ro": "Progresii",
+        "en": "Progressions"
+    },
+    "m_probability": {
+        "ro": "Probabilități",
+        "en": "Probability"
+    },
+    "m_functions": {
+        "ro": "Funcții",
+        "en": "Functions"
+    },
+    "m_logarithms": {
+        "ro": "Logaritmi",
+        "en": "Logarithms"
+    },
+    "m_composition": {
+        "ro": "Legi de compoziție",
+        "en": "Composition laws"
+    },
+    "m_integrals": {
+        "ro": "Integrale definite",
+        "en": "Definite integrals"
+    },
+    "m_polynomials": {
+        "ro": "Polinoame",
+        "en": "Polynomials"
+    },
     "ai_intro_msg": {
         "ro": "<p>Sunt un asistent virtual specializat în matematică...</p>\n<p>Pot ajuta cu:\n- Matematică\n- Predare\n- Gestionarea elevilor\n- Explicații\n- Exerciții</p>\n<p>Cu ce te pot ajuta astăzi?</p>",
         "en": "<p>I am a virtual assistant specialized in mathematics...</p>\n<p>I can help with:\n- Mathematics\n- Teaching\n- Student management\n- Explanations\n- Exercises</p>\n<p>How can I help you today?</p>"
@@ -1410,5 +1438,17 @@
     "start_btn": {
         "ro": "Începe",
         "en": "Start"
+    },
+    "download_subject_pdf": {
+        "ro": "Descarcă Subiect (PDF)",
+        "en": "Download Subject (PDF)"
+    },
+    "download_solution_pdf": {
+        "ro": "Descarcă Barem (PDF)",
+        "en": "Download Solution (PDF)"
+    },
+    "toggle_solution_btn": {
+        "ro": "Afișează/Ascunde Barem",
+        "en": "Show/Hide Solution"
     }
 }
