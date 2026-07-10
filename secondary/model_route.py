@@ -118,6 +118,119 @@ def mode3_chat(db, connect, apology, conversation_id, file_read, upload_folder):
     )
 
 
+def mode4_chat(db, connect, apology, conversation_id, upload_folder):
+
+    conversation = db.execute(
+        "SELECT * FROM conversations WHERE id = ? AND user_id = ?",
+        (conversation_id, session["user_id"])
+    ).fetchone()
+
+    if not conversation:
+        return apology("conversație inexistentă")
+
+    # Exclude hidden system message (raw transcription) from display
+    messages = db.execute(
+        "SELECT * FROM messages WHERE conversation_id = ? AND role != 'system' ORDER BY id ASC",
+        (conversation_id,)
+    ).fetchall()
+
+    total = db.execute(
+        "SELECT COUNT(*) AS c FROM messages WHERE conversation_id = ?",
+        (conversation_id,)
+    ).fetchone()["c"]
+
+    if total == 0:
+        filename = conversation["title"]
+        filepath = os.path.join(upload_folder, filename)
+
+        if not os.path.exists(filepath):
+            return apology("Poza încărcată nu a fost găsită", 404)
+
+        latex_content = ai.transcribe_handwriting(filepath)
+
+        # Store PURE LaTeX as hidden system message (model reference for generation)
+        db.execute(
+            "INSERT INTO messages (conversation_id, role, content) VALUES (?, ?, ?)",
+            (conversation_id, "system", latex_content)
+        )
+
+        if latex_content and latex_content.startswith("Eroare AI:"):
+            intro = (
+                f"Am încercat să citesc poza **{filename}**, "
+                f"dar a apărut o eroare la procesare:\n\n{latex_content}\n\n"
+                f"Poți încerca să încarci din nou fișierul."
+            )
+        else:
+            intro = (
+                f"Am transcris exercițiile scrise de mână din **{filename}**:\n\n{latex_content}\n\n"
+                f"Verifică dacă transcrierea este corectă.\n"
+                f"- Dacă totul arată bine, scrie **\"generează testul\"** sau cere o variantă nouă\n"
+                f"- Dacă ceva a fost citit greșit, descrie ce trebuie corectat."
+            )
+
+        # Store visible intro
+        db.execute(
+            "INSERT INTO messages (conversation_id, role, content) VALUES (?, ?, ?)",
+            (conversation_id, "assistant", intro)
+        )
+        connect.commit()
+        return redirect(f"/mode4/{conversation_id}")
+
+    if request.method == "POST":
+        prompt = request.form.get("prompt")
+        if not prompt or not prompt.strip():
+            return redirect(f"/mode4/{conversation_id}")
+
+        db.execute(
+            "INSERT INTO messages (conversation_id, role, content) VALUES (?, ?, ?)",
+            (conversation_id, "user", prompt)
+        )
+        connect.commit()
+
+        # Build history (exclude system message)
+        history_rows = db.execute(
+            "SELECT role, content FROM messages WHERE conversation_id = ? AND role != 'system' ORDER BY id ASC",
+            (conversation_id,)
+        ).fetchall()
+        history = "\n".join(f"{r['role']}: {r['content']}" for r in history_rows)
+
+        # Fetch pure LaTeX transcription (the hidden system message)
+        system_msg = db.execute(
+            "SELECT content FROM messages WHERE conversation_id = ? AND role = 'system' LIMIT 1",
+            (conversation_id,)
+        ).fetchone()
+        model_content = system_msg["content"] if system_msg else ""
+
+        response = ai.generate_from_model(
+            model_content=model_content,
+            conversation_history=history,
+            user_prompt=prompt
+        )
+
+        db.execute(
+            "INSERT INTO messages (conversation_id, role, content) VALUES (?, ?, ?)",
+            (conversation_id, "assistant", response)
+        )
+        connect.commit()
+        return redirect(f"/mode4/{conversation_id}")
+
+    # ---- GET: render chat ----
+    conversations = db.execute(
+        "SELECT * FROM conversations WHERE user_id = ? AND mode = ? ORDER BY created_at DESC",
+        (session["user_id"], "mode4")
+    ).fetchall()
+
+    return render_template(
+        "modes/mode4.html",
+        messages=messages,
+        conversations=conversations,
+        conversation=conversation,
+        conversation_id=conversation_id,
+        **{"class": conversation["school_class"] if "school_class" in conversation.keys() else "—"},
+        bac=conversation["bac"] if "bac" in conversation.keys() else "—"
+    )
+
+
 def mode2_chat(db, connect, apology, conversation_id):
 
     # ---- Load conversation + joined style description ----
