@@ -601,6 +601,43 @@ def mode4(conversation_id):
     if not conversation:
         return apology("conversație inexistentă", 404)
 
+    if request.method == "POST":
+        prompt = request.form.get("prompt")
+        if prompt and prompt.strip():
+            # Save user prompt
+            db.execute(
+                "INSERT INTO messages (conversation_id, role, content) VALUES (?, ?, ?)",
+                (conversation_id, "user", prompt)
+            )
+            connect.commit()
+
+            # Resolve image path
+            image_filename = f"mode4_{conversation_id}.png"
+            image_path = os.path.join("uploads", image_filename)
+            if not os.path.exists(image_path):
+                image_filename = f"mode4_{conversation_id}.jpg"
+                image_path = os.path.join("uploads", image_filename)
+            if not os.path.exists(image_path):
+                image_path = "static/userpic.png"
+
+            # Build history for context
+            history_rows = db.execute(
+                "SELECT role, content FROM messages WHERE conversation_id = ? ORDER BY id ASC",
+                (conversation_id,)
+            ).fetchall()
+            history = "\n".join([f"{row['role']}: {row['content']}" for row in history_rows])
+
+            response = ai.handwriting(prompt, history, image_path=image_path)
+
+            # Save assistant response
+            db.execute(
+                "INSERT INTO messages (conversation_id, role, content) VALUES (?, ?, ?)",
+                (conversation_id, "assistant", response)
+            )
+            connect.commit()
+
+        return redirect(f"/mode4/{conversation_id}")
+
     messages = db.execute(
         """
         SELECT * FROM messages WHERE conversation_id = ? ORDER BY id ASC
@@ -624,6 +661,54 @@ def mode4(conversation_id):
         **{"class": conversation["school_class"] if "school_class" in conversation.keys() else "—"},
         bac=conversation["bac"] if "bac" in conversation.keys() else "—"
     )
+
+@app.route("/mode4/upload/<int:conversation_id>", methods=["POST"])
+@login_required
+def mode4_upload(conversation_id):
+    conversation = db.execute(
+        """
+        SELECT * FROM conversations WHERE id = ? AND user_id = ? AND mode = ?
+        """,
+        (conversation_id, session["user_id"], "mode4")
+    ).fetchone()
+
+    if not conversation:
+        return apology("conversație inexistentă", 404)
+
+    file = request.files.get("file")
+    if file and file.filename:
+        os.makedirs("uploads", exist_ok=True)
+        _, ext = os.path.splitext(file.filename)
+        if not ext:
+            ext = ".png"
+        filename = f"mode4_{conversation_id}{ext}"
+        filepath = os.path.join("uploads", filename)
+        file.save(filepath)
+
+        initial_prompt = "Te rog să transcrii această imagine/PDF de exerciții matematice scrise de mână."
+        
+        db.execute(
+            "INSERT INTO messages (conversation_id, role, content) VALUES (?, ?, ?)",
+            (conversation_id, "user", f"Fișier încărcat: <i>{file.filename}</i>")
+        )
+        connect.commit()
+
+        response = ai.handwriting(initial_prompt, "", image_path=filepath)
+
+        db.execute(
+            "INSERT INTO messages (conversation_id, role, content) VALUES (?, ?, ?)",
+            (conversation_id, "assistant", response)
+        )
+        connect.commit()
+
+        if conversation["title"] == "Conversație nouă":
+            db.execute(
+                "UPDATE conversations SET title = ? WHERE id = ?",
+                (f"Transcriere {file.filename[:20]}", conversation_id)
+            )
+            connect.commit()
+
+    return redirect(f"/mode4/{conversation_id}")
 # =========================================================
 # MODE5
 # =========================================================
