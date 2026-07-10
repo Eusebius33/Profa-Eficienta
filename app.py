@@ -609,7 +609,90 @@ def mode5(conversation_id):
         bac=conversation["bac"] if "bac" in conversation.keys() else "M3"
     )
 
+# =========================================================
+# CONVERSATION ACTIONS: RENAME / DELETE
+# =========================================================
 
+@app.route("/conversation/<int:conversation_id>/rename", methods=["POST"])
+@login_required
+def rename_conversation(conversation_id):
+    new_title = request.form.get("new_title", "").strip()
+
+    if not new_title:
+        return apology("Titlul conversației nu poate fi gol.", 400)
+
+    conversation = db.execute(
+        """
+        SELECT * FROM conversations
+        WHERE id = ? AND user_id = ?
+        """,
+        (conversation_id, session["user_id"])
+    ).fetchone()
+
+    if not conversation:
+        return apology("Conversație inexistentă.", 404)
+
+    db.execute(
+        """
+        UPDATE conversations
+        SET title = ?
+        WHERE id = ? AND user_id = ?
+        """,
+        (new_title, conversation_id, session["user_id"])
+    )
+    connect.commit()
+
+    return redirect(f"/{conversation['mode']}/{conversation_id}")
+
+
+@app.route("/conversation/<int:conversation_id>/delete", methods=["POST"])
+@login_required
+def delete_conversation(conversation_id):
+    conversation = db.execute(
+        """
+        SELECT * FROM conversations
+        WHERE id = ? AND user_id = ?
+        """,
+        (conversation_id, session["user_id"])
+    ).fetchone()
+
+    if not conversation:
+        return apology("Conversație inexistentă.", 404)
+
+    mode = conversation["mode"]
+
+    db.execute(
+        """
+        DELETE FROM messages
+        WHERE conversation_id = ?
+        """,
+        (conversation_id,)
+    )
+
+    db.execute(
+        """
+        DELETE FROM conversations
+        WHERE id = ? AND user_id = ?
+        """,
+        (conversation_id, session["user_id"])
+    )
+
+    connect.commit()
+
+    next_conversation = db.execute(
+        """
+        SELECT * FROM conversations
+        WHERE user_id = ? AND mode = ?
+        ORDER BY created_at DESC
+        LIMIT 1
+        """,
+        (session["user_id"], mode)
+    ).fetchone()
+
+    if next_conversation:
+        return redirect(f"/{mode}/{next_conversation['id']}")
+
+    return redirect("/menu")
 # =========================================================
 # RUN (Reloaded to refresh translations JSON keys)
 # =========================================================
