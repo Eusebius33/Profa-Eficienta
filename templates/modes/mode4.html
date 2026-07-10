@@ -152,32 +152,54 @@ Transcriere exerciții scrise de mână |
 
                 <!-- QUICK ACTIONS -->
                 <div class="flex flex-wrap justify-end gap-2 mt-auto mb-3 flex-shrink-0">
-
+                
                     <button
+                        type="button"
+                        onclick="solveMode4Test(this)"
                         class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm"
-                     data-i18n="m4_solve_test">Rezolvare test</button>
-
+                        data-i18n="m4_solve_test">
+                        Rezolvare test
+                    </button>
+                
                     <button
+                        type="button"
+                        onclick="generateMode4RowTwo(this)"
                         class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold py-2 px-4 rounded-xl text-sm"
-                     data-i18n="m4_gen_row2">Generează rand 2</button>
-
+                        data-i18n="m4_gen_row2">
+                        Generează rand 2
+                    </button>
+                
                 </div>
-
+                
                 <!-- INPUT -->
-                <form action="/mode4/{{ conversation_id }}"  method="post" class="flex gap-3">
-
+                <form id="chatForm" action="/mode4/{{ conversation_id }}" method="post" enctype="multipart/form-data" class="flex gap-3">
+                    <input type="hidden" id="actionType" name="action_type" value="normal">
+                
+                    <input
+                        type="file"
+                        id="fileInput"
+                        name="file"
+                        accept=".png,.jpg,.jpeg,.pdf"
+                        class="w-56 text-sm text-slate-950 border border-slate-300 rounded-2xl p-3 bg-white"
+                    >
+                
                     <textarea
+                        id="promptInput"
                         name="prompt"
                         rows="1"
-                        data-i18n-placeholder="m4_gen_ph" placeholder="Ex: transformă în test BAC cu dificultate medie..."
+                        data-i18n-placeholder="m4_gen_ph"
+                        placeholder="Ex: transcrie exercițiile și transformă-le în test BAC..."
                         class="flex-1 text-slate-950 border border-slate-300 rounded-2xl p-4 resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500"
                     ></textarea>
-
+                
                     <button
                         type="submit"
+                        onclick="document.getElementById('actionType').value='normal'; this.disabled=true;"
                         class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold px-8 rounded-2xl"
-                     data-i18n="m4_generate">Generează</button>
-
+                        data-i18n="m4_generate">
+                        Generează
+                    </button>
+                
                 </form>
 
             </div>
@@ -315,5 +337,72 @@ Transcriere exerciții scrise de mână |
     </div>
 
 </div>
+<script>
+function getLastMode4Output() {
+    const outputs = document.querySelectorAll("#chat .bg-slate-100 .msg-content-container");
+    if (!outputs.length) return null;
+    return outputs[outputs.length - 1].textContent.trim();
+}
 
+function submitMode4QuickAction(btn, actionType, promptText) {
+    const form = document.getElementById("chatForm");
+    const actionInput = document.getElementById("actionType");
+    const promptInput = document.getElementById("promptInput");
+
+    if (!form || !actionInput || !promptInput) {
+        alert("Formularul nu a fost găsit.");
+        return;
+    }
+
+    actionInput.value = actionType;
+    promptInput.value = promptText;
+    btn.disabled = true;
+    form.submit();
+}
+
+function solveMode4Test(btn) {
+    const lastOutput = getLastMode4Output();
+
+    if (!lastOutput) {
+        alert("Nu există nicio transcriere anterioară.");
+        return;
+    }
+
+    const promptText =
+        "Rezolvă complet, pas cu pas, următorul test transcris. Include explicații clare și răspunsurile finale:\n\n" +
+        lastOutput;
+
+    submitMode4QuickAction(btn, "solve_test", promptText);
+}
+
+function generateMode4RowTwo(btn) {
+    const lastOutput = getLastMode4Output();
+
+    if (!lastOutput) {
+        alert("Nu există nicio transcriere anterioară pentru a genera rândul 2.");
+        return;
+    }
+
+    const promptText =
+        "Generează rândul 2 pentru următorul test transcris. Păstrează aceeași structură și dificultate, dar creează exerciții diferite:\n\n" +
+        lastOutput;
+
+    submitMode4QuickAction(btn, "generate_row_2", promptText);
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    const chat = document.getElementById("chat");
+    if (chat) {
+        chat.scrollTop = chat.scrollHeight;
+    }
+
+    const ta = document.querySelector("textarea[name='prompt']");
+    if (ta) {
+        ta.addEventListener("input", function () {
+            this.style.height = "auto";
+            this.style.height = this.scrollHeight + "px";
+        });
+    }
+});
+</script>
 {% endblock %}
