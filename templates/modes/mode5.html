@@ -167,46 +167,64 @@ Generator BAC |
 
                 <!-- QUICK ACTIONS -->
                 <div class="flex flex-wrap justify-end gap-2 mt-auto mb-3 flex-shrink-0">
-
+                
                     <button
-                        onclick="const lastBarem = document.querySelector('[id^=\'solution-\']'); if(lastBarem) toggleSolution(lastBarem.id.replace('solution-', ''));"
+                        type="button"
+                        onclick="solveLatestBac(this)"
                         class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm"
-                     data-i18n="m5_solve_test">Rezolvare test</button>
-
+                        data-i18n="m5_solve_test">
+                        Rezolvare test
+                    </button>
+                
                     <button
+                        type="button"
+                        onclick="generateSimilarBac(this)"
                         class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm"
-                     data-i18n="m5_gen_similar">Generează similare</button>
-
+                        data-i18n="m5_gen_similar">
+                        Generează similare
+                    </button>
+                
                     <button
+                        type="button"
+                        onclick="generateRowTwoBac(this)"
                         class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm"
-                     data-i18n="m5_gen_row2">Generează rand 2</button>
-
+                        data-i18n="m5_gen_row2">
+                        Generează rand 2
+                    </button>
+                
                     <form action="/generate-bac/{{ conversation_id }}" method="post" id="gen-alt-form">
-
+                        <input type="hidden" name="action_type" value="generate_alt">
+                
                         <button
                             type="submit"
                             class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold py-2 px-4 rounded-xl text-sm"
-                         data-i18n="m5_gen_alt">Generează alt BAC</button>
-
+                            data-i18n="m5_gen_alt">
+                            Generează alt BAC
+                        </button>
                     </form>
-
+                
                 </div>
 
                 <!-- INPUT -->
                 <form action="/generate-bac/{{ conversation_id }}" method="post" class="flex gap-3" id="main-gen-form">
-
+                    <input type="hidden" id="actionType" name="action_type" value="normal">
+                
                     <textarea
+                        id="promptInput"
                         name="prompt"
                         rows="1"
-                        data-i18n-placeholder="m5_gen_ph" placeholder="Ex: Generează 10 exerciții BAC dificultate mare fără integrale..."
+                        data-i18n-placeholder="m5_gen_ph"
+                        placeholder="Ex: Generează 10 exerciții BAC dificultate mare fără integrale..."
                         class="flex-1 text-slate-950 border border-slate-300 rounded-2xl p-4 resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500"
                     ></textarea>
-
+                
                     <button
                         type="submit"
+                        onclick="document.getElementById('actionType').value='normal'; this.disabled=true;"
                         class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold px-8 rounded-2xl"
-                     data-i18n="m5_generate">Generează</button>
-
+                        data-i18n="m5_generate">
+                        Generează
+                    </button>
                 </form>
 
             </div>
@@ -367,33 +385,132 @@ function toggleSolution(id) {
     }
 }
 
+function getLatestGeneratedBac() {
+    const aiCards = document.querySelectorAll("#chat > .bg-slate-100");
+    if (!aiCards.length) return null;
+
+    const latestCard = aiCards[aiCards.length - 1];
+    const content = latestCard.querySelector(".msg-content-container");
+
+    if (!content) return null;
+    return content.textContent.trim();
+}
+
+function appendSelectedLessonsToForm(form) {
+    const existing = form.querySelectorAll("input[type='hidden'][name='lessons']");
+    existing.forEach(el => el.remove());
+
+    const checkboxes = document.querySelectorAll(".lesson-checkbox:checked");
+    checkboxes.forEach(cb => {
+        const hidden = document.createElement("input");
+        hidden.type = "hidden";
+        hidden.name = "lessons";
+        hidden.value = cb.value;
+        form.appendChild(hidden);
+    });
+}
+
+function submitBacQuickAction(btn, actionType, promptText) {
+    const form = document.getElementById("main-gen-form");
+    const actionInput = document.getElementById("actionType");
+    const promptInput = document.getElementById("promptInput");
+
+    if (!form || !actionInput || !promptInput) {
+        alert("Formularul nu a fost găsit.");
+        return;
+    }
+
+    actionInput.value = actionType;
+    promptInput.value = promptText;
+    btn.disabled = true;
+
+    if (form.requestSubmit) {
+        form.requestSubmit();
+    } else {
+        appendSelectedLessonsToForm(form);
+        form.submit();
+    }
+}
+
+function solveLatestBac(btn) {
+    const solutions = document.querySelectorAll("[id^='solution-']");
+
+    if (solutions.length) {
+        const latestSolution = solutions[solutions.length - 1];
+        toggleSolution(latestSolution.id.replace("solution-", ""));
+        return;
+    }
+
+    const latestBac = getLatestGeneratedBac();
+
+    if (!latestBac) {
+        alert("Nu există nicio variantă BAC generată anterior.");
+        return;
+    }
+
+    const promptText =
+        "Rezolvă complet, pas cu pas, următoarea variantă BAC. Include baremul, explicațiile și răspunsurile finale:\n\n" +
+        latestBac;
+
+    submitBacQuickAction(btn, "solve_bac", promptText);
+}
+
+function generateSimilarBac(btn) {
+    const latestBac = getLatestGeneratedBac();
+
+    if (!latestBac) {
+        alert("Nu există nicio variantă BAC anterioară pe baza căreia să generez una similară.");
+        return;
+    }
+
+    const promptText =
+        "Generează o variantă BAC similară cu următoarea. Păstrează structura oficială, nivelul de dificultate și lecțiile selectate, dar schimbă exercițiile și valorile numerice:\n\n" +
+        latestBac;
+
+    submitBacQuickAction(btn, "generate_similar_bac", promptText);
+}
+
+function generateRowTwoBac(btn) {
+    const latestBac = getLatestGeneratedBac();
+
+    if (!latestBac) {
+        alert("Nu există nicio variantă BAC anterioară pentru a genera rândul 2.");
+        return;
+    }
+
+    const promptText =
+        "Generează rândul 2 pentru următoarea variantă BAC. Păstrează aceeași structură, aceleași lecții și același nivel de dificultate, dar creează exerciții diferite:\n\n" +
+        latestBac;
+
+    submitBacQuickAction(btn, "generate_row_2_bac", promptText);
+}
+
 document.addEventListener("DOMContentLoaded", function() {
-    // Scroll chat to bottom
     const chat = document.getElementById("chat");
     if (chat) {
         chat.scrollTop = chat.scrollHeight;
     }
 
-    const forms = [document.getElementById("main-gen-form"), document.getElementById("gen-alt-form")];
+    const forms = [
+        document.getElementById("main-gen-form"),
+        document.getElementById("gen-alt-form")
+    ];
+
     forms.forEach(form => {
         if (form) {
-            form.addEventListener("submit", function(e) {
-                // Clear any existing lessons hidden inputs in this form first
-                const existing = form.querySelectorAll("input[type='hidden'][name='lessons']");
-                existing.forEach(el => el.remove());
-
-                // Find all checked lesson checkboxes and append to the form
-                const checkboxes = document.querySelectorAll(".lesson-checkbox:checked");
-                checkboxes.forEach(cb => {
-                    const hidden = document.createElement("input");
-                    hidden.type = "hidden";
-                    hidden.name = "lessons";
-                    hidden.value = cb.value;
-                    form.appendChild(hidden);
-                });
+            form.addEventListener("submit", function() {
+                appendSelectedLessonsToForm(form);
             });
         }
     });
+
+    const ta = document.querySelector("textarea[name='prompt']");
+    if (ta) {
+        ta.addEventListener("input", function () {
+            this.style.height = "auto";
+            this.style.height = this.scrollHeight + "px";
+        });
+    }
 });
 </script>
 
