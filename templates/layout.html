@@ -75,6 +75,39 @@
     });
     </script>
 
+<style>
+    .msg-content-container,
+    .math-content {
+        color: #334155;
+        line-height: 1.7;
+        min-height: 1.75rem;
+        overflow-x: auto;
+        overflow-y: visible;
+        padding-top: 0.25rem;
+        padding-bottom: 0.25rem;
+    }
+
+    .msg-content-container .katex,
+    .math-content .katex {
+        color: inherit;
+        font-size: 1.08em;
+    }
+
+    .msg-content-container .katex-display,
+    .math-content .katex-display {
+        display: block;
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: visible;
+        margin: 0.35rem 0;
+        padding: 0.35rem 0;
+    }
+
+    .msg-content-container p,
+    .math-content p {
+        margin-bottom: 0.5rem;
+    }
+</style>
 </head>
 
 <body style="margin: 0;" class="bg-slate-950 text-white min-h-screen flex flex-col">
