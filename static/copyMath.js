@@ -116,6 +116,126 @@
       .replace(/[ \t]+\n/g, "\n")
       .trim();
   }
+  // \u2500\u2500 Google Docs Equation Editor sanitizer \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+  //
+  // Google's native equation editor (Insert > Equation) is not a full LaTeX
+  // parser. Pasted text runs through the same "shortcut" state machine used
+  // for manual typing: named commands (\frac, \sqrt, \pi, \int, ...) only
+  // convert to their symbol once a trailing space/boundary is seen, and
+  // unbraced superscripts/subscripts (x^2, x_i) don't auto-close their
+  // scope \u2014 without a boundary, everything typed afterwards keeps nesting
+  // inside the exponent (e.g. "x^2+y^2" pastes as x^(2+y^(2))). This
+  // normalizes raw LaTeX so it degrades gracefully when pasted straight
+  // into that editor instead of into the Auto-LaTeX add-on.
+  const GOOGLE_EQ_BARE_COMMANDS = [
+    "alpha", "beta", "gamma", "delta", "epsilon", "varepsilon", "zeta", "eta",
+    "theta", "vartheta", "iota", "kappa", "lambda", "mu", "nu", "xi", "pi",
+    "varpi", "rho", "varrho", "sigma", "varsigma", "tau", "upsilon", "phi",
+    "varphi", "chi", "psi", "omega",
+    "Gamma", "Delta", "Theta", "Lambda", "Xi", "Pi", "Sigma", "Upsilon",
+    "Phi", "Psi", "Omega",
+    "pm", "mp", "cdot", "times", "div", "leq", "geq", "neq", "approx",
+    "equiv", "sim", "propto", "to", "rightarrow", "leftarrow",
+    "leftrightarrow", "infty", "ldots", "cdots", "circ",
+    "sin", "cos", "tan", "cot", "sec", "csc", "log", "ln", "exp", "lim",
+    "min", "max", "gcd", "det", "arg", "sup", "inf",
+  ];
+  const GOOGLE_EQ_BARE_RE = new RegExp(
+    "\\\\(?:" + GOOGLE_EQ_BARE_COMMANDS.join("|") + ")(?![a-zA-Z])", "g"
+  );
+
+  // "^"/"_" only enter superscript/subscript mode via a live keypress —
+  // that never fires on a bulk paste, so pasted "x^2" drops the caret
+  // entirely and leaves "2" as flat text (confirmed against a real Google
+  // Doc: \int_0^2 x^2\,dx pasted as a flat "02x2", no raised/lowered
+  // characters at all, even though \int itself DID convert to "∫" — named
+  // backslash commands are recognized on paste, "^"/"_" characters are
+  // not). Sidestep the whole problem for simple content by emitting the
+  // actual Unicode superscript/subscript glyphs instead — those render
+  // correctly no matter how Google's paste handler treats them.
+  const SUPERSCRIPT_MAP = {
+    "0": "⁰", "1": "¹", "2": "²", "3": "³", "4": "⁴",
+    "5": "⁵", "6": "⁶", "7": "⁷", "8": "⁸", "9": "⁹",
+    "+": "⁺", "-": "⁻", "=": "⁼", "(": "⁽", ")": "⁾",
+    "n": "ⁿ", "i": "ⁱ",
+  };
+  const SUBSCRIPT_MAP = {
+    "0": "₀", "1": "₁", "2": "₂", "3": "₃", "4": "₄",
+    "5": "₅", "6": "₆", "7": "₇", "8": "₈", "9": "₉",
+    "+": "₊", "-": "₋", "=": "₌", "(": "₍", ")": "₎",
+    "a": "ₐ", "e": "ₑ", "h": "ₕ", "i": "ᵢ", "j": "ⱼ",
+    "k": "ₖ", "l": "ₗ", "m": "ₘ", "n": "ₙ", "o": "ₒ",
+    "p": "ₚ", "r": "ᵣ", "s": "ₛ", "t": "ₜ", "u": "ᵤ",
+    "v": "ᵥ", "x": "ₓ",
+  };
+
+  function toUnicodeScript(content, map) {
+    let out = "";
+    for (const ch of content) {
+      if (!Object.prototype.hasOwnProperty.call(map, ch)) return null;
+      out += map[ch];
+    }
+    return out;
+  }
+
+  function sanitizeForGoogleEquationEditor(latex) {
+    let s = latex;
+
+    // \left( / \right) etc: unrecognized sizing prefix \u2014 drop it and keep
+    // the delimiter that follows.
+    s = s.replace(/\\left\b/g, "").replace(/\\right\b/g, "");
+
+    // \dfrac / \tfrac -> \frac (the only variant Google's shortcuts support).
+    s = s.replace(/\\(?:d|t)frac\b/g, "\\frac");
+
+    // \text{...} / \mathrm{...} / \operatorname{...}: unsupported \u2014 unwrap
+    // to the bare contents so at least the literal words survive.
+    s = s.replace(/\\(?:text|mathrm|operatorname|textrm)\{([^{}]*)\}/g, "$1");
+
+    // Thin-space macros -> a literal space.
+    s = s.replace(/\\[,!;:]/g, " ").replace(/\\(?:quad|qquad)\b/g, " ");
+
+    // Braced superscript/subscript (^{...}, _{...}): swap for real Unicode
+    // glyphs whenever every character inside is mappable (covers things
+    // like ^{n+1} -> "ⁿ⁺¹" or _{k=1} -> "ₖ₌₁", not just single digits).
+    s = s.replace(/([\^_])\{([^{}]*)\}/g, (match, marker, content) => {
+      const unicode = toUnicodeScript(content, marker === "^" ? SUPERSCRIPT_MAP : SUBSCRIPT_MAP);
+      return unicode !== null ? unicode : match;
+    });
+
+    // Bare unbraced exponent/subscript (x^2, x_i): same Unicode swap for
+    // the single token. If it isn't mappable (a multi-letter variable, or
+    // a \command like \pi), fall back to leaving it as plain text with a
+    // trailing boundary space, on the off chance Google's paste handler
+    // treats it better in context — but the Unicode path above is what
+    // actually fixes rendering.
+    s = s.replace(/([\^_])(\\[a-zA-Z]+|[A-Za-z0-9])(?!\{)/g, (match, marker, token, offset) => {
+      const unicode = toUnicodeScript(token, marker === "^" ? SUPERSCRIPT_MAP : SUBSCRIPT_MAP);
+      if (unicode !== null) return unicode;
+      const next = s[offset + match.length];
+      return next === undefined || /[\s_^}]/.test(next) ? match : marker + token + " ";
+    });
+
+    // Named commands only convert once a boundary follows \u2014 add a
+    // trailing space unless a safe boundary is already there.
+    s = s.replace(GOOGLE_EQ_BARE_RE, (match, offset) => {
+      const next = s[offset + match.length];
+      return next === undefined || /[\s_^}\\]/.test(next) ? match : match + " ";
+    });
+
+    // Close every brace group (superscripts, subscripts, \frac/\sqrt args)
+    // with a boundary space so trailing content isn't absorbed into it.
+    // Don't add one before "{" — that's a chained argument of the same
+    // command (e.g. the numerator/denominator boundary in \frac{a}{b}),
+    // and inserting a space there breaks the pairing.
+    s = s.replace(/\}(?![\s_^}{$]|$)/g, "} ");
+
+    // Collapse whitespace runs created by the passes above.
+    s = s.replace(/[ \t]{2,}/g, " ");
+
+    return s;
+  }
+
   function extractCleanLaTeXText(containerElement) {
     const clone = containerElement.cloneNode(true);
     clone.querySelectorAll(".copy-math-btn, .copy-format-wrap").forEach(el => el.remove());
@@ -124,7 +244,7 @@
     clone.querySelectorAll(".katex").forEach(katexEl => {
       const ann = katexEl.querySelector('annotation[encoding="application/x-tex"]');
       if (ann) {
-        const latex = ann.textContent.trim();
+        const latex = sanitizeForGoogleEquationEditor(ann.textContent.trim());
         const node = document.createTextNode(latex);
         katexEl.parentNode.replaceChild(node, katexEl);
       }
@@ -134,7 +254,7 @@
     clone.querySelectorAll("math").forEach(m => {
       const ann = m.querySelector('annotation[encoding="application/x-tex"]');
       if (ann) {
-        const latex = ann.textContent.trim();
+        const latex = sanitizeForGoogleEquationEditor(ann.textContent.trim());
         m.parentNode.replaceChild(document.createTextNode(latex), m);
       } else {
         m.remove();
@@ -420,14 +540,48 @@
       '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>';
     wrap.appendChild(caret);
 
-    // Menu panel
+    // Menu panel — portalled to <body> with position:fixed instead of
+    // living inside .copy-format-wrap. The wrap sits inside the scrollable
+    // #chat / .msg-content-container ancestry; an absolutely-positioned
+    // menu there gets clipped by that ancestor's overflow whenever the
+    // triggering message has no scroll room below it (e.g. a one-line
+    // message, or the last message in the thread) — some entries (like
+    // the Google Docs options further down the list) become unreachable.
+    // Fixed-positioning against the viewport and computing coordinates
+    // from the caret's own bounding rect sidesteps that entirely.
     const menu = document.createElement("div");
     menu.className = "copy-format-menu";
     menu.style.cssText =
-      "position:absolute;top:100%;right:0;margin-top:6px;min-width:250px;z-index:50;" +
+      "position:fixed;min-width:250px;z-index:1000;" +
       "background:#fff;border:1px solid #e2e8f0;border-radius:12px;" +
       "box-shadow:0 12px 32px rgba(15,23,42,.18);padding:6px;display:none;" +
       "max-height:320px;overflow-y:auto;";
+    document.body.appendChild(menu);
+
+    function positionMenu() {
+      const rect = caret.getBoundingClientRect();
+      const margin = 6;
+      const menuWidth = 250;
+
+      let left = rect.right - menuWidth;
+      left = Math.max(margin, Math.min(left, window.innerWidth - menuWidth - margin));
+      menu.style.left = left + "px";
+
+      const spaceBelow = window.innerHeight - rect.bottom - margin;
+      const spaceAbove = rect.top - margin;
+      const naturalHeight = 320;
+
+      if (spaceBelow < naturalHeight && spaceAbove > spaceBelow) {
+        // Not enough room below the button — open upward instead.
+        menu.style.top = "";
+        menu.style.bottom = (window.innerHeight - rect.top + margin) + "px";
+        menu.style.maxHeight = Math.max(160, Math.min(naturalHeight, spaceAbove)) + "px";
+      } else {
+        menu.style.bottom = "";
+        menu.style.top = (rect.bottom + margin) + "px";
+        menu.style.maxHeight = Math.max(160, Math.min(naturalHeight, spaceBelow)) + "px";
+      }
+    }
 
     function renderMenu() {
       const current = getFormat();
@@ -457,11 +611,21 @@
       e.stopPropagation();
       const isOpen = menu.style.display === "block";
       document.querySelectorAll(".copy-format-menu").forEach(m => (m.style.display = "none"));
-      if (!isOpen) { renderMenu(); menu.style.display = "block"; }
+      if (!isOpen) { renderMenu(); positionMenu(); menu.style.display = "block"; }
     });
 
-    document.addEventListener("click", () => { menu.style.display = "none"; });
-    wrap.appendChild(menu);
+    function closeMenu() { menu.style.display = "none"; }
+    document.addEventListener("click", closeMenu);
+    // Capture-phase: 'scroll' doesn't bubble, but ancestor listeners still
+    // fire during capture, so this also catches scrolling the chat pane
+    // behind the menu. Scrolling *inside* the menu's own option list also
+    // fires this (it's a scroll event targeting the menu itself) — skip
+    // those or the menu would close the instant you tried to scroll it.
+    window.addEventListener("scroll", (e) => {
+      if (menu.contains(e.target)) return;
+      closeMenu();
+    }, true);
+    window.addEventListener("resize", closeMenu);
   }
 
   function addSectionHeader(menu, text) {

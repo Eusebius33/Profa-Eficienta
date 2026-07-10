@@ -23,21 +23,34 @@ def generate_bac(conversation_id):
         
     # Get selected lessons from the checkbox form
     selected_lessons = request.form.getlist("lessons")
-    
+    action_type = request.form.get("action_type", "normal").strip()
+    prompt = request.form.get("prompt", "").strip()
+
     # Generate the exam
     generator = BACExamGenerator()
     exam_data = generator.generate_exam(selected_lessons)
-    
-    # Save user prompt if sent
-    prompt = request.form.get("prompt", "").strip()
-    
+
     conn = get_db_connection()
     cursor = conn.cursor()
-    
-    if prompt:
+
+    # The quick-action buttons ("Rezolvare test", "Generează similare",
+    # "Generează rand 2") build a long free-text prompt describing intent,
+    # but this generator is a symbolic exam builder with no NLP input — it
+    # never reads `prompt`, it just draws a fresh exam from the checked
+    # lessons, same as the plain "Generează alt BAC" button. Saving that
+    # long prompt verbatim as a "user" chat bubble misleadingly implies
+    # the AI read and acted on it, so record a short honest label instead.
+    ACTION_LABELS = {
+        "solve_bac": "Rezolvare variantă BAC anterioară",
+        "generate_similar_bac": "Generare variantă BAC similară",
+        "generate_row_2_bac": "Generare rândul 2",
+    }
+    display_message = ACTION_LABELS.get(action_type) or prompt or None
+
+    if display_message:
         cursor.execute(
             "INSERT INTO messages (conversation_id, role, content) VALUES (?, ?, ?)",
-            (conversation_id, "user", prompt)
+            (conversation_id, "user", display_message)
         )
     
     # Format content to render in HTML
