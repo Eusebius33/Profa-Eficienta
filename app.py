@@ -464,6 +464,84 @@ def mode4(conversation_id):
     if not conversation:
         return apology("conversație inexistentă", 404)
 
+    if request.method == "POST":
+        prompt = request.form.get("prompt", "").strip()
+        action_type = request.form.get("action_type", "normal")
+        uploaded_file = request.files.get("file")
+
+        response = None
+
+        if uploaded_file and uploaded_file.filename:
+            original_name = secure_filename(uploaded_file.filename)
+            extension = os.path.splitext(original_name)[1].lower()
+
+            if extension not in [".png", ".jpg", ".jpeg", ".pdf"]:
+                return apology("Pentru Mode 4 poți încărca doar PNG, JPG, JPEG sau PDF.", 400)
+
+            os.makedirs("uploads", exist_ok=True)
+            filename = f"{uuid.uuid4().hex}_{original_name}"
+            filepath = os.path.join("uploads", filename)
+            uploaded_file.save(filepath)
+
+            user_message = f"Fișier încărcat: {original_name}"
+            if prompt:
+                user_message += f"\nInstrucțiuni: {prompt}"
+
+            db.execute(
+                """
+                INSERT INTO messages (conversation_id, role, content, action_type)
+                VALUES (?, ?, ?, ?)
+                """,
+                (conversation_id, "user", user_message, action_type)
+            )
+
+            response = ocr.extract_handwriting(filepath, prompt)
+
+        elif prompt:
+            previous_messages = db.execute(
+                """
+                SELECT role, content FROM messages
+                WHERE conversation_id = ?
+                ORDER BY id ASC
+                """,
+                (conversation_id,)
+            ).fetchall()
+
+            last_assistant_message = ""
+            for msg in reversed(previous_messages):
+                if msg["role"] == "assistant":
+                    last_assistant_message = msg["content"]
+                    break
+
+            db.execute(
+                """
+                INSERT INTO messages (conversation_id, role, content, action_type)
+                VALUES (?, ?, ?, ?)
+                """,
+                (conversation_id, "user", prompt, action_type)
+            )
+
+            if last_assistant_message:
+                response = ocr.generate_from_transcription(
+                    last_assistant_message,
+                    prompt,
+                    action_type
+                )
+            else:
+                response = ai.assistant(prompt)
+
+        if response:
+            db.execute(
+                """
+                INSERT INTO messages (conversation_id, role, content, action_type)
+                VALUES (?, ?, ?, ?)
+                """,
+                (conversation_id, "assistant", response, action_type)
+            )
+
+        connect.commit()
+        return redirect(f"/mode4/{conversation_id}")
+
     messages = db.execute(
         """
         SELECT * FROM messages WHERE conversation_id = ? ORDER BY id ASC
