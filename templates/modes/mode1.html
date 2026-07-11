@@ -68,14 +68,13 @@
 <div class="flex-1 bg-slate-950 border border-slate-800 rounded-3xl p-4 lg:p-6 flex flex-col shadow-xl min-h-[500px] lg:h-full lg:min-h-0 lg:overflow-hidden">
 
     <!-- HEADER -->
-    <div class="mb-6">
-        <h1 class="text-3xl font-bold text-white" data-i18n="m1_ai_assistant">Asistent AI</h1>
-
-        <p class="text-slate-400 mt-1" data-i18n="m1_desc">Afla raspunsuri la intrebarile tale legate de gestionarea elevilor si matematica. De asemenea poti afla si cum functioneaza programul nostru.</p>
+    <div class="mb-3 lg:mb-6">
+        <h1 class="text-xl lg:text-3xl font-bold text-white" data-i18n="m1_ai_assistant">Asistent AI</h1>
+        <p class="text-slate-400 mt-1 text-xs lg:text-sm" data-i18n="m1_desc">Afla raspunsuri la intrebarile tale legate de gestionarea elevilor si matematica. De asemenea poti afla si cum functioneaza programul nostru.</p>
     </div>
 
     <!-- CONTENT -->
-    <div class="flex-1 bg-white rounded-3xl border border-slate-700 p-4 lg:p-6 flex flex-col shadow-inner min-h-0 overflow-hidden">
+    <div class="flex-1 bg-white rounded-2xl lg:rounded-3xl border border-slate-700 p-3 lg:p-6 flex flex-col shadow-inner min-h-0 overflow-hidden">
 
         <!-- CHAT -->
         <div id="chat" class="flex-1 overflow-y-auto space-y-4 pr-2 min-h-0 mb-2">
@@ -84,22 +83,41 @@
 
                 {% if message["role"] == "user" %}
 
-                    <div class="bg-cyan-100 text-slate-900 p-4 rounded-2xl hover:shadow-md transition-shadow text-slate-900 w-fit max-w-xl ml-auto border border-cyan-200">
+                    <div class="bg-cyan-100 text-slate-900 p-2.5 sm:p-4 rounded-xl sm:rounded-2xl hover:shadow-md transition-shadow w-fit max-w-xl ml-auto border border-cyan-200 text-sm">
                         {% if "Sunt un asistent virtual specializat" in message["content"] %}<span data-i18n="ai_intro_msg">{{ message["content"] | safe }}</span>{% else %}{{ message["content"] | safe }}{% endif %}
                     </div>
 
                 {% else %}
 
-                    <div class="bg-slate-100 text-slate-900 p-5 rounded-2xl hover:shadow-md transition-shadow max-w-3xl border border-slate-200 relative group">
+                    <div class="bg-slate-100 text-slate-900 p-3 sm:p-5 rounded-xl sm:rounded-2xl hover:shadow-md transition-shadow max-w-3xl border border-slate-200">
 
-                        
-                        <!-- COPY BUTTON -->
-                        <button type="button" class="copy-math-btn absolute top-3 right-3 text-slate-500 hover:text-slate-900 bg-slate-200 hover:bg-slate-300 p-1.5 rounded-lg transition flex items-center gap-1"
-                                onclick="copyMathToClipboard(this, this.parentElement.querySelector('.msg-content-container'))" title="Copy Math to Word">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                        </button>
+                        <!-- HEADER ROW: title + copy button side by side -->
+                        <div class="flex items-center justify-between mb-3 gap-2">
+                            <h3 class="font-bold text-slate-900 text-sm" data-i18n="ai_response">Răspuns AI</h3>
 
-                        <h3 class="font-bold text-slate-900 mb-3" data-i18n="ai_response">Răspuns AI</h3>
+                            <!-- Self-contained copy + format picker. data-copy-enhanced skips JS wrapping. -->
+                            <div style="position:relative;display:inline-flex;align-items:center;gap:1px;flex-shrink:0;" class="msg-copy-wrap">
+
+                                <button type="button"
+                                        data-copy-enhanced="1"
+                                        class="text-slate-500 hover:text-slate-900 bg-slate-200 hover:bg-slate-300 p-1.5 rounded-l-lg transition flex items-center gap-1"
+                                        style="border-top-right-radius:0;border-bottom-right-radius:0;"
+                                        onclick="window._copyFormat='google_docs_eq'; copyMathToClipboard(this, this.closest('.bg-slate-100').querySelector('.msg-content-container'))"
+                                        title="Copiaza ecuatiile (LaTeX curat)">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                                </button>
+
+                                <button type="button"
+                                        class="text-slate-500 hover:text-slate-900 bg-slate-200 hover:bg-slate-300 px-1 py-1.5 rounded-r-lg transition flex items-center"
+                                        style="border-top-left-radius:0;border-bottom-left-radius:0;margin-left:1px;"
+                                        onclick="toggleCopyMenu(this)"
+                                        title="Alege formatul">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+                                </button>
+
+                                <div class="msg-copy-menu" style="display:none;position:absolute;min-width:240px;z-index:9999;background:#fff;border:1px solid #e2e8f0;border-radius:12px;box-shadow:0 12px 32px rgba(15,23,42,.18);padding:6px;"></div>
+                            </div>
+                        </div>
 
                         <div class="text-slate-700 text-sm leading-relaxed whitespace-pre-line msg-content-container">
                             <div class="math-content">
@@ -123,28 +141,28 @@
         </div>-->
 
         <!-- ACTION BUTTONS -->
-        <div class="flex flex-wrap justify-end gap-2 mt-auto mb-3 flex-shrink-0 text-xs sm:text-sm">
+        <div class="flex flex-wrap justify-end gap-1 sm:gap-1.5 mt-auto mb-1.5 flex-shrink-0">
             <button type="button"
                     onclick="solvePreviousExercise(this)"
-                    class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm">
-                <span data-i18n="m1_sol_prev">Soluție exercițiu anterior</span>
+                    class="bg-slate-800 hover:bg-slate-700 transition text-white font-medium py-1 px-2 sm:py-1.5 sm:px-3 rounded-lg text-xs">
+                <span data-i18n="m1_sol_prev">Soluție anterioară</span>
             </button>
         
             <button type="button"
                     onclick="generateSimilarExercises(this)"
-                    class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm">
-                <span data-i18n="m1_gen_similar">Generează exerciții similare</span>
+                    class="bg-slate-800 hover:bg-slate-700 transition text-white font-medium py-1 px-2 sm:py-1.5 sm:px-3 rounded-lg text-xs">
+                <span data-i18n="m1_gen_similar">Exerciții similare</span>
             </button>
         
             <button type="button"
                     onclick="teachInClass(this)"
-                    class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold py-2 px-4 rounded-xl text-sm">
+                    class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-medium py-1 px-2 sm:py-1.5 sm:px-3 rounded-lg text-xs">
                 <span data-i18n="m1_teach_class">Cum predau la clasă</span>
             </button>
         </div>
 
         <!-- INPUT -->
-        <form id="chatForm" action="/mode1/{{ conversation_id }}" method="post" class="flex gap-3">
+        <form id="chatForm" action="/mode1/{{ conversation_id }}" method="post" class="flex gap-2">
             <input type="hidden" id="actionType" name="action_type" value="normal">
             <input type="hidden" id="exerciseCount" name="exercise_count" value="5">
         
@@ -154,13 +172,13 @@
                 rows="1"
                 data-i18n-placeholder="m1_write_ex"
                 placeholder="Scrie exercițiul sau întrebarea..."
-                class="flex-1 text-slate-950 border border-slate-300 rounded-2xl p-4 resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                class="flex-1 text-slate-950 border border-slate-300 rounded-xl p-2.5 sm:p-3 resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500 text-sm"
             ></textarea>
         
             <button
                 type="submit"
                 onclick="document.getElementById('actionType').value='normal'; this.disabled=true; this.form.submit();"
-                class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold px-4 sm:px-8 rounded-2xl text-sm sm:text-base"
+                class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-semibold px-3 sm:px-5 rounded-xl text-sm flex-shrink-0"
                 data-i18n="m1_send">
                 Trimite
             </button>
@@ -296,6 +314,78 @@
     </div>
 
 </div>
+
+<script>
+const COPY_FORMATS = [
+    { id: "word_modern",    label: "Word >2011",           icon: "📄", desc: "Ecuație editabilă în Word modern" },
+    { id: "word_legacy",    label: "Word <2011",           icon: "📄", desc: "MathML pentru Word vechi" },
+    { id: "word_web",       label: "Word Web",             icon: "🌐", desc: "Word Online / Office 365" },
+    { id: "google_docs_eq", label: "Google Docs (Ecuație)",icon: "✏️", desc: "LaTeX pur pentru Insert › Equation" },
+];
+
+function toggleCopyMenu(caretBtn) {
+    const wrap = caretBtn.closest('.msg-copy-wrap');
+    const menu = wrap.querySelector('.msg-copy-menu');
+    const container = caretBtn.closest('.bg-slate-100').querySelector('.msg-content-container');
+
+    // Close any other open menus
+    document.querySelectorAll('.msg-copy-menu').forEach(m => {
+        if (m !== menu) m.style.display = 'none';
+    });
+
+    if (menu.style.display === 'block') {
+        menu.style.display = 'none';
+        return;
+    }
+
+    // Build menu content
+    menu.innerHTML = '';
+    const sections = [
+        { label: 'Microsoft Word', ids: ['word_modern', 'word_legacy', 'word_web'] },
+        { label: 'Google Docs',    ids: ['google_docs_eq'] },
+    ];
+    sections.forEach((sec, si) => {
+        const hdr = document.createElement('div');
+        hdr.textContent = sec.label;
+        hdr.style.cssText = 'padding:5px 10px 3px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#94a3b8;';
+        menu.appendChild(hdr);
+        sec.ids.forEach(id => {
+            const f = COPY_FORMATS.find(x => x.id === id);
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.style.cssText = 'display:flex;align-items:center;width:100%;text-align:left;padding:7px 10px;border:none;background:transparent;color:#0f172a;border-radius:8px;cursor:pointer;gap:8px;';
+            btn.innerHTML = `<span style="font-size:14px">${f.icon}</span><span><strong style="font-size:12px;display:block">${f.label}</strong><span style="font-size:11px;color:#64748b">${f.desc}</span></span>`;
+            btn.onmouseenter = () => btn.style.background = '#f1f5f9';
+            btn.onmouseleave = () => btn.style.background = 'transparent';
+            btn.onclick = () => {
+                menu.style.display = 'none';
+                window._copyFormat = id;   // tell copyMath which format to use
+                const mainBtn = wrap.querySelector('[data-copy-enhanced]');
+                copyMathToClipboard(mainBtn || caretBtn, container);
+            };
+            menu.appendChild(btn);
+        });
+        if (si < sections.length - 1) {
+            const hr = document.createElement('div');
+            hr.style.cssText = 'height:1px;background:#e2e8f0;margin:4px 8px;';
+            menu.appendChild(hr);
+        }
+    });
+
+    // Position absolute relative to .msg-copy-wrap (which is position:relative)
+    menu.style.top   = '100%';
+    menu.style.marginTop = '4px';
+    menu.style.right = '0';
+    menu.style.left  = 'auto';
+    menu.style.display = 'block';
+}
+
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.msg-copy-wrap')) {
+        document.querySelectorAll('.msg-copy-menu').forEach(m => m.style.display = 'none');
+    }
+});
+</script>
 
 <script>
 function getLastUserMessage() {

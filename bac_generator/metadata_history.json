@@ -3091,5 +3091,647 @@
         "template_param_hash": "0577f5075f501e0dcee06688a38637f791a32ab5dc4526605dce5066c22ebcea"
       }
     ]
+  },
+  {
+    "timestamp": "2026-07-10T15:00:00.542856+00:00",
+    "seed": null,
+    "generator_version": "3.0.0",
+    "selected_lessons": [],
+    "validation_status": "verified",
+    "diversity_score": 0.9412,
+    "attempts_required": 1,
+    "duplicate_rejections_so_far": 0,
+    "exercise_fingerprints": [
+      {
+        "id": "s1_ex1_complex_modulus",
+        "template_id": "s1_complex_modulus",
+        "param_signature": "a=-8;b=15;mod_val=17",
+        "topic": "Modulul unui număr complex",
+        "difficulty": "easy",
+        "exact_hash": "c4698690e49719c6e77f84ba4508bb69f314403001f9ed89dfc1b9e1250ddc13",
+        "template_param_hash": "7523786fc5a7e4ffa95c4ee04c9e0473a4ba6ed681db1d3351b0975b9ae4a172"
+      },
+      {
+        "id": "s1_ex2_composition",
+        "template_id": "s1_func_composition",
+        "param_signature": "a=2;b=0;c=1;fog_1=4",
+        "topic": "Compoziția a două funcții",
+        "difficulty": "medium",
+        "exact_hash": "50d7f886004623429368ef630dceba8c327ddcd694d323444c8b1a4435905d40",
+        "template_param_hash": "68314e06969ef57171045900b423aa5abe22678196367a2b9b42aa2c9761fffb"
+      },
+      {
+        "id": "s1_ex3_eq_logarithmic",
+        "template_id": "s1_logarithmic_equation",
+        "param_signature": "b=3;base=5;c=-4;d=1;x=3",
+        "topic": "Ecuații logaritmice",
+        "difficulty": "medium",
+        "exact_hash": "9c428611998f634aebf74f260f34d22f65800f33be6f052d5e13b83bf3fc040e",
+        "template_param_hash": "e47c453d59d5c67528129231ca1b868e117cf84f4b55629aa0ec8f5df6d8cee5"
+      },
+      {
+        "id": "s1_ex4_prob_union",
+        "template_id": "s1_mixed_events_probability",
+        "param_signature": "denom=10;p_a=1;p_b=3;p_union_num=3",
+        "topic": "Probabilitatea reuniunii evenimentelor",
+        "difficulty": "medium",
+        "exact_hash": "66dc350d9e0b873bffde6b0aa66b88f42d5bd92c2e4a52234ea4e07153b69e21",
+        "template_param_hash": "d3e35ffdce4cdd4f41894f371090ee4438498a41f456ffecd3b6c0bb60b7beee"
+      },
+      {
+        "id": "s1_ex5_line_two_points",
+        "template_id": "s1_line_equation_two_points",
+        "param_signature": "dx=5;dy=5;x1=-1;x2=4;y1=-2;y2=3",
+        "topic": "Ecuația dreptei prin două puncte date",
+        "difficulty": "easy",
+        "exact_hash": "b0e4ecfa9d08f05cf29c7a228dc24766eefc304179e1ba60e96f9d2ba3a6bb79",
+        "template_param_hash": "9e356c294084f270669f72f628fb7a5c5ff0340a1d9c203a1db7120459325ff2"
+      },
+      {
+        "id": "s1_ex6_trig_eq",
+        "template_id": "s1_trig_equation_basic",
+        "param_signature": "variant=2sinx_sqrt3",
+        "topic": "Ecuații trigonometrice de bază",
+        "difficulty": "medium",
+        "exact_hash": "6bc62141cfc1b36394e77f8875dc89c3f9eaecbe79f399162ccac4c3e5b1060f",
+        "template_param_hash": "34c48e13621886726b3592ea12f89bbc3b60bc0a59de6e4e56ae9cc403aca60e"
+      },
+      {
+        "id": "s2_ex1_mat_nilpotent",
+        "template_id": "s2_matrix_nilpotent_inverse",
+        "param_signature": "k=3;m=2;n=4",
+        "topic": "Matrici nilpotente – inversa prin formula Newton",
+        "difficulty": "hard",
+        "exact_hash": "27f8fa952fea81e23124e25ab01542dd6a1d2baaa93e96f5d9d6ee2df621ff9e",
+        "template_param_hash": "eadcb11fa87519ef62d9d8f1696f5b94b956e2d3bb162743a12fe0a2ef598eee"
+      },
+      {
+        "id": "s2_ex2_law_neutral",
+        "template_id": "s2_law_neutral_element",
+        "param_signature": "a=2;b=1;e=1",
+        "topic": "Legi de compoziție – element neutru",
+        "difficulty": "hard",
+        "exact_hash": "1a46a1755665626689b9a79caddab27a4e66cdacecfffd21e6e098648a718209",
+        "template_param_hash": "bd5a35bc0fc46c0117e3a2ac1db1f89ecb3e3c5f3e6291b4b7cb0b4605fd6f13"
+      },
+      {
+        "id": "s3_ex1_deriv_implicit",
+        "template_id": "s3_derivative_implicit_tangent",
+        "param_signature": "a=4;slope=8;x0=1;y0=5",
+        "topic": "Tangenta la graficul unei funcții implicite",
+        "difficulty": "hard",
+        "exact_hash": "4731f85a833f63dfcfd09a19d769470c1379f37ea24a5a498027d511cb834d6f",
+        "template_param_hash": "39003ebe2f9451ab83b624e3198551ee8b227f266a249ebabd7badfceeb1944e"
+      },
+      {
+        "id": "s3_ex2_int_rational_log",
+        "template_id": "s3_integral_rational_log_substitution",
+        "param_signature": "a=2",
+        "topic": "Integrala funcției raționale prin substituție logaritmică",
+        "difficulty": "hard",
+        "exact_hash": "5a3d352d2afb7f13402ef16e163a564e3882b66948187324d27c71f067134205",
+        "template_param_hash": "a75b300c44f5bb6dc2b300e4bb4bcb63dde09a101e0849b5c62c3d9fc2bcf947"
+      }
+    ]
+  },
+  {
+    "timestamp": "2026-07-10T15:23:27.512942+00:00",
+    "seed": null,
+    "generator_version": "3.0.0",
+    "selected_lessons": [
+      "Radicali",
+      "Puteri",
+      "Progresii",
+      "Probabilități",
+      "Funcții",
+      "Logaritmi",
+      "Numere complexe",
+      "Trigonometrie",
+      "Matrici",
+      "Legi de compoziție",
+      "Limite",
+      "Derivate",
+      "Integrale definite",
+      "Polinoame"
+    ],
+    "validation_status": "verified",
+    "diversity_score": 0.9279,
+    "attempts_required": 1,
+    "duplicate_rejections_so_far": 0,
+    "exercise_fingerprints": [
+      {
+        "id": "s1_ex1_complex_conjugate",
+        "template_id": "s1_complex_conjugate_product",
+        "param_signature": "a=6;b=1;prod=37",
+        "topic": "Conjugatul și produsul numerelor complexe",
+        "difficulty": "medium",
+        "exact_hash": "81b0cf3d08f704c31a566489a64a4e3c42f77470768f2ec35074471b4600d970",
+        "template_param_hash": "e5a6302468fe6056b0929bc90ef3231d7c4b538062d394cd378e97f92e612084"
+      },
+      {
+        "id": "s1_ex2_composition",
+        "template_id": "s1_func_composition",
+        "param_signature": "a=4;b=2;c=1;fog_1=10",
+        "topic": "Compoziția a două funcții",
+        "difficulty": "medium",
+        "exact_hash": "1734ccb6670d16fa6c85d82988251664193bab8d1f7f518ff46adaf61573f678",
+        "template_param_hash": "c8bbb242914ccbbf8368dcdae8935d1659d94bcd5eb4a2474fc94fd602b981e8"
+      },
+      {
+        "id": "s1_ex3_eq_radical",
+        "template_id": "s1_radical_equation",
+        "param_signature": "a=1;b=6;c=3;x=3",
+        "topic": "Ecuații cu radicali",
+        "difficulty": "medium",
+        "exact_hash": "83b0605859381a0ae4df6cef93a8d083af82afb7f2d4b31f1aa5e9b31ed5c705",
+        "template_param_hash": "c2fcb0a6bf714cc9a83e9ad11b63df42d3980d456fe76cc40d4a1c102f18474f"
+      },
+      {
+        "id": "s1_ex4_finance",
+        "template_id": "s1_percentage_price",
+        "param_signature": "P=200;increase=20;p=10",
+        "topic": "Aplicații cu procente – prețuri",
+        "difficulty": "easy",
+        "exact_hash": "52dae438df5af3180b89b43581389c840958fa372012af9747e59c482c29ec43",
+        "template_param_hash": "48f2d5968f691ac5e735ddddc9943b2ca4591924b0ad5f9a39d1830062e29cf1"
+      },
+      {
+        "id": "s1_ex5_distance",
+        "template_id": "s1_distance_point_to_line",
+        "param_signature": "a=4;b=3;c=-3;dist_num=1;x0=-1;y0=2",
+        "topic": "Distanța de la un punct la o dreaptă",
+        "difficulty": "medium",
+        "exact_hash": "d23957219db24c3717647aa6b510229917f9f611fed27fb11993398065544b95",
+        "template_param_hash": "5cfc7e770ac27430a23c20953836b9f4c958dd121b976b6d3c202785de25c32a"
+      },
+      {
+        "id": "s1_ex6_law_sin",
+        "template_id": "s1_law_of_sines",
+        "param_signature": "R=4;a=6.928;angle_deg=60",
+        "topic": "Teorema sinusurilor",
+        "difficulty": "medium",
+        "exact_hash": "411fff712a28cf7676f071daac0dfc6e07ee401c0d0fc484efc0bf8398c2e697",
+        "template_param_hash": "15b74754fb08c719fee4273972e470217fec6f1ff874b12bbdbcdbb0002718a1"
+      },
+      {
+        "id": "s2_ex1_mat_system",
+        "template_id": "s2_matrix_linear_system",
+        "param_signature": "a=3;b=2;det_A=-5;r1=5;r2=0;x=1;y=1",
+        "topic": "Sisteme de ecuații liniare cu matrice",
+        "difficulty": "hard",
+        "exact_hash": "2c065c90bd6f8d216952fbca88872810ff3157a7a1bc91c4d70b16fc14f6510d",
+        "template_param_hash": "e8e810e92d98db137d58290a02820649144a3714dae56792cb07a9ba7db3a5a7"
+      },
+      {
+        "id": "s2_ex2_law_assoc",
+        "template_id": "s2_law_associative_exponential",
+        "param_signature": "c_rhs=1;k=5",
+        "topic": "Legi de compoziție asociative – ecuații exponențiale",
+        "difficulty": "hard",
+        "exact_hash": "1b2391765f2f9f70bc3f3dcdd2ee4abac4c754f67f6800bb451830da334f0560",
+        "template_param_hash": "d378aa23c73a2382db0151512780c31431d30dee734196b97257f91c6bf51b76"
+      },
+      {
+        "id": "s3_ex1_limit_rational",
+        "template_id": "s3_limit_rational_infinity",
+        "param_signature": "a=2;b=1;c=3",
+        "topic": "Limita unei funcții raționale la infinit",
+        "difficulty": "hard",
+        "exact_hash": "48a80e684c3bf133e27a00fa92f922e30d6b5ce47f6b067c813373ad00dfd09a",
+        "template_param_hash": "9456ad7c3dad581a52e99b6d2c82a53547a4a62a493a97ea1fc154afd39f6b7b"
+      },
+      {
+        "id": "s3_ex2_int_poly",
+        "template_id": "s3_integral_polynomial_volume",
+        "param_signature": "a=3",
+        "topic": "Integrale definite – polinoame, volum de rotație",
+        "difficulty": "hard",
+        "exact_hash": "69acdc535b4c08cd1ef049004093093b68cf0d545cfd703ad7b2614eb11153e9",
+        "template_param_hash": "b8198a8f7b81bbecc5346762f23a2bde644b2153ff023fad0fe41da5f2566ce1"
+      }
+    ]
+  },
+  {
+    "timestamp": "2026-07-10T16:24:01.231026+00:00",
+    "seed": 42,
+    "generator_version": "3.0.0",
+    "selected_lessons": [],
+    "validation_status": "verified",
+    "diversity_score": 0.9084,
+    "attempts_required": 1,
+    "duplicate_rejections_so_far": 0,
+    "exercise_fingerprints": [
+      {
+        "id": "s1_ex1_complex_modulus",
+        "template_id": "s1_complex_modulus",
+        "param_signature": "a=3;b=-4;mod_val=5",
+        "topic": "Modulul unui număr complex",
+        "difficulty": "easy",
+        "exact_hash": "ffcda0f064af573b888114ff64bbe65915fb30d739364e369c6c67051ae28a2d",
+        "template_param_hash": "c44179af7731ff162f941391e42fa11abb4c7beb54839655f3591b7c31e79d51"
+      },
+      {
+        "id": "s1_ex2_func_intersect",
+        "template_id": "s1_func_graph_intersection",
+        "param_signature": "a=-2;b=-5;c=3;d=-3;x1=-1;x2=2",
+        "topic": "Intersecția graficelor a două funcții",
+        "difficulty": "medium",
+        "exact_hash": "1821f0cc76d74cf5fc44f1c69315418eaec35a1c5788990ce4eccbf5d7f1d23f",
+        "template_param_hash": "ef67584d47659574595fa96eb3ec4671304aac598f7d6edee51cdf7580fb457e"
+      },
+      {
+        "id": "s1_ex3_rational_expr",
+        "template_id": "s1_rational_expression_domain",
+        "param_signature": "r=4;r2=16;result=9",
+        "topic": "Domeniul și simplificarea fracțiilor algebrice",
+        "difficulty": "medium",
+        "exact_hash": "c6d97ffc1f8dabb24ede1a4e1e6c14251144ab6d51aeef744f35a941d7f01246",
+        "template_param_hash": "bd178b4aa0e98704a37b567b9959547753539fc159285b34215c4f6af5b6c8d9"
+      },
+      {
+        "id": "s1_ex4_prob",
+        "template_id": "s1_classical_probability",
+        "param_signature": "fav=13;k=7;total=90",
+        "topic": "Probabilitate clasică",
+        "difficulty": "easy",
+        "exact_hash": "33875ccabb369b21e210915cb6612edf100ed5a7cc9b3015b91d6e491429811f",
+        "template_param_hash": "458634542a7823cc96df172f41bac483aafb4f54c34552e90b2140a7ff3c30af"
+      },
+      {
+        "id": "s1_ex5_midpoint",
+        "template_id": "s1_midpoint_segment",
+        "param_signature": "mx=-3;my=-1;x1=-2;x2=-4;y1=3;y2=-5",
+        "topic": "Geometrie analitică – mijlocul unui segment",
+        "difficulty": "easy",
+        "exact_hash": "aced14b0c50660cc7f59e13b1c5cfa9d71dc63060107f3de0a486cfa1d402dfc",
+        "template_param_hash": "fe6646056aa85c7e798454b72b523920f6cb2b7062a784550ec6143313e60adc"
+      },
+      {
+        "id": "s1_ex6_trig_identity",
+        "template_id": "s1_trig_identity_simplification",
+        "param_signature": "expr=\\frac{\\sin^2 x}{1-\\cos x} - 1",
+        "topic": "Simplificarea identităților trigonometrice",
+        "difficulty": "hard",
+        "exact_hash": "49626d4da323ba15ca957106f1b3f02757e0578930dd920f9b56617b055bacde",
+        "template_param_hash": "233f39ec6e36e8f087db5462fac2ddff23eb37cdd8091d27ea6f11a423b87c6f"
+      },
+      {
+        "id": "s2_ex1_mat_trace",
+        "template_id": "s2_matrix_trace_power",
+        "param_signature": "det_val=3;p=3;q=1;trace_val=4",
+        "topic": "Puterea matricei – urmă și determinant",
+        "difficulty": "hard",
+        "exact_hash": "a2aa6ca3b08b323f441b04ce9ebe77832539c5e878fe710486e6b764d0d24d96",
+        "template_param_hash": "8647af8d5aa9c09490f0255ff21427292467768ab3d36b4111388c830fce3e33"
+      },
+      {
+        "id": "s2_ex2_law_neutral",
+        "template_id": "s2_law_neutral_element",
+        "param_signature": "a=4;b=1;e=1",
+        "topic": "Legi de compoziție – element neutru",
+        "difficulty": "hard",
+        "exact_hash": "85631a0c87d37cc486ed0ac469fe3695a48d830a9ade11be1f200b02f59256de",
+        "template_param_hash": "a4794bf149b88daba13fcfdb649fe21952c2c8dd11067b25dcf971fec4be1519"
+      },
+      {
+        "id": "s3_ex1_deriv_rational",
+        "template_id": "s3_derivative_rational_monotonicity",
+        "param_signature": "a=4;b=3",
+        "topic": "Derivata fracției raționale – monotonie",
+        "difficulty": "hard",
+        "exact_hash": "b31214df01af792e260e5852159c962c8eb8d3f7ebe6da0e3be6c67d31ba685e",
+        "template_param_hash": "c42704e747e6e2cb2a79510f2f1a86471e2836e95a026f863b54c615a6c442f6"
+      },
+      {
+        "id": "s3_ex2_int_rational_log",
+        "template_id": "s3_integral_rational_log_substitution",
+        "param_signature": "a=2",
+        "topic": "Integrala funcției raționale prin substituție logaritmică",
+        "difficulty": "hard",
+        "exact_hash": "5a3d352d2afb7f13402ef16e163a564e3882b66948187324d27c71f067134205",
+        "template_param_hash": "a75b300c44f5bb6dc2b300e4bb4bcb63dde09a101e0849b5c62c3d9fc2bcf947"
+      }
+    ]
+  },
+  {
+    "timestamp": "2026-07-10T16:24:27.155417+00:00",
+    "seed": 42,
+    "generator_version": "3.0.0",
+    "selected_lessons": [],
+    "validation_status": "verified",
+    "diversity_score": 0.9084,
+    "attempts_required": 1,
+    "duplicate_rejections_so_far": 0,
+    "exercise_fingerprints": [
+      {
+        "id": "s1_ex1_complex_modulus",
+        "template_id": "s1_complex_modulus",
+        "param_signature": "a=3;b=-4;mod_val=5",
+        "topic": "Modulul unui număr complex",
+        "difficulty": "easy",
+        "exact_hash": "ffcda0f064af573b888114ff64bbe65915fb30d739364e369c6c67051ae28a2d",
+        "template_param_hash": "c44179af7731ff162f941391e42fa11abb4c7beb54839655f3591b7c31e79d51"
+      },
+      {
+        "id": "s1_ex2_func_intersect",
+        "template_id": "s1_func_graph_intersection",
+        "param_signature": "a=-2;b=-5;c=3;d=-3;x1=-1;x2=2",
+        "topic": "Intersecția graficelor a două funcții",
+        "difficulty": "medium",
+        "exact_hash": "1821f0cc76d74cf5fc44f1c69315418eaec35a1c5788990ce4eccbf5d7f1d23f",
+        "template_param_hash": "ef67584d47659574595fa96eb3ec4671304aac598f7d6edee51cdf7580fb457e"
+      },
+      {
+        "id": "s1_ex3_rational_expr",
+        "template_id": "s1_rational_expression_domain",
+        "param_signature": "r=4;r2=16;result=9",
+        "topic": "Domeniul și simplificarea fracțiilor algebrice",
+        "difficulty": "medium",
+        "exact_hash": "c6d97ffc1f8dabb24ede1a4e1e6c14251144ab6d51aeef744f35a941d7f01246",
+        "template_param_hash": "bd178b4aa0e98704a37b567b9959547753539fc159285b34215c4f6af5b6c8d9"
+      },
+      {
+        "id": "s1_ex4_prob",
+        "template_id": "s1_classical_probability",
+        "param_signature": "fav=13;k=7;total=90",
+        "topic": "Probabilitate clasică",
+        "difficulty": "easy",
+        "exact_hash": "33875ccabb369b21e210915cb6612edf100ed5a7cc9b3015b91d6e491429811f",
+        "template_param_hash": "458634542a7823cc96df172f41bac483aafb4f54c34552e90b2140a7ff3c30af"
+      },
+      {
+        "id": "s1_ex5_midpoint",
+        "template_id": "s1_midpoint_segment",
+        "param_signature": "mx=-3;my=-1;x1=-2;x2=-4;y1=3;y2=-5",
+        "topic": "Geometrie analitică – mijlocul unui segment",
+        "difficulty": "easy",
+        "exact_hash": "aced14b0c50660cc7f59e13b1c5cfa9d71dc63060107f3de0a486cfa1d402dfc",
+        "template_param_hash": "fe6646056aa85c7e798454b72b523920f6cb2b7062a784550ec6143313e60adc"
+      },
+      {
+        "id": "s1_ex6_trig_identity",
+        "template_id": "s1_trig_identity_simplification",
+        "param_signature": "expr=\\frac{\\sin^2 x}{1-\\cos x} - 1",
+        "topic": "Simplificarea identităților trigonometrice",
+        "difficulty": "hard",
+        "exact_hash": "49626d4da323ba15ca957106f1b3f02757e0578930dd920f9b56617b055bacde",
+        "template_param_hash": "233f39ec6e36e8f087db5462fac2ddff23eb37cdd8091d27ea6f11a423b87c6f"
+      },
+      {
+        "id": "s2_ex1_mat_trace",
+        "template_id": "s2_matrix_trace_power",
+        "param_signature": "det_val=3;p=3;q=1;trace_val=4",
+        "topic": "Puterea matricei – urmă și determinant",
+        "difficulty": "hard",
+        "exact_hash": "a2aa6ca3b08b323f441b04ce9ebe77832539c5e878fe710486e6b764d0d24d96",
+        "template_param_hash": "8647af8d5aa9c09490f0255ff21427292467768ab3d36b4111388c830fce3e33"
+      },
+      {
+        "id": "s2_ex2_law_neutral",
+        "template_id": "s2_law_neutral_element",
+        "param_signature": "a=4;b=1;e=1",
+        "topic": "Legi de compoziție – element neutru",
+        "difficulty": "hard",
+        "exact_hash": "85631a0c87d37cc486ed0ac469fe3695a48d830a9ade11be1f200b02f59256de",
+        "template_param_hash": "a4794bf149b88daba13fcfdb649fe21952c2c8dd11067b25dcf971fec4be1519"
+      },
+      {
+        "id": "s3_ex1_deriv_rational",
+        "template_id": "s3_derivative_rational_monotonicity",
+        "param_signature": "a=4;b=3",
+        "topic": "Derivata fracției raționale – monotonie",
+        "difficulty": "hard",
+        "exact_hash": "b31214df01af792e260e5852159c962c8eb8d3f7ebe6da0e3be6c67d31ba685e",
+        "template_param_hash": "c42704e747e6e2cb2a79510f2f1a86471e2836e95a026f863b54c615a6c442f6"
+      },
+      {
+        "id": "s3_ex2_int_rational_log",
+        "template_id": "s3_integral_rational_log_substitution",
+        "param_signature": "a=2",
+        "topic": "Integrala funcției raționale prin substituție logaritmică",
+        "difficulty": "hard",
+        "exact_hash": "5a3d352d2afb7f13402ef16e163a564e3882b66948187324d27c71f067134205",
+        "template_param_hash": "a75b300c44f5bb6dc2b300e4bb4bcb63dde09a101e0849b5c62c3d9fc2bcf947"
+      }
+    ]
+  },
+  {
+    "timestamp": "2026-07-10T16:25:46.760448+00:00",
+    "seed": null,
+    "generator_version": "3.0.0",
+    "selected_lessons": [
+      "Radicali",
+      "Puteri",
+      "Progresii",
+      "Probabilități",
+      "Funcții",
+      "Logaritmi",
+      "Numere complexe",
+      "Trigonometrie",
+      "Matrici",
+      "Legi de compoziție",
+      "Limite",
+      "Derivate",
+      "Integrale definite",
+      "Polinoame"
+    ],
+    "validation_status": "verified",
+    "diversity_score": 0.8648,
+    "attempts_required": 1,
+    "duplicate_rejections_so_far": 0,
+    "exercise_fingerprints": [
+      {
+        "id": "s1_ex1_calc",
+        "template_id": "s1_radical_integer",
+        "param_signature": "a=5;b=6;val=31",
+        "topic": "Calcul cu radicali",
+        "difficulty": "easy",
+        "exact_hash": "0b63f64a1524d97ed124fdea394af815b57d483eec1d57b1f6e962e326eb8a29",
+        "template_param_hash": "719a018cb0c12da127541f89d51b15fed4d87ae3bf87ae0c5c05bc4e9c3c94a6"
+      },
+      {
+        "id": "s1_ex2_func_product",
+        "template_id": "s1_func_zero_product",
+        "param_signature": "a=7",
+        "topic": "Zero-produs la funcții liniare",
+        "difficulty": "easy",
+        "exact_hash": "71e0d69ca9b98abcdcf1d1dc41d6bb1ad813ea84be31b109976fdbca1b2c6520",
+        "template_param_hash": "6f2ca9ec6d56edfe70eef0d3dc5d0ef6294d3402df5b884c5890cf34ec2543a8"
+      },
+      {
+        "id": "s1_ex3_eq_exponential",
+        "template_id": "s1_exponential_equation",
+        "param_signature": "a=3;b=2;c=-1;d=7;rhs=2187;x=4",
+        "topic": "Ecuații exponențiale",
+        "difficulty": "medium",
+        "exact_hash": "63f62db22fabb1d3b1e35bdc6d527a956e506f0546f05441585621256c3cd867",
+        "template_param_hash": "35b432f649f53513198e8b31724e4700c62f07c6a9d3e42951e0852ac71b7ba0"
+      },
+      {
+        "id": "s1_ex4_binomial",
+        "template_id": "s1_binomial_theorem",
+        "param_signature": "a=2;b=3;coeff=1080;k=3;n=5",
+        "topic": "Teorema binomului – coeficienți",
+        "difficulty": "medium",
+        "exact_hash": "a95633e8fe7fcadfac365f045761cb4c274b9f0405468650c662cde2b1056d1b",
+        "template_param_hash": "b032a6d738b3163c8033886b2a15c434f6d3d0bfabbed5db6ddcca5bb1968960"
+      },
+      {
+        "id": "s1_ex5_midpoint",
+        "template_id": "s1_midpoint_segment",
+        "param_signature": "mx=-3;my=-5;x1=-4;x2=-2;y1=-3;y2=-7",
+        "topic": "Geometrie analitică – mijlocul unui segment",
+        "difficulty": "easy",
+        "exact_hash": "53b670396106902ecdecc06b475ce4984bda062557d5090ee542e83846a7a36b",
+        "template_param_hash": "af1aa0723dba57caf51239d8d09faf5dde93f2df3a8fcb0fc8e53728e5add1b4"
+      },
+      {
+        "id": "s1_ex6_area",
+        "template_id": "s1_triangle_area_formula",
+        "param_signature": "AB=6;AC=8;area=12",
+        "topic": "Aria triunghiului cu sin",
+        "difficulty": "easy",
+        "exact_hash": "08428c8601389c0bb0fd222ef56fe5926181b37a9d6b4f5a20b4a09bfb2b7c34",
+        "template_param_hash": "b00fca0cf4212fb16c3cf9065cb7bae82819bcc6d903aae637b47d79b986defa"
+      },
+      {
+        "id": "s2_ex1_mat_system",
+        "template_id": "s2_matrix_linear_system",
+        "param_signature": "a=2;b=2;det_A=-4;r1=10;r2=-3;x=1;y=4",
+        "topic": "Sisteme de ecuații liniare cu matrice",
+        "difficulty": "hard",
+        "exact_hash": "2f1fe5f19a315aec6cd4f040f8c7c9332021d75846de31e7843861ae8051349b",
+        "template_param_hash": "b1606bd0a3a00b84a2e2441b52a80d3712904b4834494d073562823ca8da3c43"
+      },
+      {
+        "id": "s2_ex2_law_assoc",
+        "template_id": "s2_law_associative_exponential",
+        "param_signature": "c_rhs=2;k=4",
+        "topic": "Legi de compoziție asociative – ecuații exponențiale",
+        "difficulty": "hard",
+        "exact_hash": "cb05f720b645db56edf247d9c25a0f93a7ae86b52dda453140d9c330e3227c9b",
+        "template_param_hash": "9107a6f821c6d7155f9c331edd963eb59440864f379250bef6b3848b18746f11"
+      },
+      {
+        "id": "s3_ex1_limit_remarkable",
+        "template_id": "s3_limit_remarkable_sine",
+        "param_signature": "k=5;m=3",
+        "topic": "Limite remarcabile – sin(x)/x",
+        "difficulty": "hard",
+        "exact_hash": "3d8868a2550e1ed04907aeb5c81314529a0bfbe5e27155e27ef83286fafe79d5",
+        "template_param_hash": "8fc64bbd9f8e53b2d970be903fc17250c5b1e493b592ba0f8fd17b7a15252af2"
+      },
+      {
+        "id": "s3_ex2_int_rational_log",
+        "template_id": "s3_integral_rational_log_substitution",
+        "param_signature": "a=3",
+        "topic": "Integrala funcției raționale prin substituție logaritmică",
+        "difficulty": "hard",
+        "exact_hash": "e64ba2c0aa6994ae85b644a2fc86bcdb78a0905695bbf4e46ebb492471561cca",
+        "template_param_hash": "0577f5075f501e0dcee06688a38637f791a32ab5dc4526605dce5066c22ebcea"
+      }
+    ]
+  },
+  {
+    "timestamp": "2026-07-10T16:27:17.758814+00:00",
+    "seed": 99,
+    "generator_version": "3.0.0",
+    "selected_lessons": [],
+    "validation_status": "verified",
+    "diversity_score": 0.9825,
+    "attempts_required": 1,
+    "duplicate_rejections_so_far": 0,
+    "exercise_fingerprints": [
+      {
+        "id": "s1_ex1_complex_conjugate",
+        "template_id": "s1_complex_conjugate_product",
+        "param_signature": "a=4;b=2;prod=20",
+        "topic": "Conjugatul și produsul numerelor complexe",
+        "difficulty": "medium",
+        "exact_hash": "67e0e2270c1d93841ddb1ef178396f2820171edfab77f62302cf6b18345b82ad",
+        "template_param_hash": "5cf9b6457a454933e0ef081c4f08dc9cbe8f835ad900927a04ee177315db75e0"
+      },
+      {
+        "id": "s1_ex2_monotonicity",
+        "template_id": "s1_func_monotonicity_sign",
+        "param_signature": "m=2;n=-3",
+        "topic": "Semn și monotonie funcție liniară/pătratică",
+        "difficulty": "easy",
+        "exact_hash": "fe11e39cf65fb4ec26393e85f550e42cdabe0ff60afa999366d660c94af578e2",
+        "template_param_hash": "03fff10e93ba4eecf1eabd0f95da26673256fe832877c449fabe549f3f401200"
+      },
+      {
+        "id": "s1_ex3_eq_modular",
+        "template_id": "s1_modular_equation",
+        "param_signature": "a=2;b=8;x1=6;x2=-10",
+        "topic": "Ecuații cu modul",
+        "difficulty": "medium",
+        "exact_hash": "e975706876562b949abf07fcf35b16786bc3b5275ffabb12560a0de1080660c5",
+        "template_param_hash": "e38f057bfe7d838e04d36c4e86ad93ca65928f279887ad13262328be2161da47"
+      },
+      {
+        "id": "s1_ex4_prob",
+        "template_id": "s1_classical_probability",
+        "param_signature": "fav=9;k=11;total=90",
+        "topic": "Probabilitate clasică",
+        "difficulty": "easy",
+        "exact_hash": "d8834dcd0ceabce9bdac5cdf422ce55fc3da4fd2a20d804deaa80e71a85a20e0",
+        "template_param_hash": "b31330bb26694dfae98c94977ca646d4aa2b2aa9e3f8f9ec2797fbdf8dee05a3"
+      },
+      {
+        "id": "s1_ex5_line_two_points",
+        "template_id": "s1_line_equation_two_points",
+        "param_signature": "dx=5;dy=4;x1=-3;x2=2;y1=0;y2=4",
+        "topic": "Ecuația dreptei prin două puncte date",
+        "difficulty": "easy",
+        "exact_hash": "3d9689cb067d456afe2e27d3aab54a4dcff9422087b304cd7d3136e9e32ce220",
+        "template_param_hash": "d22062d5f7a8e5b43d3a3153309cae4c185b6b433a570f2e65506aa8a08fe8af"
+      },
+      {
+        "id": "s1_ex6_trig_eq",
+        "template_id": "s1_trig_equation_basic",
+        "param_signature": "variant=cos_neg_half",
+        "topic": "Ecuații trigonometrice de bază",
+        "difficulty": "medium",
+        "exact_hash": "4e277190a8a0312bd8206d188857f766a9dc4b957cb58f621730355e1f86afe9",
+        "template_param_hash": "35157ac21f94e86a29e3c42066b88851012e0555c1913e73ff828ad181347328"
+      },
+      {
+        "id": "s2_ex1_mat_trace",
+        "template_id": "s2_matrix_trace_power",
+        "param_signature": "det_val=4;p=2;q=2;trace_val=4",
+        "topic": "Puterea matricei – urmă și determinant",
+        "difficulty": "hard",
+        "exact_hash": "93a15f5abfe1fea137ee11876420bb2fc3d086eb8f1143ac2e95d5af54ffe39b",
+        "template_param_hash": "96d57449b7ba3ad26e1aeb95bc31edcdf18c6899f881cf38d5fed759dd3b2777"
+      },
+      {
+        "id": "s2_ex2_law_neutral",
+        "template_id": "s2_law_neutral_element",
+        "param_signature": "a=3;b=1;e=1",
+        "topic": "Legi de compoziție – element neutru",
+        "difficulty": "hard",
+        "exact_hash": "8823e4c19fda3075a69c319954eedf0e2236b25511b1ad7166264342958c5281",
+        "template_param_hash": "f5844cfc59c84a49b43b28ba2264899d7132ea82680b1fcd00a5868833381adc"
+      },
+      {
+        "id": "s3_ex1_continuity",
+        "template_id": "s3_continuity_piecewise",
+        "param_signature": "a=2;b=3;c=3;d=3;fval=3;x0=0",
+        "topic": "Continuitatea funcțiilor definite pe porțiuni",
+        "difficulty": "hard",
+        "exact_hash": "7fbafc5c02f8b94e0a2091839b121f5b18d3643c76f7b966af31695a22ae4bc4",
+        "template_param_hash": "6e45919390c8a61e2e2a96cc38e67a1ca35f937cd464f1f8e2b1ee8ddd430227"
+      },
+      {
+        "id": "s3_ex2_int_area",
+        "template_id": "s3_integral_area_between_curves",
+        "param_signature": "a=3;area_den=6;area_num=1;b=4",
+        "topic": "Aria suprafeței dintre două curbe",
+        "difficulty": "hard",
+        "exact_hash": "66df140de344a512817b64abc9e1123c430107f60ec37f9ebb5507d51cefbc36",
+        "template_param_hash": "d10f703707ac09f457f60a4ed5b6558878a78b314c34934484749c4da5c391a7"
+      }
+    ]
   }
 ]

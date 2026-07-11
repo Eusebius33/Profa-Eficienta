@@ -186,5 +186,59 @@ def gen_s1_ex6_trig_identity(rng=random):
     return {"id": "s1_ex6_trig_identity", "text": text, "solution": solution,
             "points": 5, "params": {"expr": expr}, "lesson": "Trigonometrie"}
 
+@registry.register(slot=6)
+@template("s1_trig_equation_basic", "Ecuații trigonometrice de bază", "medium")
+def gen_s1_ex6_trig_equation(rng=random):
+    variants = [
+        # (equation text, solution text, param_key)
+        (r"\sin x = \frac{1}{2}",
+         r"$x = \frac{\pi}{6} + 2k\pi$ sau $x = \pi - \frac{\pi}{6} + 2k\pi = \frac{5\pi}{6} + 2k\pi$, $k \in \mathbb{Z}$.",
+         "sin_half"),
+        (r"\cos x = \frac{\sqrt{2}}{2}",
+         r"$x = \pm\frac{\pi}{4} + 2k\pi$, $k \in \mathbb{Z}$.",
+         "cos_sqrt2_2"),
+        (r"\tan x = 1",
+         r"$x = \frac{\pi}{4} + k\pi$, $k \in \mathbb{Z}$.",
+         "tan_1"),
+        (r"\sin x = -\frac{\sqrt{3}}{2}",
+         r"$x = -\frac{\pi}{3} + 2k\pi$ sau $x = \pi + \frac{\pi}{3} + 2k\pi = \frac{4\pi}{3} + 2k\pi$, $k \in \mathbb{Z}$.",
+         "sin_neg_sqrt3_2"),
+        (r"\cos x = -\frac{1}{2}",
+         r"$x = \pm\frac{2\pi}{3} + 2k\pi$, $k \in \mathbb{Z}$.",
+         "cos_neg_half"),
+        (r"2\sin x - \sqrt{3} = 0",
+         r"$\sin x = \frac{\sqrt{3}}{2}$, deci $x = \frac{\pi}{3} + 2k\pi$ sau $x = \frac{2\pi}{3} + 2k\pi$, $k \in \mathbb{Z}$.",
+         "2sinx_sqrt3"),
+    ]
+    eq_text, sol_text, pkey = rng.choice(variants)
+    text = (f"Rezolvați în $\\mathbb{{R}}$ ecuația trigonometrică ${eq_text}$.")
+    solution = sol_text
+    return {"id": "s1_ex6_trig_eq", "text": text, "solution": solution,
+            "points": 5, "params": {"variant": pkey}, "lesson": "Trigonometrie"}
+
+@registry.register(slot=6)
+@template("s1_trig_equation_quadratic", "Ecuații trigonometrice pătratice", "hard")
+def gen_s1_ex6_trig_eq_quad(rng=random):
+    variants = [
+        (r"2\sin^2 x - \sin x - 1 = 0",
+         r"Fie $t = \sin x$: $2t^2 - t - 1 = 0 \Rightarrow (2t+1)(t-1)=0$. "
+         r"$t = 1 \Rightarrow x = \frac{\pi}{2} + 2k\pi$; "
+         r"$t = -\frac{1}{2} \Rightarrow x = -\frac{\pi}{6} + 2k\pi$ sau $x = \pi+\frac{\pi}{6}+2k\pi$.",
+         "2sin2_sin_1"),
+        (r"2\cos^2 x + \cos x - 1 = 0",
+         r"$t = \cos x$: $2t^2+t-1=(2t-1)(t+1)=0$. "
+         r"$t = \frac{1}{2} \Rightarrow x = \pm\frac{\pi}{3}+2k\pi$; "
+         r"$t = -1 \Rightarrow x = \pi + 2k\pi$.",
+         "2cos2_cos_1"),
+        (r"\sin^2 x = \frac{3}{4}",
+         r"$|\sin x| = \frac{\sqrt{3}}{2} \Rightarrow x = \pm\frac{\pi}{3}+k\pi$, $k\in\mathbb{Z}$.",
+         "sin2_3_4"),
+    ]
+    eq_text, sol_text, pkey = rng.choice(variants)
+    text = f"Rezolvați în $\\mathbb{{R}}$ ecuația ${eq_text}$."
+    solution = sol_text
+    return {"id": "s1_ex6_trig_eq_quad", "text": text, "solution": solution,
+            "points": 5, "params": {"variant": pkey}, "lesson": "Trigonometrie"}
+
 def gen_s1_ex6(rng=random):
     return rng.choice(registry.get_generators(6))(rng)

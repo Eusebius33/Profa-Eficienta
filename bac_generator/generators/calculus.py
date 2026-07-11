@@ -123,6 +123,56 @@ def gen_s3_ex1_limit_remarkable(rng=random):
     return {"id": "s3_ex1_limit_remarkable", "text": text, "solution": solution,
             "points": 15, "params": {"k": k, "m": m}, "lesson": "Limite"}
 
+@registry.register(slot=9)
+@template("s3_continuity_piecewise", "Continuitatea funcțiilor definite pe porțiuni", "hard")
+def gen_s3_ex1_continuity(rng=random):
+    a = rng.randint(1, 4)
+    b = rng.randint(1, 4)
+    x0 = rng.randint(0, 3)
+    # f(x) = ax + b for x <= x0, cx^2 + d for x > x0
+    # For continuity at x0: a*x0 + b = c*x0^2 + d
+    c = rng.randint(1, 3)
+    d = a * x0 + b - c * x0**2
+    text = (f"Se consideră funcția $f: \\mathbb{{R}} \\to \\mathbb{{R}}$, "
+            f"$f(x) = \\begin{{cases}} {a}x {b:+}, & x \\leq {x0} \\\\\\ {c}x^2 {d:+}, & x > {x0} \\end{{cases}}$.\n\n"
+            f"a) Calculați $\\lim_{{x \\to {x0},\\, x < {x0}}} f(x)$ și $\\lim_{{x \\to {x0},\\, x > {x0}}} f(x)$.\n\n"
+            f"b) Studiați continuitatea lui $f$ în $x_0 = {x0}$.\n\n"
+            f"c) Este $f$ derivabilă în $x_0 = {x0}$? Justificați.")
+    fval = a * x0 + b
+    slope_left = a
+    slope_right = 2 * c * x0
+    deriv_str = ("Da, derivatele laterale sunt egale." if slope_left == slope_right
+                 else f"Nu, derivata stângă = ${slope_left}$ ≠ derivata dreaptă = ${slope_right}$.")
+    solution = (f"a) Limita stângă: $\\lim_{{x\\to {x0}^-}} f(x) = {a}\\cdot{x0} {b:+} = {fval}$.\n"
+                f"Limita dreaptă: $\\lim_{{x\\to {x0}^+}} f(x) = {c}\\cdot{x0}^2 {d:+} = {fval}$.\n\n"
+                f"b) Ambele limite egale cu $f({x0}) = {fval}$, deci $f$ este continuă în $x_0 = {x0}$.\n\n"
+                f"c) {deriv_str}")
+    return {"id": "s3_ex1_continuity", "text": text, "solution": solution,
+            "points": 15, "params": {"a": a, "b": b, "c": c, "d": d, "x0": x0, "fval": fval}, "lesson": "Limite"}
+
+@registry.register(slot=9)
+@template("s3_indefinite_integral_basic", "Primitive – integrale nedefinite", "hard")
+def gen_s3_ex1_indefinite_integral(rng=random):
+    a = rng.randint(1, 4)
+    b = rng.randint(1, 3)
+    n = rng.choice([2, 3, 4])
+    # F(x) = a/(n+1) x^(n+1) + b*x + C
+    text = (f"Se consideră $f: \\mathbb{{R}} \\to \\mathbb{{R}}$, $f(x) = {a}x^{{{n}}} {b:+}$.\n\n"
+            f"a) Determinați o primitivă $F$ a lui $f$.\n\n"
+            f"b) Arătați că $F'(x) = f(x)$.\n\n"
+            f"c) Calculați $\\int_0^1 f(x)\\,dx$.")
+    num = a
+    den = n + 1
+    g = math.gcd(num, den)
+    coef_str = f"\\frac{{{num//g}}}{{{den//g}}}" if den // g != 1 else f"{num // g}"
+    definite = num / den + b  # integral from 0 to 1
+    solution = (f"a) $F(x) = {coef_str} x^{{{n+1}}} {b:+}x$ (plus constanta $C$).\n\n"
+                f"b) $F'(x) = {coef_str} \\cdot {n+1} x^{{{n}}} {b:+} = {a}x^{{{n}}} {b:+} = f(x)$ \u2713\n\n"
+                f"c) $\\int_0^1 f(x)\\,dx = F(1) - F(0) = "
+                f"{coef_str} {b:+} - 0 = {coef_str} {b:+}$.")
+    return {"id": "s3_ex1_indefinite_integral", "text": text, "solution": solution,
+            "points": 15, "params": {"a": a, "b": b, "n": n}, "lesson": "Integrale definite"}
+
 def gen_s3_ex1(rng=random):
     return rng.choice(registry.get_generators(9))(rng)
 

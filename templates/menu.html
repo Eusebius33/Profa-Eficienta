@@ -1,11 +1,11 @@
-{% extends "layout1.html" %}
+{% extends "layout.html" %}
 
 {% block title %}
-    SelecteazÄƒ Mod |
-        {% if user and user["gender"] == "F" %}
-        Profa EficientÄƒ
+    {{ t("menu_title") }} |
+    {% if session.get("gender") == "F" %}
+        {{ t("app_name_f") }}
     {% else %}
-        Proful Eficient
+        {{ t("app_name_m") }}
     {% endif %}
 {% endblock %}
 

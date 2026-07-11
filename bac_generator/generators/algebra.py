@@ -97,6 +97,48 @@ def gen_s1_ex1_complex_conjugate(rng=random):
     return {"id": "s1_ex1_complex_conjugate", "text": text, "solution": solution,
             "points": 5, "params": {"a": a, "b": b, "prod": prod}, "lesson": "Numere complexe"}
 
+@registry.register(slot=1)
+@template("s1_complex_arithmetic", "Operații cu numere complexe", "medium")
+def gen_s1_ex1_complex_arith(rng=random):
+    a = rng.randint(1, 5)
+    b = rng.randint(1, 5)
+    c = rng.randint(1, 4)
+    d = rng.randint(1, 4)
+    # z1 = a+bi, z2 = c+di
+    sum_re, sum_im = a + c, b + d
+    prod_re = a*c - b*d
+    prod_im = a*d + b*c
+    sum_str = f"{sum_re} + {sum_im}i" if sum_im >= 0 else f"{sum_re} - {-sum_im}i"
+    prod_im_str = f"{prod_im:+}i"
+    text = (f"Se dau numerele complexe $z_1 = {a} + {b}i$ și $z_2 = {c} + {d}i$.\n\n"
+            f"a) Calculați $z_1 + z_2$.\n\n"
+            f"b) Calculați $z_1 \\cdot z_2$.\n\n"
+            f"c) Calculați $|z_1|$.")
+    mod1 = math.isqrt(a**2 + b**2)
+    mod1_str = f"\\sqrt{{{a**2 + b**2}}}" if a**2 + b**2 != mod1**2 else str(mod1)
+    solution = (f"a) $z_1 + z_2 = ({a}+{c}) + ({b}+{d})i = {sum_str}$.\n\n"
+                f"b) $z_1 \\cdot z_2 = ({a}+{b}i)({c}+{d}i) = "
+                f"{a*c} + {a*d}i + {b*c}i + {b*d}i^2 = {prod_re} {prod_im_str}$.\n\n"
+                f"c) $|z_1| = \\sqrt{{{a}^2 + {b}^2}} = {mod1_str}$.")
+    return {"id": "s1_ex1_complex_arith", "text": text, "solution": solution,
+            "points": 5, "params": {"a": a, "b": b, "c": c, "d": d}, "lesson": "Numere complexe"}
+
+@registry.register(slot=1)
+@template("s1_geom_seq_sum", "Progresii geometrice – suma primilor n termeni", "medium")
+def gen_s1_ex1_geom_sum(rng=random):
+    b1 = rng.randint(1, 3)
+    q  = rng.choice([2, 3])
+    n  = rng.choice([4, 5, 6])
+    sn = b1 * (q**n - 1) // (q - 1)
+    text = (f"Calculați suma primilor ${n}$ termeni ai progresiei geometrice "
+            f"$(b_n)_{{n \\geq 1}}$ cu $b_1 = {b1}$ și rația $q = {q}$.")
+    solution = (f"Formula sumei: $S_{{{n}}} = b_1 \\cdot \\dfrac{{q^{{{n}}} - 1}}{{q - 1}} = "
+                f"{b1} \\cdot \\dfrac{{{q}^{{{n}}} - 1}}{{{q} - 1}} = "
+                f"{b1} \\cdot \\dfrac{{{q**n} - 1}}{{{q - 1}}} = "
+                f"{b1} \\cdot \\dfrac{{{q**n - 1}}}{{{q-1}}} = {sn}$.")
+    return {"id": "s1_ex1_geom_sum", "text": text, "solution": solution,
+            "points": 5, "params": {"b1": b1, "q": q, "n": n, "sn": sn}, "lesson": "Progresii"}
+
 def gen_s1_ex1(rng=random):
     return rng.choice(registry.get_generators(1))(rng)
 
@@ -167,6 +209,56 @@ def gen_s1_ex2_monotonicity(rng=random):
                 f"O funcție liniară cu $a \\gt 0$ este strict crescătoare pe $\\mathbb{{R}}$.")
     return {"id": "s1_ex2_monotonicity", "text": text, "solution": solution,
             "points": 5, "params": {"m": m, "n": n}, "lesson": "Funcții"}
+
+@registry.register(slot=2)
+@template("s1_func_composition", "Compoziția a două funcții", "medium")
+def gen_s1_ex2_composition(rng=random):
+    a = rng.randint(1, 4)
+    b = rng.randint(-3, 3)
+    c = rng.randint(1, 3)
+    # f(x) = ax + b, g(x) = x^2 + c
+    # fog(x) = f(g(x)) = a(x^2+c)+b = ax^2 + ac+b
+    ac_b = a * c + b
+    text = (f"Se consideră $f: \\mathbb{{R}} \\to \\mathbb{{R}}$, $f(x) = {a}x {b:+}$ și "
+            f"$g: \\mathbb{{R}} \\to \\mathbb{{R}}$, $g(x) = x^2 {c:+}$.\n\n"
+            f"a) Calculați $(f \\circ g)(x)$.\n\n"
+            f"b) Calculați $(f \\circ g)(1)$.\n\n"
+            f"c) Rezolvați ecuația $(f \\circ g)(x) = f(x)$.")
+    fog_1 = a * (1 + c) + b
+    # fog(x) = ax^2 + ac+b; f(x) = ax+b
+    # ax^2 + ac+b = ax+b => ax^2 - ax + ac = 0 => x^2 - x + c = 0
+    disc = 1 - 4 * c
+    if disc < 0:
+        sol_c = "Nu are soluții reale ($\\Delta < 0$)."
+    elif disc == 0:
+        sol_c = f"$x = \\frac{{1}}{{2}}$."
+    else:
+        import math
+        sol_c = f"$\\Delta = {disc}$, $x = \\frac{{1 \\pm \\sqrt{{{disc}}}}}{{2}}$."
+    solution = (f"a) $(f \\circ g)(x) = f(g(x)) = {a}(x^2 {c:+}) {b:+} = {a}x^2 {ac_b:+}$.\n\n"
+                f"b) $(f \\circ g)(1) = {a} \\cdot 1 {ac_b:+} = {a + ac_b}$.\n\n"
+                f"c) ${a}x^2 {ac_b:+} = {a}x {b:+} \\Rightarrow {a}x^2 - {a}x {a*c:+} = 0 "
+                f"\\Rightarrow x^2 - x {c:+} = 0$. {sol_c}")
+    return {"id": "s1_ex2_composition", "text": text, "solution": solution,
+            "points": 5, "params": {"a": a, "b": b, "c": c, "fog_1": fog_1}, "lesson": "Funcții"}
+
+@registry.register(slot=2)
+@template("s1_func_inverse", "Funcția inversă", "medium")
+def gen_s1_ex2_inverse(rng=random):
+    a = rng.choice([2, 3, 4, 5])
+    b = rng.randint(-4, 4)
+    # f(x) = ax + b; f_inv(x) = (x-b)/a
+    text = (f"Se consideră $f: \\mathbb{{R}} \\to \\mathbb{{R}}$, $f(x) = {a}x {b:+}$.\n\n"
+            f"a) Arătați că $f$ este bijectivă.\n\n"
+            f"b) Determinați $f^{{-1}}(x)$.\n\n"
+            f"c) Calculați $f^{{-1}}({a + b})$.")
+    inv_val = 1  # f(1) = a + b, so f_inv(a+b) = 1
+    solution = (f"a) $f$ este liniară cu $a = {a} \\neq 0$, deci este bijectivă.\n\n"
+                f"b) $y = {a}x {b:+} \\Rightarrow x = \\frac{{y {-b:+}}}{{{a}}}$. "
+                f"Deci $f^{{-1}}(x) = \\frac{{x {-b:+}}}{{{a}}}$.\n\n"
+                f"c) $f^{{-1}}({a + b}) = \\frac{{{a + b} {-b:+}}}{{{a}}} = \\frac{{{a}}}{{{a}}} = 1$.")
+    return {"id": "s1_ex2_inverse", "text": text, "solution": solution,
+            "points": 5, "params": {"a": a, "b": b, "val": a + b, "inv_val": inv_val}, "lesson": "Funcții"}
 
 def gen_s1_ex2(rng=random):
     return rng.choice(registry.get_generators(2))(rng)
@@ -272,6 +364,118 @@ def gen_s1_ex3_poly_divisibility(rng=random):
     return {"id": "s1_ex3_poly_divisibility", "text": text, "solution": solution,
             "points": 5, "params": {"r": r, "m": m, "p1": p1, "c": c}, "lesson": "Polinoame"}
 
+@registry.register(slot=3)
+@template("s1_poly_factorization", "Factorizarea polinoamelor", "medium")
+def gen_s1_ex3_poly_factor(rng=random):
+    r1 = rng.randint(-3, -1)
+    r2 = rng.randint(1, 4)
+    r3 = rng.choice([r1 - 1, r2 + 1, 0])
+    # P(X) = (X - r1)(X - r2)(X - r3)
+    # Expand to ax^3 + bx^2 + cx + d
+    s  = r1 + r2 + r3
+    p2 = r1*r2 + r1*r3 + r2*r3
+    p3 = r1 * r2 * r3
+    text = (f"Factorizați complet polinomul $P(X) = X^3 {-s:+}X^2 {p2:+}X {-p3:+}$, "
+            f"știind că $x_1 = {r1}$ este o rădăcină.")
+    solution = (f"Deoarece $x_1 = {r1}$ este rădăcină, $(X - ({r1}))$ divide $P(X)$.\n"
+                f"Împărțind: $P(X) = (X {-r1:+})(X^2 + {-(r2+r3)}X {r2*r3:+})$.\n"
+                f"Rădăcinile factorului pătratic: $x_2 = {r2}$, $x_3 = {r3}$.\n"
+                f"$P(X) = (X {-r1:+})(X {-r2:+})(X {-r3:+})$.")
+    return {"id": "s1_ex3_poly_factor", "text": text, "solution": solution,
+            "points": 5, "params": {"r1": r1, "r2": r2, "r3": r3}, "lesson": "Polinoame"}
+
+@registry.register(slot=3)
+@template("s1_rational_expression_domain", "Domeniul și simplificarea fracțiilor algebrice", "medium")
+def gen_s1_ex3_rational_expr(rng=random):
+    a = rng.randint(1, 3)
+    r = rng.randint(1, 4)
+    # f(x) = (x^2 - r^2) / (x - r) = x + r, x ≠ r
+    text = (f"Se consideră expresia $E(x) = \\dfrac{{x^2 - {r**2}}}{{x - {r}}}$.\n\n"
+            f"a) Determinați domeniul de definiție al lui $E$.\n\n"
+            f"b) Simplificați $E(x)$.\n\n"
+            f"c) Calculați $E({r + 1})$.")
+    solution = (f"a) $E$ este definită când $x - {r} \\neq 0$, deci $D = \\mathbb{{R}} \\setminus \\{{{r}\\}}$.\n\n"
+                f"b) $x^2 - {r**2} = (x-{r})(x+{r})$, deci $E(x) = \\dfrac{{(x-{r})(x+{r})}}{{x-{r}}} = x + {r}$, "
+                f"$x \\neq {r}$.\n\n"
+                f"c) $E({r+1}) = {r+1} + {r} = {2*r+1}$.")
+    return {"id": "s1_ex3_rational_expr", "text": text, "solution": solution,
+            "points": 5, "params": {"r": r, "r2": r**2, "result": 2*r+1}, "lesson": "Polinoame"}
+
+@registry.register(slot=3)
+@template("s1_linear_system_substitution", "Sistem de ecuații liniare – substituție", "easy")
+def gen_s1_ex3_linear_system(rng=random):
+    x = rng.randint(1, 5)
+    y = rng.randint(1, 5)
+    a1, b1 = rng.randint(1, 3), rng.randint(1, 3)
+    a2, b2 = rng.randint(1, 3), rng.randint(1, 3)
+    while a1 * b2 == a2 * b1:  # ensure unique solution
+        a2 = rng.randint(1, 3)
+        b2 = rng.randint(1, 3)
+    r1 = a1 * x + b1 * y
+    r2 = a2 * x + b2 * y
+    text = (f"Rezolvați sistemul $\\begin{{cases}} {a1}x + {b1}y = {r1} \\\\ {a2}x + {b2}y = {r2} \\end{{cases}}$.")
+    solution = (f"Din prima ecuație: $x = \\dfrac{{{r1} - {b1}y}}{{{a1}}}$.\n"
+                f"Înlocuind în a doua: se obține $y = {y}$, $x = {x}$.")
+    return {"id": "s1_ex3_linear_system", "text": text, "solution": solution,
+            "points": 5, "params": {"x": x, "y": y, "a1": a1, "b1": b1, "a2": a2, "b2": b2}, "lesson": "Funcții"}
+
+@registry.register(slot=3)
+@template("s1_log_properties", "Proprietățile logaritmilor", "medium")
+def gen_s1_ex3_log_props(rng=random):
+    base = rng.choice([2, 3, 10])
+    a = rng.choice([2, 3, 4, 5, 6, 8, 9])
+    b = rng.choice([2, 3, 4, 5])
+    while a % b != 0 and b % a != 0 and a * b > 100:
+        b = rng.choice([2, 3, 4, 5])
+    prod = a * b
+    quot = max(a, b) // min(a, b) if max(a, b) % min(a, b) == 0 else None
+    n = rng.choice([2, 3])
+    variants = [
+        (
+            f"$\\log_{{{base}}} {prod} = \\log_{{{base}}} {a} + \\log_{{{base}}} {b}$",
+            f"$\\log_{{b}}(xy) = \\log_{{b}} x + \\log_{{b}} y$. Deci $\\log_{{{base}}} {prod} = \\log_{{{base}}} {a} + \\log_{{{base}}} {b}$ ✓",
+            f"log_prod_{a}_{b}"
+        ),
+        (
+            f"$\\log_{{{base}}} {a**n} = {n} \\log_{{{base}}} {a}$",
+            f"$\\log_{{b}} x^n = n \\log_{{b}} x$. Deci $\\log_{{{base}}} {a}^{{{n}}} = {n} \\log_{{{base}}} {a}$ ✓",
+            f"log_power_{a}_{n}"
+        ),
+    ]
+    if quot is not None:
+        large, small = max(a, b), min(a, b)
+        variants.append((
+            f"$\\log_{{{base}}} {large} - \\log_{{{base}}} {small} = \\log_{{{base}}} {quot}$",
+            f"$\\log_{{b}}(x/y) = \\log_{{b}} x - \\log_{{b}} y$. Deci $\\log_{{{base}}} {large} - \\log_{{{base}}} {small} = \\log_{{{base}}} {quot}$ ✓",
+            f"log_quot_{large}_{small}"
+        ))
+    eq_text, sol_text, pkey = rng.choice(variants)
+    text = f"Verificați egalitatea {eq_text}."
+    solution = sol_text
+    return {"id": "s1_ex3_log_props", "text": text, "solution": solution,
+            "points": 5, "params": {"variant": pkey, "base": base}, "lesson": "Logaritmi"}
+
+@registry.register(slot=3)
+@template("s1_poly_multiplication", "Multiplicarea polinoamelor", "easy")
+def gen_s1_ex3_poly_mult(rng=random):
+    a = rng.randint(1, 4)
+    b = rng.randint(1, 5)
+    c = rng.randint(1, 4)
+    d = rng.randint(1, 5)
+    # (ax + b)(cx + d) = acx^2 + (ad+bc)x + bd
+    ac = a * c
+    ad_bc = a * d + b * c
+    bd = b * d
+    text = (f"Calculati produsul $(${a}x {b:+})(${c}x {d:+})$ și scriel sub forma "
+            f"$Ax^2 + Bx + C$.")
+    # fix text
+    text = (f"Calculați produsul $({a}x {b:+})({c}x {d:+})$.")
+    solution = (f"$({a}x {b:+})({c}x {d:+}) = "
+                f"{a}x \\cdot {c}x + {a}x \\cdot ({d:+}) + ({b:+}) \\cdot {c}x + ({b:+})({d:+})$\n"
+                f"$= {ac}x^2 {a*d:+}x {b*c:+}x {bd:+} = {ac}x^2 {ad_bc:+}x {bd:+}$.")
+    return {"id": "s1_ex3_poly_mult", "text": text, "solution": solution,
+            "points": 5, "params": {"a": a, "b": b, "c": c, "d": d, "ac": ac, "ad_bc": ad_bc, "bd": bd}, "lesson": "Polinoame"}
+
 def gen_s1_ex3(rng=random):
     return rng.choice(registry.get_generators(3))(rng)
 
@@ -350,6 +554,37 @@ def gen_s1_ex4_prob_union(rng=random):
                 f"\\frac{{{p_union_num}}}{{{denom}}}$.")
     return {"id": "s1_ex4_prob_union", "text": text, "solution": solution,
             "points": 5, "params": {"p_a": p_a, "p_b": p_b, "denom": denom, "p_union_num": p_union_num}, "lesson": "Probabilități"}
+
+@registry.register(slot=4)
+@template("s1_binomial_theorem", "Teorema binomului – coeficienți", "medium")
+def gen_s1_ex4_binomial(rng=random):
+    n = rng.choice([4, 5, 6])
+    k = rng.randint(1, n - 1)
+    a = rng.choice([1, 2])
+    b = rng.choice([1, 2, 3])
+    coeff = math.comb(n, k) * (a ** (n - k)) * (b ** k)
+    text = (f"Determinați coeficientul lui $x^{{{k}}}$ în dezvoltarea binomului "
+            f"$({a} + {b}x)^{{{n}}}$.")
+    solution = (f"Termenul general al dezvoltării: $T_{{k+1}} = C_{{{n}}}^{{k}} \\cdot {a}^{{{n}-k}} \\cdot ({b}x)^k$.\n"
+                f"Pentru $x^{{{k}}}$: $k = {k}$.\n"
+                f"$T_{{{k+1}}} = C_{{{n}}}^{{{k}}} \\cdot {a}^{{{n-k}}} \\cdot {b}^{{{k}}} \\cdot x^{{{k}}} "
+                f"= {math.comb(n,k)} \\cdot {a**(n-k)} \\cdot {b**k} \\cdot x^{{{k}}} = {coeff}x^{{{k}}}$.")
+    return {"id": "s1_ex4_binomial", "text": text, "solution": solution,
+            "points": 5, "params": {"n": n, "k": k, "a": a, "b": b, "coeff": coeff}, "lesson": "Probabilități"}
+
+@registry.register(slot=4)
+@template("s1_permutations_word", "Permutări – aranjarea obiectelor", "easy")
+def gen_s1_ex4_permutations(rng=random):
+    n = rng.randint(3, 6)
+    pn = math.factorial(n)
+    r = rng.randint(2, min(n, 3))
+    pr = math.perm(n, r)
+    text = (f"a) Calculați $P_{{{n}}} = {n}!$.\n\n"
+            f"b) Calculați $A_{{{n}}}^{{{r}}}$.")
+    solution = (f"a) $P_{{{n}}} = {n}! = {pn}$.\n\n"
+                f"b) $A_{{{n}}}^{{{r}}} = {n} \\cdot {n-1} \\cdots {n-r+1} = {pr}$.")
+    return {"id": "s1_ex4_permutations", "text": text, "solution": solution,
+            "points": 5, "params": {"n": n, "pn": pn, "r": r, "pr": pr}, "lesson": "Probabilități"}
 
 def gen_s1_ex4(rng=random):
     return rng.choice(registry.get_generators(4))(rng)

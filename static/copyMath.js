@@ -28,14 +28,13 @@
   "use strict";
 
   const STORAGE_KEY = "copiaza_format";
-  const DEFAULT_FORMAT = "word_modern";
+  const DEFAULT_FORMAT = "google_docs_eq";
 
   const FORMATS = [
     { id: "word_modern",      label: "Word >2011",              icon: "📄", desc: "Editable equation in modern Word" },
     { id: "word_legacy",      label: "Word <2011",              icon: "📄", desc: "MathML for legacy Word" },
     { id: "word_web",         label: "Word Web",                icon: "🌐", desc: "Word Online / Office 365" },
-    { id: "google_docs",      label: "Google Docs (LaTeX)",     icon: "📝", desc: "Paste + Auto-LaTeX add-on" },
-    { id: "google_docs_img",  label: "Google Docs (image)",     icon: "🖼️", desc: "High-res image fallback" },
+    { id: "google_docs_eq",   label: "Google Docs (Ecuație)",  icon: "✏️", desc: "LaTeX pur pentru Insert › Equation" },
   ];
 
   // ── Persistence ──────────────────────────────────────────────────────────
@@ -87,10 +86,14 @@
     clone.querySelectorAll(".copy-math-btn, .copy-format-wrap").forEach(el => el.remove());
 
     // Replace each KaTeX root element with its LaTeX source.
+    // Use attribute-only selector [encoding=...] — works even when the browser
+    // places <annotation> in the MathML namespace (where tag-name matching can fail).
     // Wrap both inline and display equations in $$ delimiters for Auto-LaTeX Equations add-on.
     clone.querySelectorAll(".katex").forEach(katexEl => {
-      const ann = katexEl.querySelector('annotation[encoding="application/x-tex"]');
-      if (ann) {
+      // Prefer the KaTeX annotation; fall back to the raw <math> annotation
+      const ann = katexEl.querySelector('[encoding="application/x-tex"]') ||
+                  katexEl.querySelector('annotation');
+      if (ann && ann.textContent.trim()) {
         const latex = ann.textContent.trim();
         const wrapped = `$$${latex}$$`;
         const node = document.createTextNode(wrapped);
@@ -100,8 +103,9 @@
 
     // Fallback: raw <math> elements that might have annotations
     clone.querySelectorAll("math").forEach(m => {
-      const ann = m.querySelector('annotation[encoding="application/x-tex"]');
-      if (ann) {
+      const ann = m.querySelector('[encoding="application/x-tex"]') ||
+                  m.querySelector('annotation');
+      if (ann && ann.textContent.trim()) {
         const latex = ann.textContent.trim();
         const wrapped = `$$${latex}$$`;
         m.parentNode.replaceChild(document.createTextNode(wrapped), m);
@@ -109,6 +113,52 @@
         m.remove();
       }
     });
+
+    return clone.innerText
+      .replace(/\u00a0/g, " ")
+      .replace(/[ \t]+\n/g, "\n")
+      .trim();
+  }
+
+  /**
+   * Extract LaTeX from KaTeX annotations WITHOUT any $$ delimiters.
+   * Used for the google_docs_eq format — paste directly into
+   * Google Docs Insert › Equation (or any equation editor that
+   * accepts raw LaTeX input).
+   *
+   * If there are multiple equations, each is separated by a newline.
+   */
+  function extractRawLaTeX(containerElement) {
+    const clone = containerElement.cloneNode(true);
+    clone.querySelectorAll(".copy-math-btn, .copy-format-wrap").forEach(el => el.remove());
+
+    // Track whether we found at least one KaTeX element
+    let found = false;
+    const latexParts = [];
+
+    clone.querySelectorAll(".katex").forEach(katexEl => {
+      const ann = katexEl.querySelector('[encoding="application/x-tex"]') ||
+                  katexEl.querySelector('annotation');
+      if (ann && ann.textContent.trim()) {
+        found = true;
+        latexParts.push(ann.textContent.trim());
+        // Replace with a placeholder so innerText can reconstruct text flow
+        katexEl.parentNode.replaceChild(document.createTextNode(ann.textContent.trim()), katexEl);
+      }
+    });
+
+    // Fallback: raw <math>
+    if (!found) {
+      clone.querySelectorAll("math").forEach(m => {
+        const ann = m.querySelector('[encoding="application/x-tex"]') ||
+                    m.querySelector('annotation');
+        if (ann && ann.textContent.trim()) {
+          m.parentNode.replaceChild(document.createTextNode(ann.textContent.trim()), m);
+        } else {
+          m.remove();
+        }
+      });
+    }
 
     return clone.innerText
       .replace(/\u00a0/g, " ")
@@ -241,9 +291,17 @@
    * Build the ClipboardItem for the requested format.
    */
   function buildClipboardItem(format, containerElement) {
-    // ── Google Docs (LaTeX) ──────────────────────────────────────────────
+    // ── Google Docs (LaTeX for Auto-LaTeX add-on) ────────────────────────
     if (format === "google_docs") {
       const text = extractLaTeXText(containerElement);
+      return new ClipboardItem({
+        "text/plain": new Blob([text], { type: "text/plain" }),
+      });
+    }
+
+    // ── Google Docs (raw LaTeX for Insert › Equation) ───────────────────
+    if (format === "google_docs_eq") {
+      const text = extractRawLaTeX(containerElement);
       return new ClipboardItem({
         "text/plain": new Blob([text], { type: "text/plain" }),
       });
@@ -296,6 +354,10 @@
         // Google Docs LaTeX is pure plain text, use writeText for max browser compatibility
         const text = extractLaTeXText(containerElement);
         await navigator.clipboard.writeText(text);
+    } else if (format === "google_docs_eq") {
+        // Raw LaTeX for Insert › Equation — no $$ wrappers
+        const text = extractRawLaTeX(containerElement);
+        await navigator.clipboard.writeText(text);
       } else {
         const item = buildClipboardItem(format, containerElement);
         await navigator.clipboard.write([item]);
@@ -304,9 +366,9 @@
     } catch (err) {
       console.error("copyMath: failed to copy", err);
 
-      // Graceful fallback: try plain-text LaTeX
+      // Graceful fallback: try plain-text raw LaTeX (no $$ delimiters)
       try {
-        const fallbackText = extractLaTeXText(containerElement);
+        const fallbackText = extractRawLaTeX(containerElement);
         await navigator.clipboard.writeText(fallbackText);
         flashSuccess(buttonElement, format, true);
       } catch (e2) {
@@ -334,8 +396,12 @@
   // ── Public API ───────────────────────────────────────────────────────────
 
   window.copyMathToClipboard = function (buttonElement, containerElement) {
-    copyWithFormat(getFormat(), buttonElement, containerElement);
+    const fmt = window._copyFormat || getFormat();
+    window._copyFormat = null;   // consume once
+    copyWithFormat(fmt, buttonElement, containerElement);
   };
+
+  window.copyWithFormat = copyWithFormat;
 
   window.enhanceCopyButtons = function (root) {
     (root || document).querySelectorAll(".copy-math-btn").forEach(attachDropdown);
@@ -347,15 +413,25 @@
     if (button.dataset.copyEnhanced === "1") return;
     button.dataset.copyEnhanced = "1";
 
-    const container =
-      button.closest(".group")?.querySelector(".msg-content-container") ||
-      button.parentElement.querySelector(".msg-content-container") ||
-      button.parentElement;
+    // Walk up the DOM to find the nearest .msg-content-container.
+    // Handles both old layout (sibling inside same parent) and new flex-header
+    // layout (sibling of the header row, i.e. two levels up).
+    function findContainer(el) {
+      let node = el;
+      for (let i = 0; i < 5; i++) {
+        if (!node) break;
+        const found = node.querySelector(".msg-content-container");
+        if (found) return found;
+        node = node.parentElement;
+      }
+      return el.parentElement || el;
+    }
+    const container = findContainer(button.parentElement);
 
-    // Wrapper
+    // Wrapper — flex-shrink:0 ensures it never collapses on narrow screens
     const wrap = document.createElement("div");
     wrap.className = "copy-format-wrap";
-    wrap.style.cssText = "position:relative;display:inline-flex;align-items:stretch;";
+    wrap.style.cssText = "position:relative;display:inline-flex;align-items:stretch;flex-shrink:0;";
     button.replaceWith(wrap);
 
     // Main button copies with current format
@@ -378,14 +454,16 @@
       '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>';
     wrap.appendChild(caret);
 
-    // Menu panel
+    // Menu panel — appended to <body> so overflow:hidden on ancestor containers
+    // cannot clip it. Position is calculated via getBoundingClientRect on click.
     const menu = document.createElement("div");
     menu.className = "copy-format-menu";
     menu.style.cssText =
-      "position:absolute;top:100%;right:0;margin-top:6px;min-width:250px;z-index:50;" +
+      "position:fixed;min-width:250px;z-index:9999;" +
       "background:#fff;border:1px solid #e2e8f0;border-radius:12px;" +
       "box-shadow:0 12px 32px rgba(15,23,42,.18);padding:6px;display:none;" +
       "max-height:320px;overflow-y:auto;";
+    document.body.appendChild(menu);
 
     function renderMenu() {
       const current = getFormat();
@@ -414,12 +492,20 @@
     caret.addEventListener("click", (e) => {
       e.stopPropagation();
       const isOpen = menu.style.display === "block";
+      // Close all other open menus
       document.querySelectorAll(".copy-format-menu").forEach(m => (m.style.display = "none"));
-      if (!isOpen) { renderMenu(); menu.style.display = "block"; }
+      if (!isOpen) {
+        renderMenu();
+        // Position the fixed menu relative to the caret button in the viewport
+        const rect = caret.getBoundingClientRect();
+        menu.style.top  = (rect.bottom + 6) + "px";
+        menu.style.left = "auto";
+        menu.style.right = (window.innerWidth - rect.right) + "px";
+        menu.style.display = "block";
+      }
     });
 
     document.addEventListener("click", () => { menu.style.display = "none"; });
-    wrap.appendChild(menu);
   }
 
   function addSectionHeader(menu, text) {

@@ -58,7 +58,7 @@ def assistant(prompt):
 
     return generate_content(
 
-        model="gemini-2.5-flash",
+        model="gemini-flash-lite-latest",
 
         contents=prompt,
 
@@ -98,7 +98,7 @@ def translate_math(prompt, style, school_class, bac):
     """
 
     return generate_content(
-        model="gemini-2.5-flash",
+        model="gemini-flash-lite-latest",
         contents=full_prompt,
         config=types.GenerateContentConfig(
 
@@ -129,7 +129,7 @@ def convert_file_to_latex(file_content, filepath=None):
         return extract_pdf_with_vision(pdf_base64)
 
     return generate_content(
-        model="gemini-2.5-flash",
+        model="gemini-flash-lite-latest",
         contents=file_content,
         config=types.GenerateContentConfig(
             system_instruction="""
@@ -161,7 +161,7 @@ def generate_from_model(model_content, conversation_history, user_prompt=None):
 
     return generate_content(
 
-        model="gemini-2.5-flash",
+        model="gemini-flash-lite-latest",
 
         contents=final_prompt,
 
@@ -203,7 +203,7 @@ def generate_from_model(model_content, conversation_history, user_prompt=None):
     )
 def extract_pdf_with_vision(pdf_base64):
     return generate_content(
-        model="gemini-2.5-flash",
+        model="gemini-flash-lite-latest",
         contents=[
             {
                 "parts": [
@@ -231,7 +231,7 @@ def handwriting(prompt, differences):
 
     return generate_content(
 
-        model="gemini-2.5-flash",
+        model="gemini-flash-lite-latest",
 
         contents=[image, prompt],
 
@@ -267,7 +267,7 @@ def bac_generator(lessons, avoid):
     """
 
     return generate_content(
-        model="gemini-2.5-flash",
+        model="gemini-flash-lite-latest",
         contents=prompt,
         config=types.GenerateContentConfig(
             system_instruction="""
