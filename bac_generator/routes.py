@@ -23,21 +23,34 @@ def generate_bac(conversation_id):
         
     # Get selected lessons from the checkbox form
     selected_lessons = request.form.getlist("lessons")
-    
+    action_type = request.form.get("action_type", "normal").strip()
+    prompt = request.form.get("prompt", "").strip()
+
     # Generate the exam
     generator = BACExamGenerator()
     exam_data = generator.generate_exam(selected_lessons)
-    
-    # Save user prompt if sent
-    prompt = request.form.get("prompt", "").strip()
-    
+
     conn = get_db_connection()
     cursor = conn.cursor()
-    
-    if prompt:
+
+    # The quick-action buttons ("Rezolvare test", "Generează similare",
+    # "Generează rand 2") build a long free-text prompt describing intent,
+    # but this generator is a symbolic exam builder with no NLP input — it
+    # never reads `prompt`, it just draws a fresh exam from the checked
+    # lessons, same as the plain "Generează alt BAC" button. Saving that
+    # long prompt verbatim as a "user" chat bubble misleadingly implies
+    # the AI read and acted on it, so record a short honest label instead.
+    ACTION_LABELS = {
+        "solve_bac": "Rezolvare variantă BAC anterioară",
+        "generate_similar_bac": "Generare variantă BAC similară",
+        "generate_row_2_bac": "Generare rândul 2",
+    }
+    display_message = ACTION_LABELS.get(action_type) or prompt or None
+
+    if display_message:
         cursor.execute(
             "INSERT INTO messages (conversation_id, role, content) VALUES (?, ?, ?)",
-            (conversation_id, "user", prompt)
+            (conversation_id, "user", display_message)
         )
     
     # Format content to render in HTML
@@ -78,6 +91,19 @@ def download_pdf(message_id):
         (message_id,)
     ).fetchone()
     
+    bac_profile = "M3"
+    if message:
+        try:
+            conv = cursor.execute(
+                "SELECT bac FROM conversations WHERE id = ?",
+                (message["conversation_id"],)
+            ).fetchone()
+            if conv and conv["bac"]:
+                bac_profile = conv["bac"]
+        except sqlite3.OperationalError:
+            # Fallback if conversations table doesn't exist (e.g. in routes unit tests)
+            pass
+            
     conn.close()
     
     if not message or not message["exam_data"]:
@@ -93,7 +119,7 @@ def download_pdf(message_id):
     include_solutions = (pdf_type == "solution")
     
     # Build the PDF
-    build_pdf(filepath, exam_data, include_solutions=include_solutions)
+    build_pdf(filepath, exam_data, include_solutions=include_solutions, bac=bac_profile)
     
     return send_file(
         filepath,

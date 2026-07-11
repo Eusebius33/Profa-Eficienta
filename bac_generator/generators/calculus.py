@@ -223,37 +223,35 @@ def gen_s3_ex2_int_rational_log(rng=random):
 @registry.register(slot=10)
 @template("s3_integral_by_parts_exponential", "Integrare prin părți – funcții exponențiale", "hard")
 def gen_s3_ex2_int_by_parts(rng=random):
-    n = rng.randint(1, 3)
-    text = (f"Calculați $I_n = \\int_0^1 x^{n} e^x\\,dx$ pentru $n = {n}$.")
-    # Compute I_n by parts: I_n = e - n*I_{n-1}, I_0 = e-1
-    i0 = "e-1"
-    if n == 1:
-        result = "e - (e-1) = 1"
-    elif n == 2:
-        result = "e - 2(e-1-0) = e - 2"
-    else:
-        result = f"calculat prin reducere la $I_{{n-1}}$"
-    solution = (f"Prin integrare prin părți ($u = x^{n}$, $dv = e^x dx$):\n"
-                f"$I_{{{n}}} = [x^{n} e^x]_0^1 - {n} I_{{{n-1}}} = e - {n} I_{{{n-1}}}$.\n"
-                f"$I_0 = \\int_0^1 e^x\\,dx = e-1$. Rezultat: $I_{{{n}}} = {result}$.")
+    a = rng.randint(1, 4)
+    text = (f"Se consideră $f: \\mathbb{{R}} \\to \\mathbb{{R}}$, $f(x) = (x - {a})e^x$.\n\n"
+            f"a) Arătați că $\\int_0^1 f(x)e^{{-x}}\\,dx = \\frac{{1}}{{2}} - {a}$.\n\n"
+            f"b) Demonstrați că orice primitivă a funcției $f$ este crescătoare pe $[{a}, \\infty)$.\n\n"
+            f"c) Calculați $\\int_0^1 f(x)\\,dx$.")
+    solution = (f"a) $\\int_0^1 (x-{a})e^x e^{{-x}}\\,dx = \\int_0^1 (x-{a})\\,dx = "
+                f"\\left[ \\frac{{x^2}}{{2}} - {a}x \\right]_0^1 = \\frac{{1}}{{2}} - {a}$.\n\n"
+                f"b) Fie $F$ o primitivă a lui $f$. Atunci $F'(x) = f(x) = (x-{a})e^x$. "
+                f"Pentru $x \\geq {a}$, $x-{a} \\geq 0$ și $e^x \\gt 0$, deci $F'(x) \\geq 0$, "
+                f"ceea ce înseamnă că $F$ este crescătoare pe $[{a}, \\infty)$.\n\n"
+                f"c) $\\int_0^1 (x-{a})e^x\\,dx = [(x-{a})e^x]_0^1 - \\int_0^1 e^x\\,dx = "
+                f"(1-{a})e - (-{a}) - (e - 1) = -{a}e + {a} + 1$.")
     return {"id": "s3_ex2_int_by_parts", "text": text, "solution": solution,
-            "points": 15, "params": {"n": n}, "lesson": "Integrale definite"}
+            "points": 15, "params": {"a": a}, "lesson": "Integrale definite"}
 
 @registry.register(slot=10)
 @template("s3_integral_area_between_curves", "Aria suprafeței dintre două curbe", "hard")
 def gen_s3_ex2_int_area(rng=random):
     a = rng.randint(1, 3)
-    b = rng.randint(a+1, a+3)
-    text = (f"Calculați aria suprafeței mărginite de graficele funcțiilor "
-            f"$f(x) = x^2$ și $g(x) = {a+b}x - {a*b}$.")
-    # Intersection: x^2 = (a+b)x - ab => x^2 - (a+b)x + ab = 0 => (x-a)(x-b)=0
-    # Area = integral from a to b of (g-f) = integral of -(x^2-(a+b)x+ab)
-    area = (b - a)**3 / 6
-    solution = (f"Intersecții: $x^2 = {a+b}x - {a*b} \\Rightarrow x_1 = {a}$, $x_2 = {b}$.\n"
-                f"Aria = $\\int_{{{a}}}^{{{b}}} ({a+b}x - {a*b} - x^2)\\,dx = "
-                f"\\frac{{({b}-{a})^3}}{{6}} = \\frac{{{(b-a)**3}}}{{6}}$.")
+    text = (f"Se consideră funcția $f: [0, 1] \\to \\mathbb{{R}}$, $f(x) = x^2 + {a}$.\n\n"
+            f"a) Arătați că $\\int_0^1 f(x)\\,dx = {a} + \\frac{{1}}{{3}}.\n\n"
+            f"b) Determinați aria suprafeței plane mărginite de graficul funcției $g: [0, 1] \\to \\mathbb{{R}}$, $g(x) = f(x) - {a}$, axa $Ox$ și dreptele de ecuații $x = 0$ și $x = 1$.\n\n"
+            f"c) Arătați că $\\int_0^1 x f(x)\\,dx = \\frac{{{a}}}{{2}} + \\frac{{1}}{{4}}$.")
+    solution = (f"a) $\\int_0^1 (x^2+{a})\\,dx = \\left[ \\frac{{x^3}}{{3}} + {a}x \\right]_0^1 = {a} + \\frac{{1}}{{3}}$.\n\n"
+                f"b) $g(x) = x^2$. Aria = $\\int_0^1 x^2\\,dx = \\frac{{1}}{{3}}$.\n\n"
+                f"c) $\\int_0^1 x(x^2+{a})\\,dx = \\int_0^1 (x^3+{a}x)\\,dx = "
+                f"\\left[ \\frac{{x^4}}{{4}} + \\frac{{{a}x^2}}{{2}} \\right]_0^1 = \\frac{{{a}}}{{2}} + \\frac{{1}}{{4}}$.")
     return {"id": "s3_ex2_int_area", "text": text, "solution": solution,
-            "points": 15, "params": {"a": a, "b": b, "area_num": (b-a)**3, "area_den": 6}, "lesson": "Integrale definite"}
+            "points": 15, "params": {"a": a}, "lesson": "Integrale definite"}
 
 def gen_s3_ex2(rng=random):
     return rng.choice(registry.get_generators(10))(rng)

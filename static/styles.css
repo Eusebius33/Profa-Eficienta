@@ -40,6 +40,12 @@ div[class*="bg-white"] a {
     text-decoration: none !important;
 }
 
+/* "Descarcă Barem (PDF)" link — dark button, needs white text */
+a[class*="bg-slate-800"][class*="text-white"] {
+    color: #ffffff !important;
+    text-decoration: none !important;
+}
+
 /* optional custom scrollbar */
 
 ::-webkit-scrollbar {

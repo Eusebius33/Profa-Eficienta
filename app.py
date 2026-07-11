@@ -553,15 +553,27 @@ def mode3(conversation_id):
 # MODE4
 # =========================================================
 #TODO
-@app.route("/create_mode4", methods=["GET", "POST"])
+@app.route("/create_mode4", methods=["POST"])
 @login_required
 def create_mode4():
+
+    uploaded_file = request.files.get("file")
+
+    if not uploaded_file or uploaded_file.filename == "":
+        return apology("Nicio poză sau fișier încărcat", 400)
+
+    if not allowed_file(uploaded_file.filename):
+        return apology("Tip de fișier nepermis", 400)
+
+    filename = secure_filename(uploaded_file.filename)
+    os.makedirs("uploads", exist_ok=True)
+    uploaded_file.save(f"uploads/{filename}")
 
     db.execute(
         """
         INSERT INTO conversations (user_id, mode, title) VALUES (?, ?, ?)
         """,
-        (session["user_id"], "mode4", "foaie de mana transcrisa nouă")
+        (session["user_id"], "mode4", filename)
     )
 
     connect.commit()
@@ -591,39 +603,7 @@ def mode4_latest():
 @app.route("/mode4/<int:conversation_id>", methods=["GET", "POST"])
 @login_required
 def mode4(conversation_id):
-    conversation = db.execute(
-        """
-        SELECT * FROM conversations WHERE id = ? AND user_id = ? AND mode = ?
-        """,
-        (conversation_id, session["user_id"], "mode4")
-    ).fetchone()
-
-    if not conversation:
-        return apology("conversație inexistentă", 404)
-
-    messages = db.execute(
-        """
-        SELECT * FROM messages WHERE conversation_id = ? ORDER BY id ASC
-        """,
-        (conversation_id,)
-    ).fetchall()
-
-    conversations = db.execute(
-        """
-        SELECT * FROM conversations WHERE user_id = ? AND mode = ? ORDER BY created_at DESC
-        """,
-        (session["user_id"], "mode4")
-    ).fetchall()
-
-    return render_template(
-        "modes/mode4.html",
-        conversations=conversations,
-        conversation=conversation,
-        messages=messages,
-        conversation_id=conversation_id,
-        **{"class": conversation["school_class"] if "school_class" in conversation.keys() else "—"},
-        bac=conversation["bac"] if "bac" in conversation.keys() else "—"
-    )
+    return model_route.mode4_chat(db, connect, apology, conversation_id, "uploads")
 # =========================================================
 # MODE5
 # =========================================================
@@ -746,7 +726,90 @@ def mode5(conversation_id):
         bac=conversation["bac"] if "bac" in conversation.keys() else "M3"
     )
 
+# =========================================================
+# CONVERSATION ACTIONS: RENAME / DELETE
+# =========================================================
 
+@app.route("/conversation/<int:conversation_id>/rename", methods=["POST"])
+@login_required
+def rename_conversation(conversation_id):
+    new_title = request.form.get("new_title", "").strip()
+
+    if not new_title:
+        return apology("Titlul conversației nu poate fi gol.", 400)
+
+    conversation = db.execute(
+        """
+        SELECT * FROM conversations
+        WHERE id = ? AND user_id = ?
+        """,
+        (conversation_id, session["user_id"])
+    ).fetchone()
+
+    if not conversation:
+        return apology("Conversație inexistentă.", 404)
+
+    db.execute(
+        """
+        UPDATE conversations
+        SET title = ?
+        WHERE id = ? AND user_id = ?
+        """,
+        (new_title, conversation_id, session["user_id"])
+    )
+    connect.commit()
+
+    return redirect(f"/{conversation['mode']}/{conversation_id}")
+
+
+@app.route("/conversation/<int:conversation_id>/delete", methods=["POST"])
+@login_required
+def delete_conversation(conversation_id):
+    conversation = db.execute(
+        """
+        SELECT * FROM conversations
+        WHERE id = ? AND user_id = ?
+        """,
+        (conversation_id, session["user_id"])
+    ).fetchone()
+
+    if not conversation:
+        return apology("Conversație inexistentă.", 404)
+
+    mode = conversation["mode"]
+
+    db.execute(
+        """
+        DELETE FROM messages
+        WHERE conversation_id = ?
+        """,
+        (conversation_id,)
+    )
+
+    db.execute(
+        """
+        DELETE FROM conversations
+        WHERE id = ? AND user_id = ?
+        """,
+        (conversation_id, session["user_id"])
+    )
+
+    connect.commit()
+
+    next_conversation = db.execute(
+        """
+        SELECT * FROM conversations
+        WHERE user_id = ? AND mode = ?
+        ORDER BY created_at DESC
+        LIMIT 1
+        """,
+        (session["user_id"], mode)
+    ).fetchone()
+
+    if next_conversation:
+        return redirect(f"/{mode}/{next_conversation['id']}")
+
+    return redirect("/menu")
 # =========================================================
 # RUN (Reloaded to refresh translations JSON keys)
 # =========================================================
