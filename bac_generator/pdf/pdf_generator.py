@@ -8,7 +8,7 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 
-# Try to register LiberationSerif font to support Romanian diacritics and match official Times New Roman style
+# Try to register LiberationSerif and DejaVuSans fonts to support Romanian diacritics and mathematical Unicode symbols
 FONT_NAME = "Helvetica"
 BOLD_FONT_NAME = "Helvetica-Bold"
 ITALIC_FONT_NAME = "Helvetica-Oblique"
@@ -18,10 +18,14 @@ static_dir = os.path.join(current_dir, "..", "..", "static", "fonts")
 local_fonts = {
     "LiberationSerif": os.path.join(static_dir, "LiberationSerif-Regular.ttf"),
     "LiberationSerif-Bold": os.path.join(static_dir, "LiberationSerif-Bold.ttf"),
-    "LiberationSerif-Italic": os.path.join(static_dir, "LiberationSerif-Italic.ttf")
+    "LiberationSerif-Italic": os.path.join(static_dir, "LiberationSerif-Italic.ttf"),
+    "DejaVuSans": os.path.join(static_dir, "DejaVuSans.ttf"),
+    "DejaVuSans-Bold": os.path.join(static_dir, "DejaVuSans-Bold.ttf")
 }
 
 fonts_registered = False
+dejavu_registered = False
+
 try:
     if os.path.exists(local_fonts["LiberationSerif"]):
         pdfmetrics.registerFont(TTFont("LiberationSerif", local_fonts["LiberationSerif"]))
@@ -31,6 +35,14 @@ try:
         BOLD_FONT_NAME = "LiberationSerif-Bold"
         ITALIC_FONT_NAME = "LiberationSerif-Italic"
         fonts_registered = True
+except Exception:
+    pass
+
+try:
+    if os.path.exists(local_fonts["DejaVuSans"]):
+        pdfmetrics.registerFont(TTFont("DejaVuSans", local_fonts["DejaVuSans"]))
+        pdfmetrics.registerFont(TTFont("DejaVuSans-Bold", local_fonts["DejaVuSans-Bold"]))
+        dejavu_registered = True
 except Exception:
     pass
 
@@ -52,8 +64,8 @@ def strip_diacritics(text: str) -> str:
 
 def escape_xml_tags(text: str) -> str:
     """
-    Escapes <, >, and & in text for ReportLab Paragraph, except for valid HTML formatting tags:
-    <b>, </b>, <i>, </i>, <br/>, <br>, <sup>, </sup>, <sub>, </sub>
+    Escapes &, <, and > in text for ReportLab Paragraph, except for allowed HTML formatting tags:
+    <b>, </b>, <i>, </i>, <br/>, <br>, <sup>, </sup>, <sub>, </sub>, <font ...>, </font>
     """
     if not text:
         return ""
@@ -69,6 +81,8 @@ def escape_xml_tags(text: str) -> str:
     text = text.replace("</sub>", "__SUB_CLOSE__")
     text = text.replace("<br/>", "__BR__")
     text = text.replace("<br>", "__BR__")
+    text = text.replace("</font>", "__FONT_CLOSE__")
+    text = re.sub(r'<font\s+name="([^"]+)">', r'__FONT_OPEN_\1__', text)
     
     # Escape all other <, >, and &
     text = text.replace("&", "&amp;")
@@ -85,8 +99,81 @@ def escape_xml_tags(text: str) -> str:
     text = text.replace("__SUB_OPEN__", "<sub>")
     text = text.replace("__SUB_CLOSE__", "</sub>")
     text = text.replace("__BR__", "<br/>")
+    text = text.replace("__FONT_CLOSE__", "</font>")
+    text = re.sub(r'__FONT_OPEN_([^_\s]+)__', r'<font name="\1">', text)
     
     return text
+
+def format_matrix(match):
+    matrix_body = match.group(1)
+    matrix_body = clean_latex_for_pdf(matrix_body)
+    rows = [r.strip() for r in matrix_body.split(r'\\') if r.strip()]
+    grid = []
+    for r in rows:
+        cols = [c.strip() for c in re.split(r'&(?:amp;)?', r)]
+        grid.append(cols)
+    if not grid:
+        return ""
+    num_cols = max(len(row) for row in grid)
+    col_widths = [0] * num_cols
+    for row in grid:
+        for i, col in enumerate(row):
+            col_widths[i] = max(col_widths[i], len(col))
+    formatted_rows = []
+    for row in grid:
+        padded_cols = []
+        for i, col in enumerate(row):
+            padded = col.ljust(col_widths[i])
+            padded_cols.append(padded)
+        for i in range(len(row), num_cols):
+            padded_cols.append(" " * col_widths[i])
+        formatted_rows.append("&nbsp;&nbsp;".join(padded_cols))
+    final_rows = []
+    for r in formatted_rows:
+        final_rows.append(f"[&nbsp;{r}&nbsp;]")
+    matrix_str = "<br/>" + "<br/>".join(final_rows) + "<br/>"
+    return f'<font name="Courier">{matrix_str}</font>'
+
+def format_vmatrix(match):
+    matrix_body = match.group(1)
+    matrix_body = clean_latex_for_pdf(matrix_body)
+    rows = [r.strip() for r in matrix_body.split(r'\\') if r.strip()]
+    grid = []
+    for r in rows:
+        cols = [c.strip() for c in re.split(r'&(?:amp;)?', r)]
+        grid.append(cols)
+    if not grid:
+        return ""
+    num_cols = max(len(row) for row in grid)
+    col_widths = [0] * num_cols
+    for row in grid:
+        for i, col in enumerate(row):
+            col_widths[i] = max(col_widths[i], len(col))
+    formatted_rows = []
+    for row in grid:
+        padded_cols = []
+        for i, col in enumerate(row):
+            padded = col.ljust(col_widths[i])
+            padded_cols.append(padded)
+        for i in range(len(row), num_cols):
+            padded_cols.append(" " * col_widths[i])
+        formatted_rows.append("&nbsp;&nbsp;".join(padded_cols))
+    final_rows = []
+    for r in formatted_rows:
+        final_rows.append(f"|&nbsp;{r}&nbsp;|")
+    matrix_str = "<br/>" + "<br/>".join(final_rows) + "<br/>"
+    return f'<font name="Courier">{matrix_str}</font>'
+
+def format_cases(match):
+    cases_body = match.group(1)
+    cases_body = clean_latex_for_pdf(cases_body)
+    rows = [r.strip() for r in cases_body.split(r'\\') if r.strip()]
+    formatted_rows = []
+    for r in rows:
+        cols = [c.strip() for c in re.split(r'&(?:amp;)?', r)]
+        formatted_rows.append("{&nbsp;" + ",&nbsp;&nbsp;".join(cols))
+    cases_str = "<br/>" + "<br/>".join(formatted_rows) + "<br/>"
+    return f'<font name="Courier">{cases_str}</font>'
 
 def clean_latex_for_pdf(text: str) -> str:
     """
@@ -95,6 +182,12 @@ def clean_latex_for_pdf(text: str) -> str:
     if not text:
         return ""
         
+    # Normalize Windows newlines to Unix newlines
+    text = text.replace('\r\n', '\n')
+    
+    # Normalize \dfrac to \frac
+    text = text.replace(r"\dfrac", r"\frac")
+    
     # Clean text environment
     text = re.sub(r'\\text\s*\{([^}]*)\}', r'\1', text)
     
@@ -107,39 +200,59 @@ def clean_latex_for_pdf(text: str) -> str:
     text = text.replace(r"\}", "}")
         
     # Replace common LaTeX structures with text/Unicode
-    text = text.replace(r"\mathbb{R}", "R")
-    text = text.replace(r"\mathbb{N}", "N")
-    text = text.replace(r"\mathbb{Z}", "Z")
-    text = text.replace(r"\mathbb{Q}", "Q")
-    text = text.replace(r"\mathbb{C}", "C")
-    text = text.replace(r"\iff", " <=> ")
-    text = text.replace(r"\Leftrightarrow", " <=> ")
-    text = text.replace(r"\Rightarrow", " => ")
-    text = text.replace(r"\to", " -> ")
-    text = text.replace(r"\rightarrow", " -> ")
-    text = text.replace(r"\infty", "infinit")
+    text = text.replace(r"\mathbb{R}", "ℝ")
+    text = text.replace(r"\mathbb{N}", "ℕ")
+    text = text.replace(r"\mathbb{Z}", "ℤ")
+    text = text.replace(r"\mathbb{Q}", "ℚ")
+    text = text.replace(r"\mathbb{C}", "ℂ")
+    text = text.replace(r"\iff", " ⇔ ")
+    text = text.replace(r"\Leftrightarrow", " ⇔ ")
+    text = text.replace(r"\Rightarrow", " ⇒ ")
+    text = text.replace(r"\to", " → ")
+    text = text.replace(r"\rightarrow", " → ")
+    text = text.replace(r"\leftrightarrow", " ↔ ")
+    text = text.replace(r"\notin", " ∉ ")
+    text = text.replace(r"\in", " ∈ ")
+    text = text.replace(r"\subset", " ⊂ ")
+    text = text.replace(r"\subseteq", " ⊆ ")
+    text = text.replace(r"\infty", "∞")
     text = text.replace(r"\det", "det")
+    text = text.replace(r"\text{tr}", "tr")
     
     # Greek letters
     text = text.replace(r"\lambda", "λ")
     text = text.replace(r"\Delta", "Δ")
     text = text.replace(r"\alpha", "α")
     text = text.replace(r"\beta", "β")
+    text = text.replace(r"\gamma", "γ")
+    text = text.replace(r"\omega", "ω")
+    text = text.replace(r"\sigma", "σ")
+    text = text.replace(r"\mu", "μ")
+    text = text.replace(r"\rho", "ρ")
+    text = text.replace(r"\phi", "φ")
     text = text.replace(r"\pi", "π")
     text = text.replace(r"\theta", "θ")
     
-    text = text.replace(r"\geq", " >= ")
-    text = text.replace(r"\leq", " <= ")
-    text = text.replace(r"\ge", " >= ")
-    text = text.replace(r"\le", " <= ")
-    text = text.replace(r"\neq", " != ")
-    text = text.replace(r"\pm", " +/- ")
+    # Inequalities
+    text = text.replace(r"\geq", " ≥ ")
+    text = text.replace(r"\leq", " ≤ ")
+    text = text.replace(r"\ge", " ≥ ")
+    text = text.replace(r"\le", " ≤ ")
+    text = text.replace(r"\neq", " ≠ ")
+    text = text.replace(r"\lt", " < ")
+    text = text.replace(r"\gt", " > ")
+    
+    # Operations
+    text = text.replace(r"\pm", " ± ")
     text = text.replace(r"\dots", "...")
     text = text.replace(r"\cdot", "·")
-    text = text.replace(r"\times", "×")
-    text = text.replace(r"\setminus", " \ ")
+    text = text.replace(r"\times", " × ")
+    text = text.replace(r"\setminus", " ∖ ")
     text = text.replace(r"\cap", " ∩ ")
     text = text.replace(r"\cup", " ∪ ")
+    text = text.replace(r"^\circ", "°")
+    text = text.replace(r"\_", "_")
+    text = text.replace(r"\,", " ")
     
     text = text.replace(r"\hat{A}", "A")
     text = text.replace(r"\hat{B}", "B")
@@ -164,86 +277,67 @@ def clean_latex_for_pdf(text: str) -> str:
     text = text.replace(r"\int", "∫")
     text = text.replace(r"\lim", "lim")
     text = text.replace(r"\partial", "∂")
-    text = text.replace(r"\in", " in ")
-    text = text.replace(r"^\circ", "°")
-    text = text.replace(r"\_", "_")
-    text = text.replace(r"\,", " ")
     
-    # Recursively clean nested fractions: \frac{a}{b} -> (a)/(b)
+    # Vectors
+    text = re.sub(r'\\vec\{([^}]*)\}', r'\1⃗', text)
+    
+    # Fractions
+    def format_fraction(match):
+        num = match.group(1).strip()
+        den = match.group(2).strip()
+        if re.match(r'^[a-zA-Z0-9]+$', num) and re.match(r'^[a-zA-Z0-9]+$', den):
+            return f"{num}/{den}"
+        return f"({num})/({den})"
+        
     for _ in range(5):
         if r"\frac" not in text:
             break
-        text = re.sub(r'\\frac\{([^}]*)\}\{([^}]*)\}', r'(\1)/(\2)', text)
+        text = re.sub(r'\\frac\s*\{([^}]*)\}\s*\{([^}]*)\}', format_fraction, text)
         
-    # Recursively clean roots: \sqrt[n]{x} -> n√(x), \sqrt{x} -> √(x)
+    # Roots
     for _ in range(5):
         if r"\sqrt" not in text:
             break
-        text = re.sub(r'\\sqrt\[([^\]]*)\]\{([^}]*)\}', r'\1√(\2)', text)
-        text = re.sub(r'\\sqrt\{([^}]*)\}', r'√(\1)', text)
+        text = re.sub(r'\\sqrt\s*\[([^\]]*)\]\s*\{([^}]*)\}', r'<sup>\1</sup>√(\2)', text)
+        text = re.sub(r'\\sqrt\s*\{([^}]*)\}', r'√(\1)', text)
         
-    # Binomial / Combinations: \binom{n}{k} -> C(n, k)
-    text = re.sub(r'\\binom\{([^}]*)\}\{([^}]*)\}', r'C(\1, \2)', text)
-
-    # Matrix environment: \begin{pmatrix} a & b \\ c & d \end{pmatrix}
-    def format_matrix(match):
-        matrix_body = match.group(1)
-        rows = [r.strip() for r in matrix_body.split(r'\\') if r.strip()]
-        formatted_rows = []
-        for r in rows:
-            cols = [c.strip() for c in r.split('&')]
-            formatted_rows.append("[" + "  ".join(cols) + "]")
-        return "\n" + "\n".join(formatted_rows) + "\n"
-        
+    # Binomial / Combinations
+    text = re.sub(r'\\binom\s*\{([^}]*)\}\s*\{([^}]*)\}', r'C(\1, \2)', text)
+    
+    # Format environments
     text = re.sub(r'\\begin\{pmatrix\}(.*?)\\end\{pmatrix\}', format_matrix, text, flags=re.DOTALL)
-    
-    # Determinant environment: \begin{vmatrix} a & b \\ c & d \end{vmatrix}
-    def format_vmatrix(match):
-        matrix_body = match.group(1)
-        rows = [r.strip() for r in matrix_body.split(r'\\') if r.strip()]
-        formatted_rows = []
-        for r in rows:
-            cols = [c.strip() for c in r.split('&')]
-            formatted_rows.append("|" + "  ".join(cols) + "|")
-        return "\n" + "\n".join(formatted_rows) + "\n"
-        
     text = re.sub(r'\\begin\{vmatrix\}(.*?)\\end\{vmatrix\}', format_vmatrix, text, flags=re.DOTALL)
-    
-    # Cases environment: \begin{cases} ... \end{cases}
-    def format_cases(match):
-        cases_body = match.group(1)
-        rows = [r.strip() for r in cases_body.split(r'\\') if r.strip()]
-        formatted_rows = []
-        for r in rows:
-            cols = [c.strip() for c in r.split('&')]
-            formatted_rows.append("{" + " dacă ".join(cols))
-        return "\n" + "\n".join(formatted_rows) + "\n"
-        
     text = re.sub(r'\\begin\{cases\}(.*?)\\end\{cases\}', format_cases, text, flags=re.DOTALL)
     
     # Clean up double "dacă dacă"
     text = re.sub(r'\bdacă\s+dacă\b', 'dacă', text)
     text = re.sub(r'\bdaca\s+daca\b', 'daca', text)
 
-    # Superscripts and subscripts inside ReportLab Paragraph style (HTML tags)
-    # Braced: ^{abc} -> <sup>abc</sup>
+    # Superscripts and subscripts
     text = re.sub(r'\^\{([^}]*)\}', r'<sup>\1</sup>', text)
-    # Braced: _{abc} -> <sub>abc</sub>
     text = re.sub(r'\_\{([^}]*)\}', r'<sub>\1</sub>', text)
-    # Single character: ^2 -> <sup>2</sup>, ^x -> <sup>x</sup>
     text = re.sub(r'\^([a-zA-Z0-9+-])', r'<sup>\1</sup>', text)
-    # Single character: _1 -> <sub>1</sub>, _n -> <sub>n</sub>
     text = re.sub(r'\_([a-zA-Z0-9])', r'<sub>\1</sub>', text)
 
-    # Remove inline math dollar signs ($) and display math ($$)
+    # Strip inline and display math dollars
     text = text.replace("$$", "\n")
     text = text.replace("$", "")
+    
+    # Wrap mathematical symbols in DejaVuSans if registered
+    if dejavu_registered:
+        math_symbols = [
+            'ℝ', 'ℤ', 'ℚ', 'ℕ', 'ℂ', 'λ', 'π', 'θ', 'Δ', 'α', 'β', 'γ', 'ω', 'σ', 'μ', 'ρ', 'φ',
+            '∫', '∬', '∂', '∞', '≤', '≥', '≠', '∈', '∉', '⊂', '⊆', '√', '∑', '∏', '→', '↔', '⇔', '⇒',
+            '±', '×', '∩', '∪', '·', '°', '∖', '⃗'
+        ]
+        for sym in math_symbols:
+            text = text.replace(sym, f'<font name="DejaVuSans">{sym}</font>')
     
     # Strip diacritics if fonts aren't registered
     if not fonts_registered:
         text = strip_diacritics(text)
         
-    # Escape XML/HTML special characters to prevent ReportLab Paragraph parser crashes
+    # Escape XML/HTML special characters
     text = escape_xml_tags(text)
         
     return text
@@ -303,12 +397,12 @@ class NumberedCanvas(canvas.Canvas):
         
         # 2. Left side footer: "Probă scrisă la matematică [Specializare]"
         spec_info = get_spec_details(self.bac)
-        self.drawString(56.7, 30, f"Probă scrisă la matematică {spec_info['title']}")
+        self.drawString(42.5, 30, f"Probă scrisă la matematică {spec_info['title']}")
         
         # Draw a thin horizontal rule above the footer
         self.setStrokeColor(colors.HexColor('#CBD5E1'))
         self.setLineWidth(0.5)
-        self.line(56.7, 45, A4[0] - 56.7, 45)
+        self.line(42.5, 45, A4[0] - 42.5, 45)
         
         self.restoreState()
 
@@ -326,10 +420,10 @@ def build_pdf(filepath: str, exam_data: dict, include_solutions: bool = False, b
     doc = SimpleDocTemplate(
         filepath,
         pagesize=A4,
-        rightMargin=56.7,
-        leftMargin=56.7,
-        topMargin=56.7,
-        bottomMargin=56.7
+        rightMargin=42.5,
+        leftMargin=42.5,
+        topMargin=42.5,
+        bottomMargin=42.5
     )
     
     styles = getSampleStyleSheet()
@@ -339,8 +433,8 @@ def build_pdf(filepath: str, exam_data: dict, include_solutions: bool = False, b
         'BacNormal',
         parent=styles['Normal'],
         fontName=FONT_NAME,
-        fontSize=10,
-        leading=14,
+        fontSize=11,
+        leading=15,
         textColor=colors.HexColor('#1E293B')
     )
     
@@ -380,8 +474,8 @@ def build_pdf(filepath: str, exam_data: dict, include_solutions: bool = False, b
         'BacSectionTitle',
         parent=style_normal,
         fontName=BOLD_FONT_NAME,
-        fontSize=11,
-        leading=15,
+        fontSize=12,
+        leading=16,
         spaceBefore=14,
         spaceAfter=8,
         textColor=colors.HexColor('#0F172A')
@@ -395,7 +489,7 @@ def build_pdf(filepath: str, exam_data: dict, include_solutions: bool = False, b
     story.append(Spacer(1, 6))
     
     # Draw a thin horizontal divider line below the header
-    divider = Table([[""]], colWidths=[A4[0] - 2 * 56.7])
+    divider = Table([[""]], colWidths=[A4[0] - 2 * 42.5])
     divider.setStyle(TableStyle([
         ('LINEBELOW', (0,0), (-1,-1), 0.75, colors.HexColor('#0F172A')),
         ('BOTTOMPADDING', (0,0), (-1,-1), 0),
@@ -423,7 +517,7 @@ def build_pdf(filepath: str, exam_data: dict, include_solutions: bool = False, b
     )
     if not include_solutions:
         instr_p = Paragraph(instr_text, style_italic)
-        t = Table([[instr_p]], colWidths=[A4[0] - 2 * 56.7])
+        t = Table([[instr_p]], colWidths=[A4[0] - 2 * 42.5])
         t.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 1, colors.HexColor('#94A3B8')),
             ('BACKGROUND', (0,0), (-1,-1), colors.HexColor('#F8FAFC')),
@@ -433,7 +527,7 @@ def build_pdf(filepath: str, exam_data: dict, include_solutions: bool = False, b
         story.append(Spacer(1, 15))
         
     exercises = exam_data["exercises"]
-    printable_w = A4[0] - 2 * 56.7
+    printable_w = A4[0] - 2 * 42.5
     
     def make_subject_divider():
         t_div = Table([[""]], colWidths=[printable_w])
@@ -452,22 +546,25 @@ def build_pdf(filepath: str, exam_data: dict, include_solutions: bool = False, b
             ex = exercises[i]
             cleaned_text = clean_latex_for_pdf(ex["text"])
             
-            # Form exercise table layout (number, description, points)
+            # Form exercise table layout (points, number, description)
+            p_pts = Paragraph("5p", style_normal)
             p_num = Paragraph(f"<b>{i+1}.</b>", style_bold)
             p_desc = Paragraph(cleaned_text, style_normal)
-            p_pts = Paragraph("<b>(5p)</b>", style_bold)
             
-            t = Table([[p_num, p_desc, p_pts]], colWidths=[30, printable_w - 80, 50])
+            t = Table([[p_pts, p_num, p_desc]], colWidths=[30, 20, printable_w - 50])
             t.setStyle(TableStyle([
                 ('VALIGN', (0,0), (-1,-1), 'TOP'),
+                ('TOPPADDING', (0,0), (-1,-1), 2),
                 ('BOTTOMPADDING', (0,0), (-1,-1), 8),
+                ('LEFTPADDING', (0,0), (-1,-1), 0),
+                ('RIGHTPADDING', (0,0), (-1,-1), 0),
             ]))
             story.append(t)
             
         story.append(Spacer(1, 10))
         story.append(make_subject_divider())
         
-        # SUBIECTUL II
+        # SUBIECTUL al II-lea
         story.append(Paragraph("<b>SUBIECTUL al II-lea (30 de puncte)</b>", style_section_title))
         for i in range(6, 8):
             ex = exercises[i]
@@ -475,19 +572,41 @@ def build_pdf(filepath: str, exam_data: dict, include_solutions: bool = False, b
             cleaned_text = clean_latex_for_pdf(ex["text"])
             
             # Format text cleanly by parts
-            parts = cleaned_text.split('\n\n')
+            parts = [p.strip() for p in cleaned_text.split('\n\n') if p.strip()]
             intro_text = parts[0]
             
-            story.append(Paragraph(f"<b>{ex_num}.</b> {intro_text}", style_normal))
-            story.append(Spacer(1, 4))
+            p_num = Paragraph(f"<b>{ex_num}.</b>", style_bold)
+            p_intro = Paragraph(intro_text, style_normal)
+            
+            t_intro = Table([["", p_num, p_intro]], colWidths=[30, 20, printable_w - 50])
+            t_intro.setStyle(TableStyle([
+                ('VALIGN', (0,0), (-1,-1), 'TOP'),
+                ('TOPPADDING', (0,0), (-1,-1), 2),
+                ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+                ('LEFTPADDING', (0,0), (-1,-1), 0),
+                ('RIGHTPADDING', (0,0), (-1,-1), 0),
+            ]))
+            story.append(t_intro)
             
             for part in parts[1:]:
-                # Part should look like "a) ... (5p)"
-                p_part = Paragraph(part, style_normal)
-                t_part = Table([["", p_part]], colWidths=[20, printable_w - 20])
+                if part.startswith(('a)', 'b)', 'c)')):
+                    prefix = part[:2]
+                    sub_text = part[2:].strip()
+                else:
+                    prefix = ""
+                    sub_text = part
+                    
+                p_pts = Paragraph("5p", style_normal)
+                p_prefix = Paragraph(f"<b>{prefix}</b>", style_bold)
+                p_sub = Paragraph(sub_text, style_normal)
+                
+                t_part = Table([[p_pts, p_prefix, p_sub]], colWidths=[30, 20, printable_w - 50])
                 t_part.setStyle(TableStyle([
                     ('VALIGN', (0,0), (-1,-1), 'TOP'),
+                    ('TOPPADDING', (0,0), (-1,-1), 2),
                     ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+                    ('LEFTPADDING', (0,0), (-1,-1), 0),
+                    ('RIGHTPADDING', (0,0), (-1,-1), 0),
                 ]))
                 story.append(t_part)
                 
@@ -496,25 +615,48 @@ def build_pdf(filepath: str, exam_data: dict, include_solutions: bool = False, b
         story.append(Spacer(1, 10))
         story.append(make_subject_divider())
         
-        # SUBIECTUL III
+        # SUBIECTUL al III-lea
         story.append(Paragraph("<b>SUBIECTUL al III-lea (30 de puncte)</b>", style_section_title))
         for i in range(8, 10):
             ex = exercises[i]
             ex_num = 1 if i == 8 else 2
             cleaned_text = clean_latex_for_pdf(ex["text"])
             
-            parts = cleaned_text.split('\n\n')
+            parts = [p.strip() for p in cleaned_text.split('\n\n') if p.strip()]
             intro_text = parts[0]
             
-            story.append(Paragraph(f"<b>{ex_num}.</b> {intro_text}", style_normal))
-            story.append(Spacer(1, 4))
+            p_num = Paragraph(f"<b>{ex_num}.</b>", style_bold)
+            p_intro = Paragraph(intro_text, style_normal)
+            
+            t_intro = Table([["", p_num, p_intro]], colWidths=[30, 20, printable_w - 50])
+            t_intro.setStyle(TableStyle([
+                ('VALIGN', (0,0), (-1,-1), 'TOP'),
+                ('TOPPADDING', (0,0), (-1,-1), 2),
+                ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+                ('LEFTPADDING', (0,0), (-1,-1), 0),
+                ('RIGHTPADDING', (0,0), (-1,-1), 0),
+            ]))
+            story.append(t_intro)
             
             for part in parts[1:]:
-                p_part = Paragraph(part, style_normal)
-                t_part = Table([["", p_part]], colWidths=[20, printable_w - 20])
+                if part.startswith(('a)', 'b)', 'c)')):
+                    prefix = part[:2]
+                    sub_text = part[2:].strip()
+                else:
+                    prefix = ""
+                    sub_text = part
+                    
+                p_pts = Paragraph("5p", style_normal)
+                p_prefix = Paragraph(f"<b>{prefix}</b>", style_bold)
+                p_sub = Paragraph(sub_text, style_normal)
+                
+                t_part = Table([[p_pts, p_prefix, p_sub]], colWidths=[30, 20, printable_w - 50])
                 t_part.setStyle(TableStyle([
                     ('VALIGN', (0,0), (-1,-1), 'TOP'),
+                    ('TOPPADDING', (0,0), (-1,-1), 2),
                     ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+                    ('LEFTPADDING', (0,0), (-1,-1), 0),
+                    ('RIGHTPADDING', (0,0), (-1,-1), 0),
                 ]))
                 story.append(t_part)
                 
@@ -549,7 +691,7 @@ def build_pdf(filepath: str, exam_data: dict, include_solutions: bool = False, b
             story.append(Paragraph(f"<b>Exercițiul {ex_num}</b>", style_bold))
             story.append(Spacer(1, 4))
             
-            parts = cleaned_sol.split('\n\n')
+            parts = [p.strip() for p in cleaned_sol.split('\n\n') if p.strip()]
             for part in parts:
                 p_part = Paragraph(part.replace('\n', '<br/>'), style_normal)
                 t_part = Table([["", p_part]], colWidths=[20, printable_w - 20])
@@ -573,7 +715,7 @@ def build_pdf(filepath: str, exam_data: dict, include_solutions: bool = False, b
             story.append(Paragraph(f"<b>Exercițiul {ex_num}</b>", style_bold))
             story.append(Spacer(1, 4))
             
-            parts = cleaned_sol.split('\n\n')
+            parts = [p.strip() for p in cleaned_sol.split('\n\n') if p.strip()]
             for part in parts:
                 p_part = Paragraph(part.replace('\n', '<br/>'), style_normal)
                 t_part = Table([["", p_part]], colWidths=[20, printable_w - 20])
