@@ -1,0 +1,452 @@
+{% extends "layout.html" %}
+
+{% block title %}
+{{ document["title"] }} — Editor |
+    {% if user and user["gender"] == "F" %}
+        Profa Eficientă
+    {% else %}
+        Proful Eficient
+    {% endif %}
+{% endblock %}
+
+{% block footer %}{% endblock %}
+
+{% block navbar %}{% endblock %}
+
+{% block main %}
+<link rel="stylesheet" href="{{ url_for('static', filename='editor.css') }}">
+
+{% set lang = request.cookies.get('lang', session.get('lang', 'ro')) %}
+
+<div class="ed-shell" data-document-id="{{ document['id'] }}">
+
+    <!-- ============ TOP BAR ============ -->
+    <div class="ed-topbar">
+        <div class="ed-topbar-left">
+            <input id="edTitleInput" class="ed-title-input" value="{{ document['title'] }}" spellcheck="false">
+            <span id="edSaveStatus" class="ed-save-status">{{ t('ed_status_saved') }}</span>
+        </div>
+    </div>
+
+    <!-- ============ RIBBON TABS ============ -->
+    <div class="ed-ribbon-tabs">
+        <div class="ed-dropdown ed-file-menu">
+            <button type="button" class="ed-ribbon-tab ed-file-tab ed-dropdown-toggle" id="edFileTabBtn">{{ t('ed_tab_file') }}</button>
+            <div class="ed-dropdown-menu ed-file-panel">
+                <a href="{{ url_for('dashboard') }}" class="ed-file-panel-item ed-file-panel-home">🏠 {{ t('ed_file_home') }}</a>
+                <div class="ed-file-panel-divider"></div>
+
+                <div class="ed-file-panel-label">{{ t('ed_file_actions') }}</div>
+                <form action="/editor/new" method="post" class="ed-inline-form">
+                    <button type="submit" class="ed-file-panel-item" title="{{ t('ed_title_new_doc') }}">📄 {{ t('ed_btn_new') }}</button>
+                </form>
+                <button type="button" class="ed-file-panel-item" id="edOpenBtn" title="{{ t('ed_title_open_file') }}">📂 {{ t('ed_btn_open') }}</button>
+                <input type="file" id="edOpenInput" accept=".docx,.txt,.pdf" hidden>
+                <button type="button" class="ed-file-panel-item" id="edSaveBtn" title="{{ t('ed_btn_save') }}">💾 {{ t('ed_btn_save') }}</button>
+                <button type="button" class="ed-file-panel-item" id="edPrintBtn" title="{{ t('ed_btn_print') }}">🖨️ {{ t('ed_btn_print') }}</button>
+                <a class="ed-file-panel-item" href="/editor/{{ document['id'] }}/download" title="{{ t('ed_title_download') }}">⬇️ {{ t('ed_btn_download') }}</a>
+                <div class="ed-file-panel-divider"></div>
+
+                <div class="ed-file-panel-label">{{ t('ed_file_all_docs') }}</div>
+                <div class="ed-file-panel-docs">
+                    {% for doc in documents %}
+                    <a href="/editor/{{ doc['id'] }}" class="ed-file-panel-item ed-file-panel-doc {% if doc['id'] == document['id'] %}active{% endif %}">📝 {{ doc['title'] }}</a>
+                    {% endfor %}
+                </div>
+                <div class="ed-file-panel-divider"></div>
+
+                <div class="ed-file-panel-label">{{ t('ed_file_language') }}</div>
+                <div class="ed-file-panel-lang">
+                    <button type="button" onclick="switchLang('ro')" class="ed-file-lang-btn {% if lang == 'ro' %}active{% endif %}" translate="no">RO</button>
+                    <button type="button" onclick="switchLang('en')" class="ed-file-lang-btn {% if lang == 'en' %}active{% endif %}" translate="no">EN</button>
+                </div>
+                <div class="ed-file-panel-divider"></div>
+                <a href="/account" class="ed-file-panel-item">👤 {{ t('ed_file_account') }}</a>
+                <a href="/documentation" class="ed-file-panel-item">📘 {{ t('ed_file_guide') }}</a>
+            </div>
+        </div>
+        <button type="button" class="ed-ribbon-tab active" data-tab="home">{{ t('ed_tab_text') }}</button>
+        <div class="ed-contextual-tabgroup">
+            <div class="ed-contextual-tabgroup-label">{{ t('ed_equation_tools') }}</div>
+            <button type="button" class="ed-ribbon-tab ed-contextual-tab" data-tab="equation">{{ t('ed_tab_math') }}</button>
+        </div>
+    </div>
+
+    <!-- ============ HOME RIBBON ============ -->
+    <div class="ed-ribbon" id="ed-ribbon-home">
+        <div class="ed-ribbon-group">
+            <div class="ed-group-row">
+                <button type="button" class="ed-icon-btn" data-cmd="undo" title="Anulează">↺</button>
+                <button type="button" class="ed-icon-btn" data-cmd="redo" title="Refă">↻</button>
+            </div>
+            <span class="ed-group-label">{{ t('ed_group_undo') }}</span>
+        </div>
+        <div class="ed-ribbon-group">
+            <div class="ed-group-row">
+                <select class="ed-select" id="edFontFamily" title="Font">
+                    <option value="'Inter', sans-serif">Inter</option>
+                    <option value="'Outfit', sans-serif">Outfit</option>
+                    <option value="'Times New Roman', serif">Times New Roman</option>
+                    <option value="'Georgia', serif">Georgia</option>
+                    <option value="'Courier New', monospace">Courier New</option>
+                </select>
+                <select class="ed-select ed-select-sm" id="edFontSize" title="Dimensiune">
+                    <option value="1">10</option>
+                    <option value="2" selected>13</option>
+                    <option value="3">16</option>
+                    <option value="4">18</option>
+                    <option value="5">24</option>
+                    <option value="6">32</option>
+                    <option value="7">48</option>
+                </select>
+                <select class="ed-select" id="edHeading" title="Stil paragraf">
+                    <option value="P">Normal</option>
+                    <option value="H1">Titlu 1</option>
+                    <option value="H2">Titlu 2</option>
+                    <option value="H3">Titlu 3</option>
+                </select>
+            </div>
+            <span class="ed-group-label">{{ t('ed_group_font') }}</span>
+        </div>
+        <div class="ed-ribbon-group">
+            <div class="ed-group-row">
+                <button type="button" class="ed-icon-btn" data-cmd="bold" title="Bold"><b>B</b></button>
+                <button type="button" class="ed-icon-btn" data-cmd="italic" title="Italic"><i>I</i></button>
+                <button type="button" class="ed-icon-btn" data-cmd="underline" title="Underline"><u>U</u></button>
+                <button type="button" class="ed-icon-btn" data-cmd="strikeThrough" title="Strikethrough"><s>S</s></button>
+                <input type="color" id="edTextColor" class="ed-color-input" title="Culoare text" value="#0f172a">
+                <input type="color" id="edHighlightColor" class="ed-color-input" title="Evidențiere" value="#fef08a">
+            </div>
+            <span class="ed-group-label">{{ t('ed_group_font') }}</span>
+        </div>
+        <div class="ed-ribbon-group">
+            <div class="ed-group-row">
+                <button type="button" class="ed-icon-btn" data-cmd="justifyLeft" title="Aliniere stânga">⬅</button>
+                <button type="button" class="ed-icon-btn" data-cmd="justifyCenter" title="Centrat">↔</button>
+                <button type="button" class="ed-icon-btn" data-cmd="justifyRight" title="Aliniere dreapta">➡</button>
+                <button type="button" class="ed-icon-btn" data-cmd="justifyFull" title="Justificat">☰</button>
+                <button type="button" class="ed-icon-btn" data-cmd="insertUnorderedList" title="Listă cu buline">• ―</button>
+                <button type="button" class="ed-icon-btn" data-cmd="insertOrderedList" title="Listă numerotată">1. ―</button>
+            </div>
+            <span class="ed-group-label">{{ t('ed_group_paragraph') }}</span>
+        </div>
+        <div class="ed-ribbon-group">
+            <button type="button" class="ed-icon-btn ed-icon-btn-wide" id="edInsertEquationHome" title="Inserează o ecuație">∑ {{ t('ed_insert_equation') }}</button>
+            <span class="ed-group-label">{{ t('ed_group_insert') }}</span>
+        </div>
+    </div>
+
+    <!-- ============ EQUATION RIBBON (clone of MS Word Equation Tools > Design) ============ -->
+    <div class="ed-ribbon" id="ed-ribbon-equation" style="display:none;">
+
+        <div class="ed-ribbon-group">
+            <div class="ed-split-btn">
+                <button type="button" class="ed-icon-btn ed-icon-btn-wide" id="edInsertEquation" title="Ecuație nouă">𝑥/𝑦 Equation</button>
+                <button type="button" class="ed-icon-btn ed-icon-btn-wide" id="edInkEquation" title="{{ t('ed_ink_equation') }}">✎ {{ t('ed_ink_equation') }}</button>
+            </div>
+            <span class="ed-group-label">{{ t('ed_group_tools') }}</span>
+        </div>
+
+        <div class="ed-ribbon-group">
+            <div class="ed-toggle-group">
+                <button type="button" class="ed-toggle-btn active" data-eqmode="latex">LaTeX</button>
+                <button type="button" class="ed-toggle-btn" data-eqmode="unicode">Unicode</button>
+            </div>
+            <div class="ed-dropdown">
+                <button type="button" class="ed-icon-btn ed-icon-btn-wide ed-dropdown-toggle">{{ t('ed_convert') }} ▾</button>
+                <div class="ed-dropdown-menu">
+                    <button type="button" class="ed-dropdown-item" data-eqmode="unicode">Unicode</button>
+                    <button type="button" class="ed-dropdown-item" data-eqmode="latex">Professional (LaTeX)</button>
+                </div>
+            </div>
+            <span class="ed-group-label">{{ t('ed_group_conversions') }}</span>
+        </div>
+
+        <div class="ed-ribbon-group ed-symbols-group">
+            <div class="ed-symbol-grid">
+                {% for sym, latex in [("±","\\pm"),("∞","\\infty"),("=","="),("≠","\\neq"),("~","\\sim"),
+                                       ("×","\\times"),("÷","\\div"),("!","!"),("∝","\\propto"),("<","<"),
+                                       ("≪","\\ll"),(">",">"),("≫","\\gg"),("≤","\\leq"),("≥","\\geq"),
+                                       ("∓","\\mp"),("≅","\\cong"),("≈","\\approx"),("≡","\\equiv"),("∀","\\forall"),
+                                       ("⊂","\\subset"),("∂","\\partial"),("√","\\sqrt{}"),("∪","\\cup"),
+                                       ("∩","\\cap"),("∅","\\emptyset")] %}
+                <button type="button" class="ed-sym-btn" data-insert="{{ latex }}" title="{{ latex }}">{{ sym }}</button>
+                {% endfor %}
+            </div>
+            <div class="ed-dropdown">
+                <button type="button" class="ed-icon-btn ed-icon-btn-wide ed-dropdown-toggle">{{ t('ed_more_symbols') }} ▾</button>
+                <div class="ed-dropdown-menu ed-symbol-grid ed-symbol-grid-more">
+                    {% for sym, latex in [("α","\\alpha"),("β","\\beta"),("γ","\\gamma"),("δ","\\delta"),("ε","\\epsilon"),
+                                           ("θ","\\theta"),("λ","\\lambda"),("μ","\\mu"),("π","\\pi"),("σ","\\sigma"),
+                                           ("φ","\\phi"),("ω","\\omega"),("Δ","\\Delta"),("Σ","\\Sigma"),("Ω","\\Omega"),
+                                           ("∇","\\nabla"),("∴","\\therefore"),("∵","\\because"),("∈","\\in"),("∉","\\notin")] %}
+                    <button type="button" class="ed-sym-btn" data-insert="{{ latex }}" title="{{ latex }}">{{ sym }}</button>
+                    {% endfor %}
+                </div>
+            </div>
+            <span class="ed-group-label">{{ t('ed_group_symbols') }}</span>
+        </div>
+
+        <div class="ed-ribbon-group ed-favorites-group" id="edFavoritesGroup" title="{{ t('ed_favorites_hint') }}">
+            <div class="ed-favorites-row" id="edFavoritesRow">
+                <span class="ed-favorites-empty" id="edFavoritesEmpty">{{ t('ed_favorites_empty') }}</span>
+            </div>
+            <span class="ed-group-label">{{ t('ed_group_favorites') }}</span>
+        </div>
+
+        <div class="ed-ribbon-group ed-structures-group">
+            <div class="ed-structures-row">
+                {% for group in [
+                    ("Fraction", "𝑎/𝑏", [("Fracție", "\\frac{}{}", 3), ("Liniară a/b", "a/b", 0), ("Skewed", "^{}\\!/_{}", 0)]),
+                    ("Script", "𝑥²", [("Superscript", "^{}", 1), ("Subscript", "_{}", 1), ("Sub-superscript", "_{}^{}", 1)]),
+                    ("Radical", "√𝑥", [("Radical pătrat", "\\sqrt{}", 1), ("Radical de ordin n", "\\sqrt[n]{}", 1), ("Radical fără indice", "\\sqrt{}", 1)]),
+                    ("Integral", "∫", [("Integrală", "\\int", 0), ("Integrală definită", "\\int_{}^{}", 2), ("Integrală dublă", "\\iint", 0), ("Integrală de contur", "\\oint", 0)]),
+                    ("Large Operator", "Σ", [("Sumă", "\\sum_{}^{}", 2), ("Produs", "\\prod_{}^{}", 2), ("Reuniune", "\\bigcup_{}^{}", 2), ("Intersecție", "\\bigcap_{}^{}", 2)]),
+                    ("Bracket", "( )", [("Paranteze", "()", 1), ("Paranteze pătrate", "[]", 1), ("Acolade", "\\{\\}", 1), ("Valoare absolută", "||", 1)]),
+                    ("Function", "sin θ", [("Sinus", "\\sin()", 1), ("Cosinus", "\\cos()", 1), ("Tangentă", "\\tan()", 1), ("Logaritm", "\\log()", 1)]),
+                    ("Accent", "𝑎̂", [("Vector", "\\vec{}", 1), ("Bară", "\\bar{}", 1), ("Hat", "\\hat{}", 1), ("Punct", "\\dot{}", 1), ("Tilde", "\\tilde{}", 1)]),
+                    ("Limit and Log", "lim", [("Limită", "\\lim_{x \\to }", 1), ("Logaritm", "\\log_{}", 1), ("Ln", "\\ln()", 1), ("Maxim", "\\max()", 1), ("Minim", "\\min()", 1)]),
+                    ("Operator", "±", [("Plus/minus", "\\pm", 0), ("Ori", "\\times", 0), ("Împărțit", "\\div", 0), ("Compus", "\\circ", 0)]),
+                    ("Matrix", "[::]", [("Matrice 2×2", "\\begin{pmatrix} & \\\\ & \\end{pmatrix}", 0), ("Matrice 2×3", "\\begin{pmatrix} & & \\\\ & & \\end{pmatrix}", 0), ("Matrice cu paranteze pătrate", "\\begin{bmatrix} & \\\\ & \\end{bmatrix}", 0), ("Determinant", "\\begin{vmatrix} & \\\\ & \\end{vmatrix}", 0)]),
+                    ("System", "{⋮", [("Sistem 2 ecuații", "\\begin{cases}  \\\\  \\end{cases}", 0), ("Sistem 3 ecuații", "\\begin{cases}  \\\\  \\\\  \\end{cases}", 0), ("Sistem cu condiții", "\\begin{cases} x & \\text{dacă } \\\\ x & \\text{dacă } \\end{cases}", 0)]),
+                    ("f(x)", "𝑓:ℝ→ℝ", [("Definiție funcție", "f: \\mathbb{R} \\to \\mathbb{R}, \\ f(x) = ", 0), ("Derivată", "f'(x) = ", 0), ("Derivată în punct", "f'(x_{0}) = ", 0), ("Limită derivată", "f'(x_{0}) = \\lim_{x \\to x_{0}} \\frac{f(x) - f(x_{0})}{x - x_{0}}", 0)]),
+                ] %}
+                <div class="ed-dropdown">
+                    <button type="button" class="ed-struct-btn ed-dropdown-toggle" title="{{ group[0] }}">
+                        <span class="ed-struct-icon">{{ group[1] }}</span>
+                        <span class="ed-struct-label">{{ group[0] }}</span>
+                        <span class="ed-struct-caret">▾</span>
+                    </button>
+                    <div class="ed-dropdown-menu ed-struct-menu">
+                        {% for label, latex, back in group[2] %}
+                        <button type="button" class="ed-dropdown-item" data-insert="{{ latex }}" data-caretback="{{ back }}">{{ label }}</button>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <span class="ed-group-label">{{ t('ed_group_structures') }}</span>
+        </div>
+
+    </div>
+
+    <!-- ============ BODY: history | page | AI rail ============ -->
+    <div class="ed-body">
+
+        <!-- LEFT: DOCUMENT HISTORY -->
+        <div class="ed-history">
+            <h2 class="ed-history-title">{{ t('ed_documents') }}</h2>
+            <div class="ed-history-list">
+                {% for doc in documents %}
+                <div class="ed-history-item {% if doc['id'] == document['id'] %}active{% endif %}">
+                    <a href="/editor/{{ doc['id'] }}" class="ed-history-link">{{ doc['title'] }}</a>
+                    <button type="button" class="ed-history-menu-btn" data-doc-id="{{ doc['id'] }}" onclick="toggleDocMenu(event, this.dataset.docId)">⋮</button>
+                    <div id="doc-menu-{{ doc['id'] }}" class="ed-history-menu hidden">
+                        <form action="/editor/{{ doc['id'] }}/rename" method="post" data-title="{{ doc['title'] | e }}" onsubmit="return prepareRenameDoc(this);">
+                            <input type="hidden" name="new_title">
+                            <button type="submit">{{ t('ed_rename') }}</button>
+                        </form>
+                        <form action="/editor/{{ doc['id'] }}/delete" method="post" data-confirm="{{ t('ed_confirm_delete_doc') }}" onsubmit="return confirm(this.dataset.confirm);">
+                            <button type="submit" class="danger">{{ t('ed_delete') }}</button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- CENTER: PAGE -->
+        <div class="ed-page-wrap">
+            <div class="ed-page">
+                <div id="docBody" class="ed-doc-body" contenteditable="true">{{ document["content"] | safe }}</div>
+            </div>
+        </div>
+
+        <!-- RIGHT: AI MODE RAIL + PANEL -->
+        <div class="ed-ai-rail">
+            {% for m in modes %}
+            <button type="button" class="ed-rail-icon" data-mode="{{ m.key }}" title="{{ m.title }}">
+                <span class="ed-rail-icon-glyph">{{ m.icon }}</span>
+                <span class="ed-rail-icon-label">{{ m.title }}</span>
+            </button>
+            {% endfor %}
+        </div>
+
+        <div class="ed-ai-panel" id="edAiPanel">
+            <div class="ed-ai-panel-header">
+                <div>
+                    <div class="ed-ai-panel-title" id="edAiPanelTitle">—</div>
+                    <div class="ed-ai-panel-desc" id="edAiPanelDesc"></div>
+                </div>
+                <button type="button" class="ed-ai-panel-close" onclick="closeModePanel()">&times;</button>
+            </div>
+
+            <div class="ed-ai-panel-body" id="edAiPanelBody">
+                {% for m in modes %}
+                <div class="ed-mode-block" data-mode-block="{{ m.key }}" style="display:none;"
+                     data-started="{{ '1' if mode_state[m.key].conversation_id else '' }}">
+
+                    <!-- START FORM -->
+                    <form class="ed-mode-start-form {{ 'hidden' if mode_state[m.key].conversation_id else '' }}" data-mode-start="{{ m.key }}" enctype="multipart/form-data">
+
+                        {% if m.key == "mode1" %}
+                            <div class="ed-form-empty">
+                                <span class="ed-form-empty-icon">💬</span>
+                                <p class="ed-hint">Asistentul pornește automat o conversație.</p>
+                            </div>
+
+                        {% elif m.key == "mode2" %}
+                            <div class="ed-field-group">
+                                <label class="ed-field-label">🎨 Stil generare</label>
+                                <div class="ed-select-wrap">
+                                    <select name="style" class="ed-field" required>
+                                        <option disabled selected value="">Selectează stilul</option>
+                                        <option value="">Stil implicit</option>
+                                        {% for style in styles %}
+                                        <option value="{{ style['id'] }}">{{ style['style_name'] }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="ed-field-group">
+                                <label class="ed-field-label">🎓 Clasa</label>
+                                <div class="ed-select-wrap">
+                                    <select name="school_class" class="ed-field" required>
+                                        <option disabled selected value="">Selectează clasa</option>
+                                        <option value="9">Clasa a IX-a</option>
+                                        <option value="10">Clasa a X-a</option>
+                                        <option value="11">Clasa a XI-a</option>
+                                        <option value="12">Clasa a XII-a</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="ed-field-group">
+                                <label class="ed-field-label">📋 Versiune BAC</label>
+                                <div class="ed-select-wrap">
+                                    <select name="bac" class="ed-field" required>
+                                        <option value="M3">M_Tehnologic</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                        {% elif m.key in ("mode3", "mode4") %}
+                            <div class="ed-field-group">
+                                <label class="ed-field-label">{{ "📄 Fișier model" if m.key == "mode3" else "🖼️ Fișă exerciții (poză / PDF)" }}</label>
+                                <label class="ed-file-drop">
+                                    <input type="file" name="file" class="ed-file-drop-input" required
+                                           accept="{{ '.pdf,.docx,.txt' if m.key == 'mode3' else '.png,.jpg,.jpeg,.pdf' }}">
+                                    <span class="ed-file-drop-icon">📎</span>
+                                    <span class="ed-file-drop-text" data-empty-text="{{ 'Click sau trage fișierul aici' if m.key == 'mode3' else 'Click sau trage poza / PDF aici' }}">{{ 'Click sau trage fișierul aici' if m.key == 'mode3' else 'Click sau trage poza / PDF aici' }}</span>
+                                </label>
+                            </div>
+                            <div class="ed-field-group">
+                                <label class="ed-field-label">✏️ Instrucțiuni</label>
+                                <textarea name="prompt" class="ed-field ed-field-autogrow" rows="2" placeholder="Ex: dificultate medie..." required></textarea>
+                            </div>
+                            <div class="ed-field-group">
+                                <label class="ed-field-label">🔀 Diferențe față de model</label>
+                                <textarea name="differences" class="ed-field ed-field-autogrow" rows="2" placeholder="Ex: mai multe exerciții de algebră..." required></textarea>
+                            </div>
+
+                        {% elif m.key == "mode5" %}
+                            <div class="ed-field-group">
+                                <label class="ed-field-label">📘 Lecții principale</label>
+                                <textarea name="lessons" class="ed-field ed-field-autogrow" rows="2" required></textarea>
+                            </div>
+                            <div class="ed-field-group">
+                                <label class="ed-field-label">🚫 Lecții de omis</label>
+                                <textarea name="avoid" class="ed-field ed-field-autogrow" rows="2" required></textarea>
+                            </div>
+                        {% endif %}
+
+                        <button type="submit" class="ed-btn-primary ed-form-submit" data-mode-submit="{{ m.key }}">
+                            {% if m.key == "mode1" %}Start{% elif m.key == "mode2" %}Începe Generarea{% elif m.key == "mode3" %}Analizează fișierul{% elif m.key == "mode4" %}Începe Generarea{% else %}Generează BAC{% endif %}
+                        </button>
+                    </form>
+
+                    <!-- CHAT THREAD -->
+                    <div class="ed-mode-chat {{ '' if mode_state[m.key].conversation_id else 'hidden' }}" data-mode-chat="{{ m.key }}">
+                        <div class="ed-mode-messages" data-mode-messages="{{ m.key }}">
+                            {% for msg in mode_state[m.key].messages %}
+                            <div class="ed-chat-bubble ed-chat-bubble-{{ msg.role }}" data-msg-id="{{ msg.id }}">
+                                {% if msg.role == "user" %}
+                                    {{ msg.content | e }}
+                                {% else %}
+                                    <div class="ed-chat-bubble-header">{{ m.icon }} <span>{{ t('ed_ai_response') }}</span></div>
+                                    {% if m.auto_insert %}
+                                        <div class="ed-chat-inserted">✅ {{ t('ed_inserted_to_doc') }}</div>
+                                        <button type="button" class="ed-chat-toggle" onclick="toggleChatDetail(this)">{{ t('ed_show_content') }}</button>
+                                        <div class="math-content ed-chat-detail hidden" data-math="{{ msg.content | e }}"></div>
+                                    {% else %}
+                                        <div class="math-content" data-math="{{ msg.content | e }}"></div>
+                                        <button type="button" class="ed-chat-insert-btn" data-mode-key="{{ m.key }}" data-msg-id="{{ msg.id }}" onclick="insertMessageToDoc(this.dataset.modeKey, this.dataset.msgId, this)">➕ {{ t('ed_insert_to_doc') }}</button>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- QUICK ACTIONS -->
+                        <div class="ed-quick-actions">
+                            {% if m.key == "mode2" %}
+                                <button type="button" class="ed-quick-btn" onclick="runQuickAction('mode2','solve','Soluție exercițiu anterior')">Soluție exercițiu anterior</button>
+                                <button type="button" class="ed-quick-btn" onclick="runQuickAction('mode2','generate','Generează 5 exerciții noi.')">Generează 5 exerciții</button>
+                            {% elif m.key == "mode5" %}
+                                <button type="button" class="ed-quick-btn" onclick="runQuickAction('mode5','solve_bac','')">Rezolvare test</button>
+                                <button type="button" class="ed-quick-btn" onclick="runQuickAction('mode5','generate_similar_bac','')">Generează similare</button>
+                                <button type="button" class="ed-quick-btn" onclick="runQuickAction('mode5','generate_row_2_bac','')">Generează rândul 2</button>
+                            {% endif %}
+                        </div>
+
+                        <form class="ed-mode-message-form" data-mode-message="{{ m.key }}">
+                            <textarea class="ed-field ed-chat-input" name="prompt" rows="1" placeholder="{{ t('ed_write_message') }}"></textarea>
+                            <button type="submit" class="ed-btn-primary ed-chat-send">➤</button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<div id="edToast" class="ed-toast hidden"></div>
+
+<!-- ============ INK EQUATION MODAL ============ -->
+<div class="ed-ink-overlay hidden" id="edInkOverlay">
+    <div class="ed-ink-modal">
+        <div class="ed-ink-modal-header">
+            <span>✎ {{ t('ed_ink_modal_title') }}</span>
+            <button type="button" class="ed-ink-modal-close" id="edInkCloseBtn">&times;</button>
+        </div>
+        <p class="ed-ink-hint">{{ t('ed_ink_hint') }}</p>
+        <div class="ed-ink-canvas-wrap">
+            <canvas id="edInkCanvas"></canvas>
+        </div>
+        <div class="ed-ink-modal-actions">
+            <button type="button" class="ed-btn" id="edInkUndoBtn">↺ {{ t('ed_ink_undo') }}</button>
+            <button type="button" class="ed-btn" id="edInkClearBtn">🗑️ {{ t('ed_ink_clear') }}</button>
+            <span class="ed-ink-spacer"></span>
+            <button type="button" class="ed-btn" id="edInkCancelBtn">{{ t('ed_ink_cancel') }}</button>
+            <button type="button" class="ed-btn-primary" id="edInkInsertBtn">{{ t('ed_ink_insert') }}</button>
+        </div>
+    </div>
+</div>
+
+<div id="edEditorData" hidden
+     data-modes="{{ modes | tojson | forceescape }}"
+     data-i18n="{{ {
+         'aiResponse': t('ed_ai_response'),
+         'insertedToDoc': t('ed_inserted_to_doc'),
+         'showContent': t('ed_show_content'),
+         'hideContent': t('ed_hide_content'),
+         'insertToDoc': t('ed_insert_to_doc'),
+         'favoriteAdded': t('ed_favorite_added'),
+         'favoriteRemoved': t('ed_favorite_removed'),
+         'favoritesEmpty': t('ed_favorites_empty'),
+     } | tojson | forceescape }}"></div>
+<script src="{{ url_for('static', filename='editor.js') }}"></script>
+
+{% endblock %}

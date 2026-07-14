@@ -14,12 +14,14 @@ from PyPDF2 import PdfReader
 from docx import Document
 from secondary import ai, docs, ocr, accounts
 from secondary import model_route
+from secondary.document_editor import document_editor_bp
 from bac_generator.routes import bac_generator_bp
 from bac_generator.generator import BACExamGenerator
 import traceback
 
 app = Flask(__name__)
 app.register_blueprint(bac_generator_bp)
+app.register_blueprint(document_editor_bp)
 os.makedirs("uploads", exist_ok=True)
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
@@ -153,6 +155,17 @@ CREATE TABLE IF NOT EXISTS styles (
 )
 """)
 
+db.execute("""
+CREATE TABLE IF NOT EXISTS documents (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    title TEXT NOT NULL DEFAULT 'Document nou',
+    content TEXT NOT NULL DEFAULT '',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)
+""")
+
 migrations = [
     "ALTER TABLE messages ADD COLUMN action_type TEXT",
     "ALTER TABLE styles ADD COLUMN style_name TEXT",
@@ -160,6 +173,8 @@ migrations = [
     "ALTER TABLE conversations ADD COLUMN style_id INTEGER",
     "ALTER TABLE conversations ADD COLUMN bac TEXT",
     "ALTER TABLE messages ADD COLUMN exam_data TEXT",
+    "ALTER TABLE conversations ADD COLUMN document_id INTEGER",
+    "ALTER TABLE messages ADD COLUMN doc_action TEXT",
 ]
 
 

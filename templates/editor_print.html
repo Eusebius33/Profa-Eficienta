@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="utf-8">
+    <title>{{ document["title"] }}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+    <style>
+        body {
+            font-family: 'Times New Roman', Georgia, serif;
+            max-width: 850px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            color: #0f172a;
+            line-height: 1.6;
+        }
+        .ai-block-header { display: none; }
+        .ai-block-remove { display: none; }
+        .ai-block {
+            border: none;
+            padding: 0;
+            margin: 0.75rem 0;
+        }
+        @media print {
+            body { margin: 0; padding: 0 1cm; }
+        }
+    </style>
+</head>
+<body>
+    <div id="printBody">{{ document["content"] | safe }}</div>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".math-content").forEach(function (el) {
+            renderMathInElement(el, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false }
+                ],
+                throwOnError: false
+            });
+        });
+        window.print();
+    });
+    </script>
+</body>
+</html>
