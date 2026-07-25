@@ -52,7 +52,7 @@
             <select name="style" required
                 class="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900">
                 <option disabled selected value="" data-i18n="style_placeholder">Selectează stilul</option>
-                <option data-i18n="style_default">Stil implicit</option>
+                <option value="" data-i18n="style_default">Stil implicit</option>
                 {% for style in styles %}
                     <option value="{{ style['id'] }}">
                         {{ style["style_name"] }}

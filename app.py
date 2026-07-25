@@ -1,12 +1,13 @@
-import sqlite3
 from functools import wraps
 import json
 import os
 from types import SimpleNamespace
 from werkzeug.utils import secure_filename
 import uuid
+from dotenv import load_dotenv
 from flask import Flask, jsonify, redirect, render_template, request, session
 from flask_session import Session
+from sqlalchemy import select
 from werkzeug.security import check_password_hash, generate_password_hash
 #import markdown
 #mode3
@@ -17,9 +18,13 @@ from secondary import model_route
 from secondary.document_editor import document_editor_bp
 from bac_generator.routes import bac_generator_bp
 from bac_generator.generator import BACExamGenerator
+from models import SessionLocal, User, Conversation, Message, Style, init_db
 import traceback
 
+load_dotenv()
+
 app = Flask(__name__)
+app.secret_key = os.environ.get("SECRET_KEY") or "dev-only-insecure-secret-key"
 app.register_blueprint(bac_generator_bp)
 app.register_blueprint(document_editor_bp)
 os.makedirs("uploads", exist_ok=True)
@@ -29,6 +34,11 @@ app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 
 Session(app)
+
+
+@app.teardown_appcontext
+def remove_db_session(exception=None):
+    SessionLocal.remove()
 
 def load_translations():
     with open("translations.json", "r", encoding="utf-8") as file:
@@ -100,115 +110,11 @@ def after_request(response):
 # DATABASE & TABLES
 # =========================================================
 #profu.db e data baseu nu proful.db
-connect = sqlite3.connect("profu.db", check_same_thread=False)
+init_db()
 
-connect.row_factory = sqlite3.Row
-
-db = connect.cursor()
-
-db.execute("""
-CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    email TEXT UNIQUE NOT NULL,
-    hash TEXT NOT NULL,
-    username TEXT NOT NULL,
-    gender TEXT NOT NULL,
-    tehnologie TEXT NOT NULL,
-    liceu TEXT NOT NULL
-)
-""")
-
-db.execute("""
-CREATE TABLE IF NOT EXISTS conversations (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    mode TEXT NOT NULL,
-    title TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)
-""")
-
-db.execute("""
-CREATE TABLE IF NOT EXISTS messages (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    conversation_id INTEGER NOT NULL,
-    role TEXT NOT NULL,
-    content TEXT NOT NULL,
-    title TEXT,
-    style_id TEXT,
-    school_class TEXT,
-    bac TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)
-""")
-
-db.execute("""
-CREATE TABLE IF NOT EXISTS styles (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    style_name TEXT NOT NULL,
-    test_type TEXT NOT NULL,
-    style_description TEXT NOT NULL,
-
-    documents TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)
-""")
-
-db.execute("""
-CREATE TABLE IF NOT EXISTS documents (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    title TEXT NOT NULL DEFAULT 'Document nou',
-    content TEXT NOT NULL DEFAULT '',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)
-""")
-
-migrations = [
-    "ALTER TABLE messages ADD COLUMN action_type TEXT",
-    "ALTER TABLE styles ADD COLUMN style_name TEXT",
-    "ALTER TABLE conversations ADD COLUMN school_class TEXT",
-    "ALTER TABLE conversations ADD COLUMN style_id INTEGER",
-    "ALTER TABLE conversations ADD COLUMN bac TEXT",
-    "ALTER TABLE messages ADD COLUMN exam_data TEXT",
-    "ALTER TABLE conversations ADD COLUMN document_id INTEGER",
-    "ALTER TABLE messages ADD COLUMN doc_action TEXT",
-]
-
-
-for sql in migrations:
-    try:
-        db.execute(sql)
-    except Exception as e:
-        if "duplicate column name" not in str(e).lower():
-            raise
-
-# try:
-#     db.execute("ALTER TABLE messages ADD COLUMN action_type TEXT")
-# except Exception as e:
-#     if "duplicate column name" not in str(e).lower():
-#         raise
-# try:
-#     db.execute("ALTER TABLE styles ADD COLUMN style_name TEXT")
-# except:
-#     pass
-# try:
-#     db.execute("ALTER TABLE conversations ADD COLUMN style_id INTEGER")
-# except:
-#     pass
-
-# try:
-#     db.execute("ALTER TABLE conversations ADD COLUMN school_class TEXT")
-# except:
-#     pass
-
-# try:
-#     db.execute("ALTER TABLE conversations ADD COLUMN bac TEXT")
-# except:
-#     pass
-connect.commit()
+# scoped_session, so every request/thread transparently gets its own
+# SQLAlchemy Session; teardown_appcontext above releases it after each request.
+db = SessionLocal
 
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "pdf", "docx", "txt"}
 def allowed_file(filename):
@@ -309,45 +215,33 @@ def index():
 @app.route("/dashboard")
 @login_required
 def dashboard():
-    user = db.execute(
-        "SELECT * FROM users WHERE id = ?",
-        (session["user_id"],)
-    ).fetchone()
+    user = db.get(User, session["user_id"])
 
-    conversations = db.execute(
-        """
-        SELECT * FROM conversations
-        WHERE user_id = ?
-        ORDER BY created_at DESC
-        """,
-        (session["user_id"],)
-    ).fetchall()
+    conversations = db.scalars(
+        select(Conversation)
+        .where(Conversation.user_id == session["user_id"])
+        .order_by(Conversation.created_at.desc())
+    ).all()
 
-    latest_conversation = db.execute(
-        """
-        SELECT * FROM conversations
-        WHERE user_id = ?
-        ORDER BY created_at DESC
-        LIMIT 1
-        """,
-        (session["user_id"],)
-    ).fetchone()
+    latest_conversation = db.scalars(
+        select(Conversation)
+        .where(Conversation.user_id == session["user_id"])
+        .order_by(Conversation.created_at.desc())
+        .limit(1)
+    ).first()
 
     messages = []
     mod = "—"
 
     if latest_conversation is not None:
-        messages = db.execute(
-            """
-            SELECT * FROM messages
-            WHERE conversation_id = ?
-            ORDER BY id ASC
-            """,
-            (latest_conversation["id"],)
-        ).fetchall()
-        mod = latest_conversation["mode"] if latest_conversation["mode"] else "—"
+        messages = db.scalars(
+            select(Message)
+            .where(Message.conversation_id == latest_conversation.id)
+            .order_by(Message.id.asc())
+        ).all()
+        mod = latest_conversation.mode if latest_conversation.mode else "—"
 
-    current_user = SimpleNamespace(name=user["username"] if user else "Teacher")
+    current_user = SimpleNamespace(name=user.username if user else "Teacher")
 
     return render_template(
         "index.html",
@@ -368,7 +262,7 @@ def dashboard():
 # =========================================================
 @app.route("/register", methods=["GET", "POST"])
 def register():
-    return accounts.register_function(db, connect, apology)
+    return accounts.register_function(db, apology)
 # =========================================================
 # LOGIN
 # =========================================================
@@ -397,14 +291,14 @@ def account():
 @login_required
 def passwordchange():
     #TODO
-    return accounts.password_function(db, connect, apology)
+    return accounts.password_function(db, apology)
 # =========================================================
 # STYLE
 # =========================================================
 @app.route("/style", methods=["GET", "POST"])
 @login_required
 def style():
-    return accounts.style_function(apology, db, connect)
+    return accounts.style_function(apology, db)
     #TODO
 # =========================================================
 # MENU
@@ -413,12 +307,9 @@ def style():
 @login_required
 def menu():
 
-    styles = db.execute(
-        """
-        SELECT * FROM styles WHERE user_id = ? ORDER BY id DESC
-        """,
-        (session["user_id"],)
-    ).fetchall()
+    styles = db.scalars(
+        select(Style).where(Style.user_id == session["user_id"]).order_by(Style.id.desc())
+    ).all()
 
     return render_template("menu.html", styles=styles)
 
@@ -437,18 +328,17 @@ def documentation():
 @login_required
 def create_mode1():
 
-    db.execute(
-        "INSERT INTO conversations (user_id, mode, title) VALUES (?, ?, ?)",
-        (session["user_id"], "mode1", "Conversație nouă"))
-    connect.commit()
-    conversation_id = db.lastrowid
+    conversation = Conversation(user_id=session["user_id"], mode="mode1", title="Conversație nouă")
+    db.add(conversation)
+    db.commit()
+    conversation_id = conversation.id
     return redirect(f"/mode1/{conversation_id}")
 
 
 @app.route("/mode1/<int:conversation_id>", methods=["GET", "POST"])
 @login_required
 def mode1(conversation_id):
-    return model_route.mode1_chat(db, connect, apology, conversation_id)
+    return model_route.mode1_chat(db, apology, conversation_id)
 
 # =========================================================
 # MODE2
@@ -460,26 +350,33 @@ def mode1(conversation_id):
 @login_required
 def create_mode2():
 
-    style_id = request.form.get("style")
+    raw_style_id = request.form.get("style")
+    try:
+        style_id = int(raw_style_id) if raw_style_id else None
+    except (TypeError, ValueError):
+        style_id = None
     school_class = request.form.get("school_class")
     bac = request.form.get("bac")
 
-    db.execute(
-        """
-        INSERT INTO conversations (user_id, mode, title, style_id, school_class, bac) VALUES (?, ?, ?, ?, ?, ?)
-        """,
-        (session["user_id"], "mode2", "Traducere nouă", style_id, school_class, bac)
+    conversation = Conversation(
+        user_id=session["user_id"],
+        mode="mode2",
+        title="Traducere nouă",
+        style_id=style_id,
+        school_class=school_class,
+        bac=bac,
     )
-    connect.commit()
+    db.add(conversation)
+    db.commit()
 
-    conversation_id = db.lastrowid
+    conversation_id = conversation.id
     return redirect(f"/mode2/{conversation_id}")
 
 
 @app.route("/mode2/<int:conversation_id>", methods=["GET", "POST"])
 @login_required
 def mode2(conversation_id):
-    return model_route.mode2_chat(db, connect, apology, conversation_id)
+    return model_route.mode2_chat(db, apology, conversation_id)
 
 # =========================================================
 # MODE3
@@ -499,17 +396,12 @@ def create_mode3():
     filename = secure_filename(uploaded_file.filename)
     os.makedirs("uploads", exist_ok=True)          # ← safety net
     uploaded_file.save(f"uploads/{filename}")
-    db.execute(
-        """
-        INSERT INTO conversations (user_id, mode, title)
-        VALUES (?, ?, ?)
-        """,
-        (session["user_id"], "mode3", filename)
-    )
 
-    connect.commit()
+    conversation = Conversation(user_id=session["user_id"], mode="mode3", title=filename)
+    db.add(conversation)
+    db.commit()
 
-    conversation_id = db.lastrowid
+    conversation_id = conversation.id
 
     return redirect(f"/mode3/{conversation_id}")
 
@@ -538,7 +430,7 @@ def file_read(filepath):
 @app.route("/mode3/<int:conversation_id>", methods=["GET", "POST"])
 @login_required
 def mode3(conversation_id):
-    return model_route.mode3_chat(db, connect, apology, conversation_id, file_read, "uploads")
+    return model_route.mode3_chat(db, apology, conversation_id, file_read, "uploads")
 #                                                                                    ^^^^^^^^^ add this
 
 # @app.route("/mode3", methods=["GET", "POST"])
@@ -584,16 +476,11 @@ def create_mode4():
     os.makedirs("uploads", exist_ok=True)
     uploaded_file.save(f"uploads/{filename}")
 
-    db.execute(
-        """
-        INSERT INTO conversations (user_id, mode, title) VALUES (?, ?, ?)
-        """,
-        (session["user_id"], "mode4", filename)
-    )
+    conversation = Conversation(user_id=session["user_id"], mode="mode4", title=filename)
+    db.add(conversation)
+    db.commit()
 
-    connect.commit()
-
-    conversation_id = db.lastrowid
+    conversation_id = conversation.id
 
     return redirect(f"/mode4/{conversation_id}")
 
@@ -601,24 +488,23 @@ def create_mode4():
 @app.route("/mode4")
 @login_required
 def mode4_latest():
-    conversation = db.execute(
-        """
-        SELECT * FROM conversations WHERE user_id = ? AND mode = ?
-        ORDER BY created_at DESC LIMIT 1
-        """,
-        (session["user_id"], "mode4")
-    ).fetchone()
+    conversation = db.scalars(
+        select(Conversation)
+        .where(Conversation.user_id == session["user_id"], Conversation.mode == "mode4")
+        .order_by(Conversation.created_at.desc())
+        .limit(1)
+    ).first()
 
     if not conversation:
         return redirect("/menu")
 
-    return redirect(f"/mode4/{conversation['id']}")
+    return redirect(f"/mode4/{conversation.id}")
 
 
 @app.route("/mode4/<int:conversation_id>", methods=["GET", "POST"])
 @login_required
 def mode4(conversation_id):
-    return model_route.mode4_chat(db, connect, apology, conversation_id, "uploads")
+    return model_route.mode4_chat(db, apology, conversation_id, "uploads")
 # =========================================================
 # MODE5
 # =========================================================
@@ -627,16 +513,11 @@ def mode4(conversation_id):
 @login_required
 def create_mode5():
 
-    db.execute(
-        """
-        INSERT INTO conversations (user_id, mode, title) VALUES (?, ?, ?)
-        """,
-        (session["user_id"], "mode5", "Varianta BAC nouă")
-    )
+    conversation = Conversation(user_id=session["user_id"], mode="mode5", title="Varianta BAC nouă")
+    db.add(conversation)
+    db.commit()
 
-    connect.commit()
-
-    conversation_id = db.lastrowid
+    conversation_id = conversation.id
 
     # Generate the first BAC variant right away so the user doesn't land on an empty chat
     default_lessons = [
@@ -648,44 +529,42 @@ def create_mode5():
     generator = BACExamGenerator()
     exam_data = generator.generate_exam(default_lessons)
 
-    db.execute(
-        """
-        INSERT INTO messages (conversation_id, role, content, exam_data)
-        VALUES (?, ?, ?, ?)
-        """,
-        (conversation_id, "assistant", exam_data["html_preview"], json.dumps(exam_data))
-    )
-
-    connect.commit()
+    db.add(Message(
+        conversation_id=conversation_id,
+        role="assistant",
+        content=exam_data["html_preview"],
+        exam_data=json.dumps(exam_data),
+    ))
+    db.commit()
 
     return redirect(f"/mode5/{conversation_id}")
 
 @app.route("/mode5")
 @login_required
 def mode5_latest():
-    conversation = db.execute(
-        """
-        SELECT * FROM conversations WHERE user_id = ? AND mode = ?
-        ORDER BY created_at DESC LIMIT 1
-        """,
-        (session["user_id"], "mode5")
-    ).fetchone()
+    conversation = db.scalars(
+        select(Conversation)
+        .where(Conversation.user_id == session["user_id"], Conversation.mode == "mode5")
+        .order_by(Conversation.created_at.desc())
+        .limit(1)
+    ).first()
 
     if not conversation:
         return redirect("/menu")
 
-    return redirect(f"/mode5/{conversation['id']}")
+    return redirect(f"/mode5/{conversation.id}")
 
 
 @app.route("/mode5/<int:conversation_id>", methods=["GET", "POST"])
 @login_required
 def mode5(conversation_id):
-    conversation = db.execute(
-        """
-        SELECT * FROM conversations WHERE id = ? AND user_id = ? AND mode = ?
-        """,
-        (conversation_id, session["user_id"], "mode5")
-    ).fetchone()
+    conversation = db.scalars(
+        select(Conversation).where(
+            Conversation.id == conversation_id,
+            Conversation.user_id == session["user_id"],
+            Conversation.mode == "mode5",
+        )
+    ).first()
 
     if not conversation:
         return apology("conversație inexistentă", 404)
@@ -693,21 +572,12 @@ def mode5(conversation_id):
     if request.method == "POST":
         prompt = request.form.get("prompt")
         if prompt and prompt.strip():
-            db.execute(
-                """
-                INSERT INTO messages (conversation_id, role, content)
-                VALUES (?, ?, ?)
-                """,
-                (conversation_id, "user", prompt)
-            )
-            connect.commit()
+            db.add(Message(conversation_id=conversation_id, role="user", content=prompt))
+            db.commit()
 
-    raw_messages = db.execute(
-        """
-        SELECT * FROM messages WHERE conversation_id = ? ORDER BY id ASC
-        """,
-        (conversation_id,)
-    ).fetchall()
+    raw_messages = db.scalars(
+        select(Message).where(Message.conversation_id == conversation_id).order_by(Message.id.asc())
+    ).all()
 
     import markdown
     messages = []
@@ -725,12 +595,11 @@ def mode5(conversation_id):
                 msg_dict["exam_data_parsed"] = None
         messages.append(msg_dict)
 
-    conversations = db.execute(
-        """
-        SELECT * FROM conversations WHERE user_id = ? AND mode = ? ORDER BY created_at DESC
-        """,
-        (session["user_id"], "mode5")
-    ).fetchall()
+    conversations = db.scalars(
+        select(Conversation)
+        .where(Conversation.user_id == session["user_id"], Conversation.mode == "mode5")
+        .order_by(Conversation.created_at.desc())
+    ).all()
 
     return render_template(
         "modes/mode5.html",
@@ -738,7 +607,7 @@ def mode5(conversation_id):
         conversations=conversations,
         conversation=conversation,
         conversation_id=conversation_id,
-        bac=conversation["bac"] if "bac" in conversation.keys() else "M3"
+        bac=conversation.bac
     )
 
 # =========================================================
@@ -753,76 +622,44 @@ def rename_conversation(conversation_id):
     if not new_title:
         return apology("Titlul conversației nu poate fi gol.", 400)
 
-    conversation = db.execute(
-        """
-        SELECT * FROM conversations
-        WHERE id = ? AND user_id = ?
-        """,
-        (conversation_id, session["user_id"])
-    ).fetchone()
+    conversation = db.scalars(
+        select(Conversation).where(Conversation.id == conversation_id, Conversation.user_id == session["user_id"])
+    ).first()
 
     if not conversation:
         return apology("Conversație inexistentă.", 404)
 
-    db.execute(
-        """
-        UPDATE conversations
-        SET title = ?
-        WHERE id = ? AND user_id = ?
-        """,
-        (new_title, conversation_id, session["user_id"])
-    )
-    connect.commit()
+    conversation.title = new_title
+    db.commit()
 
-    return redirect(f"/{conversation['mode']}/{conversation_id}")
+    return redirect(f"/{conversation.mode}/{conversation_id}")
 
 
 @app.route("/conversation/<int:conversation_id>/delete", methods=["POST"])
 @login_required
 def delete_conversation(conversation_id):
-    conversation = db.execute(
-        """
-        SELECT * FROM conversations
-        WHERE id = ? AND user_id = ?
-        """,
-        (conversation_id, session["user_id"])
-    ).fetchone()
+    conversation = db.scalars(
+        select(Conversation).where(Conversation.id == conversation_id, Conversation.user_id == session["user_id"])
+    ).first()
 
     if not conversation:
         return apology("Conversație inexistentă.", 404)
 
-    mode = conversation["mode"]
+    mode = conversation.mode
 
-    db.execute(
-        """
-        DELETE FROM messages
-        WHERE conversation_id = ?
-        """,
-        (conversation_id,)
-    )
+    db.query(Message).filter(Message.conversation_id == conversation_id).delete()
+    db.delete(conversation)
+    db.commit()
 
-    db.execute(
-        """
-        DELETE FROM conversations
-        WHERE id = ? AND user_id = ?
-        """,
-        (conversation_id, session["user_id"])
-    )
-
-    connect.commit()
-
-    next_conversation = db.execute(
-        """
-        SELECT * FROM conversations
-        WHERE user_id = ? AND mode = ?
-        ORDER BY created_at DESC
-        LIMIT 1
-        """,
-        (session["user_id"], mode)
-    ).fetchone()
+    next_conversation = db.scalars(
+        select(Conversation)
+        .where(Conversation.user_id == session["user_id"], Conversation.mode == mode)
+        .order_by(Conversation.created_at.desc())
+        .limit(1)
+    ).first()
 
     if next_conversation:
-        return redirect(f"/{mode}/{next_conversation['id']}")
+        return redirect(f"/{mode}/{next_conversation.id}")
 
     return redirect("/menu")
 # =========================================================

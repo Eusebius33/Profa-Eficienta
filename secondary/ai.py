@@ -4,18 +4,8 @@ from dotenv import load_dotenv
 from pathlib import Path
 from PIL import Image
 import os
-import sqlite3
 from PyPDF2 import PdfReader
 import json
-# =========================================================
-#Database
-# =========================================================
-
-connect = sqlite3.connect("profu.db", check_same_thread=False)
-
-connect.row_factory = sqlite3.Row
-
-db = connect.cursor()
 
 # =========================================================
 # LOAD ENV

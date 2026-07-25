@@ -1,32 +1,33 @@
 import markdown
 import os
 from flask import request, redirect, render_template, session
+from sqlalchemy import select, func
 from secondary import ai
 from secondary import adjacent
-def mode3_chat(db, connect, apology, conversation_id, file_read, upload_folder):
+from models import Conversation, Message
 
-    conversation = db.execute(
-        "SELECT * FROM conversations WHERE id = ? AND user_id = ?",
-        (conversation_id, session["user_id"])
-    ).fetchone()
+
+def mode3_chat(db, apology, conversation_id, file_read, upload_folder):
+
+    conversation = db.scalars(
+        select(Conversation).where(Conversation.id == conversation_id, Conversation.user_id == session["user_id"])
+    ).first()
 
     if not conversation:
         return apology("conversație inexistentă")
 
     # Exclude hidden system messages from display
-    messages = db.execute(
-        "SELECT * FROM messages WHERE conversation_id = ? AND role != 'system' ORDER BY id ASC",
-        (conversation_id,)
-    ).fetchall()
+    messages = db.scalars(
+        select(Message)
+        .where(Message.conversation_id == conversation_id, Message.role != "system")
+        .order_by(Message.id.asc())
+    ).all()
 
     # Count ALL messages (including system) to check if first load
-    total = db.execute(
-        "SELECT COUNT(*) AS c FROM messages WHERE conversation_id = ?",
-        (conversation_id,)
-    ).fetchone()["c"]
+    total = db.scalar(select(func.count()).select_from(Message).where(Message.conversation_id == conversation_id))
 
     if total == 0:
-        filename = conversation["title"]
+        filename = conversation.title
         filepath = os.path.join(upload_folder, filename)
 
         if not os.path.exists(filepath):
@@ -37,10 +38,7 @@ def mode3_chat(db, connect, apology, conversation_id, file_read, upload_folder):
         latex_content = ai.convert_file_to_latex(raw_content, filepath=filepath)
 
         # Store PURE LaTeX as hidden system message (model reference for generation)
-        db.execute(
-            "INSERT INTO messages (conversation_id, role, content) VALUES (?, ?, ?)",
-            (conversation_id, "system", latex_content)
-        )
+        db.add(Message(conversation_id=conversation_id, role="system", content=latex_content))
 
         if latex_content and latex_content.startswith("Eroare AI:"):
             intro = (
@@ -58,11 +56,8 @@ def mode3_chat(db, connect, apology, conversation_id, file_read, upload_folder):
             )
 
         # Store visible intro
-        db.execute(
-            "INSERT INTO messages (conversation_id, role, content) VALUES (?, ?, ?)",
-            (conversation_id, "assistant", intro)
-        )
-        connect.commit()
+        db.add(Message(conversation_id=conversation_id, role="assistant", content=intro))
+        db.commit()
         return redirect(f"/mode3/{conversation_id}")
 
     if request.method == "POST":
@@ -70,25 +65,24 @@ def mode3_chat(db, connect, apology, conversation_id, file_read, upload_folder):
         if not prompt or not prompt.strip():
             return redirect(f"/mode3/{conversation_id}")
 
-        db.execute(
-            "INSERT INTO messages (conversation_id, role, content) VALUES (?, ?, ?)",
-            (conversation_id, "user", prompt)
-        )
-        connect.commit()
+        db.add(Message(conversation_id=conversation_id, role="user", content=prompt))
+        db.commit()
 
         # Build history (exclude system message)
-        history_rows = db.execute(
-            "SELECT role, content FROM messages WHERE conversation_id = ? AND role != 'system' ORDER BY id ASC",
-            (conversation_id,)
-        ).fetchall()
-        history = "\n".join(f"{r['role']}: {r['content']}" for r in history_rows)
+        history_rows = db.scalars(
+            select(Message)
+            .where(Message.conversation_id == conversation_id, Message.role != "system")
+            .order_by(Message.id.asc())
+        ).all()
+        history = "\n".join(f"{r.role}: {r.content}" for r in history_rows)
 
         # Fetch pure LaTeX model (the hidden system message)
-        system_msg = db.execute(
-            "SELECT content FROM messages WHERE conversation_id = ? AND role = 'system' LIMIT 1",
-            (conversation_id,)
-        ).fetchone()
-        model_content = system_msg["content"] if system_msg else ""
+        system_msg = db.scalars(
+            select(Message)
+            .where(Message.conversation_id == conversation_id, Message.role == "system")
+            .limit(1)
+        ).first()
+        model_content = system_msg.content if system_msg else ""
 
         response = ai.generate_from_model(
             model_content=model_content,
@@ -96,18 +90,16 @@ def mode3_chat(db, connect, apology, conversation_id, file_read, upload_folder):
             user_prompt=prompt
         )
 
-        db.execute(
-            "INSERT INTO messages (conversation_id, role, content) VALUES (?, ?, ?)",
-            (conversation_id, "assistant", response)
-        )
-        connect.commit()
+        db.add(Message(conversation_id=conversation_id, role="assistant", content=response))
+        db.commit()
         return redirect(f"/mode3/{conversation_id}")
 
     # ---- GET: render chat ----
-    conversations = db.execute(
-        "SELECT * FROM conversations WHERE user_id = ? AND mode = ? ORDER BY created_at DESC",
-        (session["user_id"], "mode3")
-    ).fetchall()
+    conversations = db.scalars(
+        select(Conversation)
+        .where(Conversation.user_id == session["user_id"], Conversation.mode == "mode3")
+        .order_by(Conversation.created_at.desc())
+    ).all()
 
     return render_template(
         "modes/mode3.html",
@@ -118,29 +110,26 @@ def mode3_chat(db, connect, apology, conversation_id, file_read, upload_folder):
     )
 
 
-def mode4_chat(db, connect, apology, conversation_id, upload_folder):
+def mode4_chat(db, apology, conversation_id, upload_folder):
 
-    conversation = db.execute(
-        "SELECT * FROM conversations WHERE id = ? AND user_id = ?",
-        (conversation_id, session["user_id"])
-    ).fetchone()
+    conversation = db.scalars(
+        select(Conversation).where(Conversation.id == conversation_id, Conversation.user_id == session["user_id"])
+    ).first()
 
     if not conversation:
         return apology("conversație inexistentă")
 
     # Exclude hidden system message (raw transcription) from display
-    messages = db.execute(
-        "SELECT * FROM messages WHERE conversation_id = ? AND role != 'system' ORDER BY id ASC",
-        (conversation_id,)
-    ).fetchall()
+    messages = db.scalars(
+        select(Message)
+        .where(Message.conversation_id == conversation_id, Message.role != "system")
+        .order_by(Message.id.asc())
+    ).all()
 
-    total = db.execute(
-        "SELECT COUNT(*) AS c FROM messages WHERE conversation_id = ?",
-        (conversation_id,)
-    ).fetchone()["c"]
+    total = db.scalar(select(func.count()).select_from(Message).where(Message.conversation_id == conversation_id))
 
     if total == 0:
-        filename = conversation["title"]
+        filename = conversation.title
         filepath = os.path.join(upload_folder, filename)
 
         if not os.path.exists(filepath):
@@ -149,10 +138,7 @@ def mode4_chat(db, connect, apology, conversation_id, upload_folder):
         latex_content = ai.transcribe_handwriting(filepath)
 
         # Store PURE LaTeX as hidden system message (model reference for generation)
-        db.execute(
-            "INSERT INTO messages (conversation_id, role, content) VALUES (?, ?, ?)",
-            (conversation_id, "system", latex_content)
-        )
+        db.add(Message(conversation_id=conversation_id, role="system", content=latex_content))
 
         if latex_content and latex_content.startswith("Eroare AI:"):
             intro = (
@@ -169,11 +155,8 @@ def mode4_chat(db, connect, apology, conversation_id, upload_folder):
             )
 
         # Store visible intro
-        db.execute(
-            "INSERT INTO messages (conversation_id, role, content) VALUES (?, ?, ?)",
-            (conversation_id, "assistant", intro)
-        )
-        connect.commit()
+        db.add(Message(conversation_id=conversation_id, role="assistant", content=intro))
+        db.commit()
         return redirect(f"/mode4/{conversation_id}")
 
     if request.method == "POST":
@@ -181,25 +164,24 @@ def mode4_chat(db, connect, apology, conversation_id, upload_folder):
         if not prompt or not prompt.strip():
             return redirect(f"/mode4/{conversation_id}")
 
-        db.execute(
-            "INSERT INTO messages (conversation_id, role, content) VALUES (?, ?, ?)",
-            (conversation_id, "user", prompt)
-        )
-        connect.commit()
+        db.add(Message(conversation_id=conversation_id, role="user", content=prompt))
+        db.commit()
 
         # Build history (exclude system message)
-        history_rows = db.execute(
-            "SELECT role, content FROM messages WHERE conversation_id = ? AND role != 'system' ORDER BY id ASC",
-            (conversation_id,)
-        ).fetchall()
-        history = "\n".join(f"{r['role']}: {r['content']}" for r in history_rows)
+        history_rows = db.scalars(
+            select(Message)
+            .where(Message.conversation_id == conversation_id, Message.role != "system")
+            .order_by(Message.id.asc())
+        ).all()
+        history = "\n".join(f"{r.role}: {r.content}" for r in history_rows)
 
         # Fetch pure LaTeX transcription (the hidden system message)
-        system_msg = db.execute(
-            "SELECT content FROM messages WHERE conversation_id = ? AND role = 'system' LIMIT 1",
-            (conversation_id,)
-        ).fetchone()
-        model_content = system_msg["content"] if system_msg else ""
+        system_msg = db.scalars(
+            select(Message)
+            .where(Message.conversation_id == conversation_id, Message.role == "system")
+            .limit(1)
+        ).first()
+        model_content = system_msg.content if system_msg else ""
 
         response = ai.generate_from_model(
             model_content=model_content,
@@ -207,18 +189,16 @@ def mode4_chat(db, connect, apology, conversation_id, upload_folder):
             user_prompt=prompt
         )
 
-        db.execute(
-            "INSERT INTO messages (conversation_id, role, content) VALUES (?, ?, ?)",
-            (conversation_id, "assistant", response)
-        )
-        connect.commit()
+        db.add(Message(conversation_id=conversation_id, role="assistant", content=response))
+        db.commit()
         return redirect(f"/mode4/{conversation_id}")
 
     # ---- GET: render chat ----
-    conversations = db.execute(
-        "SELECT * FROM conversations WHERE user_id = ? AND mode = ? ORDER BY created_at DESC",
-        (session["user_id"], "mode4")
-    ).fetchall()
+    conversations = db.scalars(
+        select(Conversation)
+        .where(Conversation.user_id == session["user_id"], Conversation.mode == "mode4")
+        .order_by(Conversation.created_at.desc())
+    ).all()
 
     return render_template(
         "modes/mode4.html",
@@ -231,29 +211,22 @@ def mode4_chat(db, connect, apology, conversation_id, upload_folder):
     )
 
 
-def mode2_chat(db, connect, apology, conversation_id):
+def mode2_chat(db, apology, conversation_id):
 
     # ---- Load conversation + joined style description ----
-    conversation = db.execute(
-        """
-        SELECT conversations.*, styles.style_description
-        FROM conversations
-        LEFT JOIN styles ON conversations.style_id = styles.id
-        WHERE conversations.id = ? AND conversations.user_id = ?
-        """,
-        (conversation_id, session["user_id"])
-    ).fetchone()
+    conversation = db.scalars(
+        select(Conversation).where(Conversation.id == conversation_id, Conversation.user_id == session["user_id"])
+    ).first()
 
     if not conversation:
         return apology("conversație inexistentă")
 
     # ---- Insert intro message ONLY on first load ----
-    existing = db.execute(
-        "SELECT COUNT(*) AS c FROM messages WHERE conversation_id = ?",
-        (conversation_id,)
-    ).fetchone()
+    existing_count = db.scalar(
+        select(func.count()).select_from(Message).where(Message.conversation_id == conversation_id)
+    )
 
-    if existing["c"] == 0:
+    if existing_count == 0:
 
         style_desc = conversation["style_description"] or "Stil implicit"
         school_class = conversation["school_class"] or "—"
@@ -268,17 +241,10 @@ def mode2_chat(db, connect, apology, conversation_id):
             f"iar eu le voi transforma în limbaj matematic gata de printat."
         )
 
-        db.execute(
-            """
-            INSERT INTO messages (conversation_id, role, content)
-            VALUES (?, ?, ?)
-            """,
-            (conversation_id, "assistant", intro)
-        )
-        connect.commit()
+        db.add(Message(conversation_id=conversation_id, role="assistant", content=intro))
+        db.commit()
 
     # ---- Handle user POST ----
-# ---- Handle user POST ----
     if request.method == "POST":
 
         prompt = request.form.get("prompt")
@@ -288,14 +254,8 @@ def mode2_chat(db, connect, apology, conversation_id):
             return redirect(f"/mode2/{conversation_id}")
 
         # save user message
-        db.execute(
-            """
-            INSERT INTO messages (conversation_id, role, content)
-            VALUES (?, ?, ?)
-            """,
-            (conversation_id, "user", prompt)
-        )
-        connect.commit()
+        db.add(Message(conversation_id=conversation_id, role="user", content=prompt))
+        db.commit()
 
         # ---- AI response: pick the right pipeline ----
         if action_type == "generate":
@@ -330,40 +290,27 @@ def mode2_chat(db, connect, apology, conversation_id):
             )
 
         # save assistant message
-        db.execute(
-            """
-            INSERT INTO messages (conversation_id, role, content)
-            VALUES (?, ?, ?)
-            """,
-            (conversation_id, "assistant", response)
-        )
-        connect.commit()
+        db.add(Message(conversation_id=conversation_id, role="assistant", content=response))
+        db.commit()
 
         # update title with first user prompt (optional, like mode1)
-        if conversation["title"] in ("Traducere nouă", None, ""):
+        if conversation.title in ("Traducere nouă", None, ""):
             short_title = prompt.strip().split("\n")[0][:40]
-            db.execute(
-                "UPDATE conversations SET title = ? WHERE id = ?",
-                (short_title, conversation_id)
-            )
-            connect.commit()
+            conversation.title = short_title
+            db.commit()
 
         return redirect(f"/mode2/{conversation_id}")
 
     # ---- Load messages + sidebar conversations ----
-    messages = db.execute(
-        """
-        SELECT * FROM messages WHERE conversation_id = ? ORDER BY id ASC
-        """,
-        (conversation_id,)
-    ).fetchall()
+    messages = db.scalars(
+        select(Message).where(Message.conversation_id == conversation_id).order_by(Message.id.asc())
+    ).all()
 
-    conversations = db.execute(
-        """
-        SELECT * FROM conversations WHERE user_id = ? AND mode = ? ORDER BY created_at DESC
-        """,
-        (session["user_id"], "mode2")
-    ).fetchall()
+    conversations = db.scalars(
+        select(Conversation)
+        .where(Conversation.user_id == session["user_id"], Conversation.mode == "mode2")
+        .order_by(Conversation.created_at.desc())
+    ).all()
 
     return render_template(
         "modes/mode2.html",
@@ -373,13 +320,10 @@ def mode2_chat(db, connect, apology, conversation_id):
         conversation_id=conversation_id
     )
 
-def mode1_chat(db, connect, apology, conversation_id):
-    conversation = db.execute(
-        """
-        SELECT * FROM conversations WHERE id = ? AND user_id = ?
-        """,
-        (conversation_id, session["user_id"])
-    ).fetchone()
+def mode1_chat(db, apology, conversation_id):
+    conversation = db.scalars(
+        select(Conversation).where(Conversation.id == conversation_id, Conversation.user_id == session["user_id"])
+    ).first()
 
     if not conversation:
         return apology("conversation not found")
@@ -390,36 +334,24 @@ def mode1_chat(db, connect, apology, conversation_id):
         if not prompt:
             return redirect(f"/mode1/{conversation_id}")
 
-        if conversation["title"] == "Conversație nouă":
+        if conversation.title == "Conversație nouă":
             new_title = prompt[:40]
-            db.execute(
-            "UPDATE conversations SET title = ? WHERE id = ?",
-            (new_title, conversation_id)
-            )
-            connect.commit()
+            conversation.title = new_title
+            db.commit()
 
         # save user msg
-        db.execute(
-            """
-            INSERT INTO messages (conversation_id, role, content) VALUES (?, ?, ?)
-            """,
-            (conversation_id, "user", prompt)
-        )
-
-        connect.commit()
+        db.add(Message(conversation_id=conversation_id, role="user", content=prompt))
+        db.commit()
 
         # AI RESPONSE
-        history_rows = db.execute(
-            """
-            SELECT role, content FROM messages WHERE conversation_id = ? ORDER BY id ASC
-            """,
-            (conversation_id,)
-        ).fetchall()
+        history_rows = db.scalars(
+            select(Message).where(Message.conversation_id == conversation_id).order_by(Message.id.asc())
+        ).all()
 
         history = [
             {
-                "role": row["role"],
-                "content": row["content"]
+                "role": row.role,
+                "content": row.content
             }
             for row in history_rows
         ]
@@ -428,23 +360,14 @@ def mode1_chat(db, connect, apology, conversation_id):
         response_html=markdown.markdown(response)
 
         # save ai msg
-        db.execute(
-            """
-            INSERT INTO messages (conversation_id, role, content) VALUES (?, ?, ?)
-            """,
-            (conversation_id, "assistant", response)
-        )
-
-        connect.commit()
+        db.add(Message(conversation_id=conversation_id, role="assistant", content=response))
+        db.commit()
 
         return redirect(f"/mode1/{conversation_id}")
 
-    messages = db.execute(
-        """
-        SELECT * FROM messages WHERE conversation_id = ? ORDER BY id ASC
-        """,
-        (conversation_id,)
-    ).fetchall()
+    messages = db.scalars(
+        select(Message).where(Message.conversation_id == conversation_id).order_by(Message.id.asc())
+    ).all()
     messages = [
         dict(m) | {"content": markdown.markdown(m["content"])}
         for m in messages
@@ -462,19 +385,15 @@ def mode1_chat(db, connect, apology, conversation_id):
 
     Cu ce te pot ajuta astăzi?"""
 
-        db.execute(
-            "INSERT INTO messages (conversation_id, role, content) VALUES (?, ?, ?)",
-            (conversation_id, "assistant", intro)
-        )
-        connect.commit()
+        db.add(Message(conversation_id=conversation_id, role="assistant", content=intro))
+        db.commit()
 
         return redirect(f"/mode1/{conversation_id}")
-    conversations = db.execute(
-        """
-        SELECT * FROM conversations WHERE user_id = ? AND mode = ? ORDER BY created_at DESC
-        """,
-        (session["user_id"], "mode1")
-    ).fetchall()
+    conversations = db.scalars(
+        select(Conversation)
+        .where(Conversation.user_id == session["user_id"], Conversation.mode == "mode1")
+        .order_by(Conversation.created_at.desc())
+    ).all()
 
     #content= markdown.markdown("row["content"]")
     return render_template("modes/mode1.html",

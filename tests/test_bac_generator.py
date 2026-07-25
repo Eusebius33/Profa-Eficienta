@@ -2,7 +2,6 @@ import os
 import unittest
 import tempfile
 import json
-import sqlite3
 from app import app
 from bac_generator.generators import (
     gen_s1_ex1, gen_s1_ex2, gen_s1_ex3, gen_s1_ex4, gen_s1_ex5, gen_s1_ex6,
@@ -277,63 +276,47 @@ class TestBACGenerator(unittest.TestCase):
 
     def test_routes_integration(self):
         """Verify routes blueprint using the Flask test client and an in-memory SQLite DB."""
-        # 1. Mock DB connection to run in-memory for testing
-        real_conn = sqlite3.connect(":memory:")
-        real_conn.row_factory = sqlite3.Row
-        
-        class MockConnection:
-            def __init__(self, conn):
-                self.conn = conn
-            def cursor(self):
-                return self.conn.cursor()
-            def commit(self):
-                return self.conn.commit()
-            def close(self):
-                pass
-            def execute(self, *args, **kwargs):
-                return self.conn.execute(*args, **kwargs)
-            def __getattr__(self, name):
-                return getattr(self.conn, name)
-                
-        mock_conn = MockConnection(real_conn)
-        
-        cursor = real_conn.cursor()
-        cursor.execute("""
-        CREATE TABLE messages (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            conversation_id INTEGER,
-            role TEXT,
-            content TEXT,
-            exam_data TEXT
+        # 1. Point the blueprint's SessionLocal at an isolated in-memory SQLAlchemy engine
+        from sqlalchemy import create_engine
+        from sqlalchemy.orm import sessionmaker, scoped_session
+        from sqlalchemy.pool import StaticPool
+        from models import Base, Message
+
+        test_engine = create_engine(
+            "sqlite://",
+            connect_args={"check_same_thread": False},
+            poolclass=StaticPool,
         )
-        """)
-        
-        bac_generator.routes.get_db_connection = lambda: mock_conn
-        
-        # 2. Test generation POST route
-        with self.client.session_transaction() as sess:
-            sess["user_id"] = 1 # Bypass login check
-            
-        response = self.client.post("/generate-bac/123", data={
-            "lessons": ["Limite", "Derivate"],
-            "prompt": "Test Prompt"
-        })
-        self.assertEqual(response.status_code, 302) # Should redirect back to mode page
-        
-        # Check database records
-        cursor.execute("SELECT * FROM messages WHERE role = 'assistant'")
-        assistant_msg = cursor.fetchone()
-        self.assertIsNotNone(assistant_msg)
-        self.assertEqual(assistant_msg["conversation_id"], 123)
-        self.assertIn("exercises", assistant_msg["exam_data"])
-        
-        # 3. Test PDF download route
-        assistant_id = assistant_msg["id"]
-        response = self.client.get(f"/generate-bac/download/{assistant_id}?type=subject")
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.mimetype, "application/pdf")
-        
-        real_conn.close()
+        Base.metadata.create_all(test_engine)
+        TestSessionLocal = scoped_session(sessionmaker(bind=test_engine, expire_on_commit=False))
+
+        original_session_local = bac_generator.routes.SessionLocal
+        bac_generator.routes.SessionLocal = TestSessionLocal
+        try:
+            # 2. Test generation POST route
+            with self.client.session_transaction() as sess:
+                sess["user_id"] = 1  # Bypass login check
+
+            response = self.client.post("/generate-bac/123", data={
+                "lessons": ["Limite", "Derivate"],
+                "prompt": "Test Prompt"
+            })
+            self.assertEqual(response.status_code, 302)  # Should redirect back to mode page
+
+            # Check database records
+            assistant_msg = TestSessionLocal.query(Message).filter_by(role="assistant").first()
+            self.assertIsNotNone(assistant_msg)
+            self.assertEqual(assistant_msg.conversation_id, 123)
+            self.assertIn("exercises", assistant_msg.exam_data)
+
+            # 3. Test PDF download route
+            assistant_id = assistant_msg.id
+            response = self.client.get(f"/generate-bac/download/{assistant_id}?type=subject")
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.mimetype, "application/pdf")
+        finally:
+            bac_generator.routes.SessionLocal = original_session_local
+            TestSessionLocal.remove()
 
 if __name__ == "__main__":
     unittest.main()

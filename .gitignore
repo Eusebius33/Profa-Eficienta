@@ -17,6 +17,7 @@ instance/
 .flaskenv
 *.env
 flask_session/
+local_settings.py
 
 # Operating System Files
 .DS_Store

@@ -9,7 +9,6 @@ pattern as bac_generator/routes.py. Registered in app.py with no extra wiring.
 import base64
 import os
 import re
-import sqlite3
 import uuid
 from datetime import datetime
 from html.parser import HTMLParser
@@ -19,8 +18,10 @@ from werkzeug.utils import secure_filename
 from markupsafe import escape
 from PyPDF2 import PdfReader
 from docx import Document as DocxDocument
+from sqlalchemy import select
 
 from secondary import ai, adjacent
+from models import SessionLocal, Conversation, Document, Message, Style
 
 document_editor_bp = Blueprint("document_editor", __name__)
 
@@ -43,9 +44,7 @@ MODE_BY_KEY = {m["key"]: m for m in MODES}
 # =========================================================
 
 def get_db():
-    conn = sqlite3.connect("profu.db", check_same_thread=False)
-    conn.row_factory = sqlite3.Row
-    return conn
+    return SessionLocal
 
 
 def _require_login():
@@ -93,65 +92,70 @@ def _save_upload(document_id, mode_key, file_storage):
 
 
 def _doc_or_none(conn, document_id, user_id):
-    return conn.execute(
-        "SELECT * FROM documents WHERE id = ? AND user_id = ?",
-        (document_id, user_id)
-    ).fetchone()
+    return conn.scalars(
+        select(Document).where(Document.id == document_id, Document.user_id == user_id)
+    ).first()
 
 
 def _mode_conversation(conn, document_id, mode_key, user_id):
-    return conn.execute(
-        "SELECT * FROM conversations WHERE document_id = ? AND mode = ? AND user_id = ?",
-        (document_id, mode_key, user_id)
-    ).fetchone()
+    return conn.scalars(
+        select(Conversation).where(
+            Conversation.document_id == document_id,
+            Conversation.mode == mode_key,
+            Conversation.user_id == user_id,
+        )
+    ).first()
 
 
 def _mode_messages(conn, conversation_id):
-    return conn.execute(
-        "SELECT * FROM messages WHERE conversation_id = ? ORDER BY id ASC",
-        (conversation_id,)
-    ).fetchall()
+    return conn.scalars(
+        select(Message).where(Message.conversation_id == conversation_id).order_by(Message.id.asc())
+    ).all()
 
 
 def _last_assistant_content(conn, conversation_id):
-    row = conn.execute(
-        "SELECT content FROM messages WHERE conversation_id = ? AND role = 'assistant' ORDER BY id DESC LIMIT 1",
-        (conversation_id,)
-    ).fetchone()
-    return row["content"] if row else ""
+    row = conn.scalars(
+        select(Message)
+        .where(Message.conversation_id == conversation_id, Message.role == "assistant")
+        .order_by(Message.id.desc())
+        .limit(1)
+    ).first()
+    return row.content if row else ""
 
 
 def _last_user_content(conn, conversation_id):
-    row = conn.execute(
-        "SELECT content FROM messages WHERE conversation_id = ? AND role = 'user' ORDER BY id DESC LIMIT 1",
-        (conversation_id,)
-    ).fetchone()
-    return row["content"] if row else ""
+    row = conn.scalars(
+        select(Message)
+        .where(Message.conversation_id == conversation_id, Message.role == "user")
+        .order_by(Message.id.desc())
+        .limit(1)
+    ).first()
+    return row.content if row else ""
 
 
 def _history_text(conn, conversation_id):
-    rows = conn.execute(
-        "SELECT role, content FROM messages WHERE conversation_id = ? AND role != 'system' ORDER BY id ASC",
-        (conversation_id,)
-    ).fetchall()
-    return "\n".join(f"{r['role']}: {r['content']}" for r in rows)
+    rows = conn.scalars(
+        select(Message)
+        .where(Message.conversation_id == conversation_id, Message.role != "system")
+        .order_by(Message.id.asc())
+    ).all()
+    return "\n".join(f"{r.role}: {r.content}" for r in rows)
 
 
 def _system_content(conn, conversation_id):
-    row = conn.execute(
-        "SELECT content FROM messages WHERE conversation_id = ? AND role = 'system' LIMIT 1",
-        (conversation_id,)
-    ).fetchone()
-    return row["content"] if row else ""
+    row = conn.scalars(
+        select(Message)
+        .where(Message.conversation_id == conversation_id, Message.role == "system")
+        .limit(1)
+    ).first()
+    return row.content if row else ""
 
 
 def _insert_message(conn, conversation_id, role, content):
-    cur = conn.execute(
-        "INSERT INTO messages (conversation_id, role, content) VALUES (?, ?, ?)",
-        (conversation_id, role, content)
-    )
+    message = Message(conversation_id=conversation_id, role=role, content=content)
+    conn.add(message)
     conn.commit()
-    return cur.lastrowid
+    return message.id
 
 
 def _block_html(mode_key, message_id, text):
@@ -169,20 +173,17 @@ def _block_html(mode_key, message_id, text):
 
 
 def _append_to_document(conn, document_id, block_html):
-    doc = conn.execute("SELECT content FROM documents WHERE id = ?", (document_id,)).fetchone()
-    new_content = (doc["content"] or "") + block_html
-    conn.execute(
-        "UPDATE documents SET content = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
-        (new_content, document_id)
-    )
+    doc = conn.get(Document, document_id)
+    doc.content = (doc.content or "") + block_html
+    doc.updated_at = datetime.utcnow()
     conn.commit()
 
 
 def _serialize_message(row, block_html=None):
     return {
-        "id": row["id"],
-        "role": row["role"],
-        "content": row["content"],
+        "id": row.id,
+        "role": row.role,
+        "content": row.content,
         "block_html": block_html,
     }
 
@@ -197,20 +198,20 @@ def editor_home():
         return redirect("/login")
 
     conn = get_db()
-    latest = conn.execute(
-        "SELECT id FROM documents WHERE user_id = ? ORDER BY updated_at DESC LIMIT 1",
-        (session["user_id"],)
-    ).fetchone()
+    latest = conn.scalars(
+        select(Document)
+        .where(Document.user_id == session["user_id"])
+        .order_by(Document.updated_at.desc())
+        .limit(1)
+    ).first()
 
     if latest:
-        return redirect(f"/editor/{latest['id']}")
+        return redirect(f"/editor/{latest.id}")
 
-    cur = conn.execute(
-        "INSERT INTO documents (user_id, title, content) VALUES (?, ?, ?)",
-        (session["user_id"], "Document nou", "")
-    )
+    document = Document(user_id=session["user_id"], title="Document nou", content="")
+    conn.add(document)
     conn.commit()
-    return redirect(f"/editor/{cur.lastrowid}")
+    return redirect(f"/editor/{document.id}")
 
 
 @document_editor_bp.route("/editor/new", methods=["POST"])
@@ -219,12 +220,10 @@ def editor_new():
         return redirect("/login")
 
     conn = get_db()
-    cur = conn.execute(
-        "INSERT INTO documents (user_id, title, content) VALUES (?, ?, ?)",
-        (session["user_id"], "Document nou", "")
-    )
+    document = Document(user_id=session["user_id"], title="Document nou", content="")
+    conn.add(document)
     conn.commit()
-    return redirect(f"/editor/{cur.lastrowid}")
+    return redirect(f"/editor/{document.id}")
 
 
 @document_editor_bp.route("/editor/<int:document_id>")
@@ -237,25 +236,23 @@ def editor_view(document_id):
     if not document:
         return "Document inexistent", 404
 
-    documents = conn.execute(
-        "SELECT * FROM documents WHERE user_id = ? ORDER BY updated_at DESC",
-        (session["user_id"],)
-    ).fetchall()
+    documents = conn.scalars(
+        select(Document).where(Document.user_id == session["user_id"]).order_by(Document.updated_at.desc())
+    ).all()
 
-    styles = conn.execute(
-        "SELECT * FROM styles WHERE user_id = ? ORDER BY id DESC",
-        (session["user_id"],)
-    ).fetchall()
+    styles = conn.scalars(
+        select(Style).where(Style.user_id == session["user_id"]).order_by(Style.id.desc())
+    ).all()
 
     mode_state = {}
     for m in MODES:
         conv = _mode_conversation(conn, document_id, m["key"], session["user_id"])
         if conv:
-            messages = [_serialize_message(r) for r in _mode_messages(conn, conv["id"]) if r["role"] != "system"]
+            messages = [_serialize_message(r) for r in _mode_messages(conn, conv.id) if r.role != "system"]
         else:
             messages = []
         mode_state[m["key"]] = {
-            "conversation_id": conv["id"] if conv else None,
+            "conversation_id": conv.id if conv else None,
             "messages": messages,
         }
 
@@ -280,12 +277,10 @@ def editor_save(document_id):
         return jsonify({"ok": False, "error": "not_found"}), 404
 
     data = request.get_json(silent=True) or {}
-    content = data.get("content", document["content"])
+    content = data.get("content", document.content)
 
-    conn.execute(
-        "UPDATE documents SET content = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
-        (content, document_id)
-    )
+    document.content = content
+    document.updated_at = datetime.utcnow()
     conn.commit()
     return jsonify({"ok": True, "updated_at": datetime.utcnow().isoformat()})
 
@@ -302,10 +297,8 @@ def editor_rename(document_id):
 
     new_title = (request.form.get("new_title") or "").strip()
     if new_title:
-        conn.execute(
-            "UPDATE documents SET title = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
-            (new_title, document_id)
-        )
+        document.title = new_title
+        document.updated_at = datetime.utcnow()
         conn.commit()
     return redirect(f"/editor/{document_id}")
 
@@ -320,22 +313,24 @@ def editor_delete(document_id):
     if not document:
         return "Document inexistent", 404
 
-    convo_ids = [r["id"] for r in conn.execute(
-        "SELECT id FROM conversations WHERE document_id = ?", (document_id,)
-    ).fetchall()]
+    convo_ids = [
+        r.id for r in conn.scalars(select(Conversation).where(Conversation.document_id == document_id)).all()
+    ]
     for cid in convo_ids:
-        conn.execute("DELETE FROM messages WHERE conversation_id = ?", (cid,))
-    conn.execute("DELETE FROM conversations WHERE document_id = ?", (document_id,))
-    conn.execute("DELETE FROM documents WHERE id = ? AND user_id = ?", (document_id, session["user_id"]))
+        conn.query(Message).filter(Message.conversation_id == cid).delete()
+    conn.query(Conversation).filter(Conversation.document_id == document_id).delete()
+    conn.delete(document)
     conn.commit()
 
-    next_doc = conn.execute(
-        "SELECT id FROM documents WHERE user_id = ? ORDER BY updated_at DESC LIMIT 1",
-        (session["user_id"],)
-    ).fetchone()
+    next_doc = conn.scalars(
+        select(Document)
+        .where(Document.user_id == session["user_id"])
+        .order_by(Document.updated_at.desc())
+        .limit(1)
+    ).first()
 
     if next_doc:
-        return redirect(f"/editor/{next_doc['id']}")
+        return redirect(f"/editor/{next_doc.id}")
     return redirect("/editor/new")
 
 
@@ -491,13 +486,13 @@ def editor_download(document_id):
     if not document:
         return "Document inexistent", 404
 
-    docx_doc = _html_to_docx(document["content"] or "")
+    docx_doc = _html_to_docx(document.content or "")
     os.makedirs(UPLOAD_FOLDER, exist_ok=True)
     filename = f"document_{document_id}.docx"
     path = os.path.join(UPLOAD_FOLDER, filename)
     docx_doc.save(path)
 
-    safe_title = "".join(c for c in (document["title"] or "Document") if c.isalnum() or c in " -_").strip() or "Document"
+    safe_title = "".join(c for c in (document.title or "Document") if c.isalnum() or c in " -_").strip() or "Document"
     return send_file(
         path,
         as_attachment=True,
@@ -708,30 +703,28 @@ def mode_start(document_id, mode_key):
 
     existing = _mode_conversation(conn, document_id, mode_key, session["user_id"])
     if existing:
-        return jsonify({"ok": False, "error": "already_started", "conversation_id": existing["id"]}), 400
+        return jsonify({"ok": False, "error": "already_started", "conversation_id": existing.id}), 400
 
-    style_id = request.form.get("style") or None
+    raw_style_id = request.form.get("style")
+    try:
+        style_id = int(raw_style_id) if raw_style_id else None
+    except (TypeError, ValueError):
+        style_id = None
     school_class = request.form.get("school_class") or None
     bac = request.form.get("bac") or None
 
-    cur = conn.execute(
-        """
-        INSERT INTO conversations (user_id, mode, title, document_id, style_id, school_class, bac)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-        """,
-        (session["user_id"], mode_key, MODE_BY_KEY[mode_key]["title"], document_id, style_id, school_class, bac)
+    conversation = Conversation(
+        user_id=session["user_id"],
+        mode=mode_key,
+        title=MODE_BY_KEY[mode_key]["title"],
+        document_id=document_id,
+        style_id=style_id,
+        school_class=school_class,
+        bac=bac,
     )
+    conn.add(conversation)
     conn.commit()
-    conversation_id = cur.lastrowid
-
-    conversation = conn.execute(
-        """
-        SELECT conversations.*, styles.style_description
-        FROM conversations LEFT JOIN styles ON conversations.style_id = styles.id
-        WHERE conversations.id = ?
-        """,
-        (conversation_id,)
-    ).fetchone()
+    conversation_id = conversation.id
 
     try:
         if mode_key == "mode1":
@@ -743,12 +736,12 @@ def mode_start(document_id, mode_key):
             block = _block_html(mode_key, msg_id, intro)
             return jsonify({
                 "ok": True, "conversation_id": conversation_id,
-                "message": _serialize_message(conn.execute("SELECT * FROM messages WHERE id=?", (msg_id,)).fetchone(), block),
+                "message": _serialize_message(conn.get(Message, msg_id), block),
                 "auto_insert": False,
             })
 
         if mode_key == "mode2":
-            style_desc = conversation["style_description"] or "Stil implicit"
+            style_desc = conversation.style_description or "Stil implicit"
             intro = (
                 f"Stilul tău activ este:\n- {style_desc}\n- Clasa: {school_class or '—'}\n- BAC: {bac or '—'}\n\n"
                 f"Scrie exercițiile în limbaj natural, iar eu le voi transforma în limbaj matematic."
@@ -756,7 +749,7 @@ def mode_start(document_id, mode_key):
             msg_id = _insert_message(conn, conversation_id, "assistant", intro)
             return jsonify({
                 "ok": True, "conversation_id": conversation_id,
-                "message": _serialize_message(conn.execute("SELECT * FROM messages WHERE id=?", (msg_id,)).fetchone()),
+                "message": _serialize_message(conn.get(Message, msg_id)),
                 "auto_insert": False,
             })
 
@@ -764,7 +757,7 @@ def mode_start(document_id, mode_key):
             mode_key, "normal", conn, dict(conversation), request.form, request.files, True
         )
     except ValueError as e:
-        conn.execute("DELETE FROM conversations WHERE id = ?", (conversation_id,))
+        conn.delete(conversation)
         conn.commit()
         return jsonify({"ok": False, "error": str(e)}), 400
 
@@ -772,7 +765,7 @@ def mode_start(document_id, mode_key):
     msg_id = _insert_message(conn, conversation_id, "assistant", generated)
 
     if extra_title:
-        conn.execute("UPDATE conversations SET title = ? WHERE id = ?", (extra_title, conversation_id))
+        conversation.title = extra_title
         conn.commit()
 
     block = _block_html(mode_key, msg_id, generated)
@@ -782,7 +775,7 @@ def mode_start(document_id, mode_key):
     return jsonify({
         "ok": True,
         "conversation_id": conversation_id,
-        "message": _serialize_message(conn.execute("SELECT * FROM messages WHERE id=?", (msg_id,)).fetchone(), block),
+        "message": _serialize_message(conn.get(Message, msg_id), block),
         "auto_insert": MODE_BY_KEY[mode_key]["auto_insert"],
     })
 
@@ -799,14 +792,13 @@ def mode_message(document_id, mode_key):
     if not document:
         return jsonify({"ok": False, "error": "not_found"}), 404
 
-    conversation = conn.execute(
-        """
-        SELECT conversations.*, styles.style_description
-        FROM conversations LEFT JOIN styles ON conversations.style_id = styles.id
-        WHERE conversations.document_id = ? AND conversations.mode = ? AND conversations.user_id = ?
-        """,
-        (document_id, mode_key, session["user_id"])
-    ).fetchone()
+    conversation = conn.scalars(
+        select(Conversation).where(
+            Conversation.document_id == document_id,
+            Conversation.mode == mode_key,
+            Conversation.user_id == session["user_id"],
+        )
+    ).first()
 
     if not conversation:
         return jsonify({"ok": False, "error": "not_started"}), 400
@@ -818,14 +810,14 @@ def mode_message(document_id, mode_key):
         return jsonify({"ok": False, "error": "empty_prompt"}), 400
 
     if prompt:
-        _insert_message(conn, conversation["id"], "user", prompt)
+        _insert_message(conn, conversation.id, "user", prompt)
 
     try:
         generated, _ = _run_generation(mode_key, action_type, conn, dict(conversation), request.form, request.files, False)
     except ValueError as e:
         return jsonify({"ok": False, "error": str(e)}), 400
 
-    msg_id = _insert_message(conn, conversation["id"], "assistant", generated)
+    msg_id = _insert_message(conn, conversation.id, "assistant", generated)
     block = _block_html(mode_key, msg_id, generated)
 
     if MODE_BY_KEY[mode_key]["auto_insert"]:
@@ -833,8 +825,8 @@ def mode_message(document_id, mode_key):
 
     return jsonify({
         "ok": True,
-        "conversation_id": conversation["id"],
-        "message": _serialize_message(conn.execute("SELECT * FROM messages WHERE id=?", (msg_id,)).fetchone(), block),
+        "conversation_id": conversation.id,
+        "message": _serialize_message(conn.get(Message, msg_id), block),
         "auto_insert": MODE_BY_KEY[mode_key]["auto_insert"],
     })
 
@@ -852,10 +844,10 @@ def mode_insert(document_id, mode_key):
 
     data = request.get_json(silent=True) or {}
     message_id = data.get("message_id")
-    message = conn.execute("SELECT * FROM messages WHERE id = ?", (message_id,)).fetchone()
+    message = conn.get(Message, message_id) if message_id is not None else None
     if not message:
         return jsonify({"ok": False, "error": "not_found"}), 404
 
-    block = _block_html(mode_key, message["id"], message["content"])
+    block = _block_html(mode_key, message.id, message.content)
     _append_to_document(conn, document_id, block)
     return jsonify({"ok": True, "block_html": block})

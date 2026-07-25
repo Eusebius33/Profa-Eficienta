@@ -1,16 +1,15 @@
 from flask import render_template, request, session, redirect
 from werkzeug.security import check_password_hash, generate_password_hash
-import sqlite3
+from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 import os
 import uuid
 import app
 from werkzeug.utils import secure_filename
+from models import Style, User
 
-def style_function(apology, db, connect):
-    user = db.execute(
-        "SELECT * FROM users WHERE id = ?",
-        (session["user_id"],)
-    ).fetchone()
+def style_function(apology, db):
+    user = db.get(User, session["user_id"])
 
     if request.method == "POST":
 
@@ -60,21 +59,14 @@ def style_function(apology, db, connect):
 
         files_string = ",".join(saved_files)
 
-        db.execute(
-            """
-            INSERT INTO styles
-            (user_id, style_name, test_type, style_description, documents)
-            VALUES (?, ?, ?, ?, ?)
-            """,
-            (
-                session["user_id"],
-                style_name,
-                test_type,
-                style_description,
-                files_string
-            )
-        )
-        connect.commit()
+        db.add(Style(
+            user_id=session["user_id"],
+            style_name=style_name,
+            test_type=test_type,
+            style_description=style_description,
+            documents=files_string,
+        ))
+        db.commit()
 
         return redirect("/menu")
 
@@ -102,10 +94,9 @@ def login_function(db, apology):
         # FIND USER
         # =========================
 
-        rows = db.execute(
-            "SELECT * FROM users WHERE email = ?",
-            (email,)
-        ).fetchall()
+        rows = db.scalars(
+            select(User).where(User.email == email)
+        ).all()
 
         # =========================
         # CHECK USER
@@ -125,7 +116,7 @@ def login_function(db, apology):
         # =========================
 
         if not check_password_hash(
-            user["hash"],
+            user.hash,
             password
         ):
 
@@ -138,15 +129,15 @@ def login_function(db, apology):
         # LOGIN USER
         # =========================
 
-        session["user_id"] = user["id"]
-        session["gender"] = user["gender"]
+        session["user_id"] = user.id
+        session["gender"] = user.gender
 
         # login -> dashboard
         return redirect("/dashboard")
 
     return render_template("login.html")
 
-def register_function(db, connect, apology):
+def register_function(db, apology):
     session.clear()
 
     if request.method == "POST":
@@ -200,32 +191,26 @@ def register_function(db, connect, apology):
 
         try:
 
-            db.execute(
-                """
-                INSERT INTO users
-                (email, hash, username, gender, tehnologie, liceu)
-                VALUES (?, ?, ?, ?, ?, ?)
-                """,
-                (
-                    email,
-                    hash_password,
-                    username,
-                    gender,
-                    tehnologie,
-                    liceu
-                )
+            user = User(
+                email=email,
+                hash=hash_password,
+                username=username,
+                gender=gender,
+                tehnologie=tehnologie,
+                liceu=liceu,
             )
+            db.add(user)
+            db.commit()
 
-            connect.commit()
-
-            user_id = db.execute("SELECT last_insert_rowid()").fetchone()[0]
-            session["user_id"] = user_id
+            session["user_id"] = user.id
             session["gender"] = gender
 
             # dupa register -> style
             return redirect("/style")
 
-        except sqlite3.IntegrityError:
+        except IntegrityError:
+
+            db.rollback()
 
             return apology(
                 "user already registered",
@@ -235,18 +220,15 @@ def register_function(db, connect, apology):
     return render_template("register.html")
 
 def account_function(db):
-    user = db.execute(
-        "SELECT * FROM users WHERE id = ?",
-        (session["user_id"],)
-    ).fetchone()
+    user = db.get(User, session["user_id"])
 
     return render_template(
         "account.html",
-        username=user["username"],
-        email=user["email"]
+        username=user.username,
+        email=user.email
     )
 
-def password_function(db, connect, apology):
+def password_function(db, apology):
     if request.method == "POST":
 
         current_password = request.form.get("current_password")
@@ -266,12 +248,9 @@ def password_function(db, connect, apology):
             return apology("parolele nu coincid", 400)
 
         # verify current password
-        user = db.execute(
-            "SELECT * FROM users WHERE id = ?",
-            (session["user_id"],)
-        ).fetchone()
+        user = db.get(User, session["user_id"])
 
-        if not user or not check_password_hash(user["hash"], current_password):
+        if not user or not check_password_hash(user.hash, current_password):
             return apology("parola curentă este incorectă", 400)
 
         # update password
@@ -281,15 +260,8 @@ def password_function(db, connect, apology):
             salt_length=16
         )
 
-        db.execute(
-            "UPDATE users SET hash = ? WHERE id = ?",
-            (
-                hash_password,
-                session["user_id"]
-            )
-        )
-
-        connect.commit()
+        user.hash = hash_password
+        db.commit()
 
         return redirect("/account")
 
