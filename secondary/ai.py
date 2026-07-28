@@ -7,6 +7,8 @@ import os
 from PyPDF2 import PdfReader
 import json
 
+from secondary import gemini_keys
+
 # =========================================================
 # LOAD ENV
 # =========================================================
@@ -14,59 +16,56 @@ import json
 load_dotenv(dotenv_path=Path(__file__).parent.parent / ".env")
 load_dotenv(dotenv_path=Path(__file__).parent / ".env")
 
-api_key = os.getenv("GEMINI_API_KEY")
 
-client = None
+def _mock_response(args, kwargs):
+    # Safe mock response for testing/development when no API key is configured
+    contents = kwargs.get("contents", args[1] if len(args) > 1 else (args[0] if len(args) > 0 else []))
+    prompt_str = ""
+    if isinstance(contents, list):
+        for c in contents:
+            if isinstance(c, str):
+                prompt_str += c
+    elif isinstance(contents, str):
+        prompt_str = contents
 
-
-def get_client():
-    global client
-
-    if client is None:
-        if not api_key:
-            raise RuntimeError(
-                "AI nu este configurat. Adauga GEMINI_API_KEY in fisierul .env."
-            )
-
-        client = genai.Client(api_key=api_key)
-
-    return client
+    if "transcrie" in prompt_str.lower() or "handwriting" in prompt_str.lower():
+        return (
+            "Am transcris imaginea cu succes. Iată exercițiile identificate:\n\n"
+            "1. Arătați că $\\log_2(8) - \\log_3(9) = 1$.\n\n"
+            "2. Rezolvați în $\\mathbb{R}$ ecuația: $x^2 - 5x + 6 = 0$.\n\n"
+            "3. Determinați valoarea maximă a funcției $f: \\mathbb{R} \\to \\mathbb{R}$, $f(x) = -x^2 + 4x$.\n\n"
+            "Iată rezolvările pas cu pas:\n\n"
+            "1. $\\log_2(8) = 3$ și $\\log_3(9) = 2$, deci $3 - 2 = 1$.\n\n"
+            "2. Discriminantul este $\\Delta = 25 - 24 = 1$. Rădăcinile sunt $x_1 = 2$ și $x_2 = 3$.\n\n"
+            "3. Valoarea maximă este $-\\frac{\\Delta}{4a} = -\\frac{16}{-4} = 4$, realizată în $x_V = 2$."
+        )
+    return (
+        "Răspuns generat de asistentul virtual de matematică (Mock AI).\n\n"
+        "Exemplu matematic: $\\frac{a}{b}$, $\\sqrt{x}$, $x^2$, $x_{1,2}$.\n\n"
+        "Diacritice românești: ă, â, î, ș, ț."
+    )
 
 
 def generate_content(*args, **kwargs):
-    if not api_key or api_key == "your_gemini_api_key_here":
-        # Safe mock response for testing/development when API key is missing
-        contents = kwargs.get("contents", args[1] if len(args) > 1 else (args[0] if len(args) > 0 else []))
-        prompt_str = ""
-        if isinstance(contents, list):
-            for c in contents:
-                if isinstance(c, str):
-                    prompt_str += c
-        elif isinstance(contents, str):
-            prompt_str = contents
-            
-        if "transcrie" in prompt_str.lower() or "handwriting" in prompt_str.lower():
-            return (
-                "Am transcris imaginea cu succes. Iată exercițiile identificate:\n\n"
-                "1. Arătați că $\\log_2(8) - \\log_3(9) = 1$.\n\n"
-                "2. Rezolvați în $\\mathbb{R}$ ecuația: $x^2 - 5x + 6 = 0$.\n\n"
-                "3. Determinați valoarea maximă a funcției $f: \\mathbb{R} \\to \\mathbb{R}$, $f(x) = -x^2 + 4x$.\n\n"
-                "Iată rezolvările pas cu pas:\n\n"
-                "1. $\\log_2(8) = 3$ și $\\log_3(9) = 2$, deci $3 - 2 = 1$.\n\n"
-                "2. Discriminantul este $\\Delta = 25 - 24 = 1$. Rădăcinile sunt $x_1 = 2$ și $x_2 = 3$.\n\n"
-                "3. Valoarea maximă este $-\\frac{\\Delta}{4a} = -\\frac{16}{-4} = 4$, realizată în $x_V = 2$."
-            )
-        return (
-            "Răspuns generat de asistentul virtual de matematică (Mock AI).\n\n"
-            "Exemplu matematic: $\\frac{a}{b}$, $\\sqrt{x}$, $x^2$, $x_{1,2}$.\n\n"
-            "Diacritice românești: ă, â, î, ș, ț."
-        )
-
     try:
-        response = get_client().models.generate_content(*args, **kwargs)
-        return response.text
-    except Exception as error:
-        return f"Eroare AI: {error}"
+        manager = gemini_keys.get_manager()
+    except RuntimeError:
+        return _mock_response(args, kwargs)
+
+    last_error = None
+    for _ in range(manager.key_count()):
+        client = manager.current_client()
+        try:
+            response = client.models.generate_content(*args, **kwargs)
+            return response.text
+        except Exception as error:
+            if gemini_keys.is_rate_limit_error(error):
+                last_error = error
+                manager.mark_rate_limited(error)
+                continue
+            return f"Eroare AI: {error}"
+
+    return f"Eroare AI: toate cheile Gemini au atins limita de request-uri. ({last_error})"
 
 # =========================================================
 # MODE 1 - ASISTENT AI

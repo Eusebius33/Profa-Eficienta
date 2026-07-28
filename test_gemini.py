@@ -10,11 +10,15 @@ sys.path.append(str(Path(__file__).parent))
 load_dotenv()
 
 print("Checking environment variables...")
-api_key = os.getenv("GEMINI_API_KEY")
-if not api_key:
-    print("ERROR: GEMINI_API_KEY not found in environment!")
+from secondary import gemini_keys
+
+keys = gemini_keys.load_keys_from_env()
+if not keys:
+    print("ERROR: No GEMINI_API_KEY_1..N (or GEMINI_API_KEY) found in environment!")
     sys.exit(1)
-print(f"GEMINI_API_KEY found: {api_key[:5]}...{api_key[-5:] if len(api_key) > 5 else ''}")
+print(f"Found {len(keys)} Gemini API key(s):")
+for i, key in enumerate(keys, start=1):
+    print(f"  {i}. {key[:5]}...{key[-5:] if len(key) > 5 else ''}")
 
 try:
     print("\nImporting secondary.ai...")
