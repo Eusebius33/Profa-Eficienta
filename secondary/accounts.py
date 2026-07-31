@@ -6,7 +6,7 @@ import os
 import uuid
 import app
 from werkzeug.utils import secure_filename
-from models import Style, User
+from models import Style, User, Conversation
 
 def style_function(apology, db):
     user = db.get(User, session["user_id"])
@@ -205,8 +205,12 @@ def register_function(db, apology):
             session["user_id"] = user.id
             session["gender"] = gender
 
-            # dupa register -> style
-            return redirect("/style")
+            # dupa register -> ghid website (mode1)
+            conversation = Conversation(user_id=user.id, mode="mode1", title="Ghid Website")
+            db.add(conversation)
+            db.commit()
+
+            return redirect(f"/mode1/{conversation.id}")
 
         except IntegrityError:
 

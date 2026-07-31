@@ -356,7 +356,10 @@ def mode1_chat(db, apology, conversation_id):
             for row in history_rows
         ]
         prompt = "\n".join([f"{m['role']}: {m['content']}" for m in history])
-        response = ai.assistant(prompt)
+        if conversation.title == "Ghid Website":
+            response = ai.website_guide(prompt)
+        else:
+            response = ai.assistant(prompt)
         response_html=markdown.markdown(response)
 
         # save ai msg
@@ -374,7 +377,10 @@ def mode1_chat(db, apology, conversation_id):
     ]
     #outputs first message
     if len(messages) == 0:
-        intro = """Sunt un asistent virtual specializat în matematică...
+        if conversation.title == "Ghid Website":
+            intro = """Spune-mi situația actuală a unei clase la care predai? Pot să te îndrum în website pas cu pas în funcție de ce îți dorești să faci astăzi."""
+        else:
+            intro = """Sunt un asistent virtual specializat în matematică...
 
     Pot ajuta cu:
     - Matematică

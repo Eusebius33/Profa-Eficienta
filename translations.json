@@ -2547,6 +2547,18 @@
     "ro": "Ascunde conținutul",
     "en": "Hide content"
   },
+  "ed_quickstart_title": {
+    "ro": "Ce îți dorești să scrii astăzi?",
+    "en": "What do you want to write today?"
+  },
+  "ed_quickstart_hint": {
+    "ro": "Alege un mod și primești primul draft în câteva secunde.",
+    "en": "Pick a mode and get your first draft in seconds."
+  },
+  "ed_quickstart_skip": {
+    "ro": "Scriu singur",
+    "en": "I'll write it myself"
+  },
   "ed_ink_modal_title": {
     "ro": "Ecuație scrisă de mână",
     "en": "Ink Equation"

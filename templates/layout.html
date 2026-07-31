@@ -130,7 +130,7 @@
             {% if session.get("user_id") %}
             <!-- Logo -->
             <a
-                href="{{ url_for('dashboard') }}"
+                href="/dashboard"
                 class="flex items-center gap-3 text-white no-underline"
             >
 
@@ -193,12 +193,10 @@
                 <div id="mobile-nav-menu" class="mobile-nav-links flex items-center gap-6 text-sm font-medium">
 
 
-                    <form action="/create_mode1" method="post" class="m-0">
-                        <button
-                            type="submit"
-                            class="text-slate-300 hover:text-cyan-400 transition bg-transparent border-0 p-0"
-                         data-i18n="nav_conversation">{{ t("nav_conversation") }}</button>
-                    </form>
+                    <a
+                        href="/menu"
+                        class="text-slate-300 hover:text-cyan-400 transition no-underline"
+                     data-i18n="nav_conversation">{{ t("nav_conversation") }}</a>
 
                     <a
                         href="/account"
@@ -212,11 +210,6 @@
 
                     <a
                         href="/editor"
-                        class="text-slate-300 hover:text-cyan-400 transition no-underline"
-                     data-i18n="nav_editor">{{ t("nav_editor") }}</a>
-
-                    <a
-                        href="/menu"
                         class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-4 py-2 rounded-xl font-semibold transition no-underline"
                      data-i18n="nav_create">{{ t("nav_create") }}</a>
 
@@ -279,13 +272,10 @@
         <div id="nav-menu" class="hidden lg:hidden border-t border-slate-800 bg-slate-950/95">
             {% if session.get("user_id") %}
             <div class="flex flex-col px-4 py-3 gap-1">
-                <form action="/create_mode1" method="post" class="m-0">
-                    <button type="submit" class="w-full text-left text-slate-300 hover:text-cyan-400 hover:bg-slate-800 transition px-3 py-2.5 rounded-xl bg-transparent border-0" data-i18n="nav_conversation">{{ t("nav_conversation") }}</button>
-                </form>
+                <a href="/menu" class="text-slate-300 hover:text-cyan-400 hover:bg-slate-800 transition px-3 py-2.5 rounded-xl no-underline" data-i18n="nav_conversation">{{ t("nav_conversation") }}</a>
                 <a href="/account" class="text-slate-300 hover:text-cyan-400 hover:bg-slate-800 transition px-3 py-2.5 rounded-xl no-underline" data-i18n="nav_account">{{ t("nav_account") }}</a>
                 <a href="/documentation" class="text-slate-300 hover:text-cyan-400 hover:bg-slate-800 transition px-3 py-2.5 rounded-xl no-underline" data-i18n="nav_guide">{{ t("nav_guide") }}</a>
-                <a href="/editor" class="text-slate-300 hover:text-cyan-400 hover:bg-slate-800 transition px-3 py-2.5 rounded-xl no-underline" data-i18n="nav_editor">{{ t("nav_editor") }}</a>
-                <a href="/menu" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-3 py-2.5 rounded-xl font-semibold transition no-underline text-center mt-1" data-i18n="nav_create">{{ t("nav_create") }}</a>
+                <a href="/editor" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-3 py-2.5 rounded-xl font-semibold transition no-underline text-center mt-1" data-i18n="nav_create">{{ t("nav_create") }}</a>
                 <div class="flex items-center gap-2 px-3 pt-3 mt-1 border-t border-slate-800">
                     <button onclick="switchLang('ro')" class="text-slate-400 hover:text-white {% if session.get('lang', 'ro') == 'ro' %}font-bold text-cyan-400{% endif %}" translate="no">RO</button>
                     <span class="text-slate-600">|</span>

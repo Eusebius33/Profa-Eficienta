@@ -933,4 +933,76 @@
         });
     };
 
+    // =====================================================
+    // QUICK-DRAFT MODAL — shown on an empty document, lets a new user
+    // pick one of the 5 modes and jump straight into its panel
+    // =====================================================
+    const quickStartOverlay = document.getElementById("edQuickStartOverlay");
+
+    if (quickStartOverlay && editorDataEl && editorDataEl.dataset.docEmpty === "1") {
+        let quickStartLastFocus = null;
+
+        function quickStartFocusables() {
+            return Array.prototype.slice.call(
+                quickStartOverlay.querySelectorAll("button")
+            );
+        }
+
+        function closeQuickStart() {
+            quickStartOverlay.classList.remove("open");
+            quickStartOverlay.classList.add("hidden");
+            document.removeEventListener("keydown", quickStartKeydown);
+            if (quickStartLastFocus) quickStartLastFocus.focus();
+        }
+
+        function quickStartKeydown(e) {
+            if (e.key === "Escape") {
+                e.preventDefault();
+                closeQuickStart();
+                return;
+            }
+            if (e.key !== "Tab") return;
+            const focusables = quickStartFocusables();
+            if (!focusables.length) return;
+            const first = focusables[0];
+            const last = focusables[focusables.length - 1];
+            if (e.shiftKey && document.activeElement === first) {
+                e.preventDefault();
+                last.focus();
+            } else if (!e.shiftKey && document.activeElement === last) {
+                e.preventDefault();
+                first.focus();
+            }
+        }
+
+        function openQuickStart() {
+            quickStartLastFocus = document.activeElement;
+            quickStartOverlay.classList.remove("hidden");
+            quickStartOverlay.classList.add("open");
+            document.addEventListener("keydown", quickStartKeydown);
+            const focusables = quickStartFocusables();
+            if (focusables.length) focusables[0].focus();
+        }
+
+        quickStartOverlay.addEventListener("click", (e) => {
+            if (e.target === quickStartOverlay) closeQuickStart();
+        });
+
+        const quickStartCloseBtn = document.getElementById("edQuickStartCloseBtn");
+        if (quickStartCloseBtn) quickStartCloseBtn.addEventListener("click", closeQuickStart);
+
+        const quickStartSkipBtn = document.getElementById("edQuickStartSkipBtn");
+        if (quickStartSkipBtn) quickStartSkipBtn.addEventListener("click", closeQuickStart);
+
+        quickStartOverlay.querySelectorAll("[data-quickstart-mode]").forEach((card) => {
+            card.addEventListener("click", () => {
+                const key = card.dataset.quickstartMode;
+                closeQuickStart();
+                openModePanel(key);
+            });
+        });
+
+        openQuickStart();
+    }
+
 })();
