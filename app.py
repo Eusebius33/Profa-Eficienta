@@ -204,6 +204,10 @@ def edit_material(id):
 def download_material(id):
     return redirect("/dashboard")
 
+@app.route("/health")
+def health():
+    return jsonify(status="ok"), 200
+
 # =========================================================
 # INDEX
 # =========================================================
