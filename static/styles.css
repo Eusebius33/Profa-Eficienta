@@ -739,3 +739,294 @@ iframe {
         display: none;
     }
 }
+/* ===========================
+   PREMIUM MODE CARD EFFECTS
+=========================== */
+
+.mode-card{
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+
+    transition:
+        transform .35s cubic-bezier(.22,1,.36,1),
+        box-shadow .35s ease,
+        border-color .35s ease,
+        background-color .35s ease;
+}
+
+.mode-card:hover{
+
+    transform:
+        translateY(-10px)
+        scale(1.02);
+
+    box-shadow:
+        0 30px 60px rgba(15,23,42,.18),
+        0 10px 20px rgba(6,182,212,.15);
+
+    border-color:#06b6d4;
+}
+.mode-card::after{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    background:
+    linear-gradient(
+        120deg,
+        transparent 25%,
+        rgba(255,255,255,.45) 50%,
+        transparent 75%
+    );
+
+    transform:translateX(-130%);
+
+    transition:transform .8s ease;
+
+    pointer-events:none;
+}
+
+.mode-card:hover::after{
+
+    transform:translateX(130%);
+}
+.mode-card::before{
+
+    transition:
+        transform .3s ease,
+        box-shadow .3s ease;
+}
+
+.mode-card:hover::before{
+
+    transform:scale(1.1);
+
+    box-shadow: 0 10px 25px rgba(0,0,0,.20);
+}
+
+.mode-card p{
+
+    transition:
+        color .3s ease,
+        transform .3s ease;
+
+}
+
+.mode-card:hover p{
+
+    transform:translateX(8px);
+
+    color:#475569;
+
+}/* Animate title */
+
+.mode-card h2{
+
+    transition:
+        color .3s ease,
+        transform .3s ease;
+
+}
+
+.mode-card:hover h2{
+
+    color:#0891b2;
+
+    transform:translateX(8px);
+
+}
+.mode-card button{
+
+    transition:
+        transform .3s ease,
+        box-shadow .3s ease;
+
+}
+
+.mode-card:hover button{
+
+    transform:scale(1.04);
+
+    box-shadow:
+        0 12px 25px rgba(6,182,212,.30);
+
+}
+
+.mode-card button:active{
+
+    transform:scale(.95);
+
+}
+.mode-card select,
+.mode-card textarea{
+
+    transition:
+        border-color .25s ease,
+        box-shadow .25s ease,
+        transform .25s ease;
+
+}
+
+.mode-card select:focus,
+.mode-card textarea:focus{
+
+    transform:scale(1.01);
+
+    border-color:#06b6d4;
+
+    box-shadow:
+        0 0 0 4px rgba(6,182,212,.18);
+
+}
+#drop3,
+#drop4{
+
+    transition:
+        transform .3s ease,
+        box-shadow .3s ease;
+
+}
+
+#drop3:hover,
+#drop4:hover{
+
+    transform:scale(1.02);
+
+    box-shadow:
+        0 10px 25px rgba(0,0,0,.12);
+
+}
+.mode-card::after{
+
+content:"";
+
+position:absolute;
+
+top:0;
+
+left:-120%;
+
+width:70%;
+
+height:100%;
+
+background:
+linear-gradient(
+120deg,
+transparent,
+rgba(255,255,255,.35),
+transparent
+);
+
+transform:skewX(-20deg);
+
+transition:left .8s ease;
+
+pointer-events:none;
+
+}
+
+.mode-card:hover::after{
+
+left:150%;
+
+}
+.mode-card{
+
+    isolation:isolate;
+
+}
+/* ===========================
+   CARD CLICK EFFECT
+=========================== */
+
+.clickable-card{
+
+    user-select:none;
+
+}
+
+.clickable-card.selected{
+
+    transform:
+        translateY(-8px)
+        scale(.98);
+
+    border-color:#06b6d4 !important;
+
+    box-shadow:
+        0 0 0 4px rgba(6,182,212,.25),
+        0 25px 50px rgba(6,182,212,.30);
+
+}
+/* Fade non-selected cards */
+
+.cards-container:hover .mode-card{
+
+    opacity:.65;
+
+}
+
+.cards-container:hover .mode-card:hover{
+
+    opacity:1;
+
+}
+.mode-card.selected::after{
+
+    content:"✓ Selected";
+
+    position:absolute;
+
+    top:18px;
+
+    right:18px;
+
+    background:#06b6d4;
+
+    color:white;
+
+    padding:6px 14px;
+
+    border-radius:999px;
+
+    font-size:.75rem;
+
+    font-weight:700;
+
+    animation:pop .35s ease;
+
+}
+@keyframes pop{
+
+0%{
+
+transform:scale(.4);
+
+opacity:0;
+
+}
+
+100%{
+
+transform:scale(1);
+
+opacity:1;
+
+}
+
+}
+.mode-card.selected button{
+
+    background:#0891b2;
+
+    transform:scale(1.05);
+
+    box-shadow:
+        0 12px 30px rgba(6,182,212,.35);
+
+}

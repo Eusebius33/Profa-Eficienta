@@ -24,7 +24,7 @@ The project is fully complete, all tests are passing, and it is in a **merge-rea
 During the QA audit phase, the following issues were identified and resolved:
 
 ### 1. Jinja2 Double Extends in `apology.html`
-- **Issue**: `apology.html` extended both `layout1.html` and `layout.html` in the same template file, causing a `TemplateAssertionError` when error pages were loaded.
+- **Issue**: `apology.html` extended both `layout.html` and `layout.html` in the same template file, causing a `TemplateAssertionError` when error pages were loaded.
 - **Fix**: Rewrote `apology.html` to extend only `layout.html` once, conforming to the standard page template style.
 
 ### 2. f-String Python 3.12+ Syntax Error in `algebra.py`
