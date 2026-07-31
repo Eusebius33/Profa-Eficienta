@@ -1,9 +1,9 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    SelecteazÄƒ Mod |
+    Selectează Mod |
         {% if user and user["gender"] == "F" %}
-        Profa EficientÄƒ
+        Profa Eficientă
     {% else %}
         Proful Eficient
     {% endif %}
@@ -137,14 +137,14 @@
                             accept=".pdf,.docx,.txt,.png,.jpg,.jpeg">
 
                     </label>
-                    <label class="text-sm font-medium text-slate-700" data-i18n="instructions">InstrucÈ›iuni</label>
+                    <label class="text-sm font-medium text-slate-700" data-i18n="instructions">Instrucțiuni</label>
                     <textarea rows="3" name="prompt" required
-                        data-i18n-placeholder="inst_ph" placeholder="Ex: genereazÄƒ un test cu dificultate medie..."
+                        data-i18n-placeholder="inst_ph" placeholder="Ex: generează un test cu dificultate medie..."
                         class="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900 resize-none"></textarea>
 
-                    <label class="text-sm font-medium text-slate-700" data-i18n="diff_model">DiferenÈ›e faÈ›Äƒ de model</label>
+                    <label class="text-sm font-medium text-slate-700" data-i18n="diff_model">Diferențe față de model</label>
                     <textarea rows="3" name="differences" required
-                        data-i18n-placeholder="diff_ph" placeholder="Ex: mai multe exerciÈ›ii de algebrÄƒ..."
+                        data-i18n-placeholder="diff_ph" placeholder="Ex: mai multe exerciții de algebră..."
                         class="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900 resize-none"></textarea>
 
 
@@ -234,7 +234,7 @@
                     <select
                         class="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900 outline-none focus:ring-2 focus:ring-cyan-500">
 
-                        <option disabled selected>SelecteazÄƒ clasa</option>
+                        <option disabled selected>Selectează clasa</option>
                         <option>Clasa a IX-a</option>
                         <option>Clasa a X-a</option>
                         <option>Clasa a XI-a</option>
@@ -345,7 +345,7 @@
         dt.items.add(file);
         input.files = dt.files;
         titleP.textContent = file.name;
-        subtitleP.textContent = 'FiÈ™ier selectat âœ“';
+        subtitleP.textContent = 'Fișier selectat ✓';
         label.classList.add('border-cyan-400', 'bg-cyan-50');
         label.classList.remove('border-slate-200', 'bg-slate-50');
     }
