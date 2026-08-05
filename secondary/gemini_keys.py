@@ -53,6 +53,22 @@ def is_rate_limit_error(error):
     return "RESOURCE_EXHAUSTED" in str(status).upper()
 
 
+def is_key_blocked_error(error):
+    """A specific key/project is denied access (e.g. API_KEY_SERVICE_BLOCKED,
+    API_KEY_INVALID, SERVICE_DISABLED) rather than just over quota. Unlike a
+    rate limit this won't resolve itself, but the fix is the same either way:
+    stop using this key and move on to the next one instead of surfacing the
+    raw error to the user."""
+    code = getattr(error, "code", None)
+    status = str(getattr(error, "status", "") or "").upper()
+    text = str(error).upper()
+    if code == 403 and ("PERMISSION_DENIED" in status or "PERMISSION_DENIED" in text):
+        return True
+    return any(marker in text for marker in (
+        "API_KEY_SERVICE_BLOCKED", "API_KEY_INVALID", "SERVICE_DISABLED",
+    ))
+
+
 def _retry_delay_seconds(error):
     details = getattr(error, "details", None)
     if not details:

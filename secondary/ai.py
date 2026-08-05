@@ -59,13 +59,13 @@ def generate_content(*args, **kwargs):
             response = client.models.generate_content(*args, **kwargs)
             return response.text
         except Exception as error:
-            if gemini_keys.is_rate_limit_error(error):
+            if gemini_keys.is_rate_limit_error(error) or gemini_keys.is_key_blocked_error(error):
                 last_error = error
                 manager.mark_rate_limited(error)
                 continue
             return f"Eroare AI: {error}"
 
-    return f"Eroare AI: toate cheile Gemini au atins limita de request-uri. ({last_error})"
+    return f"Eroare AI: toate cheile Gemini sunt indisponibile momentan (limita atinsă sau blocate). ({last_error})"
 
 # =========================================================
 # MODE 1 - ASISTENT AI
