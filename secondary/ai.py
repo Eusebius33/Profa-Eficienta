@@ -84,7 +84,7 @@ def assistant(prompt):
             - gestionarea elevilor
             - explicatii
             - exercitii
-            - foloseste delimitatori $$ $$ pt ce scrii in LaTeX
+            - foloseste delimitatori $ $ pt ce scrii in LaTeX
             - nu folosi alte delimitatoare latex-
             """,
 
@@ -169,7 +169,7 @@ def translate_math(prompt, style, school_class, bac):
             - doar LaTeX
             - fara explicatii
             - fiecare exercitiu pe rand nou
-            - foloseste delimitatori $$ $$
+            - foloseste delimitatori $ $
             - nu folosi alte delimitatoare latex-
             """,
 
@@ -196,7 +196,7 @@ def convert_file_to_latex(file_content, filepath=None):
             Converteste continutul extras din PDF/Word
             in exercitii matematice LaTeX curate.
             Reguli:
-            - foloseste delimitatori $$ $$
+            - foloseste delimitatori $ $
             - nu folosi alte delimitatoare latex
             - fiecare exercitiu separat
             - reconstruieste formulele matematice corect
@@ -242,7 +242,7 @@ def generate_from_model(model_content, conversation_history, user_prompt=None):
             - pastreaza acelasi nivel de dificultate
             - pastreaza aceeasi structura
             - raspunde exclusiv in LaTeX
-            - foloseste delimitatori $$ $$
+            - foloseste delimitatori $ $
             - nu folosi alte delimitatoare latex
             - fiecare exercitiu pe rand nou
             - nu explica nimic
@@ -274,7 +274,7 @@ def extract_pdf_with_vision(pdf_base64):
                         }
                     },
                     {
-                        "text": "Extrage tot textul și toate formulele matematice din acest PDF. Păstrează structura originală. Pentru formule matematice folosește delimitatori $$ $$."
+                        "text": "Extrage tot textul și toate formulele matematice din acest PDF. Păstrează structura originală. Pentru formule matematice folosește delimitatori $ $."
                     }
                 ]
             }
@@ -313,11 +313,11 @@ Atentie speciala la:
 
 Reguli generale:
 - Output DOAR LaTeX, cate un exercitiu pe rand, in aceeasi ordine ca in poza
-- foloseste delimitatori $$ $$ pentru fiecare exercitiu/expresie
+- foloseste delimitatori $ $ pentru fiecare exercitiu/expresie
 - nu folosi alte delimitatoare latex (fara \\[ \\], fara \\( \\))
 - daca scrisul e neclar/ambiguu, alege interpretarea cea mai probabila din punct
   de vedere matematic; NU inventa exercitii care nu exista in poza
-- fara explicatii, fara text suplimentar, fara markdown in afara de $$ $$
+- fara explicatii, fara text suplimentar, fara markdown in afara de $ $
 """
 
 
@@ -390,7 +390,7 @@ def bac_generator(lessons, avoid):
             Genereaza o varianta completa de BAC la matematica.
 
             Respecta structura oficiala.
-            Foloseste delimitatori $$ $$ pentru LaTeX.
+            Foloseste delimitatori $ $ pentru LaTeX.
             Nu adauga explicatii inutile.
             """,
             temperature=0.8
