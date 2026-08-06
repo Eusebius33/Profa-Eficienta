@@ -1,16 +1,21 @@
 """
-Cycles through multiple Gemini API keys so free-tier per-key limits (e.g. ~20
-requests/day) don't block the app. Keys live in .env as GEMINI_API_KEY_1 ..
-GEMINI_API_KEY_10 (GEMINI_API_KEY alone still works for a single key).
+Single active Gemini API key - no automatic cycling/failover between keys.
 
-When a key gets a 429/RESOURCE_EXHAUSTED response it is put on cooldown and
-the manager moves on to the next available key.
+Only GEMINI_API_KEY_1 is used at runtime (GEMINI_API_KEY_2, then a bare
+GEMINI_API_KEY, are read only as a startup fallback if _1 itself isn't set -
+not as an automatic switch when a request fails). Any other numbered keys
+still present in .env are ignored by the app; they were getting
+API_KEY_SERVICE_BLOCKED from Google, and hammering already-blocked keys on
+every request (the old round-robin-on-failure behavior) risked getting the
+whole IP/account flagged instead of just failing gracefully.
+
+If GEMINI_API_KEY_1 ever needs replacing, swap in GEMINI_API_KEY_2's value
+and restart - this is a manual, deliberate action, not something the code
+does for you.
 """
 
 import os
 import re
-import threading
-from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -21,15 +26,13 @@ load_dotenv(dotenv_path=Path(__file__).parent / ".env")
 
 _PLACEHOLDER = "your_gemini_api_key_here"
 _NUMBERED_KEY_RE = re.compile(r"^GEMINI_API_KEY_(\d+)$")
-_RETRY_DELAY_RE = re.compile(r"retryDelay['\"]?\s*[:=]\s*['\"]?(\d+)")
-
-# Free-tier daily quotas reset ~24h after they're hit; used when the API
-# doesn't tell us a more specific retryDelay (e.g. a per-minute burst limit).
-DEFAULT_COOLDOWN = timedelta(hours=24)
 
 
 def load_keys_from_env():
-    """Read GEMINI_API_KEY_1..N (numeric order) plus a bare GEMINI_API_KEY fallback."""
+    """Read every GEMINI_API_KEY_1..N (numeric order) plus a bare GEMINI_API_KEY
+    fallback present in the environment. Diagnostic/manual-testing use only
+    (see diagnose_gemini_keys.py, test_gemini.py) - the running app does not
+    use this to pick which key to call, see _active_key() below."""
     numbered = []
     for name, value in os.environ.items():
         match = _NUMBERED_KEY_RE.match(name)
@@ -45,6 +48,16 @@ def load_keys_from_env():
     return keys
 
 
+def _active_key():
+    """The one key the app actually calls. GEMINI_API_KEY_1 first; _2 and the
+    bare GEMINI_API_KEY are only consulted if _1 isn't configured at all."""
+    for name in ("GEMINI_API_KEY_1", "GEMINI_API_KEY_2", "GEMINI_API_KEY"):
+        value = os.getenv(name)
+        if value and value != _PLACEHOLDER:
+            return value
+    return None
+
+
 def is_rate_limit_error(error):
     code = getattr(error, "code", None)
     if code == 429:
@@ -55,10 +68,7 @@ def is_rate_limit_error(error):
 
 def is_key_blocked_error(error):
     """A specific key/project is denied access (e.g. API_KEY_SERVICE_BLOCKED,
-    API_KEY_INVALID, SERVICE_DISABLED) rather than just over quota. Unlike a
-    rate limit this won't resolve itself, but the fix is the same either way:
-    stop using this key and move on to the next one instead of surfacing the
-    raw error to the user."""
+    API_KEY_INVALID, SERVICE_DISABLED) rather than just over quota."""
     code = getattr(error, "code", None)
     status = str(getattr(error, "status", "") or "").upper()
     text = str(error).upper()
@@ -69,79 +79,18 @@ def is_key_blocked_error(error):
     ))
 
 
-def _retry_delay_seconds(error):
-    details = getattr(error, "details", None)
-    if not details:
-        return None
-    match = _RETRY_DELAY_RE.search(str(details))
-    return int(match.group(1)) if match else None
+_client = None
 
 
-class GeminiKeyManager:
-    """Round-robins across Gemini API keys, skipping ones on cooldown."""
-
-    def __init__(self, keys):
-        if not keys:
+def get_client():
+    """Lazily build the single shared Gemini client (raises if no key is configured)."""
+    global _client
+    if _client is None:
+        key = _active_key()
+        if not key:
             raise RuntimeError(
-                "AI nu este configurat. Adauga GEMINI_API_KEY_1..GEMINI_API_KEY_10 "
-                "(sau GEMINI_API_KEY) in fisierul .env."
+                "AI nu este configurat. Adauga GEMINI_API_KEY_1 (si, optional, "
+                "GEMINI_API_KEY_2 ca rezerva manuala) in fisierul .env."
             )
-        self._keys = keys
-        self._lock = threading.Lock()
-        self._index = 0
-        self._cooldowns = {}
-        self._clients = {}
-
-    def key_count(self):
-        return len(self._keys)
-
-    def _client_for(self, key):
-        client = self._clients.get(key)
-        if client is None:
-            client = genai.Client(api_key=key)
-            self._clients[key] = client
-        return client
-
-    def _available(self, key, now):
-        until = self._cooldowns.get(key)
-        return until is None or until <= now
-
-    def current_client(self):
-        """Client for the current key, skipping over any keys still on cooldown."""
-        now = datetime.now(timezone.utc)
-        with self._lock:
-            for offset in range(len(self._keys)):
-                idx = (self._index + offset) % len(self._keys)
-                if self._available(self._keys[idx], now):
-                    self._index = idx
-                    return self._client_for(self._keys[idx])
-            # Every key is on cooldown - use the current one anyway so the
-            # caller gets a real error back instead of silently hanging.
-            return self._client_for(self._keys[self._index])
-
-    def mark_rate_limited(self, error=None):
-        """Put the current key on cooldown and advance to the next one."""
-        with self._lock:
-            key = self._keys[self._index]
-            retry_seconds = _retry_delay_seconds(error)
-            cooldown = (
-                timedelta(seconds=retry_seconds)
-                if retry_seconds and retry_seconds < DEFAULT_COOLDOWN.total_seconds()
-                else DEFAULT_COOLDOWN
-            )
-            self._cooldowns[key] = datetime.now(timezone.utc) + cooldown
-            self._index = (self._index + 1) % len(self._keys)
-
-
-_manager = None
-_manager_lock = threading.Lock()
-
-
-def get_manager():
-    """Lazily build the process-wide key manager (raises if no keys are configured)."""
-    global _manager
-    if _manager is None:
-        with _manager_lock:
-            if _manager is None:
-                _manager = GeminiKeyManager(load_keys_from_env())
-    return _manager
+        _client = genai.Client(api_key=key)
+    return _client

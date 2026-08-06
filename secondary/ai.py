@@ -48,24 +48,19 @@ def _mock_response(args, kwargs):
 
 def generate_content(*args, **kwargs):
     try:
-        manager = gemini_keys.get_manager()
+        client = gemini_keys.get_client()
     except RuntimeError:
         return _mock_response(args, kwargs)
 
-    last_error = None
-    for _ in range(manager.key_count()):
-        client = manager.current_client()
-        try:
-            response = client.models.generate_content(*args, **kwargs)
-            return response.text
-        except Exception as error:
-            if gemini_keys.is_rate_limit_error(error) or gemini_keys.is_key_blocked_error(error):
-                last_error = error
-                manager.mark_rate_limited(error)
-                continue
-            return f"Eroare AI: {error}"
-
-    return f"Eroare AI: toate cheile Gemini sunt indisponibile momentan (limita atinsă sau blocate). ({last_error})"
+    try:
+        response = client.models.generate_content(*args, **kwargs)
+        return response.text
+    except Exception as error:
+        if gemini_keys.is_rate_limit_error(error):
+            return "Eroare AI: limita de request-uri a fost atinsă pentru moment. Încearcă din nou mai târziu."
+        if gemini_keys.is_key_blocked_error(error):
+            return "Eroare AI: cheia configurată este blocată de Google. Contactează administratorul."
+        return f"Eroare AI: {error}"
 
 # =========================================================
 # MODE 1 - ASISTENT AI

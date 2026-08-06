@@ -1,10 +1,11 @@
 """
 Standalone diagnostic for the "AI works locally, blocked in prod" symptom.
 
-Tests each configured Gemini API key INDIVIDUALLY and DIRECTLY — bypassing
-this app's key-cycling manager (secondary/gemini_keys.py) entirely — so you
-can see exactly which key(s) fail and why, plus the outbound IP this process
-is actually calling Google from.
+The live app only ever calls GEMINI_API_KEY_1 (see secondary/gemini_keys.py -
+no automatic cycling between keys anymore). This script is for manual
+troubleshooting only: it tests EVERY GEMINI_API_KEY_* still sitting in your
+.env individually and directly, so you can see exactly which key(s) fail and
+why, plus the outbound IP this process is actually calling Google from.
 
 Usage: run it from wherever you suspect the block is happening. To check
 whether Render itself is the problem, paste/run this from Render's Shell tab:
