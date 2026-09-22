@@ -156,6 +156,14 @@ function setupFileUploadPreview() {
     });
 }
 
+// Used by the message-export toolbar on modes 1-4 (select all / deselect
+// all messages before downloading as PDF/DOCX).
+function setAllExportChecks(checked) {
+    document.querySelectorAll('input[name="message_ids"]').forEach((box) => {
+        box.checked = checked;
+    });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     setupPasswordToggle();
     setupMobileNav();

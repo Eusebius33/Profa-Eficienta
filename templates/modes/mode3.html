@@ -13,6 +13,7 @@
 {% endblock %}
 
 {% block main %}
+<script>window.DISABLE_GDOCS_COPY = true;</script>
 <div class="min-h-0 h-[calc(100dvh-80px)] bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 p-6 overflow-hidden">
     <div class="w-full max-w-[1850px] mx-auto h-full bg-white border border-slate-200 rounded-[2rem] shadow-2xl p-3 flex gap-3 overflow-hidden">
 
@@ -111,15 +112,36 @@
                     </div>
                 </div>
 
+                <form id="exportForm" method="post" class="flex-1 flex flex-col min-h-0">
+
+                <!-- EXPORT TOOLBAR -->
+                {% if messages %}
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-2 text-xs flex-shrink-0">
+                    <div class="flex items-center gap-3">
+                        <button type="button" onclick="setAllExportChecks(true)" class="text-cyan-700 hover:text-cyan-900 underline">Selectează tot</button>
+                        <button type="button" onclick="setAllExportChecks(false)" class="text-slate-500 hover:text-slate-800 underline">Deselectează tot</button>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button type="submit" formaction="/conversation/{{ conversation_id }}/export/pdf" class="bg-slate-800 hover:bg-slate-700 transition text-white font-semibold px-3 py-1.5 rounded-lg">📄 PDF</button>
+                        <button type="submit" formaction="/conversation/{{ conversation_id }}/export/docx" class="bg-slate-800 hover:bg-slate-700 transition text-white font-semibold px-3 py-1.5 rounded-lg">📝 DOCX</button>
+                    </div>
+                </div>
+                {% endif %}
+
                 <!-- CHAT -->
                 <div id="chat" class="flex-1 overflow-y-auto space-y-4 pr-2 min-h-0 mb-2">
                     {% for message in messages %}
                         {% if message["role"] == "user" %}
-                            <div class="bg-cyan-100 p-4 rounded-2xl text-slate-900 w-fit max-w-xl ml-auto border border-cyan-200 whitespace-pre-wrap break-words">
-                                {{ message["content"] | safe }}
+                            <div class="flex items-start justify-end gap-2">
+                                <div class="bg-cyan-100 p-4 rounded-2xl text-slate-900 w-fit max-w-xl border border-cyan-200 whitespace-pre-wrap break-words">
+                                    {{ message["content"] | safe }}
+                                </div>
+                                <input type="checkbox" name="message_ids" value="{{ message['id'] }}" checked title="Include în export" class="accent-cyan-500 mt-4 flex-shrink-0">
                             </div>
                         {% else %}
-                            <div class="bg-slate-100 p-5 rounded-2xl max-w-3xl border border-slate-200 overflow-hidden relative group">
+                            <div class="flex items-start gap-2">
+                                <input type="checkbox" name="message_ids" value="{{ message['id'] }}" checked title="Include în export" class="accent-cyan-500 mt-5 flex-shrink-0">
+                                <div class="bg-slate-100 p-5 rounded-2xl max-w-3xl border border-slate-200 overflow-hidden relative group">
                                 <!-- COPY BUTTON -->
                                 <button type="button" class="copy-math-btn absolute top-3 right-3 text-slate-500 hover:text-slate-900 bg-slate-200 hover:bg-slate-300 p-1.5 rounded-lg transition flex items-center gap-1"
                                         onclick="copyMathToClipboard(this, this.parentElement.querySelector('.msg-content-container'))" title="Copiaza">
@@ -130,10 +152,13 @@
                                 <div class="text-slate-700 text-sm leading-relaxed whitespace-pre-wrap break-words max-w-full overflow-x-auto msg-content-container">
                                     <div class="math-content">{{ message["content"] }}</div>
                                 </div>
+                                </div>
                             </div>
                         {% endif %}
                     {% endfor %}
                 </div>
+
+                </form>
 
                 <!-- QUICK ACTIONS -->
                 <div class="flex flex-wrap justify-end gap-2 mt-auto mb-3 flex-shrink-0">

@@ -1,0 +1,772 @@
+/* ==========================================================================
+   Design tokens — mirrors the color/type scale already used in the main
+   Profa Eficientă app (Tailwind slate/cyan palette, Outfit + Inter) so this
+   page reads as the same product, without pulling in the Tailwind CDN
+   runtime compiler (cdn.tailwindcss.com recompiles on every load, which is
+   the wrong trade-off for a fast, mobile-first, social-traffic landing page).
+   ========================================================================== */
+:root {
+    --slate-950: #020617;
+    --slate-900: #0f172a;
+    --slate-850: #111827;
+    --slate-800: #1e293b;
+    --slate-700: #334155;
+    --slate-600: #475569;
+    --slate-500: #64748b;
+    --slate-400: #94a3b8;
+    --slate-300: #cbd5e1;
+    --slate-200: #e2e8f0;
+    --slate-50: #f8fafc;
+    --white: #ffffff;
+    --cyan-600: #0891b2;
+    --cyan-500: #06b6d4;
+    --cyan-400: #22d3ee;
+    --cyan-300: #67e8f9;
+    --red-600: #dc2626;
+    --red-300: #fca5a5;
+
+    --font-display: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+    --ease-enter: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-move: cubic-bezier(0.25, 1, 0.5, 1);
+    --ease-bounce: cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+    margin: 0;
+    min-height: 100dvh;
+    background: var(--slate-950);
+    color: var(--white);
+    font-family: var(--font-sans);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+
+h1, h2, h3 { font-family: var(--font-display); margin: 0; }
+p { margin: 0; }
+ul { margin: 0; padding: 0; list-style: none; }
+
+a { color: inherit; }
+
+*:focus-visible {
+    outline: 2px solid var(--cyan-400);
+    outline-offset: 3px;
+    border-radius: 4px;
+}
+
+/* ==========================================================================
+   Decorative background
+   ========================================================================== */
+.bg-scene {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at top left, rgba(6, 182, 212, 0.18), transparent 32%),
+        linear-gradient(135deg, var(--slate-950) 0%, var(--slate-900) 45%, var(--slate-850) 100%);
+}
+
+.bg-grid {
+    position: absolute;
+    inset: 0;
+    opacity: 0.12;
+    background-image: radial-gradient(rgba(148, 163, 184, 0.9) 1px, transparent 1px);
+    background-size: 26px 26px;
+    -webkit-mask-image: radial-gradient(ellipse at center, black 10%, transparent 68%);
+    mask-image: radial-gradient(ellipse at center, black 10%, transparent 68%);
+}
+
+.orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.55;
+    will-change: transform;
+    animation: orb-drift var(--od, 16s) ease-in-out infinite;
+}
+.orb--a { width: 22rem; height: 22rem; top: -6rem; left: -6rem; background: rgba(6, 182, 212, 0.22); --od: 15s; }
+.orb--b { width: 26rem; height: 26rem; top: 8rem; right: -9rem; background: rgba(59, 130, 246, 0.16); --od: 19s; animation-delay: 1.5s; }
+.orb--c { width: 16rem; height: 16rem; bottom: -4rem; left: 40%; background: rgba(34, 211, 238, 0.12); --od: 12s; animation-delay: 0.8s; }
+
+@keyframes orb-drift {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(24px, -20px); }
+}
+
+.glyph {
+    position: absolute;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    color: rgba(34, 211, 238, 0.09);
+    user-select: none;
+    animation: glyph-drift var(--gd, 15s) ease-in-out infinite;
+    animation-delay: var(--gdelay, 0s);
+}
+@keyframes glyph-drift {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    50% { transform: translate(10px, -16px) rotate(var(--gr, 6deg)); }
+}
+
+/* ==========================================================================
+   Layout shell
+   ========================================================================== */
+.page {
+    position: relative;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding-inline: clamp(1.25rem, 5vw, 2rem);
+}
+
+.wordmark-accent { color: var(--cyan-400); }
+
+/* ==========================================================================
+   Reveal-on-view entrance (JS toggles .is-visible via IntersectionObserver).
+   Combines translate + scale + blur for a richer, more "premium" entrance
+   than a plain fade — applied uniformly so every tagged item on the page
+   shares the same motion language.
+   ========================================================================== */
+.reveal {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+    filter: blur(4px);
+    transition: opacity 600ms var(--ease-enter), transform 600ms var(--ease-enter), filter 600ms var(--ease-enter);
+    transition-delay: calc(var(--si, 0) * 90ms);
+}
+.reveal.is-visible { opacity: 1; transform: none; filter: blur(0); }
+
+/* ==========================================================================
+   Hero — text left, WhatsApp-group card right (stacked on mobile)
+   ========================================================================== */
+.hero {
+    padding-block: clamp(3rem, 10vh, 5.5rem) clamp(2.5rem, 8vh, 4rem);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    align-items: stretch;
+}
+@media (min-width: 960px) {
+    .hero { grid-template-columns: 1.2fr 1fr; gap: 3rem; }
+}
+/* Both columns stretch to the row's full height (the grid's align-items:
+   stretch) and center their own content vertically within it, so left and
+   right stay visually symmetric regardless of which one is naturally taller. */
+.hero-content {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.hero-wordmark {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.02em;
+    color: var(--slate-300);
+    margin-bottom: 1.25rem;
+}
+
+.badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid rgba(34, 211, 238, 0.3);
+    background: rgba(6, 182, 212, 0.1);
+    color: var(--cyan-300);
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+}
+.badge-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--cyan-400);
+    position: relative;
+    flex-shrink: 0;
+}
+.badge-dot::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: var(--cyan-400);
+    animation: ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+@keyframes ping {
+    0% { transform: scale(1); opacity: 0.75; }
+    75%, 100% { transform: scale(2.4); opacity: 0; }
+}
+
+.hero-title {
+    font-size: clamp(2.1rem, 3.4vw + 1rem, 3.4rem);
+    font-weight: 800;
+    line-height: 1.14;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.25rem;
+}
+
+.hero-sub {
+    font-size: clamp(1rem, 0.6vw + 0.9rem, 1.15rem);
+    color: var(--slate-300);
+    margin-bottom: 1.5rem;
+}
+.hero-sub:last-of-type { margin-bottom: 2rem; }
+
+.scroll-cue {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--cyan-300);
+    text-decoration: none;
+    transition: transform 160ms var(--ease-enter), color 160ms ease;
+}
+.scroll-cue svg { animation: bounce 1.7s ease-in-out infinite; }
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(4px); }
+}
+@media (hover: hover) and (pointer: fine) {
+    .scroll-cue:hover { color: var(--cyan-400); transform: translateY(2px); }
+}
+
+/* ==========================================================================
+   Hero WhatsApp-group card (right column)
+   ========================================================================== */
+.hero-whatsapp {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.hero-whatsapp-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #25d366, #128c7e);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    margin-bottom: 1rem;
+    box-shadow: 0 10px 24px -10px rgba(37, 211, 102, 0.55);
+}
+.hero-whatsapp .card-title { font-size: 1.25rem; margin-bottom: 0.4rem; }
+.hero-whatsapp .card-desc { margin-bottom: 1.25rem; }
+.hero-whatsapp .wf-submit { background: linear-gradient(90deg, #25d366, #128c7e); color: var(--white); }
+.hero-whatsapp .wf-submit:hover:not(:disabled) { filter: brightness(1.08); }
+.hero-whatsapp .wf-success { background: rgba(37, 211, 102, 0.08); border-color: rgba(37, 211, 102, 0.3); }
+.hero-whatsapp .wf-success-icon { background: #25d366; }
+
+/* ==========================================================================
+   Hints
+   ========================================================================== */
+.hints { padding-block: 1.5rem 3.5rem; text-align: center; }
+.hints-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--slate-400);
+    margin-bottom: 1rem;
+}
+.hints-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.6rem;
+}
+.hint-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 1rem;
+    border-radius: 999px;
+    border: 1px solid var(--slate-700);
+    background: rgba(15, 23, 42, 0.55);
+    color: var(--slate-300);
+    font-size: 0.88rem;
+    transition: border-color 200ms ease, color 200ms ease, transform 150ms var(--ease-enter), box-shadow 200ms ease;
+}
+.hint-chip svg { color: var(--slate-400); transition: transform 300ms var(--ease-enter), color 200ms ease; }
+@media (hover: hover) and (pointer: fine) {
+    .hint-chip:hover {
+        border-color: rgba(34, 211, 238, 0.4);
+        color: var(--cyan-300);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 24px -14px rgba(6, 182, 212, 0.5);
+    }
+    .hint-chip:hover svg { color: var(--cyan-400); transform: rotate(-10deg) scale(1.1); }
+}
+
+/* ==========================================================================
+   Section headings
+   ========================================================================== */
+.section-title {
+    font-size: clamp(1.5rem, 2.2vw + 1rem, 2.1rem);
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.5rem;
+}
+.section-sub {
+    color: var(--slate-400);
+    margin-bottom: 2.25rem;
+}
+.waitlist, .proof { text-align: center; }
+
+/* ==========================================================================
+   Waitlist cards — white, on the dark shell (matches the main app's
+   dark-page + white-content-card pattern)
+   ========================================================================== */
+.waitlist { padding-block: 2rem 4rem; }
+
+.waitlist-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    align-items: start;
+    text-align: left;
+}
+@media (min-width: 860px) {
+    .waitlist-grid { grid-template-columns: 1.08fr 1fr; }
+}
+
+.card {
+    position: relative;
+    background: var(--white);
+    border: 1px solid var(--slate-200);
+    border-radius: 1.75rem;
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+    box-shadow: 0 24px 50px -32px rgba(15, 23, 42, 0.4);
+    transition: box-shadow 220ms ease;
+}
+[data-tilt] { transform-style: preserve-3d; transition: transform 200ms var(--ease-enter), box-shadow 220ms ease; will-change: transform; }
+@media (hover: hover) and (pointer: fine) {
+    .card:hover { box-shadow: 0 30px 60px -30px rgba(15, 23, 42, 0.45); }
+}
+
+.card--vip {
+    border: 2px solid rgba(6, 182, 212, 0.4);
+    box-shadow:
+        0 26px 55px -28px rgba(6, 182, 212, 0.45),
+        0 10px 24px -16px rgba(15, 23, 42, 0.18);
+}
+.card--vip::before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    border-radius: inherit;
+    background: radial-gradient(circle at 25% 0%, rgba(34, 211, 238, 0.4), transparent 60%);
+    opacity: 0.55;
+    z-index: -1;
+    pointer-events: none;
+    animation: vip-breathe 4.5s ease-in-out infinite;
+}
+@keyframes vip-breathe {
+    0%, 100% { opacity: 0.35; transform: scale(1); }
+    50% { opacity: 0.65; transform: scale(1.035); }
+}
+
+.vip-badge {
+    position: absolute;
+    top: -0.85rem;
+    left: clamp(1.5rem, 3vw, 2.25rem);
+    display: inline-block;
+    overflow: hidden;
+    background: linear-gradient(90deg, var(--cyan-400), #3b82f6);
+    color: var(--slate-950);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+    box-shadow: 0 6px 18px -4px rgba(6, 182, 212, 0.6);
+}
+.vip-badge::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 40%; height: 100%;
+    background: linear-gradient(75deg, transparent, rgba(255, 255, 255, 0.7), transparent);
+    transform: translateX(-250%);
+    animation: badge-shimmer 3.2s ease-in-out infinite;
+}
+@keyframes badge-shimmer {
+    0% { transform: translateX(-250%); }
+    55%, 100% { transform: translateX(350%); }
+}
+
+.card-head { margin-bottom: 1.25rem; }
+.card-title { font-size: 1.5rem; font-weight: 800; color: var(--slate-900); margin-bottom: 0.4rem; }
+.card-desc { color: var(--slate-600); font-size: 0.95rem; }
+
+.benefit-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    margin-bottom: 1.25rem;
+}
+.benefit-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    font-size: 0.95rem;
+    color: var(--slate-700);
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: opacity 420ms var(--ease-enter), transform 420ms var(--ease-enter);
+}
+/* Staggered cascade, keyed off the parent card's own reveal-on-view state */
+.card--vip.is-visible .benefit-list li { opacity: 1; transform: translateX(0); }
+.card--vip.is-visible .benefit-list li:nth-child(1) { transition-delay: 260ms; }
+.card--vip.is-visible .benefit-list li:nth-child(2) { transition-delay: 350ms; }
+.card--vip.is-visible .benefit-list li:nth-child(3) { transition-delay: 440ms; }
+
+.benefit-check {
+    flex-shrink: 0;
+    color: var(--cyan-600);
+    background: rgba(6, 182, 212, 0.12);
+    border-radius: 50%;
+    padding: 3px;
+    margin-top: 1px;
+}
+
+.scarcity-note {
+    font-size: 0.82rem;
+    color: var(--slate-500);
+    margin-bottom: 1.25rem;
+    line-height: 1.5;
+}
+
+.free-note {
+    font-size: 0.82rem;
+    color: var(--slate-500);
+    margin-top: 0.85rem;
+}
+
+/* ==========================================================================
+   Waitlist form (rendered by React into #waitlist-root-*)
+   ========================================================================== */
+.wf-field { margin-bottom: 0.6rem; }
+.wf-label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--slate-700);
+    margin-bottom: 0.45rem;
+}
+.wf-input-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+@media (min-width: 480px) {
+    .wf-input-row { flex-direction: row; }
+}
+.wf-input {
+    flex: 1;
+    width: 100%;
+    font-size: 16px; /* prevents iOS auto-zoom on focus */
+    font-family: var(--font-sans);
+    color: var(--slate-900);
+    background: var(--slate-50);
+    border: 1px solid var(--slate-200);
+    border-radius: 1rem;
+    padding: 0.85rem 1rem;
+    min-height: 48px;
+    transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+.wf-input::placeholder { color: var(--slate-400); }
+.wf-input:focus {
+    outline: none;
+    border-color: var(--cyan-400);
+    box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.22);
+}
+.wf-input[aria-invalid="true"] {
+    border-color: #f87171;
+    box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.18);
+}
+@keyframes wf-shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(4px); }
+    50% { transform: translateX(-3px); }
+    75% { transform: translateX(2px); }
+    100% { transform: translateX(0); }
+}
+.wf-input.wf-shake { animation: wf-shake 220ms cubic-bezier(0.36, 0.07, 0.19, 0.97); }
+
+.wf-submit {
+    position: relative;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 48px;
+    padding: 0 1.5rem;
+    border: none;
+    border-radius: 1rem;
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--slate-950);
+    background: var(--cyan-500);
+    cursor: pointer;
+    transition: background-color 160ms var(--ease-enter), transform 120ms var(--ease-enter), opacity 160ms ease;
+}
+.wf-submit::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 35%; height: 100%;
+    background: linear-gradient(75deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+    transform: translateX(-250%);
+}
+@media (hover: hover) and (pointer: fine) {
+    .wf-submit:hover:not(:disabled)::after { animation: btn-shine 650ms ease; }
+}
+@keyframes btn-shine {
+    from { transform: translateX(-250%); }
+    to { transform: translateX(350%); }
+}
+.wf-submit:hover:not(:disabled) { background: var(--cyan-400); }
+.wf-submit:active:not(:disabled) { transform: scale(0.97); }
+.wf-submit:disabled { opacity: 0.65; cursor: not-allowed; }
+
+.card--vip .wf-submit { background: linear-gradient(90deg, var(--cyan-400), #38bdf8); }
+.card--vip .wf-submit:hover:not(:disabled) { filter: brightness(1.08); }
+.wf-submit--block { width: 100%; margin-top: 0.4rem; }
+
+/* ==========================================================================
+   VIP payment result page
+   ========================================================================== */
+.vip-success-wrap { min-height: 70dvh; display: flex; align-items: center; justify-content: center; padding-block: 3rem; }
+.vip-success-card { max-width: 28rem; text-align: center; }
+.vip-success-card .wf-submit { display: inline-flex; margin-top: 1.5rem; }
+.vip-invoice-btn { width: 100%; justify-content: center; }
+/* Secondary treatment: invoice is the primary action, the receipt sits
+   right under it with less visual weight (outline instead of solid). */
+.vip-receipt-btn {
+    background: var(--white);
+    color: var(--cyan-600);
+    border: 1.5px solid var(--slate-200);
+    box-shadow: none;
+}
+.vip-receipt-btn:hover:not(:disabled) { background: var(--slate-50); }
+.vip-invoice-btn + .vip-receipt-btn { margin-top: 0.75rem; }
+.vip-back-link { display: inline-flex; margin-top: 1rem; }
+
+.wf-error {
+    color: var(--red-600);
+    font-size: 0.82rem;
+    margin-top: 0.5rem;
+}
+
+.wf-hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+.wf-spinner {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    border: 2px solid rgba(2, 6, 23, 0.35);
+    border-top-color: var(--slate-950);
+    animation: wf-spin 700ms linear infinite;
+    flex-shrink: 0;
+}
+@keyframes wf-spin { to { transform: rotate(360deg); } }
+
+/* ==========================================================================
+   Success celebration — icon rotates/bobs/unblurs in, its checkmark path
+   draws itself via stroke-dashoffset, then the text fades in slightly after.
+   ========================================================================== */
+.wf-success {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.9rem 1rem;
+    border-radius: 1rem;
+    background: rgba(6, 182, 212, 0.08);
+    border: 1px solid rgba(6, 182, 212, 0.3);
+}
+.wf-success-icon {
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--cyan-500);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: rotate(70deg) translateY(14px);
+    filter: blur(6px);
+}
+.wf-success[data-state="in"] .wf-success-icon {
+    animation: wf-success-icon-in 550ms var(--ease-bounce) forwards;
+}
+@keyframes wf-success-icon-in {
+    to { opacity: 1; transform: rotate(0deg) translateY(0); filter: blur(0); }
+}
+.wf-success-path {
+    stroke-dasharray: var(--path-length, 20);
+    stroke-dashoffset: var(--path-length, 20);
+}
+.wf-success[data-state="in"] .wf-success-path {
+    transition: stroke-dashoffset 480ms var(--ease-enter) 140ms;
+    stroke-dashoffset: 0;
+}
+.wf-success-text {
+    opacity: 0;
+    transform: translateY(6px);
+}
+.wf-success[data-state="in"] .wf-success-text {
+    transition: opacity 420ms ease 160ms, transform 420ms ease 160ms;
+    opacity: 1;
+    transform: translateY(0);
+}
+.wf-success-title { font-weight: 700; font-size: 0.95rem; color: var(--slate-900); margin-bottom: 0.15rem; }
+.wf-success-desc { font-size: 0.85rem; color: var(--slate-600); }
+
+/* ==========================================================================
+   Social proof — white cards
+   ========================================================================== */
+.proof { padding-block: 1rem 4.5rem; }
+.proof-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    text-align: left;
+}
+@media (min-width: 720px) {
+    .proof-grid { grid-template-columns: repeat(3, 1fr); }
+}
+/* Stagger index as plain CSS instead of an inline style with a Jinja
+   {{ loop.index }} in it — that pattern reads as invalid CSS to editor
+   tooling (it can't know the templating will resolve it before the browser
+   ever sees it), so IDEs flag it as a real error. This gets the identical
+   staggered entrance without tripping that. */
+.proof-card:nth-child(1) { --si: 1; }
+.proof-card:nth-child(2) { --si: 2; }
+.proof-card:nth-child(3) { --si: 3; }
+.proof-card:nth-child(4) { --si: 4; }
+.proof-card:nth-child(5) { --si: 5; }
+.proof-card {
+    margin: 0;
+    padding: 1.5rem;
+    border-radius: 1.25rem;
+    border: 1px solid var(--slate-200);
+    background: var(--white);
+    box-shadow: 0 20px 40px -30px rgba(15, 23, 42, 0.3);
+    transition: transform 220ms var(--ease-enter), box-shadow 220ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+    .proof-card:hover { transform: translateY(-4px); box-shadow: 0 24px 46px -26px rgba(15, 23, 42, 0.35); }
+}
+.proof-quote {
+    font-size: 0.92rem;
+    color: var(--slate-700);
+    font-style: italic;
+    margin-bottom: 0.85rem;
+    line-height: 1.6;
+}
+.proof-author {
+    font-size: 0.82rem;
+    color: var(--slate-500);
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+.site-footer {
+    border-top: 1px solid var(--slate-800);
+    padding: 1.75rem clamp(1.25rem, 5vw, 2rem) 2.5rem;
+    text-align: center;
+    color: var(--slate-400);
+    font-size: 0.82rem;
+}
+.footer-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.75rem;
+}
+.footer-links a {
+    color: var(--slate-400);
+    text-decoration: none;
+    transition: color 160ms ease;
+}
+.footer-links a:hover { color: var(--cyan-300); }
+.footer-links span { color: var(--slate-700); }
+
+/* ==========================================================================
+   Legal pages (Termeni / Confidențialitate)
+   ========================================================================== */
+.legal-topbar { padding-block: 1.5rem; }
+.legal-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--cyan-300);
+    text-decoration: none;
+    transition: transform 160ms var(--ease-enter), color 160ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+    .legal-back:hover { color: var(--cyan-400); transform: translateX(-3px); }
+}
+.legal { max-width: 42rem; margin: 0 auto; padding-block: 1rem 4rem; }
+.legal-title { font-size: clamp(1.75rem, 3vw + 1rem, 2.5rem); font-weight: 800; margin-bottom: 0.5rem; }
+.legal-updated { color: var(--slate-400); font-size: 0.85rem; margin-bottom: 1.5rem; }
+.legal-intro { color: var(--slate-300); margin-bottom: 2.5rem; font-size: 1.05rem; }
+.legal-section { margin-bottom: 1.75rem; }
+.legal-section h2 { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.6rem; color: var(--white); }
+.legal-section p { color: var(--slate-300); margin-bottom: 0.6rem; line-height: 1.7; }
+.legal-section p:last-child { margin-bottom: 0; }
+
+/* ==========================================================================
+   Accessibility: reduced motion — disables every animation/transition added
+   above, leaving only instant, fully-visible end states.
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+    .orb, .glyph, .badge-dot::after, .scroll-cue svg, .wf-spinner,
+    .card--vip::before, .vip-badge::after, .wf-submit::after,
+    .wf-success-icon, .wf-input.wf-shake {
+        animation: none !important;
+    }
+    .reveal {
+        transition: opacity 200ms linear !important;
+        transform: none !important;
+        filter: none !important;
+    }
+    .card--vip.is-visible .benefit-list li,
+    .wf-success-path, .wf-success-text {
+        transition: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+        stroke-dashoffset: 0 !important;
+    }
+    .wf-success-icon { opacity: 1 !important; transform: none !important; filter: none !important; }
+    [data-tilt] { transition: none !important; }
+    .hint-chip, .wf-submit, .wf-input, .scroll-cue, .legal-back, .proof-card, .card {
+        transition: background-color 120ms linear, color 120ms linear, border-color 120ms linear !important;
+    }
+}

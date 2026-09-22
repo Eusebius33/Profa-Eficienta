@@ -15,6 +15,7 @@ Profa Eficientă / Proful Eficient is an AI-powered educational platform designe
 3.  **Document to LaTeX Generator (PDF/Docx → Mate)**: Extracts text from uploaded files (.pdf, .docx, .txt) and generates equivalent math equations or variations of the test paper.
 4.  **Handwriting OCR (Scris de Mână → Digital)** (*Prototype*): A prototype designed to transcribe scanned handwritten worksheets into digital equations.
 5.  **BAC Exam Generator (Generator BAC AI)** (*Prototype*): A prototype designed to generate custom Romanian Bacalaureat mock exam papers.
+6.  **Cadoul Matematic Waitlist** (`/cadoul-matematic`): early-access landing page for an upcoming product, with free and paid-VIP (Stripe Checkout) signup tiers plus a WhatsApp interest form. Self-contained under `waitlist/` (own templates/static/Supabase/Stripe/Resend glue — see `waitlist/README.md`) and mounted into the main app as a Flask blueprint.
 
 ---
 
@@ -127,7 +128,10 @@ Profa-Eficienta/
 ├── templates/              # Jinja2 HTML templates
 │   ├── apology.html        # Styled error page
 │   └── modes/              # User interfaces for Modes 1-5
-└── static/                 # Static styles and scripts
+├── static/                 # Static styles and scripts
+└── waitlist/               # "Cadoul Matematic" waitlist landing page (/cadoul-matematic)
+    ├── app.py              # waitlist_bp blueprint: routes, Stripe/Supabase/Resend glue
+    └── README.md           # setup for Supabase/Stripe/Resend, deploy notes
 ```
 
 ---

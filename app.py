@@ -1,11 +1,12 @@
 from functools import wraps
+from io import BytesIO
 import json
 import os
 from types import SimpleNamespace
 from werkzeug.utils import secure_filename
 import uuid
 from dotenv import load_dotenv
-from flask import Flask, jsonify, redirect, render_template, request, session
+from flask import Flask, jsonify, redirect, render_template, request, send_file, session
 from flask_session import Session
 from sqlalchemy import select
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -13,12 +14,13 @@ from werkzeug.security import check_password_hash, generate_password_hash
 #mode3
 from PyPDF2 import PdfReader
 from docx import Document
-from secondary import ai, docs, ocr, accounts
+from secondary import ai, docs, ocr, accounts, exports
 from secondary import model_route
 from secondary.document_editor import document_editor_bp
 from bac_generator.routes import bac_generator_bp
 from bac_generator.generator import BACExamGenerator
 from models import SessionLocal, User, Conversation, Message, Style, init_db
+from waitlist.app import waitlist_bp
 import traceback
 
 load_dotenv()
@@ -27,6 +29,10 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY") or "dev-only-insecure-secret-key"
 app.register_blueprint(bac_generator_bp)
 app.register_blueprint(document_editor_bp)
+# Standalone "Cadoul Matematic" waitlist/landing page (own templates, static
+# files, and Supabase/Stripe/Resend integrations — see waitlist/README.md),
+# folded in here under its own path prefix rather than as a separate deploy.
+app.register_blueprint(waitlist_bp, url_prefix="/cadoul-matematic")
 os.makedirs("uploads", exist_ok=True)
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
@@ -666,6 +672,72 @@ def delete_conversation(conversation_id):
         return redirect(f"/{mode}/{next_conversation.id}")
 
     return redirect("/menu")
+
+
+def _export_messages(conversation_id):
+    """Shared lookup for the two export routes below: verify the conversation
+    belongs to the current user, then return (conversation, messages) for
+    whichever message_ids were POSTed - or every message in the conversation
+    if none were selected. Returns (None, None) if not found/authorized."""
+    conversation = db.scalars(
+        select(Conversation).where(Conversation.id == conversation_id, Conversation.user_id == session["user_id"])
+    ).first()
+
+    if not conversation:
+        return None, None
+
+    message_ids = [int(v) for v in request.form.getlist("message_ids") if v.isdigit()]
+
+    query = select(Message).where(Message.conversation_id == conversation_id)
+    if message_ids:
+        query = query.where(Message.id.in_(message_ids))
+    query = query.order_by(Message.id.asc())
+
+    messages = [
+        {"role": m.role, "content": m.content, "created_at": m.created_at}
+        for m in db.scalars(query).all()
+    ]
+    return conversation, messages
+
+
+@app.route("/conversation/<int:conversation_id>/export/pdf", methods=["POST"])
+@login_required
+def export_conversation_pdf(conversation_id):
+    conversation, messages = _export_messages(conversation_id)
+    if conversation is None:
+        return apology("Conversație inexistentă.", 404)
+    if not messages:
+        return apology("Niciun mesaj de exportat.", 400)
+
+    pdf_bytes = exports.build_messages_pdf(conversation.title or "Conversație", messages)
+    filename = secure_filename(f"{conversation.title or 'conversatie'}.pdf") or "conversatie.pdf"
+
+    return send_file(
+        BytesIO(pdf_bytes),
+        mimetype="application/pdf",
+        as_attachment=True,
+        download_name=filename,
+    )
+
+
+@app.route("/conversation/<int:conversation_id>/export/docx", methods=["POST"])
+@login_required
+def export_conversation_docx(conversation_id):
+    conversation, messages = _export_messages(conversation_id)
+    if conversation is None:
+        return apology("Conversație inexistentă.", 404)
+    if not messages:
+        return apology("Niciun mesaj de exportat.", 400)
+
+    docx_bytes = exports.build_messages_docx(conversation.title or "Conversație", messages)
+    filename = secure_filename(f"{conversation.title or 'conversatie'}.docx") or "conversatie.docx"
+
+    return send_file(
+        BytesIO(docx_bytes),
+        mimetype="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        as_attachment=True,
+        download_name=filename,
+    )
 # =========================================================
 # RUN (Reloaded to refresh translations JSON keys)
 # =========================================================

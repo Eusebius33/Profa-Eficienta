@@ -13,3 +13,10 @@ werkzeug
 reportlab
 gunicorn
 sympy
+
+# Cadoul Matematic waitlist blueprint (waitlist/app.py, mounted at
+# /cadoul-matematic) — Supabase storage, Stripe Checkout, Resend email.
+# Pinned to the versions that sub-app was built/tested against.
+supabase==2.31.0
+stripe==10.12.0
+resend==2.4.0

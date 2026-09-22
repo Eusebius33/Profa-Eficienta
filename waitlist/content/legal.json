@@ -1,0 +1,102 @@
+{
+  "terms": {
+    "title": "Termeni și condiții",
+    "updated": "31 iulie 2026",
+    "intro": "Acești termeni se aplică exclusiv paginii de listă de așteptare Profa Eficientă, nu produsului final, care va avea proprii termeni de utilizare la lansare.",
+    "sections": [
+      {
+        "heading": "1. Despre această pagină",
+        "body": [
+          "Această pagină îți permite să te înscrii pe lista de așteptare pentru Profa Eficientă, un produs aflat în pregătire pentru profesorii de matematică din România. Înscrierea pe listă nu reprezintă o achiziție, un abonament sau un contract de prestare de servicii — este doar o exprimare de interes."
+        ]
+      },
+      {
+        "heading": "2. Ce înseamnă înscrierea pe listă",
+        "body": [
+          "Prin completarea formularului, ne dai voie să te contactăm pe adresa de email furnizată atunci când produsul este disponibil.",
+          "Opțiunea „VIP” reflectă intenția noastră curentă privind beneficiile (acces timpuriu, o lună gratuită, suport telefonic 24/7). Aceste beneficii pot fi ajustate până la lansarea oficială; dacă se schimbă ceva relevant, te anunțăm înainte de a-ți cere vreun angajament."
+        ]
+      },
+      {
+        "heading": "3. Fără costuri la înscriere",
+        "body": [
+          "Înscrierea pe listă, indiferent de opțiunea aleasă (Gratuit sau VIP), este gratuită. Nu colectăm date de plată prin acest formular."
+        ]
+      },
+      {
+        "heading": "4. Renunțare",
+        "body": [
+          "Poți cere oricând să fii scos de pe listă, folosind adresa de contact de mai jos."
+        ]
+      },
+      {
+        "heading": "5. Modificări",
+        "body": [
+          "Putem actualiza acest text pe măsură ce produsul se apropie de lansare; data ultimei actualizări este afișată mai sus."
+        ]
+      },
+      {
+        "heading": "6. Contact și lege aplicabilă",
+        "body": [
+          "[Numele companiei / persoanei operatoare] este responsabil(ă) de operarea acestei pagini, conform legislației din România.",
+          "Pentru întrebări legate de acești termeni: [adresă de email de contact]."
+        ]
+      }
+    ]
+  },
+  "privacy": {
+    "title": "Politica de confidențialitate",
+    "updated": "31 iulie 2026",
+    "intro": "Explicăm mai jos, simplu, ce date colectăm prin această pagină de listă de așteptare și ce facem cu ele.",
+    "sections": [
+      {
+        "heading": "1. Cine este operatorul de date",
+        "body": [
+          "[Numele companiei / persoanei operatoare], denumit(ă) mai jos „noi”, operează această pagină. Pentru orice solicitare legată de datele tale, ne poți contacta la [adresă de email de contact]."
+        ]
+      },
+      {
+        "heading": "2. Ce date colectăm",
+        "body": [
+          "Atunci când te înscrii pe lista de așteptare, colectăm: adresa de email, opțiunea aleasă (Gratuit sau VIP) și, dacă e cazul, sursa din care ai ajuns pe pagină (de exemplu un link din Instagram sau Facebook), ca să înțelegem ce funcționează. Nu colectăm alte date personale prin acest formular."
+        ]
+      },
+      {
+        "heading": "3. De ce colectăm aceste date",
+        "body": [
+          "Folosim adresa de email exclusiv ca să te anunțăm despre lansarea produsului și, dacă ai ales VIP, ca să-ți oferim acces timpuriu. Nu folosim aceste date în scopuri de marketing nesolicitat și nu le vindem niciodată."
+        ]
+      },
+      {
+        "heading": "4. Unde sunt stocate datele",
+        "body": [
+          "Datele sunt stocate la Supabase, furnizorul nostru de bază de date, în calitate de persoană împuternicită. Nu transmitem aceste date altor terți."
+        ]
+      },
+      {
+        "heading": "5. Cât timp le păstrăm",
+        "body": [
+          "Păstrăm datele până la lansarea produsului și comunicarea aferentă, sau până când ne ceri să le ștergem, oricare survine prima."
+        ]
+      },
+      {
+        "heading": "6. Drepturile tale",
+        "body": [
+          "Conform GDPR, ai dreptul de acces, rectificare, ștergere, restricționare a prelucrării și dreptul de a depune o plângere la Autoritatea Națională de Supraveghere a Prelucrării Datelor cu Caracter Personal (ANSPDCP). Pentru a-ți exercita oricare dintre aceste drepturi, scrie-ne la [adresă de email de contact]."
+        ]
+      },
+      {
+        "heading": "7. Cookie-uri",
+        "body": [
+          "Această pagină nu folosește cookie-uri de analiză, marketing sau alte cookie-uri opționale. În acest moment, site-ul nu setează niciun cookie."
+        ]
+      },
+      {
+        "heading": "8. Modificări",
+        "body": [
+          "Vom actualiza această politică dacă se schimbă modul în care colectăm sau folosim datele; data de mai sus reflectă ultima versiune."
+        ]
+      }
+    ]
+  }
+}

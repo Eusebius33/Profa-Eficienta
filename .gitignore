@@ -41,3 +41,8 @@ htmlcov/
 .vscode/
 .idea/
 *.swp
+
+# Waitlist (Cadoul Matematic, /cadoul-matematic) local dry-run fallback files
+# — used only when Supabase isn't configured; see waitlist/app.py.
+waitlist/waitlist_local.jsonl
+waitlist/whatsapp_local.jsonl

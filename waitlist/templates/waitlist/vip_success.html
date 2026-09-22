@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="robots" content="noindex,nofollow">
+<title>{{ 'Plată confirmată' if verified else 'Verificăm plata' }} — {{ site_name }}</title>
+<link rel="icon" type="image/svg+xml" href="{{ url_for('waitlist.static', filename='images/favicon.svg') }}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('waitlist.static', filename='css/styles.css') }}">
+</head>
+<body>
+
+<div class="bg-scene" aria-hidden="true">
+    <div class="bg-grid"></div>
+    <div class="orb orb--a"></div>
+    <div class="orb orb--b"></div>
+</div>
+
+<div class="page">
+    <main class="vip-success-wrap">
+        <div class="card vip-success-card">
+            {% if verified %}
+                <span class="wf-success-icon" style="width:52px;height:52px;opacity:1;transform:none;filter:none;margin:0 auto 1.25rem;">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>
+                </span>
+                <h1 class="card-title" style="font-size:1.75rem;">Bine ai venit în VIP!</h1>
+                <p class="card-desc">Plata a fost confirmată. Primești în scurt timp un email cu accesul anticipat, luna gratuită și detaliile de contact pentru suportul telefonic 24/7. Factura ta este disponibilă mai jos și ți-am trimis-o și pe email.</p>
+                {% if invoice_url %}
+                <a href="{{ invoice_url }}" class="wf-submit vip-invoice-btn">Descarcă factura (PDF)</a>
+                {% endif %}
+                {% if receipt_url %}
+                <a href="{{ receipt_url }}" class="wf-submit vip-invoice-btn vip-receipt-btn">Descarcă chitanța</a>
+                {% endif %}
+            {% else %}
+                <h1 class="card-title" style="font-size:1.75rem;">Îți verificăm plata</h1>
+                <p class="card-desc">Dacă tocmai ai plătit, totul e în regulă — confirmarea poate dura câteva momente și primești un email de îndată ce e gata. Dacă întâmpini probleme, scrie-ne la adresa <a href="mailto:profuleficient@gmail.com">profuleficient@gmail.com</a>.</p>
+            {% endif %}
+            <a href="{{ url_for('waitlist.index') }}" class="{{ 'legal-back vip-back-link' if (invoice_url or receipt_url) else 'wf-submit' }}">Înapoi la pagina principală</a>
+        </div>
+    </main>
+</div>
+
+</body>
+</html>

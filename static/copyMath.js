@@ -30,6 +30,16 @@
   const STORAGE_KEY = "copiaza_format";
   const DEFAULT_FORMAT = "word_modern";
 
+  // Modes 1-4 opt out of the Google Docs copy formats (set via an inline
+  // flag on the page before this script runs); Mode 5 still offers them.
+  const GOOGLE_DOCS_ENABLED = !window.DISABLE_GDOCS_COPY;
+
+  function effectiveFormat() {
+    const stored = getFormat();
+    if (!GOOGLE_DOCS_ENABLED && stored.indexOf("google") === 0) return DEFAULT_FORMAT;
+    return stored;
+  }
+
   const FORMATS = [
     { id: "word_modern",      label: "Word >2011",              icon: "📄", desc: "Editable equation in modern Word" },
     { id: "word_legacy",      label: "Word <2011",              icon: "📄", desc: "MathML for legacy Word" },
@@ -496,7 +506,7 @@
   // ── Public API ───────────────────────────────────────────────────────────
 
   window.copyMathToClipboard = function (buttonElement, containerElement) {
-    copyWithFormat(getFormat(), buttonElement, containerElement);
+    copyWithFormat(effectiveFormat(), buttonElement, containerElement);
   };
 
   window.enhanceCopyButtons = function (root) {
@@ -523,7 +533,7 @@
     // Main button copies with current format
     button.onclick = null;
     button.addEventListener("click", () =>
-      copyWithFormat(getFormat(), button, container)
+      copyWithFormat(effectiveFormat(), button, container)
     );
     wrap.appendChild(button);
 
@@ -584,7 +594,7 @@
     }
 
     function renderMenu() {
-      const current = getFormat();
+      const current = effectiveFormat();
       menu.innerHTML = "";
 
       // Section header for Word
@@ -593,6 +603,8 @@
       FORMATS.filter(f => f.id.startsWith("word")).forEach(f => {
         menu.appendChild(createOption(f, current, button, container, menu));
       });
+
+      if (!GOOGLE_DOCS_ENABLED) return;
 
       // Divider
       const hr = document.createElement("div");
