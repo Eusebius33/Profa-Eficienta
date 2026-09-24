@@ -14,7 +14,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 #mode3
 from PyPDF2 import PdfReader
 from docx import Document
-from secondary import ai, docs, ocr, accounts, exports
+from secondary import ai, docs, ocr, accounts, exports, classroom
 from secondary import model_route
 from secondary.document_editor import document_editor_bp
 from bac_generator.routes import bac_generator_bp
@@ -329,6 +329,104 @@ def menu():
 def documentation():
 
     return render_template("documentation.html")
+
+
+# =========================================================
+# ELEVII MEI (classroom platform) — the "Students" nav
+# section: risk overview, per-student AI profiling, exercise
+# generator and smart groups. All routes live under /elevi.
+# =========================================================
+
+@app.route("/elevi")
+@app.route("/elevi/<int:class_id>")
+@login_required
+def elevi(class_id=None):
+    return classroom.elevi_page(db, class_id)
+
+@app.route("/elevi/noua", methods=["POST"])
+@login_required
+def clasa_noua():
+    return classroom.create_class(db, apology)
+
+@app.route("/elevi/<int:class_id>/nou", methods=["GET"])
+@login_required
+def elev_nou_form(class_id):
+    return classroom.add_student_form(db, apology, class_id)
+
+@app.route("/elevi/<int:class_id>/nou", methods=["POST"])
+@login_required
+def elev_nou_submit(class_id):
+    return classroom.add_student_submit(db, apology, class_id)
+
+@app.route("/elevi/<int:class_id>/<int:sid>")
+@login_required
+def elev_profil(class_id, sid):
+    return classroom.student_page(db, apology, class_id, sid)
+
+@app.route("/elev/<int:sid>/profil/genereaza", methods=["POST"])
+@login_required
+def elev_profil_genereaza(sid):
+    return classroom.regenerate_profile(db, sid)
+
+@app.route("/elev/<int:sid>/actiune/<int:idx>/toggle", methods=["POST"])
+@login_required
+def elev_actiune_toggle(sid, idx):
+    return classroom.toggle_action(db, apology, sid, idx)
+
+@app.route("/elev/<int:sid>/chat", methods=["POST"])
+@login_required
+def elev_chat(sid):
+    return classroom.chat_message(db, apology, sid)
+
+@app.route("/elev/<int:sid>/exercitii")
+@login_required
+def elev_exercitii(sid):
+    return classroom.exercises_redirect(db, apology, sid)
+
+@app.route("/elev/<int:sid>/exercitii/genereaza", methods=["POST"])
+@login_required
+def elev_exercitii_genereaza(sid):
+    return classroom.generate_exercises(db, apology, sid)
+
+@app.route("/elev/<int:sid>/recenzie/genereaza", methods=["POST"])
+@login_required
+def elev_recenzie_genereaza(sid):
+    return classroom.submit_test_review(db, apology, sid)
+
+@app.route("/elevi/<int:class_id>/grupe")
+@login_required
+def clasa_grupe(class_id):
+    return classroom.groups_page(db, apology, class_id)
+
+@app.route("/elevi/<int:class_id>/grupe/auto", methods=["POST"])
+@login_required
+def clasa_grupe_auto(class_id):
+    return classroom.auto_group(db, apology, class_id)
+
+@app.route("/elevi/<int:class_id>/grupe/muta", methods=["POST"])
+@login_required
+def clasa_grupe_muta(class_id):
+    return classroom.move_group_member(db, apology, class_id)
+
+@app.route("/elevi/<int:class_id>/grupa/<int:gid>")
+@login_required
+def grupa_detaliu(class_id, gid):
+    return classroom.group_detail(db, apology, class_id, gid)
+
+@app.route("/grupa/<int:gid>/actiuni/genereaza", methods=["POST"])
+@login_required
+def grupa_actiuni_genereaza(gid):
+    return classroom.regenerate_group_actions(db, apology, gid)
+
+@app.route("/grupa/<int:gid>/actiune/<int:idx>/toggle", methods=["POST"])
+@login_required
+def grupa_actiune_toggle(gid, idx):
+    return classroom.toggle_group_action(db, apology, gid, idx)
+
+@app.route("/elevi/<int:class_id>/grupa/<int:gid>/exercitii/genereaza", methods=["POST"])
+@login_required
+def grupa_exercitii_genereaza(class_id, gid):
+    return classroom.generate_group_exercises(db, apology, class_id, gid)
 
 
 # =========================================================

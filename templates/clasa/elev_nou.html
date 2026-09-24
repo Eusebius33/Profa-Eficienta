@@ -1,0 +1,231 @@
+{% extends "clasa/_base.html" %}
+{% import "clasa/_macros.html" as macros with context %}
+
+{% block title %}{{ t('add_student_btn') }}{% endblock %}
+
+{% block clasa_content %}
+
+<div class="mb-6">
+    <a href="/elevi/{{ selected_class['id'] }}" class="text-sm text-slate-400 hover:text-cyan-400 no-underline" data-i18n="back_to_class">← {{ t("back_to_class") }}</a>
+</div>
+
+<h1 class="font-display text-2xl sm:text-3xl font-bold text-white mb-1" data-i18n="add_student_title">{{ t("add_student_title") }}</h1>
+<p class="text-slate-400 mb-6" data-i18n="add_student_subtitle">{{ t("add_student_subtitle") }}</p>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+    <form action="/elevi/{{ selected_class['id'] }}/nou" method="post" enctype="multipart/form-data" class="lg:col-span-2 bg-[#0f172a] border border-[#334155] rounded-2xl p-6 space-y-6">
+
+        <!-- BASICS -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm text-slate-300 mb-1.5" data-i18n="add_student_name_label">{{ t("add_student_name_label") }}</label>
+                <input id="pvName" type="text" name="name" required placeholder="{{ t('add_student_name_ph') }}"
+                    class="w-full rounded-xl bg-[#1e293b] border border-[#334155] px-4 py-2.5 text-white placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-cyan-500">
+            </div>
+            <div>
+                <label class="block text-sm text-slate-300 mb-1.5" data-i18n="add_student_class_label">{{ t("add_student_class_label") }}</label>
+                <select id="pvClass" name="class_id" class="w-full rounded-xl bg-[#1e293b] border border-[#334155] px-4 py-2.5 text-white outline-none focus:ring-2 focus:ring-cyan-500">
+                    {% for c in classes %}
+                        <option value="{{ c['id'] }}" {% if c['id'] == selected_class['id'] %}selected{% endif %}>{{ c['name'] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div>
+            <label class="block text-sm text-slate-300 mb-1.5" data-i18n="add_student_weaknesses_label">{{ t("add_student_weaknesses_label") }}</label>
+            <input id="pvWeaknesses" type="text" name="weaknesses" placeholder="{{ t('add_student_weaknesses_ph') }}"
+                class="w-full rounded-xl bg-[#1e293b] border border-[#334155] px-4 py-2.5 text-white placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-cyan-500">
+        </div>
+
+        <!-- ATTENDANCE + ABSENCES -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm text-slate-300 mb-1.5" data-i18n="add_student_attendance_label">{{ t("add_student_attendance_label") }}</label>
+                <input id="pvAttendance" type="number" name="attendance" min="0" max="100" value="80"
+                    class="w-full rounded-xl bg-[#1e293b] border border-[#334155] px-4 py-2.5 text-white outline-none focus:ring-2 focus:ring-cyan-500">
+            </div>
+            <div>
+                <label class="block text-sm text-slate-300 mb-1.5" data-i18n="add_student_absent_label">{{ t("add_student_absent_label") }}</label>
+                <input id="pvAbsent" type="text" name="absent_lessons" placeholder="{{ t('add_student_absent_ph') }}"
+                    class="w-full rounded-xl bg-[#1e293b] border border-[#334155] px-4 py-2.5 text-white placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-cyan-500">
+            </div>
+        </div>
+
+        <!-- PERSONALITY + ATTENTION SPAN -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm text-slate-300 mb-1.5" data-i18n="add_student_personality_label">{{ t("add_student_personality_label") }}</label>
+                <input id="pvPersonality" type="text" name="personality_traits" placeholder="{{ t('add_student_personality_ph') }}"
+                    class="w-full rounded-xl bg-[#1e293b] border border-[#334155] px-4 py-2.5 text-white placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-cyan-500">
+            </div>
+            <div>
+                <label class="block text-sm text-slate-300 mb-1.5" data-i18n="add_student_attention_label">{{ t("add_student_attention_label") }}</label>
+                <input id="pvAttention" type="text" name="attention_span" placeholder="{{ t('add_student_attention_ph') }}"
+                    class="w-full rounded-xl bg-[#1e293b] border border-[#334155] px-4 py-2.5 text-white placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-cyan-500">
+            </div>
+        </div>
+
+        <!-- GRADE = LESSON KEY/VALUE PAIRS -->
+        <div>
+            <label class="block text-sm text-slate-300 mb-1.5" data-i18n="add_student_grades_label">{{ t("add_student_grades_label") }}</label>
+            <div id="grade-rows" class="flex flex-col gap-2">
+                <div class="grade-row flex gap-2">
+                    <input type="number" step="0.1" min="1" max="10" name="grades[]" placeholder="{{ t('add_student_grade_ph') }}"
+                        class="w-24 rounded-xl bg-[#1e293b] border border-[#334155] px-3 py-2 text-white placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-cyan-500">
+                    <input type="text" name="lessons[]" placeholder="{{ t('add_student_lessons_ph') }}"
+                        class="flex-1 rounded-xl bg-[#1e293b] border border-[#334155] px-3 py-2 text-white placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-cyan-500">
+                </div>
+            </div>
+            <button type="button" onclick="addGradeRow()" class="mt-2 text-sm text-cyan-400 hover:text-cyan-300" data-i18n="add_student_add_grade">+ {{ t("add_student_add_grade") }}</button>
+        </div>
+
+        <!-- HANDWRITTEN TEST + SOLUTION REVIEW -->
+        <div>
+            <label class="block text-sm text-slate-300 mb-1.5" data-i18n="add_student_review_label">{{ t("add_student_review_label") }}</label>
+            <p class="text-xs text-slate-500 mb-2" data-i18n="add_student_review_desc">{{ t("add_student_review_desc") }}</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <label id="dropTest" class="border-2 border-dashed border-[#334155] hover:border-cyan-400 transition rounded-2xl p-5 text-center cursor-pointer bg-[#1e293b]">
+                    <p class="text-white text-sm font-medium" data-i18n="add_student_test_title">{{ t("add_student_test_title") }}</p>
+                    <p class="text-slate-500 text-xs mt-1" data-i18n="add_student_drop_hint">{{ t("add_student_drop_hint") }}</p>
+                    <input type="file" name="test_file" class="hidden" accept=".png,.jpg,.jpeg,.pdf">
+                </label>
+                <label id="dropSolution" class="border-2 border-dashed border-[#334155] hover:border-cyan-400 transition rounded-2xl p-5 text-center cursor-pointer bg-[#1e293b]">
+                    <p class="text-white text-sm font-medium" data-i18n="add_student_solution_title">{{ t("add_student_solution_title") }}</p>
+                    <p class="text-slate-500 text-xs mt-1" data-i18n="add_student_drop_hint">{{ t("add_student_drop_hint") }}</p>
+                    <input type="file" name="solution_file" class="hidden" accept=".png,.jpg,.jpeg,.pdf">
+                </label>
+            </div>
+        </div>
+
+        <button type="submit" class="w-full bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold py-3 rounded-xl" data-i18n="add_student_submit_full">{{ t("add_student_submit_full") }}</button>
+    </form>
+
+    <!-- LIVE PREVIEW -->
+    <div class="lg:col-span-1">
+        <div class="bg-[#0f172a] border border-[#334155] rounded-2xl p-6 sticky top-24">
+            <p class="text-xs uppercase tracking-wide text-slate-500 mb-4" data-i18n="add_student_preview_title">{{ t("add_student_preview_title") }}</p>
+
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500 to-cyan-400 flex items-center justify-center text-slate-950 font-bold text-lg flex-shrink-0">
+                    <span id="pvInitial">?</span>
+                </div>
+                <div class="min-w-0">
+                    <p id="pvNameOut" class="text-white font-bold truncate" data-i18n="add_student_preview_placeholder">{{ t("add_student_preview_placeholder") }}</p>
+                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-bold bg-amber-500/10 text-amber-400 border border-amber-500/30" data-i18n="risk_medium">{{ t("risk_medium") }}</span>
+                </div>
+            </div>
+
+            <div class="space-y-3">
+                <div>
+                    <p class="text-xs uppercase tracking-wide text-slate-500 mb-1" data-i18n="profile_weaknesses">{{ t("profile_weaknesses") }}</p>
+                    <div id="pvWeaknessesOut" class="flex flex-wrap gap-1.5"></div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <p class="text-xs uppercase tracking-wide text-slate-500 mb-1" data-i18n="add_student_personality_label">{{ t("add_student_personality_label") }}</p>
+                        <p id="pvPersonalityOut" class="text-sm text-white">—</p>
+                    </div>
+                    <div>
+                        <p class="text-xs uppercase tracking-wide text-slate-500 mb-1" data-i18n="add_student_attention_label">{{ t("add_student_attention_label") }}</p>
+                        <p id="pvAttentionOut" class="text-sm text-white">—</p>
+                    </div>
+                </div>
+                <div>
+                    <p class="text-xs uppercase tracking-wide text-slate-500 mb-1" data-i18n="add_student_absent_label">{{ t("add_student_absent_label") }}</p>
+                    <p id="pvAbsentOut" class="text-sm text-white">—</p>
+                </div>
+                <div class="pt-2 border-t border-[#334155] flex items-center justify-between">
+                    <span class="text-xs uppercase tracking-wide text-slate-500" data-i18n="add_student_attendance_label">{{ t("add_student_attendance_label") }}</span>
+                    <span id="pvAttendanceOut" class="text-white font-bold">80%</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-xs uppercase tracking-wide text-slate-500" data-i18n="history_tests">{{ t("history_tests") }}</span>
+                    <span id="pvGradeCountOut" class="text-white font-bold">0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+function addGradeRow() {
+    const wrap = document.getElementById('grade-rows');
+    const row = document.createElement('div');
+    row.className = 'grade-row flex gap-2';
+    row.innerHTML = `
+        <input type="number" step="0.1" min="1" max="10" name="grades[]" placeholder="{{ t('add_student_grade_ph') }}"
+            class="w-24 rounded-xl bg-[#1e293b] border border-[#334155] px-3 py-2 text-white placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-cyan-500">
+        <input type="text" name="lessons[]" placeholder="{{ t('add_student_lessons_ph') }}"
+            class="flex-1 rounded-xl bg-[#1e293b] border border-[#334155] px-3 py-2 text-white placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-cyan-500">
+        <button type="button" onclick="this.parentElement.remove(); syncPreview();" class="text-slate-500 hover:text-red-400 px-2">✕</button>
+    `;
+    wrap.appendChild(row);
+    syncPreview();
+}
+
+['dropTest', 'dropSolution'].forEach(function (id) {
+    const label = document.getElementById(id);
+    if (!label) return;
+    const input = label.querySelector('input[type="file"]');
+    const titleP = label.querySelectorAll('p')[0];
+    const subtitleP = label.querySelectorAll('p')[1];
+
+    function setFile(file) {
+        if (!file) return;
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        input.files = dt.files;
+        subtitleP.textContent = file.name;
+        label.classList.add('border-cyan-400');
+    }
+
+    input.addEventListener('change', function () { setFile(this.files[0]); });
+    label.addEventListener('dragover', function (e) { e.preventDefault(); e.stopPropagation(); label.classList.add('border-cyan-400'); });
+    label.addEventListener('dragleave', function (e) { e.preventDefault(); label.classList.remove('border-cyan-400'); });
+    label.addEventListener('drop', function (e) { e.preventDefault(); e.stopPropagation(); setFile(e.dataTransfer.files[0]); });
+});
+
+// ---- Live preview ----
+function syncPreview() {
+    const name = document.getElementById('pvName').value.trim();
+    document.getElementById('pvNameOut').textContent = name || "{{ t('add_student_preview_placeholder') }}";
+    document.getElementById('pvInitial').textContent = name ? name[0].toUpperCase() : '?';
+
+    const weaknesses = document.getElementById('pvWeaknesses').value.trim();
+    const weaknessesOut = document.getElementById('pvWeaknessesOut');
+    weaknessesOut.innerHTML = '';
+    if (weaknesses) {
+        weaknesses.split(',').map(function (s) { return s.trim(); }).filter(Boolean).forEach(function (tag) {
+            const span = document.createElement('span');
+            span.className = 'text-xs px-2.5 py-1 rounded-full bg-red-500/10 text-red-300 border border-red-500/20';
+            span.textContent = tag;
+            weaknessesOut.appendChild(span);
+        });
+    } else {
+        weaknessesOut.innerHTML = '<span class="text-sm text-slate-500">De evaluat</span>';
+    }
+
+    document.getElementById('pvPersonalityOut').textContent = document.getElementById('pvPersonality').value.trim() || '—';
+    document.getElementById('pvAttentionOut').textContent = document.getElementById('pvAttention').value.trim() || '—';
+    document.getElementById('pvAbsentOut').textContent = document.getElementById('pvAbsent').value.trim() || '—';
+    document.getElementById('pvAttendanceOut').textContent = (document.getElementById('pvAttendance').value || '80') + '%';
+
+    const gradeCount = document.querySelectorAll('#grade-rows .grade-row input[name="grades[]"]')
+        .length ? Array.from(document.querySelectorAll('#grade-rows .grade-row'))
+            .filter(function (row) {
+                const inputs = row.querySelectorAll('input');
+                return inputs[0].value.trim() || inputs[1].value.trim();
+            }).length : 0;
+    document.getElementById('pvGradeCountOut').textContent = gradeCount;
+}
+
+document.addEventListener('input', function (e) {
+    if (e.target.closest('form[action$="/nou"]')) syncPreview();
+});
+syncPreview();
+</script>
+
+{% endblock %}

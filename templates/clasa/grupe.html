@@ -1,0 +1,91 @@
+{% extends "clasa/_base.html" %}
+{% import "clasa/_macros.html" as macros with context %}
+
+{% block title %}{{ t('groups_title') }}{% endblock %}
+
+{% block clasa_content %}
+
+{% if not selected_class %}
+    <div class="text-center py-16">
+        <h1 class="text-2xl font-bold text-white mb-2" data-i18n="no_classes_title">{{ t("no_classes_title") }}</h1>
+    </div>
+{% else %}
+
+<div class="mb-6 flex items-center gap-4">
+    <a href="/dashboard" class="text-sm text-slate-400 hover:text-cyan-400 no-underline" data-i18n="back_to_dashboard">← {{ t("back_to_dashboard") }}</a>
+    <span class="text-slate-600">|</span>
+    <a href="/elevi/{{ selected_class['id'] }}" class="text-sm text-slate-400 hover:text-cyan-400 no-underline" data-i18n="back_to_class">← {{ t("back_to_class") }}</a>
+</div>
+
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+    <div>
+        <h1 class="font-display text-2xl sm:text-3xl font-bold text-white" data-i18n="groups_title">{{ t("groups_title") }}</h1>
+        <p class="text-slate-400 mt-1">{{ selected_class['name'] }} · <span data-i18n="groups_sub">{{ t("groups_sub") }}</span></p>
+    </div>
+    <form action="/elevi/{{ selected_class['id'] }}/grupe/auto" method="post">
+        <button type="submit" class="inline-flex items-center gap-2 bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold px-5 py-2.5 rounded-xl text-sm" data-i18n="regenerate_groups_btn">{{ t("regenerate_groups_btn") }}</button>
+    </form>
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" id="groups-board">
+    {% for col in board %}
+    <div class="bg-[#0f172a] border border-[#334155] rounded-2xl p-4 flex flex-col gap-3 group-column" data-group-id="{{ col.group['id'] }}"
+        ondragover="event.preventDefault(); this.classList.add('ring-2','ring-cyan-400')"
+        ondragleave="this.classList.remove('ring-2','ring-cyan-400')"
+        ondrop="dropStudent(event, {{ col.group['id'] }})">
+        <a href="/elevi/{{ selected_class['id'] }}/grupa/{{ col.group['id'] }}" class="text-white font-bold no-underline hover:text-cyan-400 transition flex items-center gap-1.5">
+            {{ col.group['name'] }}
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+        </a>
+        {% if col.group['description'] %}
+        <p class="text-xs text-slate-400 leading-snug -mt-2">{{ col.group['description'] }}</p>
+        {% endif %}
+        <div class="space-y-2 min-h-[80px]">
+            {% for m in col.members %}
+            <div class="bg-[#1e293b] border border-[#334155] rounded-xl px-3 py-2 flex items-center justify-between gap-2 cursor-grab active:cursor-grabbing"
+                draggable="true" data-student-id="{{ m['id'] }}"
+                ondragstart="event.dataTransfer.setData('text/plain', '{{ m['id'] }}')">
+                <a href="/elevi/{{ selected_class['id'] }}/{{ m['id'] }}" class="text-sm text-white no-underline truncate">{{ m['name'] }}</a>
+                {{ macros.risk_badge(m['risk_level']) }}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% if unassigned %}
+<div class="mt-5 bg-[#020617] border border-dashed border-[#334155] rounded-2xl p-4">
+    <h3 class="text-slate-400 text-sm font-semibold mb-2" data-i18n="unassigned_title">{{ t("unassigned_title") }}</h3>
+    <div class="flex flex-wrap gap-2">
+        {% for m in unassigned %}
+        <div class="bg-[#1e293b] border border-[#334155] rounded-xl px-3 py-2 flex items-center gap-2 cursor-grab"
+            draggable="true" data-student-id="{{ m['id'] }}"
+            ondragstart="event.dataTransfer.setData('text/plain', '{{ m['id'] }}')">
+            <span class="text-sm text-white">{{ m['name'] }}</span>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<p class="text-xs text-slate-500 mt-4" data-i18n="drag_drop_hint">{{ t("drag_drop_hint") }}</p>
+
+<script>
+function dropStudent(event, groupId) {
+    event.preventDefault();
+    event.currentTarget.classList.remove('ring-2', 'ring-cyan-400');
+    const studentId = event.dataTransfer.getData('text/plain');
+    if (!studentId) return;
+
+    fetch("/elevi/{{ selected_class['id'] }}/grupe/muta", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `student_id=${studentId}&group_id=${groupId}`
+    }).then(() => window.location.reload());
+}
+</script>
+
+{% endif %}
+
+{% endblock %}

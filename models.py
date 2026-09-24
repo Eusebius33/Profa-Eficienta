@@ -8,7 +8,7 @@ from typing import Optional
 
 from dotenv import load_dotenv
 from sqlalchemy_utils import database_exists, create_database
-from sqlalchemy import ForeignKey, String, Text, DateTime, create_engine, func
+from sqlalchemy import Float, ForeignKey, Integer, String, Text, DateTime, create_engine, func
 from sqlalchemy.orm import (
     DeclarativeBase,
     Mapped,
@@ -129,6 +129,154 @@ class Message(RowMixin, Base):
     doc_action: Mapped[Optional[str]] = mapped_column(String)
 
     conversation: Mapped["Conversation"] = relationship(back_populates="messages")
+
+
+# =========================================================
+# "ELEVII MEI" — classroom platform (students, profiling,
+# smart groups). Ported from the raw-sqlite3 schema the
+# feature was prototyped against onto the same SQLAlchemy
+# layer the rest of the app uses.
+# =========================================================
+
+
+class Class(RowMixin, Base):
+    __tablename__ = "classes"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String, nullable=False)
+    teacher_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+
+    students: Mapped[list["Student"]] = relationship(
+        back_populates="school_class", cascade="all, delete-orphan"
+    )
+    groups: Mapped[list["Group"]] = relationship(
+        back_populates="school_class", cascade="all, delete-orphan"
+    )
+
+
+class Student(RowMixin, Base):
+    __tablename__ = "students"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    class_id: Mapped[int] = mapped_column(ForeignKey("classes.id"), nullable=False)
+    name: Mapped[str] = mapped_column(String, nullable=False)
+    added_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.current_timestamp())
+
+    school_class: Mapped["Class"] = relationship(back_populates="students")
+    metrics: Mapped[Optional["Metric"]] = relationship(
+        back_populates="student", cascade="all, delete-orphan", uselist=False
+    )
+    profile: Mapped[Optional["Profile"]] = relationship(
+        back_populates="student", cascade="all, delete-orphan", uselist=False
+    )
+    insight: Mapped[Optional["AiInsight"]] = relationship(
+        back_populates="student", cascade="all, delete-orphan", uselist=False
+    )
+    chat_messages: Mapped[list["ChatMessage"]] = relationship(
+        back_populates="student", cascade="all, delete-orphan", order_by="ChatMessage.id"
+    )
+    test_records: Mapped[list["TestRecord"]] = relationship(
+        back_populates="student", cascade="all, delete-orphan"
+    )
+    group_memberships: Mapped[list["GroupMember"]] = relationship(
+        back_populates="student", cascade="all, delete-orphan"
+    )
+
+
+class Metric(RowMixin, Base):
+    __tablename__ = "metrics"
+
+    student_id: Mapped[int] = mapped_column(ForeignKey("students.id"), primary_key=True)
+    attendance: Mapped[Optional[int]] = mapped_column(Integer)
+    avg_grade: Mapped[Optional[float]] = mapped_column(Float)
+    mastery_pct: Mapped[Optional[int]] = mapped_column(Integer)
+    completion_pct: Mapped[Optional[int]] = mapped_column(Integer)
+    avg_time_per_ex: Mapped[Optional[str]] = mapped_column(String)
+    repeated_mistakes: Mapped[Optional[int]] = mapped_column(Integer)
+    risk_level: Mapped[Optional[str]] = mapped_column(String)
+    risk_trend: Mapped[Optional[str]] = mapped_column(String)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.current_timestamp())
+
+    student: Mapped["Student"] = relationship(back_populates="metrics")
+
+
+class Profile(RowMixin, Base):
+    __tablename__ = "profiles"
+
+    student_id: Mapped[int] = mapped_column(ForeignKey("students.id"), primary_key=True)
+    strengths: Mapped[Optional[str]] = mapped_column(Text)
+    weaknesses: Mapped[Optional[str]] = mapped_column(Text)
+    learning_style: Mapped[Optional[str]] = mapped_column(Text)
+    confidence: Mapped[Optional[str]] = mapped_column(String)
+    risk_level: Mapped[Optional[str]] = mapped_column(String)
+    personality_traits: Mapped[Optional[str]] = mapped_column(Text)
+    attention_span: Mapped[Optional[str]] = mapped_column(Text)
+    absent_lessons: Mapped[Optional[str]] = mapped_column(Text)
+
+    student: Mapped["Student"] = relationship(back_populates="profile")
+
+
+class AiInsight(RowMixin, Base):
+    __tablename__ = "ai_insights"
+
+    student_id: Mapped[int] = mapped_column(ForeignKey("students.id"), primary_key=True)
+    why_struggling: Mapped[Optional[str]] = mapped_column(Text)
+    recommended_actions_json: Mapped[Optional[str]] = mapped_column(Text)
+
+    student: Mapped["Student"] = relationship(back_populates="insight")
+
+
+class ChatMessage(RowMixin, Base):
+    __tablename__ = "chat_messages"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    student_id: Mapped[int] = mapped_column(ForeignKey("students.id"), nullable=False)
+    role: Mapped[str] = mapped_column(String, nullable=False)
+    content: Mapped[str] = mapped_column(Text, nullable=False)
+    ts: Mapped[datetime] = mapped_column(DateTime, server_default=func.current_timestamp())
+
+    student: Mapped["Student"] = relationship(back_populates="chat_messages")
+
+
+class Group(RowMixin, Base):
+    __tablename__ = "groups"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    class_id: Mapped[int] = mapped_column(ForeignKey("classes.id"), nullable=False)
+    name: Mapped[str] = mapped_column(String, nullable=False)
+    weakness_tag: Mapped[Optional[str]] = mapped_column(String)
+    description: Mapped[Optional[str]] = mapped_column(Text)
+    suggested_actions_json: Mapped[Optional[str]] = mapped_column(Text)
+
+    school_class: Mapped["Class"] = relationship(back_populates="groups")
+    members: Mapped[list["GroupMember"]] = relationship(
+        back_populates="group", cascade="all, delete-orphan"
+    )
+
+
+class GroupMember(RowMixin, Base):
+    __tablename__ = "group_members"
+
+    group_id: Mapped[int] = mapped_column(ForeignKey("groups.id"), primary_key=True)
+    student_id: Mapped[int] = mapped_column(ForeignKey("students.id"), primary_key=True)
+
+    group: Mapped["Group"] = relationship(back_populates="members")
+    student: Mapped["Student"] = relationship(back_populates="group_memberships")
+
+
+class TestRecord(RowMixin, Base):
+    __tablename__ = "test_records"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    student_id: Mapped[int] = mapped_column(ForeignKey("students.id"), nullable=False)
+    grade: Mapped[Optional[float]] = mapped_column(Float)
+    lessons: Mapped[Optional[str]] = mapped_column(Text)
+    test_filename: Mapped[Optional[str]] = mapped_column(String)
+    solution_filename: Mapped[Optional[str]] = mapped_column(String)
+    ai_insights: Mapped[Optional[str]] = mapped_column(Text)
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.current_timestamp())
+
+    student: Mapped["Student"] = relationship(back_populates="test_records")
 
 
 # Functia de creare a Engine-ului PostgreSQL

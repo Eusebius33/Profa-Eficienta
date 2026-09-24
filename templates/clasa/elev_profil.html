@@ -1,0 +1,420 @@
+{% extends "clasa/_base.html" %}
+{% import "clasa/_macros.html" as macros with context %}
+
+{% block title %}{{ student['name'] }}{% endblock %}
+
+{% block clasa_content %}
+
+<div class="mb-6 flex items-center gap-4">
+    <a href="/dashboard" class="text-sm text-slate-400 hover:text-cyan-400 no-underline" data-i18n="back_to_dashboard">← {{ t("back_to_dashboard") }}</a>
+    <span class="text-slate-600">|</span>
+    <a href="/elevi/{{ selected_class['id'] }}" class="text-sm text-slate-400 hover:text-cyan-400 no-underline" data-i18n="back_to_class">← {{ t("back_to_class") }}</a>
+</div>
+
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+    <div class="flex items-center gap-4 min-w-0">
+        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500 to-cyan-400 flex items-center justify-center text-slate-950 font-bold text-xl flex-shrink-0">
+            {{ student['name'][0]|upper }}
+        </div>
+        <div class="min-w-0">
+            <h1 class="font-display text-2xl sm:text-3xl font-bold text-white truncate">{{ student['name'] }}</h1>
+            <div class="flex items-center gap-2 mt-1">
+                {{ macros.risk_badge(metrics['risk_level']) }}
+                {% if current_groups %}
+                    {% for g in current_groups %}
+                        <a href="/elevi/{{ selected_class['id'] }}/grupa/{{ g['id'] }}" class="text-xs px-2 py-1 rounded-full bg-[#1e293b] text-slate-300 border border-[#334155] no-underline hover:border-cyan-400 hover:text-cyan-300">{{ g['name'] }}</a>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="flex gap-2">
+        <a href="/elevi/{{ selected_class['id'] }}/grupe" class="bg-[#1e293b] hover:bg-[#334155] transition text-white font-bold px-4 py-2.5 rounded-xl text-sm border border-[#334155] no-underline" data-i18n="view_groups_btn">{{ t("view_groups_btn") }}</a>
+        <form action="/elev/{{ student['id'] }}/profil/genereaza" method="post">
+            <button type="submit" class="bg-[#1e293b] hover:bg-[#334155] transition text-white font-bold px-4 py-2.5 rounded-xl text-sm border border-[#334155]" data-i18n="regenerate_profile_btn">{{ t("regenerate_profile_btn") }}</button>
+        </form>
+    </div>
+</div>
+
+<!-- 4 MODES -->
+<div class="flex flex-wrap gap-2 mb-6 border-b border-[#334155]">
+    <a href="/elevi/{{ selected_class['id'] }}/{{ student['id'] }}?tab=profil" class="px-4 py-2.5 text-sm font-semibold no-underline border-b-2 -mb-px transition {% if active_tab == 'profil' %}border-cyan-400 text-cyan-400{% else %}border-transparent text-slate-400 hover:text-white{% endif %}" data-i18n="tab_profile">{{ t("tab_profile") }}</a>
+    <a href="/elevi/{{ selected_class['id'] }}/{{ student['id'] }}?tab=exercitii" class="px-4 py-2.5 text-sm font-semibold no-underline border-b-2 -mb-px transition {% if active_tab == 'exercitii' %}border-cyan-400 text-cyan-400{% else %}border-transparent text-slate-400 hover:text-white{% endif %}" data-i18n="tab_exercises">{{ t("tab_exercises") }}</a>
+    <a href="/elevi/{{ selected_class['id'] }}/{{ student['id'] }}?tab=istoric" class="px-4 py-2.5 text-sm font-semibold no-underline border-b-2 -mb-px transition {% if active_tab == 'istoric' %}border-cyan-400 text-cyan-400{% else %}border-transparent text-slate-400 hover:text-white{% endif %}" data-i18n="tab_history">{{ t("tab_history") }}</a>
+    <a href="/elevi/{{ selected_class['id'] }}/{{ student['id'] }}?tab=recenzie" class="px-4 py-2.5 text-sm font-semibold no-underline border-b-2 -mb-px transition {% if active_tab == 'recenzie' %}border-cyan-400 text-cyan-400{% else %}border-transparent text-slate-400 hover:text-white{% endif %}" data-i18n="tab_review">{{ t("tab_review") }}</a>
+</div>
+
+{% if active_tab == 'exercitii' %}
+<!-- ============ MODE 2 — EXERCISE GENERATOR ============ -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-1">
+        <div class="bg-[#0f172a] border border-[#334155] rounded-2xl p-5 sticky top-24">
+            <h2 class="text-white font-bold mb-1" data-i18n="exercise_generator_title">{{ t("exercise_generator_title") }}</h2>
+            <p class="text-xs text-slate-400 mb-4" data-i18n="exercise_generator_desc">{{ t("exercise_generator_desc") }}</p>
+
+            <div class="mb-4 p-3 rounded-xl bg-[#1e293b] border border-[#334155]">
+                <p class="text-xs uppercase tracking-wide text-slate-500 mb-1" data-i18n="targeted_weaknesses">{{ t("targeted_weaknesses") }}</p>
+                <p class="text-sm text-white font-medium">{{ profile['weaknesses'] }}</p>
+            </div>
+
+            <form action="/elev/{{ student['id'] }}/exercitii/genereaza" method="post" enctype="multipart/form-data" class="flex flex-col gap-2">
+                <label class="text-xs uppercase tracking-wide text-slate-500 mb-1" data-i18n="source_mode_label">{{ t("source_mode_label") }}</label>
+                <select id="sourceModeSelect" name="source_mode" class="w-full mb-2 rounded-xl bg-[#1e293b] border border-[#334155] px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-cyan-500">
+                    {% for mode_key, mode_label in source_mode_labels.items() %}
+                        <option value="{{ mode_key }}" {% if source_mode == mode_key %}selected{% endif %}>{{ mode_label }}</option>
+                    {% endfor %}
+                </select>
+
+                <!-- MODE-SPECIFIC INPUTS — mirror each mode's own card on menu.html -->
+                <div class="mode-fields flex-col gap-2 mb-2" data-mode="mode2" style="display:{% if source_mode == 'mode2' %}flex{% else %}none{% endif %};">
+                    <select name="m2_style" class="w-full rounded-xl bg-[#1e293b] border border-[#334155] px-3 py-2 text-sm text-white outline-none focus:ring-2 focus:ring-cyan-500">
+                        <option value="" data-i18n="style_default">{{ t("style_default") }}</option>
+                        {% for style in styles %}
+                            <option value="{{ style['id'] }}">{{ style['style_name'] }}</option>
+                        {% endfor %}
+                    </select>
+                    <select name="m2_school_class" class="w-full rounded-xl bg-[#1e293b] border border-[#334155] px-3 py-2 text-sm text-white outline-none focus:ring-2 focus:ring-cyan-500">
+                        <option value="" data-i18n="class_placeholder">{{ t("class_placeholder") }}</option>
+                        <option value="9" data-i18n="class_9">{{ t("class_9") }}</option>
+                        <option value="10" data-i18n="class_10">{{ t("class_10") }}</option>
+                        <option value="11" data-i18n="class_11">{{ t("class_11") }}</option>
+                        <option value="12" data-i18n="class_12">{{ t("class_12") }}</option>
+                    </select>
+                    <select name="m2_bac" class="w-full rounded-xl bg-[#1e293b] border border-[#334155] px-3 py-2 text-sm text-white outline-none focus:ring-2 focus:ring-cyan-500">
+                        <option value="M3">M_Tehnologic</option>
+                    </select>
+                </div>
+
+                <div class="mode-fields flex-col gap-2 mb-2" data-mode="mode3" style="display:{% if source_mode == 'mode3' %}flex{% else %}none{% endif %};">
+                    <label id="dropM3" class="border-2 border-dashed border-[#334155] hover:border-cyan-400 transition rounded-xl p-3 text-center cursor-pointer bg-[#1e293b]">
+                        <p class="text-white text-xs font-medium" data-i18n="load_model">{{ t("load_model") }}</p>
+                        <p class="text-slate-500 text-xs mt-0.5" data-i18n="add_student_drop_hint">{{ t("add_student_drop_hint") }}</p>
+                        <input type="file" name="m3_file" class="hidden" accept=".pdf,.docx,.txt,.png,.jpg,.jpeg">
+                    </label>
+                    <textarea name="m3_prompt" rows="2" placeholder="{{ t('instructions') }}" class="w-full rounded-xl bg-[#1e293b] border border-[#334155] px-3 py-2 text-sm text-white placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-cyan-500 resize-none"></textarea>
+                    <textarea name="m3_differences" rows="2" placeholder="{{ t('diff_model') }}" class="w-full rounded-xl bg-[#1e293b] border border-[#334155] px-3 py-2 text-sm text-white placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-cyan-500 resize-none"></textarea>
+                </div>
+
+                <div class="mode-fields flex-col gap-2 mb-2" data-mode="mode4" style="display:{% if source_mode == 'mode4' %}flex{% else %}none{% endif %};">
+                    <label id="dropM4" class="border-2 border-dashed border-[#334155] hover:border-cyan-400 transition rounded-xl p-3 text-center cursor-pointer bg-[#1e293b]">
+                        <p class="text-white text-xs font-medium" data-i18n="load_fisa">{{ t("load_fisa") }}</p>
+                        <p class="text-slate-500 text-xs mt-0.5" data-i18n="add_student_drop_hint">{{ t("add_student_drop_hint") }}</p>
+                        <input type="file" name="m4_file" class="hidden" accept=".pdf,.png,.jpg,.jpeg">
+                    </label>
+                    <textarea name="m4_prompt" rows="2" placeholder="{{ t('inst_gen') }}" class="w-full rounded-xl bg-[#1e293b] border border-[#334155] px-3 py-2 text-sm text-white placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-cyan-500 resize-none"></textarea>
+                    <textarea name="m4_differences" rows="2" placeholder="{{ t('diff_orig') }}" class="w-full rounded-xl bg-[#1e293b] border border-[#334155] px-3 py-2 text-sm text-white placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-cyan-500 resize-none"></textarea>
+                </div>
+
+                <div class="mode-fields flex-col gap-2 mb-2" data-mode="mode5" style="display:{% if source_mode == 'mode5' %}flex{% else %}none{% endif %};">
+                    <textarea name="m5_lessons" rows="2" placeholder="{{ t('main_lessons') }}" class="w-full rounded-xl bg-[#1e293b] border border-[#334155] px-3 py-2 text-sm text-white placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-cyan-500 resize-none"></textarea>
+                    <textarea name="m5_avoid" rows="2" placeholder="{{ t('omit_lessons') }}" class="w-full rounded-xl bg-[#1e293b] border border-[#334155] px-3 py-2 text-sm text-white placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-cyan-500 resize-none"></textarea>
+                </div>
+
+                <button type="submit" name="difficulty" value="usor" class="w-full text-left px-4 py-3 rounded-xl border transition font-semibold text-sm {% if difficulty == 'usor' %}bg-cyan-500 text-slate-950 border-cyan-500{% else %}bg-transparent text-slate-300 border-[#334155] hover:border-cyan-400{% endif %}" data-i18n="difficulty_easy">{{ t("difficulty_easy") }}</button>
+                <button type="submit" name="difficulty" value="mediu" class="w-full text-left px-4 py-3 rounded-xl border transition font-semibold text-sm {% if difficulty == 'mediu' or not difficulty %}bg-cyan-500 text-slate-950 border-cyan-500{% else %}bg-transparent text-slate-300 border-[#334155] hover:border-cyan-400{% endif %}" data-i18n="difficulty_medium">{{ t("difficulty_medium") }}</button>
+                <button type="submit" name="difficulty" value="recapitulare" class="w-full text-left px-4 py-3 rounded-xl border transition font-semibold text-sm {% if difficulty == 'recapitulare' %}bg-cyan-500 text-slate-950 border-cyan-500{% else %}bg-transparent text-slate-300 border-[#334155] hover:border-cyan-400{% endif %}" data-i18n="difficulty_review">{{ t("difficulty_review") }}</button>
+                <button type="submit" name="difficulty" value="consolidare" class="w-full text-left px-4 py-3 rounded-xl border transition font-semibold text-sm {% if difficulty == 'consolidare' %}bg-cyan-500 text-slate-950 border-cyan-500{% else %}bg-transparent text-slate-300 border-[#334155] hover:border-cyan-400{% endif %}" data-i18n="difficulty_mastery">{{ t("difficulty_mastery") }}</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="lg:col-span-2">
+        <div class="bg-white rounded-2xl border border-[#334155] shadow-inner p-6 min-h-[300px]" id="worksheet-card">
+            <div class="flex items-center justify-between mb-4 no-print">
+                <h3 class="font-bold text-slate-900" data-i18n="worksheet_title">{{ t("worksheet_title") }}</h3>
+                {% if worksheet %}
+                <div class="flex gap-2">
+                    <button type="button" onclick="copyWorksheet()" class="standard-copy-action bg-slate-200 hover:bg-slate-300 text-slate-900 px-3 py-1.5 rounded-lg text-xs font-bold" data-i18n="copy_btn">{{ t("copy_btn") }}</button>
+                    <button type="button" onclick="window.print()" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-bold" data-i18n="print_btn">{{ t("print_btn") }}</button>
+                </div>
+                {% endif %}
+            </div>
+            {% if worksheet %}
+                <div class="math-content text-slate-700 text-sm leading-relaxed" id="worksheet-content">{{ worksheet|safe }}</div>
+            {% else %}
+                <div class="empty-state" data-i18n="no_worksheet_yet">{{ t("no_worksheet_yet") }}</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+function copyWorksheet() {
+    const el = document.getElementById("worksheet-content");
+    if (!el) return;
+    navigator.clipboard.writeText(el.innerText).catch(() => {});
+}
+
+(function () {
+    const select = document.getElementById("sourceModeSelect");
+    const fieldBlocks = document.querySelectorAll(".mode-fields");
+    if (!select) return;
+
+    function syncModeFields() {
+        fieldBlocks.forEach(function (block) {
+            block.style.display = block.dataset.mode === select.value ? "flex" : "none";
+        });
+    }
+
+    select.addEventListener("change", syncModeFields);
+    syncModeFields();
+})();
+
+['dropM3', 'dropM4'].forEach(function (id) {
+    const label = document.getElementById(id);
+    if (!label) return;
+    const input = label.querySelector('input[type="file"]');
+    const titleP = label.querySelectorAll('p')[0];
+    const subtitleP = label.querySelectorAll('p')[1];
+
+    function setFile(file) {
+        if (!file) return;
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        input.files = dt.files;
+        titleP.textContent = file.name;
+        subtitleP.textContent = "Fișier selectat ✓";
+        label.classList.add('border-cyan-400');
+    }
+
+    input.addEventListener('change', function () { setFile(this.files[0]); });
+    label.addEventListener('dragover', function (e) { e.preventDefault(); e.stopPropagation(); label.classList.add('border-cyan-400'); });
+    label.addEventListener('dragleave', function (e) { e.preventDefault(); label.classList.remove('border-cyan-400'); });
+    label.addEventListener('drop', function (e) { e.preventDefault(); e.stopPropagation(); setFile(e.dataTransfer.files[0]); });
+});
+</script>
+
+{% elif active_tab == 'istoric' %}
+<!-- ============ MODE 3 — STUDENT HISTORY & PROGRESS ============ -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-1 space-y-4">
+        <div class="bg-[#0f172a] border border-[#334155] rounded-2xl p-5">
+            <h2 class="text-white font-bold mb-4" data-i18n="history_summary_title">{{ t("history_summary_title") }}</h2>
+            <div class="space-y-3">
+                <div class="flex items-center justify-between text-sm">
+                    <span class="text-slate-400" data-i18n="history_trend">{{ t("history_trend") }}</span>
+                    <span class="text-lg">{{ macros.trend_arrow(metrics['risk_trend']) }}</span>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                    <span class="text-slate-400" data-i18n="history_tests">{{ t("history_tests") }}</span>
+                    <span class="text-white font-bold">{{ history_summary.test_count }}</span>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                    <span class="text-slate-400" data-i18n="history_chat">{{ t("history_chat") }}</span>
+                    <span class="text-white font-bold">{{ history_summary.chat_count }}</span>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                    <span class="text-slate-400" data-i18n="history_actions">{{ t("history_actions") }}</span>
+                    <span class="text-white font-bold">{{ history_summary.actions_done }}/{{ history_summary.actions_total }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="bg-[#0f172a] border border-[#334155] rounded-2xl p-5">
+            <p class="text-xs uppercase tracking-wide text-slate-500 mb-1" data-i18n="add_student_absent_label">{{ t("add_student_absent_label") }}</p>
+            <p class="text-sm text-white">{{ profile['absent_lessons'] or t("no_weaknesses_data") }}</p>
+        </div>
+    </div>
+
+    <div class="lg:col-span-2">
+        <div class="bg-[#0f172a] border border-[#334155] rounded-2xl p-5">
+            <h2 class="text-white font-bold mb-4" data-i18n="history_tests_title">{{ t("history_tests_title") }}</h2>
+            {% if test_records %}
+            <div class="space-y-3">
+                {% for r in test_records %}
+                <div class="bg-[#1e293b] border border-[#334155] rounded-xl p-4">
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="text-white font-semibold">{{ r['lessons'] or t("no_weaknesses_data") }}</span>
+                        {% if r['grade'] %}<span class="text-cyan-400 font-bold">{{ r['grade'] }}</span>{% endif %}
+                    </div>
+                    <p class="text-xs text-slate-500 mb-2">{{ r['created_at'] }}</p>
+                    {% if r['ai_insights'] %}<p class="text-sm text-slate-300">{{ r['ai_insights'] }}</p>{% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state" data-i18n="no_test_records">{{ t("no_test_records") }}</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% elif active_tab == 'recenzie' %}
+<!-- ============ MODE 4 — TEST & ASSIGNMENT REVIEW ============ -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div>
+        <div class="bg-[#0f172a] border border-[#334155] rounded-2xl p-5">
+            <h2 class="text-white font-bold mb-1" data-i18n="review_form_title">{{ t("review_form_title") }}</h2>
+            <p class="text-xs text-slate-400 mb-4" data-i18n="review_form_desc">{{ t("review_form_desc") }}</p>
+            <form action="/elev/{{ student['id'] }}/recenzie/genereaza" method="post" enctype="multipart/form-data" class="space-y-3">
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="number" step="0.1" min="1" max="10" name="grade" placeholder="{{ t('add_student_grade_ph') }}"
+                        class="rounded-xl bg-[#1e293b] border border-[#334155] px-3 py-2 text-white placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-cyan-500">
+                    <input type="text" name="lessons" placeholder="{{ t('add_student_lessons_ph') }}"
+                        class="rounded-xl bg-[#1e293b] border border-[#334155] px-3 py-2 text-white placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-cyan-500">
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <label id="dropTestR" class="border-2 border-dashed border-[#334155] hover:border-cyan-400 transition rounded-2xl p-5 text-center cursor-pointer bg-[#1e293b]">
+                        <p class="text-white text-sm font-medium" data-i18n="add_student_test_title">{{ t("add_student_test_title") }}</p>
+                        <p class="text-slate-500 text-xs mt-1" data-i18n="add_student_drop_hint">{{ t("add_student_drop_hint") }}</p>
+                        <input type="file" name="test_file" class="hidden" accept=".png,.jpg,.jpeg,.pdf">
+                    </label>
+                    <label id="dropSolutionR" class="border-2 border-dashed border-[#334155] hover:border-cyan-400 transition rounded-2xl p-5 text-center cursor-pointer bg-[#1e293b]">
+                        <p class="text-white text-sm font-medium" data-i18n="add_student_solution_title">{{ t("add_student_solution_title") }}</p>
+                        <p class="text-slate-500 text-xs mt-1" data-i18n="add_student_drop_hint">{{ t("add_student_drop_hint") }}</p>
+                        <input type="file" name="solution_file" class="hidden" accept=".png,.jpg,.jpeg,.pdf">
+                    </label>
+                </div>
+                <button type="submit" class="w-full bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold py-2.5 rounded-xl text-sm" data-i18n="review_submit">{{ t("review_submit") }}</button>
+            </form>
+        </div>
+
+        <script>
+        ['dropTestR', 'dropSolutionR'].forEach(function (id) {
+            const label = document.getElementById(id);
+            if (!label) return;
+            const input = label.querySelector('input[type="file"]');
+            const subtitleP = label.querySelectorAll('p')[1];
+            function setFile(file) {
+                if (!file) return;
+                const dt = new DataTransfer();
+                dt.items.add(file);
+                input.files = dt.files;
+                subtitleP.textContent = file.name;
+                label.classList.add('border-cyan-400');
+            }
+            input.addEventListener('change', function () { setFile(this.files[0]); });
+            label.addEventListener('dragover', function (e) { e.preventDefault(); e.stopPropagation(); label.classList.add('border-cyan-400'); });
+            label.addEventListener('dragleave', function (e) { e.preventDefault(); label.classList.remove('border-cyan-400'); });
+            label.addEventListener('drop', function (e) { e.preventDefault(); e.stopPropagation(); setFile(e.dataTransfer.files[0]); });
+        });
+        </script>
+    </div>
+
+    <div>
+        {% if test_insight %}
+        <div class="bg-cyan-500/10 border border-cyan-500/30 rounded-2xl p-5 mb-4">
+            <p class="text-xs uppercase tracking-wide text-cyan-300 mb-2" data-i18n="review_latest_insight">{{ t("review_latest_insight") }}</p>
+            <p class="text-sm text-slate-200">{{ test_insight }}</p>
+        </div>
+        {% endif %}
+        <div class="bg-[#0f172a] border border-[#334155] rounded-2xl p-5">
+            <h2 class="text-white font-bold mb-4" data-i18n="history_tests_title">{{ t("history_tests_title") }}</h2>
+            {% if test_records %}
+            <div class="space-y-3 max-h-96 overflow-y-auto">
+                {% for r in test_records %}
+                <div class="bg-[#1e293b] border border-[#334155] rounded-xl p-3">
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="text-white text-sm font-semibold">{{ r['lessons'] or t("no_weaknesses_data") }}</span>
+                        {% if r['grade'] %}<span class="text-cyan-400 font-bold text-sm">{{ r['grade'] }}</span>{% endif %}
+                    </div>
+                    <p class="text-xs text-slate-500">{{ r['created_at'] }}</p>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state" data-i18n="no_test_records">{{ t("no_test_records") }}</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% else %}
+<!-- ============ MODE 1 — PROFILING + AI ASSISTANT ============ -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+    <!-- STUDENT PROFILE -->
+    <div class="bg-[#0f172a] border border-[#334155] rounded-2xl p-6">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-white font-bold text-lg" data-i18n="profile_card_title">{{ t("profile_card_title") }}</h2>
+            <a href="/elevi/{{ selected_class['id'] }}/{{ student['id'] }}?tab=recenzie" class="text-xs text-cyan-400 hover:text-cyan-300 no-underline" data-i18n="add_new_result_link">{{ t("add_new_result_link") }} →</a>
+        </div>
+
+        <div class="space-y-4">
+            <div>
+                <p class="text-xs uppercase tracking-wide text-slate-500 mb-1" data-i18n="profile_strengths">{{ t("profile_strengths") }}</p>
+                <p class="text-white">{{ profile['strengths'] }}</p>
+            </div>
+            <div>
+                <p class="text-xs uppercase tracking-wide text-slate-500 mb-1" data-i18n="profile_weaknesses">{{ t("profile_weaknesses") }}</p>
+                <div class="flex flex-wrap gap-1.5 mt-1">
+                    {% for tag in profile['weaknesses'].split(',') %}
+                        <span class="text-xs px-2.5 py-1 rounded-full bg-red-500/10 text-red-300 border border-red-500/20">{{ tag.strip() }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            <div>
+                <p class="text-xs uppercase tracking-wide text-slate-500 mb-1" data-i18n="profile_learning_style">{{ t("profile_learning_style") }}</p>
+                <p class="text-white">{{ profile['learning_style'] }}</p>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <p class="text-xs uppercase tracking-wide text-slate-500 mb-1" data-i18n="add_student_personality_label">{{ t("add_student_personality_label") }}</p>
+                    <p class="text-white text-sm">{{ profile['personality_traits'] or 'De evaluat' }}</p>
+                </div>
+                <div>
+                    <p class="text-xs uppercase tracking-wide text-slate-500 mb-1" data-i18n="add_student_attention_label">{{ t("add_student_attention_label") }}</p>
+                    <p class="text-white text-sm">{{ profile['attention_span'] or 'De evaluat' }}</p>
+                </div>
+            </div>
+            <div>
+                <p class="text-xs uppercase tracking-wide text-slate-500 mb-1" data-i18n="add_student_absent_label">{{ t("add_student_absent_label") }}</p>
+                <p class="text-white text-sm">{{ profile['absent_lessons'] or 'Fără absențe înregistrate' }}</p>
+            </div>
+            <div class="flex gap-6 pt-2 border-t border-[#334155]">
+                <div>
+                    <p class="text-xs uppercase tracking-wide text-slate-500 mb-1" data-i18n="profile_confidence">{{ t("profile_confidence") }}</p>
+                    <p class="text-white font-semibold">{{ macros.confidence_label(profile['confidence']) }}</p>
+                </div>
+                <div>
+                    <p class="text-xs uppercase tracking-wide text-slate-500 mb-1" data-i18n="profile_risk">{{ t("profile_risk") }}</p>
+                    {{ macros.risk_badge(profile['risk_level']) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI TEACHING ASSISTANT -->
+    <div class="bg-[#0f172a] border border-[#334155] rounded-2xl p-6 flex flex-col gap-5">
+        <div>
+            <h2 class="text-white font-bold text-lg mb-2" data-i18n="ai_assistant_title">{{ t("ai_assistant_title") }}</h2>
+            <p class="text-sm text-slate-300 leading-relaxed">{{ insight['why_struggling'] }}</p>
+        </div>
+
+        <div>
+            <p class="text-xs uppercase tracking-wide text-slate-500 mb-2" data-i18n="recommended_actions">{{ t("recommended_actions") }}</p>
+            <div class="space-y-2">
+                {% for action in actions %}
+                <form action="/elev/{{ student['id'] }}/actiune/{{ loop.index0 }}/toggle" method="post">
+                    <button type="submit" class="w-full flex items-start gap-2.5 text-left px-3 py-2 rounded-xl hover:bg-[#1e293b] transition">
+                        <span class="mt-0.5 flex-shrink-0 w-4 h-4 rounded border {% if action.done %}bg-cyan-500 border-cyan-500{% else %}border-slate-500{% endif %} flex items-center justify-center">
+                            {% if action.done %}<svg class="w-3 h-3 text-slate-950" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>{% endif %}
+                        </span>
+                        <span class="text-sm {% if action.done %}text-slate-500 line-through{% else %}text-slate-200{% endif %}">{{ action.text }}</span>
+                    </button>
+                </form>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="flex-1 flex flex-col min-h-0">
+            <p class="text-xs uppercase tracking-wide text-slate-500 mb-2" data-i18n="chat_title">{{ t("chat_title") }}</p>
+            <div class="flex-1 max-h-72 overflow-y-auto space-y-3 pr-1 mb-3">
+                {% for m in chat_messages %}
+                    {% if m['role'] == 'teacher' %}
+                        <div class="bg-cyan-500/10 border border-cyan-500/20 text-slate-100 text-sm p-3 rounded-xl w-fit max-w-[90%] ml-auto">{{ m['content']|safe }}</div>
+                    {% else %}
+                        <div class="bg-[#1e293b] border border-[#334155] text-slate-200 text-sm p-3 rounded-xl w-fit max-w-[90%] msg-content-container">{{ m['content']|safe }}</div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <form action="/elev/{{ student['id'] }}/chat" method="post" class="flex gap-2">
+                <input type="text" name="message" required placeholder="{{ t('chat_placeholder') }}"
+                    class="flex-1 rounded-xl bg-[#1e293b] border border-[#334155] px-3 py-2.5 text-sm text-white placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-cyan-500">
+                <button type="submit" class="flex-shrink-0 whitespace-nowrap bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold px-4 rounded-xl text-sm" data-i18n="chat_send">{{ t("chat_send") }}</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

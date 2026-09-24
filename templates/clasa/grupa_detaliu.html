@@ -1,0 +1,110 @@
+{% extends "clasa/_base.html" %}
+{% import "clasa/_macros.html" as macros with context %}
+
+{% block title %}{{ group['name'] }}{% endblock %}
+
+{% block clasa_content %}
+
+<div class="mb-6 flex items-center gap-4">
+    <a href="/dashboard" class="text-sm text-slate-400 hover:text-cyan-400 no-underline" data-i18n="back_to_dashboard">← {{ t("back_to_dashboard") }}</a>
+    <span class="text-slate-600">|</span>
+    <a href="/elevi/{{ selected_class['id'] }}/grupe" class="text-sm text-slate-400 hover:text-cyan-400 no-underline" data-i18n="back_to_groups">← {{ t("back_to_groups") }}</a>
+</div>
+
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+    <div>
+        <h1 class="font-display text-2xl sm:text-3xl font-bold text-white">{{ group['name'] }}</h1>
+        <p class="text-slate-400 mt-1">{{ members|length }} <span data-i18n="group_members_label">{{ t("group_members_label") }}</span></p>
+        {% if group['description'] %}
+        <p class="text-sm text-slate-300 leading-snug mt-2 max-w-2xl">{{ group['description'] }}</p>
+        {% endif %}
+    </div>
+    <form action="/grupa/{{ group['id'] }}/actiuni/genereaza" method="post">
+        <button type="submit" class="bg-[#1e293b] hover:bg-[#334155] transition text-white font-bold px-4 py-2.5 rounded-xl text-sm border border-[#334155]" data-i18n="regenerate_group_actions_btn">{{ t("regenerate_group_actions_btn") }}</button>
+    </form>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+    <!-- MEMBERS -->
+    <div class="bg-[#0f172a] border border-[#334155] rounded-2xl p-5">
+        <h2 class="text-white font-bold mb-3" data-i18n="group_members_title">{{ t("group_members_title") }}</h2>
+        <div class="space-y-2">
+            {% for m in members %}
+            <a href="/elevi/{{ selected_class['id'] }}/{{ m['id'] }}" class="flex items-center justify-between gap-2 bg-[#1e293b] border border-[#334155] rounded-xl px-3 py-2 no-underline hover:border-cyan-400 transition">
+                <span class="text-sm text-white">{{ m['name'] }}</span>
+                {{ macros.risk_badge(m['risk_level']) }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- SUGGESTED ACTIONS FOR THE WHOLE GROUP -->
+    <div class="lg:col-span-2 bg-[#0f172a] border border-[#334155] rounded-2xl p-5">
+        <h2 class="text-white font-bold mb-1" data-i18n="group_suggested_actions_title">{{ t("group_suggested_actions_title") }}</h2>
+        <p class="text-xs text-slate-400 mb-4" data-i18n="group_suggested_actions_desc">{{ t("group_suggested_actions_desc") }}</p>
+        <div class="space-y-2">
+            {% for action in suggested_actions %}
+            <form action="/grupa/{{ group['id'] }}/actiune/{{ loop.index0 }}/toggle" method="post">
+                <button type="submit" class="w-full flex items-start gap-2.5 text-left px-3 py-2 rounded-xl hover:bg-[#1e293b] transition">
+                    <span class="mt-0.5 flex-shrink-0 w-4 h-4 rounded border {% if action.done %}bg-cyan-500 border-cyan-500{% else %}border-slate-500{% endif %} flex items-center justify-center">
+                        {% if action.done %}<svg class="w-3 h-3 text-slate-950" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>{% endif %}
+                    </span>
+                    <span class="text-sm {% if action.done %}text-slate-500 line-through{% else %}text-slate-200{% endif %}">{{ action.text }}</span>
+                </button>
+            </form>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- GROUP EXERCISE GENERATOR -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-1">
+        <div class="bg-[#0f172a] border border-[#334155] rounded-2xl p-5 sticky top-24">
+            <h2 class="text-white font-bold mb-1" data-i18n="group_exercise_generator_title">{{ t("group_exercise_generator_title") }}</h2>
+            <p class="text-xs text-slate-400 mb-4" data-i18n="group_exercise_generator_desc">{{ t("group_exercise_generator_desc") }}</p>
+
+            <form action="/elevi/{{ selected_class['id'] }}/grupa/{{ group['id'] }}/exercitii/genereaza" method="post" class="flex flex-col gap-2">
+                <label class="text-xs uppercase tracking-wide text-slate-500 mb-1" data-i18n="source_mode_label">{{ t("source_mode_label") }}</label>
+                <select name="source_mode" class="w-full mb-2 rounded-xl bg-[#1e293b] border border-[#334155] px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-cyan-500">
+                    {% for mode_key, mode_label in source_mode_labels.items() %}
+                        <option value="{{ mode_key }}" {% if source_mode == mode_key %}selected{% endif %}>{{ mode_label }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" name="difficulty" value="usor" class="w-full text-left px-4 py-3 rounded-xl border transition font-semibold text-sm {% if difficulty == 'usor' %}bg-cyan-500 text-slate-950 border-cyan-500{% else %}bg-transparent text-slate-300 border-[#334155] hover:border-cyan-400{% endif %}" data-i18n="difficulty_easy">{{ t("difficulty_easy") }}</button>
+                <button type="submit" name="difficulty" value="mediu" class="w-full text-left px-4 py-3 rounded-xl border transition font-semibold text-sm {% if difficulty == 'mediu' or not difficulty %}bg-cyan-500 text-slate-950 border-cyan-500{% else %}bg-transparent text-slate-300 border-[#334155] hover:border-cyan-400{% endif %}" data-i18n="difficulty_medium">{{ t("difficulty_medium") }}</button>
+                <button type="submit" name="difficulty" value="recapitulare" class="w-full text-left px-4 py-3 rounded-xl border transition font-semibold text-sm {% if difficulty == 'recapitulare' %}bg-cyan-500 text-slate-950 border-cyan-500{% else %}bg-transparent text-slate-300 border-[#334155] hover:border-cyan-400{% endif %}" data-i18n="difficulty_review">{{ t("difficulty_review") }}</button>
+                <button type="submit" name="difficulty" value="consolidare" class="w-full text-left px-4 py-3 rounded-xl border transition font-semibold text-sm {% if difficulty == 'consolidare' %}bg-cyan-500 text-slate-950 border-cyan-500{% else %}bg-transparent text-slate-300 border-[#334155] hover:border-cyan-400{% endif %}" data-i18n="difficulty_mastery">{{ t("difficulty_mastery") }}</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="lg:col-span-2">
+        <div class="bg-white rounded-2xl border border-[#334155] shadow-inner p-6 min-h-[300px]" id="worksheet-card">
+            <div class="flex items-center justify-between mb-4 no-print">
+                <h3 class="font-bold text-slate-900" data-i18n="worksheet_title">{{ t("worksheet_title") }}</h3>
+                {% if worksheet %}
+                <div class="flex gap-2">
+                    <button type="button" onclick="copyWorksheet()" class="standard-copy-action bg-slate-200 hover:bg-slate-300 text-slate-900 px-3 py-1.5 rounded-lg text-xs font-bold" data-i18n="copy_btn">{{ t("copy_btn") }}</button>
+                    <button type="button" onclick="window.print()" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-bold" data-i18n="print_btn">{{ t("print_btn") }}</button>
+                </div>
+                {% endif %}
+            </div>
+            {% if worksheet %}
+                <div class="math-content text-slate-700 text-sm leading-relaxed" id="worksheet-content">{{ worksheet|safe }}</div>
+            {% else %}
+                <div class="empty-state" data-i18n="no_worksheet_yet">{{ t("no_worksheet_yet") }}</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+function copyWorksheet() {
+    const el = document.getElementById("worksheet-content");
+    if (!el) return;
+    navigator.clipboard.writeText(el.innerText).catch(() => {});
+}
+</script>
+
+{% endblock %}

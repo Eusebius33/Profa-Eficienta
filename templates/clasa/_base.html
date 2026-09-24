@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+{% block main %}
+<div class="min-h-screen bg-gradient-to-br from-[#020617] via-[#0f172a] to-[#1e293b]">
+
+    <!-- CLASS SELECTOR BAR (persistent across all classroom pages) -->
+    <div class="border-b border-[#1e293b] bg-[#020617]/60">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex flex-wrap items-center gap-2">
+                {% for c in classes %}
+                    <a
+                        href="{{ class_nav_base|default('/elevi') }}/{{ c['id'] }}{{ class_nav_suffix|default('') }}"
+                        class="px-4 py-2 rounded-xl text-sm font-semibold transition no-underline
+                            {% if selected_class and c['id'] == selected_class['id'] %}
+                                bg-cyan-500 text-slate-950
+                            {% else %}
+                                bg-[#0f172a] border border-[#334155] text-slate-300 hover:border-cyan-400 hover:text-cyan-300
+                            {% endif %}"
+                    >{{ c['name'] }}</a>
+                {% endfor %}
+
+                <button type="button" onclick="document.getElementById('clasa-noua-form').classList.toggle('hidden')"
+                    class="px-4 py-2 rounded-xl text-sm font-semibold border border-dashed border-[#334155] text-slate-400 hover:border-cyan-400 hover:text-cyan-300 transition"
+                    data-i18n="clasa_noua_btn">{{ t("clasa_noua_btn") }}</button>
+            </div>
+
+            <form id="clasa-noua-form" action="/elevi/noua" method="post" class="hidden mt-3 flex flex-wrap gap-2">
+                <input type="text" name="name" required placeholder="{{ t('clasa_noua_placeholder') }}"
+                    class="flex-1 min-w-[200px] rounded-xl bg-[#1e293b] border border-[#334155] px-4 py-2 text-white placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-cyan-500">
+                <button type="submit" class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold px-4 py-2 rounded-xl text-sm" data-i18n="clasa_noua_submit">{{ t("clasa_noua_submit") }}</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {% block clasa_content %}{% endblock %}
+    </div>
+
+</div>
+{% endblock %}

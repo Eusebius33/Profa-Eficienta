@@ -1,0 +1,188 @@
+{% extends "clasa/_base.html" %}
+{% import "clasa/_macros.html" as macros with context %}
+
+{% block title %}{{ t('risk_overview_title') }}{% endblock %}
+
+{% block clasa_content %}
+
+{% if not selected_class %}
+    <div class="text-center py-16">
+        <h1 class="text-2xl font-bold text-white mb-2" data-i18n="no_classes_title">{{ t("no_classes_title") }}</h1>
+        <p class="text-slate-400" data-i18n="no_classes_desc">{{ t("no_classes_desc") }}</p>
+    </div>
+{% else %}
+
+    <!-- ============ HERO ============ -->
+    <section class="relative overflow-hidden -mt-8 mb-8 rounded-3xl">
+        <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+            <div class="bg-grid-dots absolute inset-0 opacity-[0.1] [mask-image:radial-gradient(ellipse_at_center,black_10%,transparent_65%)]"></div>
+            <div class="orb bg-cyan-500/15" style="width:20rem;height:20rem;top:-6rem;right:-4rem;--orb-duration:15s;--orb-x:-20px;--orb-y:22px;"></div>
+            <div class="orb bg-cyan-400/10" style="width:16rem;height:16rem;bottom:-6rem;left:-4rem;--orb-duration:12s;--orb-delay:1.5s;--orb-x:18px;--orb-y:-18px;"></div>
+        </div>
+        <div class="relative px-2 py-8 sm:py-10">
+            <div class="reveal flex items-center gap-4">
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-cyan-500/20 flex-shrink-0">
+                    <span class="font-display text-xl font-bold text-white">{{ selected_class['name'][0]|upper }}</span>
+                </div>
+                <div>
+                    <h1 class="font-display text-2xl sm:text-3xl font-bold tracking-tight text-white" data-i18n="tracking_hero_title">{{ t("tracking_hero_title") }}</h1>
+                    <p class="mt-1 text-slate-400 text-sm sm:text-base max-w-xl">
+                        {{ selected_class['name'] }} ·
+                        {{ total_students }} {{ t("tracking_hero_students") }} ·
+                        {{ risk_counts.get('Ridicat', 0) }} {{ t("tracking_hero_high_risk") }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ 3 TRACKING DASHBOARDS ============ -->
+    <section class="mb-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-5" data-reveal-group>
+
+            <!-- Dashboard 1: How students are doing -->
+            <div class="reveal hover-lift rounded-2xl bg-[#0f172a] border border-[#334155] shadow-lg p-6">
+                <h2 class="font-display text-base font-semibold text-white mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    <span data-i18n="dashboard_students_title">{{ t("dashboard_students_title") }}</span>
+                </h2>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-[#1e293b] rounded-xl p-3">
+                        <p class="text-2xl font-bold text-white">{{ total_students }}</p>
+                        <p class="text-xs text-slate-400 mt-0.5" data-i18n="stat_total_students">{{ t("stat_total_students") }}</p>
+                    </div>
+                    <div class="bg-[#1e293b] rounded-xl p-3">
+                        <p class="text-2xl font-bold text-white">{{ avg_attendance }}%</p>
+                        <p class="text-xs text-slate-400 mt-0.5" data-i18n="stat_avg_attendance">{{ t("stat_avg_attendance") }}</p>
+                    </div>
+                    <div class="bg-[#1e293b] rounded-xl p-3">
+                        <p class="text-2xl font-bold text-white">{{ avg_mastery }}%</p>
+                        <p class="text-xs text-slate-400 mt-0.5" data-i18n="stat_avg_mastery">{{ t("stat_avg_mastery") }}</p>
+                    </div>
+                    <div class="bg-[#1e293b] rounded-xl p-3">
+                        <p class="text-2xl font-bold text-white">{{ avg_completion }}%</p>
+                        <p class="text-xs text-slate-400 mt-0.5" data-i18n="stat_avg_completion">{{ t("stat_avg_completion") }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard 2: Trends & risk breakdown -->
+            <div class="reveal hover-lift rounded-2xl bg-[#0f172a] border border-[#334155] shadow-lg p-6">
+                <h2 class="font-display text-base font-semibold text-white mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                    <span data-i18n="dashboard_trends_title">{{ t("dashboard_trends_title") }}</span>
+                </h2>
+                <div class="space-y-2 mb-4">
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-slate-300 flex items-center gap-2"><span class="text-red-400">●</span> {{ t("risk_high") }}</span>
+                        <span class="text-white font-bold">{{ risk_counts.get('Ridicat', 0) }}</span>
+                    </div>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-slate-300 flex items-center gap-2"><span class="text-amber-400">●</span> {{ t("risk_medium") }}</span>
+                        <span class="text-white font-bold">{{ risk_counts.get('Mediu', 0) }}</span>
+                    </div>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-slate-300 flex items-center gap-2"><span class="text-cyan-400">●</span> {{ t("risk_low") }}</span>
+                        <span class="text-white font-bold">{{ risk_counts.get('Scăzut', 0) }}</span>
+                    </div>
+                </div>
+                <div class="h-px bg-[#334155] mb-4"></div>
+                <div class="grid grid-cols-3 gap-2 text-center">
+                    <div>
+                        <p class="text-lg font-bold text-cyan-400">↑ {{ trend_counts.get('up', 0) }}</p>
+                        <p class="text-xs text-slate-500" data-i18n="trend_up">{{ t("trend_up") }}</p>
+                    </div>
+                    <div>
+                        <p class="text-lg font-bold text-slate-400">→ {{ trend_counts.get('stable', 0) }}</p>
+                        <p class="text-xs text-slate-500" data-i18n="trend_stable">{{ t("trend_stable") }}</p>
+                    </div>
+                    <div>
+                        <p class="text-lg font-bold text-red-400">↓ {{ trend_counts.get('down', 0) }}</p>
+                        <p class="text-xs text-slate-500" data-i18n="trend_down">{{ t("trend_down") }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard 3: Common weaknesses -->
+            <div class="reveal hover-lift rounded-2xl bg-[#0f172a] border border-[#334155] shadow-lg p-6">
+                <h2 class="font-display text-base font-semibold text-white mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+                    <span data-i18n="dashboard_weaknesses_title">{{ t("dashboard_weaknesses_title") }}</span>
+                </h2>
+                {% if top_weaknesses %}
+                <div class="space-y-3">
+                    {% set max_count = top_weaknesses[0][1] %}
+                    {% for tag, count in top_weaknesses %}
+                    <div>
+                        <div class="flex items-center justify-between text-sm mb-1">
+                            <span class="text-slate-300">{{ tag }}</span>
+                            <span class="text-white font-bold">{{ count }}</span>
+                        </div>
+                        <div class="h-1.5 rounded-full bg-[#1e293b] overflow-hidden">
+                            <div class="h-full bg-cyan-500 rounded-full" style="width: {{ (count / max_count * 100)|round }}%"></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-sm text-slate-500" data-i18n="no_weaknesses_data">{{ t("no_weaknesses_data") }}</p>
+                {% endif %}
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ============ RISK OVERVIEW TABLE ============ -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div>
+            <h1 class="font-display text-2xl sm:text-3xl font-bold text-white" data-i18n="risk_overview_title">{{ t("risk_overview_title") }}</h1>
+            <p class="text-slate-400 mt-1">{{ selected_class['name'] }} · <span data-i18n="risk_overview_sub">{{ t("risk_overview_sub") }}</span></p>
+        </div>
+        <div class="flex gap-2">
+            <a href="/elevi/{{ selected_class['id'] }}/grupe" class="inline-flex items-center gap-2 bg-[#1e293b] hover:bg-[#334155] transition text-white font-bold px-5 py-2.5 rounded-xl text-sm border border-[#334155] no-underline" data-i18n="view_groups_btn">{{ t("view_groups_btn") }}</a>
+            <a href="/elevi/{{ selected_class['id'] }}/nou" class="inline-flex items-center gap-2 bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold px-5 py-2.5 rounded-xl text-sm no-underline" data-i18n="add_student_btn">{{ t("add_student_btn") }}</a>
+        </div>
+    </div>
+
+    {% if not students %}
+        <div class="empty-state" data-i18n="no_students_desc">{{ t("no_students_desc") }}</div>
+    {% else %}
+    <div class="bg-[#0f172a] border border-[#334155] rounded-2xl overflow-hidden shadow-xl">
+        <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="border-b border-[#334155] text-left text-slate-400 uppercase text-xs tracking-wider">
+                    <th class="px-4 py-3"><a class="hover:text-cyan-400 no-underline text-slate-400" href="?sort=name" data-i18n="col_name">{{ t("col_name") }}</a></th>
+                    <th class="px-4 py-3 whitespace-nowrap"><a class="hover:text-cyan-400 no-underline text-slate-400" href="?sort=attendance" data-i18n="col_attendance">{{ t("col_attendance") }}</a></th>
+                    <th class="px-4 py-3 whitespace-nowrap"><a class="hover:text-cyan-400 no-underline text-slate-400" href="?sort=avg_grade" data-i18n="col_avg_grade">{{ t("col_avg_grade") }}</a></th>
+                    <th class="px-4 py-3 whitespace-nowrap"><a class="hover:text-cyan-400 no-underline text-slate-400" href="?sort=mastery_pct" data-i18n="col_mastery">{{ t("col_mastery") }}</a></th>
+                    <th class="px-4 py-3 whitespace-nowrap"><a class="hover:text-cyan-400 no-underline text-slate-400" href="?sort=completion_pct" data-i18n="col_completion">{{ t("col_completion") }}</a></th>
+                    <th class="px-4 py-3 whitespace-nowrap" data-i18n="col_avg_time">{{ t("col_avg_time") }}</th>
+                    <th class="px-4 py-3 whitespace-nowrap"><a class="hover:text-cyan-400 no-underline text-slate-400" href="?sort=repeated_mistakes" data-i18n="col_mistakes">{{ t("col_mistakes") }}</a></th>
+                    <th class="px-4 py-3 whitespace-nowrap"><a class="hover:text-cyan-400 no-underline text-slate-400" href="?sort=risk" data-i18n="col_risk">{{ t("col_risk") }}</a></th>
+                    <th class="px-4 py-3" data-i18n="col_trend">{{ t("col_trend") }}</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-[#334155]/60">
+                {% for s in students %}
+                <tr class="hover:bg-[#1e293b] transition cursor-pointer" onclick="window.location='/elevi/{{ selected_class['id'] }}/{{ s['id'] }}'">
+                    <td class="px-4 py-3 font-semibold text-white whitespace-nowrap">{{ s['name'] }}</td>
+                    <td class="px-4 py-3 text-slate-300">{{ s['attendance'] }}%</td>
+                    <td class="px-4 py-3 text-slate-300">{{ s['avg_grade'] }}</td>
+                    <td class="px-4 py-3 text-slate-300">{{ s['mastery_pct'] }}%</td>
+                    <td class="px-4 py-3 text-slate-300">{{ s['completion_pct'] }}%</td>
+                    <td class="px-4 py-3 text-slate-300 whitespace-nowrap">{{ s['avg_time_per_ex'] }}</td>
+                    <td class="px-4 py-3 text-slate-300">{{ s['repeated_mistakes'] }}</td>
+                    <td class="px-4 py-3">{{ macros.risk_badge(s['risk_level']) }}</td>
+                    <td class="px-4 py-3 text-lg">{{ macros.trend_arrow(s['risk_trend']) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+    </div>
+    {% endif %}
+
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,29 @@
+{% macro risk_badge(level) -%}
+    {%- if level == 'Ridicat' -%}
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-red-500/10 text-red-400 border border-red-500/30" data-i18n="risk_high">{{ t("risk_high") }}</span>
+    {%- elif level == 'Mediu' -%}
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-400 border border-amber-500/30" data-i18n="risk_medium">{{ t("risk_medium") }}</span>
+    {%- else -%}
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-cyan-500/10 text-cyan-400 border border-cyan-500/30" data-i18n="risk_low">{{ t("risk_low") }}</span>
+    {%- endif -%}
+{%- endmacro %}
+
+{% macro confidence_label(level) -%}
+    {%- if level == 'Scăzută' -%}
+        {{ t("confidence_low") }}
+    {%- elif level == 'Medie' -%}
+        {{ t("confidence_medium") }}
+    {%- else -%}
+        {{ t("confidence_high") }}
+    {%- endif -%}
+{%- endmacro %}
+
+{% macro trend_arrow(trend) -%}
+    {%- if trend == 'up' -%}
+        <span class="text-cyan-400 font-bold" title="{{ t('trend_up') }}">↑</span>
+    {%- elif trend == 'down' -%}
+        <span class="text-red-400 font-bold" title="{{ t('trend_down') }}">↓</span>
+    {%- else -%}
+        <span class="text-slate-400 font-bold" title="{{ t('trend_stable') }}">→</span>
+    {%- endif -%}
+{%- endmacro %}

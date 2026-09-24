@@ -2606,5 +2606,481 @@
   "ed_file_actions": {
     "ro": "Acțiuni",
     "en": "Actions"
+  },
+  "add_new_result_link": {
+    "ro": "+ Adaugă rezultat nou",
+    "en": "+ Add new result"
+  },
+  "add_student_absent_label": {
+    "ro": "Prezență + lecții absentate",
+    "en": "Attendance + absent lessons"
+  },
+  "add_student_absent_ph": {
+    "ro": "ex: Progresii (10.02)",
+    "en": "e.g. Progressions (02/10)"
+  },
+  "add_student_add_grade": {
+    "ro": "Adaugă notă",
+    "en": "Add grade"
+  },
+  "add_student_attendance_label": {
+    "ro": "Prezență (%)",
+    "en": "Attendance (%)"
+  },
+  "add_student_attention_label": {
+    "ro": "Durată de concentrare",
+    "en": "Attention span"
+  },
+  "add_student_attention_ph": {
+    "ro": "ex: Medie (20-25 min)",
+    "en": "e.g. Medium (20-25 min)"
+  },
+  "add_student_btn": {
+    "ro": "+ Adaugă Elev",
+    "en": "+ Add Student"
+  },
+  "add_student_class_label": {
+    "ro": "Clasă",
+    "en": "Class"
+  },
+  "add_student_drop_hint": {
+    "ro": "Drag & Drop sau click (.png, .jpg, .pdf)",
+    "en": "Drag & Drop or click (.png, .jpg, .pdf)"
+  },
+  "add_student_grade_ph": {
+    "ro": "Notă",
+    "en": "Grade"
+  },
+  "add_student_grades_label": {
+    "ro": "Note (notă = lecții testate)",
+    "en": "Grades (grade = lessons tested)"
+  },
+  "add_student_lessons_ph": {
+    "ro": "Lecții testate",
+    "en": "Lessons tested"
+  },
+  "add_student_name_label": {
+    "ro": "Nume elev",
+    "en": "Student name"
+  },
+  "add_student_name_ph": {
+    "ro": "Numele elevului",
+    "en": "Student name"
+  },
+  "add_student_personality_label": {
+    "ro": "Trăsături de personalitate",
+    "en": "Personality traits"
+  },
+  "add_student_personality_ph": {
+    "ro": "ex: Retras, are nevoie de încurajare",
+    "en": "e.g. Withdrawn, needs encouragement"
+  },
+  "add_student_preview_placeholder": {
+    "ro": "Numele elevului",
+    "en": "Student name"
+  },
+  "add_student_preview_title": {
+    "ro": "Previzualizare Profil",
+    "en": "Profile Preview"
+  },
+  "add_student_review_desc": {
+    "ro": "Opțional — încarcă un test dat și rezolvarea scrisă de mână a elevului pentru o analiză inițială.",
+    "en": "Optional — upload a given test and the student's handwritten solution for an initial review."
+  },
+  "add_student_review_label": {
+    "ro": "Analiză test scris de mână",
+    "en": "Handwritten test review"
+  },
+  "add_student_solution_title": {
+    "ro": "Rezolvarea elevului",
+    "en": "Student's solution"
+  },
+  "add_student_submit_full": {
+    "ro": "Adaugă elevul și generează profilul",
+    "en": "Add student and generate profile"
+  },
+  "add_student_subtitle": {
+    "ro": "Completează detaliile pentru a genera profilul AI complet într-un singur pas.",
+    "en": "Fill in the details to generate the full AI profile in one step."
+  },
+  "add_student_test_title": {
+    "ro": "Testul dat",
+    "en": "The given test"
+  },
+  "add_student_title": {
+    "ro": "Adaugă Elev",
+    "en": "Add Student"
+  },
+  "add_student_weaknesses_label": {
+    "ro": "Puncte slabe cunoscute (opțional)",
+    "en": "Known weaknesses (optional)"
+  },
+  "add_student_weaknesses_ph": {
+    "ro": "ex: Fracții, Ecuații",
+    "en": "e.g. Fractions, Equations"
+  },
+  "ai_assistant_title": {
+    "ro": "De ce se confruntă cu dificultăți",
+    "en": "Why they're struggling"
+  },
+  "back_to_class": {
+    "ro": "Înapoi la clasă",
+    "en": "Back to class"
+  },
+  "back_to_dashboard": {
+    "ro": "Înapoi la dashboard",
+    "en": "Back to dashboard"
+  },
+  "back_to_groups": {
+    "ro": "Înapoi la grupe",
+    "en": "Back to groups"
+  },
+  "chat_send": {
+    "ro": "Trimite",
+    "en": "Send"
+  },
+  "chat_title": {
+    "ro": "Chat cu Asistentul AI",
+    "en": "Chat with AI Assistant"
+  },
+  "clasa_noua_btn": {
+    "ro": "+ Clasă Nouă",
+    "en": "+ New Class"
+  },
+  "clasa_noua_placeholder": {
+    "ro": "Nume clasă (ex: Clasa IX B)",
+    "en": "Class name (e.g. Class 9B)"
+  },
+  "clasa_noua_submit": {
+    "ro": "Creează",
+    "en": "Create"
+  },
+  "col_attendance": {
+    "ro": "Prezență",
+    "en": "Attendance"
+  },
+  "col_avg_grade": {
+    "ro": "Medie",
+    "en": "Avg. Grade"
+  },
+  "col_avg_time": {
+    "ro": "Timp/Exercițiu",
+    "en": "Time/Exercise"
+  },
+  "col_completion": {
+    "ro": "Teme Finalizate",
+    "en": "Assignment Completion"
+  },
+  "col_mastery": {
+    "ro": "Stăpânire Capitol",
+    "en": "Chapter Mastery"
+  },
+  "col_mistakes": {
+    "ro": "Greșeli Repetate",
+    "en": "Repeated Mistakes"
+  },
+  "col_name": {
+    "ro": "Nume",
+    "en": "Name"
+  },
+  "col_risk": {
+    "ro": "Nivel Risc AI",
+    "en": "AI Risk Level"
+  },
+  "col_trend": {
+    "ro": "Tendință",
+    "en": "Trend"
+  },
+  "confidence_high": {
+    "ro": "Ridicată",
+    "en": "High"
+  },
+  "confidence_low": {
+    "ro": "Scăzută",
+    "en": "Low"
+  },
+  "confidence_medium": {
+    "ro": "Medie",
+    "en": "Medium"
+  },
+  "dashboard_students_title": {
+    "ro": "Prezentare Generală",
+    "en": "Overview"
+  },
+  "dashboard_trends_title": {
+    "ro": "Tendințe & Risc",
+    "en": "Trends & Risk"
+  },
+  "dashboard_weaknesses_title": {
+    "ro": "Puncte Slabe Frecvente",
+    "en": "Common Weaknesses"
+  },
+  "difficulty_easy": {
+    "ro": "Ușor",
+    "en": "Easier"
+  },
+  "difficulty_mastery": {
+    "ro": "Consolidare finală",
+    "en": "Final Mastery"
+  },
+  "difficulty_medium": {
+    "ro": "Mediu",
+    "en": "Medium"
+  },
+  "difficulty_review": {
+    "ro": "Recapitulare",
+    "en": "Mixed Review"
+  },
+  "drag_drop_hint": {
+    "ro": "Trage și plasează un elev într-o altă grupă pentru a suprascrie alocarea AI.",
+    "en": "Drag and drop a student into another group to override the AI assignment."
+  },
+  "exercise_generator_desc": {
+    "ro": "Generează exerciții personalizate pe baza punctelor slabe ale elevului.",
+    "en": "Generate personalized exercises based on the student's weaknesses."
+  },
+  "exercise_generator_title": {
+    "ro": "Generator de Exerciții",
+    "en": "Exercise Generator"
+  },
+  "group_exercise_generator_desc": {
+    "ro": "Generează un singur set de exerciții potrivit pentru toți elevii din grupă.",
+    "en": "Generate one set of exercises suited to every student in the group."
+  },
+  "group_exercise_generator_title": {
+    "ro": "Generator de Exerciții — Grupă",
+    "en": "Group Exercise Generator"
+  },
+  "group_members_label": {
+    "ro": "elevi",
+    "en": "students"
+  },
+  "group_members_title": {
+    "ro": "Membrii Grupei",
+    "en": "Group Members"
+  },
+  "group_suggested_actions_desc": {
+    "ro": "Recomandări AI pentru a lucra eficient cu toată grupa deodată.",
+    "en": "AI recommendations for working with the whole group at once."
+  },
+  "group_suggested_actions_title": {
+    "ro": "Acțiuni Recomandate pentru Grupă",
+    "en": "Suggested Actions for the Group"
+  },
+  "groups_sub": {
+    "ro": "elevi grupați automat după puncte slabe",
+    "en": "students auto-clustered by weakness"
+  },
+  "groups_title": {
+    "ro": "Grupe Inteligente",
+    "en": "Smart Groups"
+  },
+  "history_actions": {
+    "ro": "Acțiuni completate",
+    "en": "Actions completed"
+  },
+  "history_chat": {
+    "ro": "Mesaje chat",
+    "en": "Chat messages"
+  },
+  "history_summary_title": {
+    "ro": "Rezumat Progres",
+    "en": "Progress Summary"
+  },
+  "history_tests": {
+    "ro": "Teste înregistrate",
+    "en": "Tests recorded"
+  },
+  "history_tests_title": {
+    "ro": "Istoric Teste",
+    "en": "Test History"
+  },
+  "history_trend": {
+    "ro": "Tendință curentă",
+    "en": "Current trend"
+  },
+  "no_classes_desc": {
+    "ro": "Creează prima clasă pentru a începe.",
+    "en": "Create your first class to get started."
+  },
+  "no_classes_title": {
+    "ro": "Nicio clasă încă",
+    "en": "No classes yet"
+  },
+  "no_students_desc": {
+    "ro": "Niciun elev în această clasă încă.",
+    "en": "No students in this class yet."
+  },
+  "no_test_records": {
+    "ro": "Niciun test înregistrat încă.",
+    "en": "No tests recorded yet."
+  },
+  "no_weaknesses_data": {
+    "ro": "Nicio dată disponibilă încă.",
+    "en": "No data available yet."
+  },
+  "no_worksheet_yet": {
+    "ro": "Alege un nivel de dificultate pentru a genera exerciții.",
+    "en": "Choose a difficulty level to generate exercises."
+  },
+  "print_btn": {
+    "ro": "Printează",
+    "en": "Print"
+  },
+  "profile_card_title": {
+    "ro": "Profil de Învățare",
+    "en": "Learning Profile"
+  },
+  "profile_confidence": {
+    "ro": "Încredere",
+    "en": "Confidence"
+  },
+  "profile_learning_style": {
+    "ro": "Stil de Învățare",
+    "en": "Learning Style"
+  },
+  "profile_risk": {
+    "ro": "Nivel de Risc",
+    "en": "Risk Level"
+  },
+  "profile_strengths": {
+    "ro": "Puncte Forte",
+    "en": "Strengths"
+  },
+  "profile_weaknesses": {
+    "ro": "Puncte Slabe",
+    "en": "Weaknesses"
+  },
+  "recommended_actions": {
+    "ro": "Acțiuni Recomandate pentru Profesor",
+    "en": "Recommended Teacher Actions"
+  },
+  "regenerate_group_actions_btn": {
+    "ro": "Regenerează Acțiunile",
+    "en": "Regenerate Actions"
+  },
+  "regenerate_groups_btn": {
+    "ro": "Regenerează Grupele",
+    "en": "Regenerate Groups"
+  },
+  "regenerate_profile_btn": {
+    "ro": "Regenerează Profilul AI",
+    "en": "Regenerate AI Profile"
+  },
+  "review_form_desc": {
+    "ro": "Încarcă testul dat și rezolvarea elevului pentru o analiză AI.",
+    "en": "Upload the given test and the student's solution for an AI review."
+  },
+  "review_form_title": {
+    "ro": "Recenzie Test Nou",
+    "en": "New Test Review"
+  },
+  "review_latest_insight": {
+    "ro": "Analiză Recentă",
+    "en": "Latest Insight"
+  },
+  "review_submit": {
+    "ro": "Analizează",
+    "en": "Analyze"
+  },
+  "risk_high": {
+    "ro": "Ridicat",
+    "en": "High"
+  },
+  "risk_low": {
+    "ro": "Scăzut",
+    "en": "Low"
+  },
+  "risk_medium": {
+    "ro": "Mediu",
+    "en": "Medium"
+  },
+  "risk_overview_sub": {
+    "ro": "elevi sortați după nivelul de risc",
+    "en": "students sorted by risk level"
+  },
+  "risk_overview_title": {
+    "ro": "Prezentare Risc",
+    "en": "Risk Overview"
+  },
+  "source_mode_label": {
+    "ro": "Stil de generare (bazat pe modurile existente)",
+    "en": "Generation style (based on existing modes)"
+  },
+  "stat_avg_attendance": {
+    "ro": "Prezență Medie",
+    "en": "Avg. Attendance"
+  },
+  "stat_avg_completion": {
+    "ro": "Teme Finalizate Mediu",
+    "en": "Avg. Completion"
+  },
+  "stat_avg_mastery": {
+    "ro": "Stăpânire Medie",
+    "en": "Avg. Mastery"
+  },
+  "stat_total_students": {
+    "ro": "Total Elevi",
+    "en": "Total Students"
+  },
+  "tab_exercises": {
+    "ro": "Generator Exerciții",
+    "en": "Exercise Generator"
+  },
+  "tab_history": {
+    "ro": "Istoric & Progres",
+    "en": "History & Progress"
+  },
+  "tab_profile": {
+    "ro": "Profil & Asistent AI",
+    "en": "Profile & AI Assistant"
+  },
+  "tab_review": {
+    "ro": "Recenzie Test & Teme",
+    "en": "Test & Assignment Review"
+  },
+  "targeted_weaknesses": {
+    "ro": "Puncte slabe vizate",
+    "en": "Targeted weaknesses"
+  },
+  "tracking_hero_high_risk": {
+    "ro": "cu risc ridicat",
+    "en": "at high risk"
+  },
+  "tracking_hero_students": {
+    "ro": "elevi",
+    "en": "students"
+  },
+  "tracking_hero_title": {
+    "ro": "Cum le merge elevilor",
+    "en": "How students are doing"
+  },
+  "trend_down": {
+    "ro": "În scădere",
+    "en": "Declining"
+  },
+  "trend_stable": {
+    "ro": "Stabil",
+    "en": "Stable"
+  },
+  "trend_up": {
+    "ro": "În creștere",
+    "en": "Improving"
+  },
+  "unassigned_title": {
+    "ro": "Nealocați",
+    "en": "Unassigned"
+  },
+  "view_groups_btn": {
+    "ro": "Grupe Inteligente →",
+    "en": "Smart Groups →"
+  },
+  "worksheet_title": {
+    "ro": "Fișă de Lucru",
+    "en": "Worksheet"
+  },
+  "nav_students": {
+    "ro": "Elevii mei",
+    "en": "My Students"
   }
 }
