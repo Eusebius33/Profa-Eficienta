@@ -109,49 +109,16 @@ Generator BAC |
         <div class="flex-1 bg-slate-950 border border-slate-800 rounded-3xl p-6 flex flex-col shadow-xl h-full min-h-0 overflow-hidden">
 
             <!-- HEADER -->
-            <div class="mb-6 flex items-start justify-between gap-4">
+            <div class="mb-6">
 
-                <div>
-                    <h1 class="text-3xl font-bold text-white" data-i18n="m5_header">Generator BAC AI</h1>
+                <h1 class="text-3xl font-bold text-white" data-i18n="m5_header">Generator BAC AI</h1>
 
-                    <p class="text-slate-400 mt-1" data-i18n="m5_sub">Creează variante BAC personalizate instant</p>
-                </div>
-
-                <div class="bg-slate-900 border border-slate-700 rounded-2xl px-4 py-3 min-w-[280px]">
-                    <div class="text-slate-400 text-sm" data-i18n="m5_bac_active">BAC activ:</div>
-
-                    <div class="text-white font-bold text-lg">
-                        {{ bac }} M_Tehnologic
-                    </div>
-                </div>
+                <p class="text-slate-400 mt-1" data-i18n="m5_sub">Creează variante BAC personalizate instant</p>
 
             </div>
 
             <!-- CONTENT -->
             <div class="flex-1 bg-white rounded-3xl border border-slate-700 p-6 flex flex-col shadow-inner min-h-0 overflow-hidden">
-
-                <!-- INFO -->
-                <div class="grid grid-cols-3 gap-4 mb-6">
-
-                    <div class="bg-slate-100 text-slate-900 rounded-2xl hover:shadow-md transition-shadow p-4 border border-slate-200">
-                        <p class="text-xs uppercase tracking-wide text-slate-500 mb-1" data-i18n="m5_accent">Accent</p>
-
-                        <p class="font-semibold text-slate-900" data-i18n="m5_trig">Trigonometrie</p>
-                    </div>
-
-                    <div class="bg-slate-100 text-slate-900 rounded-2xl hover:shadow-md transition-shadow p-4 border border-slate-200">
-                        <p class="text-xs uppercase tracking-wide text-slate-500 mb-1" data-i18n="m5_lessons_incl">Lecții incluse</p>
-
-                        <p class="font-semibold text-slate-900" data-i18n="m5_func_matr_int">Funcții, Matrici, Integrale</p>
-                    </div>
-
-                    <div class="bg-slate-100 text-slate-900 rounded-2xl hover:shadow-md transition-shadow p-4 border border-slate-200">
-                        <p class="text-xs uppercase tracking-wide text-slate-500 mb-1" data-i18n="m5_lessons_omit">Lecții omise</p>
-
-                        <p class="font-semibold text-slate-900" data-i18n="m5_geom_vect">Geometrie vectorială</p>
-                    </div>
-
-                </div>
 
                 <!-- CHAT / OUTPUT -->
                 <div id="chat" class="flex-1 overflow-y-auto space-y-4 pr-2 min-h-0 mb-2">
@@ -216,22 +183,6 @@ Generator BAC |
                 
                     <button
                         type="button"
-                        onclick="solveLatestBac(this)"
-                        class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm"
-                        data-i18n="m5_solve_test">
-                        Rezolvare test
-                    </button>
-                
-                    <button
-                        type="button"
-                        onclick="generateSimilarBac(this)"
-                        class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm"
-                        data-i18n="m5_gen_similar">
-                        Generează similare
-                    </button>
-                
-                    <button
-                        type="button"
                         onclick="generateRowTwoBac(this)"
                         class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm"
                         data-i18n="m5_gen_row2">
@@ -252,176 +203,223 @@ Generator BAC |
                 </div>
 
                 <!-- INPUT -->
-                <form action="/generate-bac/{{ conversation_id }}" method="post" class="flex gap-3" id="main-gen-form">
-                    <input type="hidden" id="actionType" name="action_type" value="normal">
-                
-                    <textarea
-                        id="promptInput"
-                        name="prompt"
-                        rows="1"
-                        data-i18n-placeholder="m5_gen_ph"
-                        placeholder="Ex: Generează 10 exerciții BAC dificultate mare fără integrale..."
-                        class="flex-1 text-white border border-slate-300 rounded-2xl p-4 resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                    ></textarea>
-                
-                    <button
-                        type="submit"
-                        onclick="document.getElementById('actionType').value='normal'; this.disabled=true;"
-                        class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold px-8 rounded-2xl"
-                        data-i18n="m5_generate">
-                        Generează
-                    </button>
-                </form>
+                <div class="flex items-stretch gap-3 flex-shrink-0">
+
+                    <!-- LESSON PICKER -->
+                    <div id="lessonPicker" class="relative flex-shrink-0">
+
+                        <button
+                            type="button"
+                            id="lessonPickerToggle"
+                            aria-haspopup="true"
+                            aria-expanded="false"
+                            class="h-full flex items-center gap-2 bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-900 font-semibold rounded-2xl px-4 transition focus:outline-none focus:ring-2 focus:ring-cyan-500">
+
+                            <svg class="w-4 h-4 text-slate-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h10"></path></svg>
+
+                            <span class="text-sm whitespace-nowrap" data-i18n="m5_select_lessons">Selectează lecții</span>
+
+                            <span id="lessonPickerCount"
+                                  class="min-w-[1.5rem] text-center bg-cyan-500 text-slate-950 text-xs font-bold rounded-full px-1.5 py-0.5">0</span>
+
+                            <svg id="lessonPickerChevron" class="w-4 h-4 text-slate-500 flex-shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+
+                        </button>
+
+                        <!-- PANEL -->
+                        <div id="lessonPickerPanel"
+                             class="hidden absolute bottom-full left-0 mb-2 w-[22rem] max-h-[26rem] bg-white border border-slate-200 rounded-2xl shadow-2xl z-50 flex flex-col overflow-hidden">
+
+                            <!-- SEARCH -->
+                            <div class="p-3 border-b border-slate-200 flex-shrink-0">
+                                <div class="relative">
+                                    <svg class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"></path></svg>
+                                    <input
+                                        type="search"
+                                        id="lessonSearch"
+                                        autocomplete="off"
+                                        data-i18n-placeholder="m5_lesson_search_ph"
+                                        placeholder="Caută lecție..."
+                                        class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                                </div>
+                            </div>
+
+                            <!-- LIST -->
+                            <div id="lessonList" class="overflow-y-auto p-2 space-y-3 flex-1">
+
+                                {% for group in lesson_groups %}
+                                <div class="lesson-group">
+
+                                    <h4 class="text-[0.65rem] uppercase tracking-wider text-slate-400 font-bold px-2 mb-1"
+                                        data-i18n="{{ group.i18n }}">{{ group.label }}</h4>
+
+                                    <div class="space-y-0.5">
+                                        {% for lesson in group.lessons %}
+                                        <div class="lesson-row flex items-center gap-2 rounded-xl px-2 py-1.5 hover:bg-slate-50 transition"
+                                             data-lesson="{{ lesson.value }}">
+
+                                            <input type="checkbox"
+                                                   class="lesson-checkbox accent-cyan-500 w-4 h-4 flex-shrink-0 cursor-pointer"
+                                                   id="lesson-{{ loop.index }}-{{ group.i18n }}"
+                                                   value="{{ lesson.value }}">
+
+                                            <label for="lesson-{{ loop.index }}-{{ group.i18n }}"
+                                                   class="lesson-label flex-1 text-sm text-slate-800 cursor-pointer select-none truncate"
+                                                   data-i18n="{{ lesson.i18n }}">{{ lesson.value }}</label>
+
+                                            <button type="button"
+                                                    class="lesson-omit w-6 h-6 flex-shrink-0 flex items-center justify-center rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition"
+                                                    title="Elimină lecția"
+                                                    aria-label="Elimină lecția">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                            </button>
+
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+
+                                </div>
+                                {% endfor %}
+
+                                <p id="lessonEmpty" class="hidden text-center text-sm text-slate-400 py-6"
+                                   data-i18n="m5_lesson_no_match">Nicio lecție găsită.</p>
+
+                            </div>
+
+                            <!-- PANEL FOOTER -->
+                            <div class="p-2 border-t border-slate-200 flex items-center gap-3 text-xs flex-shrink-0">
+                                <button type="button" id="lessonSelectAll" class="text-cyan-700 hover:text-cyan-900 font-semibold underline" data-i18n="m5_select_all">Toate</button>
+                                <button type="button" id="lessonSelectNone" class="text-slate-500 hover:text-slate-800 underline" data-i18n="m5_select_none">Niciuna</button>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <form action="/generate-bac/{{ conversation_id }}" method="post" class="flex flex-1 gap-3 min-w-0" id="main-gen-form">
+                        <input type="hidden" id="actionType" name="action_type" value="normal">
+
+                        <textarea
+                            id="promptInput"
+                            name="prompt"
+                            rows="1"
+                            data-i18n-placeholder="m5_gen_ph"
+                            placeholder="Ex: Generează 10 exerciții BAC dificultate mare fără integrale..."
+                            class="flex-1 min-w-0 text-white border border-slate-300 rounded-2xl p-4 resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                        ></textarea>
+
+                        <button
+                            type="submit"
+                            onclick="document.getElementById('actionType').value='normal'; this.disabled=true;"
+                            class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold px-8 rounded-2xl flex-shrink-0"
+                            data-i18n="m5_generate">
+                            Generează
+                        </button>
+                    </form>
+
+                </div>
 
             </div>
 
         </div>
 
         <!-- DREAPTA -->
-        <div class="w-80 flex flex-col gap-3">
+        <div class="w-80 flex flex-col gap-3 min-h-0">
 
-            <!-- SELECTEAZA LECTII -->
-            <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 shadow-xl h-[calc(100vh-430px)] overflow-y-auto">
+            <!-- BAC ACTIV -->
+            <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 shadow-xl flex-shrink-0">
 
-                <h2 class="text-white font-bold mb-4" data-i18n="m5_select_lessons">Selectează lecții</h2>
-
-                <div class="space-y-5 text-sm">
-
-                    <!-- IX -->
-                    <div>
-
-                        <h3 class="text-cyan-400 font-bold mb-2" data-i18n="grade_9">Clasa a IX-a</h3>
-
-                        <div class="space-y-2">
-
-                            <label class="flex items-center gap-2 text-slate-300">
-                                <input type="checkbox" class="lesson-checkbox accent-cyan-500" name="lessons" value="Radicali" checked data-i18n="m_radicals">Radicali</label>
-
-                            <label class="flex items-center gap-2 text-slate-300">
-                                <input type="checkbox" class="lesson-checkbox accent-cyan-500" name="lessons" value="Puteri" checked data-i18n="m_powers">Puteri</label>
-
-                            <label class="flex items-center gap-2 text-slate-300">
-                                <input type="checkbox" class="lesson-checkbox accent-cyan-500" name="lessons" value="Progresii" checked data-i18n="m_progressions">Progresii</label>
-
-                            <label class="flex items-center gap-2 text-slate-300">
-                                <input type="checkbox" class="lesson-checkbox accent-cyan-500" name="lessons" value="Probabilități" checked data-i18n="m_probability">Probabilități</label>
-
-                        </div>
-
-                    </div>
-
-                    <!-- X -->
-                    <div>
-
-                        <h3 class="text-cyan-400 font-bold mb-2" data-i18n="grade_10">Clasa a X-a</h3>
-
-                        <div class="space-y-2">
-
-                            <label class="flex items-center gap-2 text-slate-300">
-                                <input type="checkbox" class="lesson-checkbox accent-cyan-500" name="lessons" value="Funcții" checked data-i18n="m_functions">Funcții</label>
-
-                            <label class="flex items-center gap-2 text-slate-300">
-                                <input type="checkbox" class="lesson-checkbox accent-cyan-500" name="lessons" value="Logaritmi" checked data-i18n="m_logarithms">Logaritmi</label>
-
-                            <label class="flex items-center gap-2 text-slate-300">
-                                <input type="checkbox" class="lesson-checkbox accent-cyan-500" name="lessons" value="Numere complexe" checked data-i18n="m_complex">Numere complexe</label>
-
-                            <label class="flex items-center gap-2 text-slate-300">
-                                <input type="checkbox" class="lesson-checkbox accent-cyan-500" name="lessons" value="Trigonometrie" checked data-i18n="m_trig">Trigonometrie</label>
-
-                        </div>
-
-                    </div>
-
-                    <!-- XI -->
-                    <div>
-
-                        <h3 class="text-cyan-400 font-bold mb-2" data-i18n="grade_11">Clasa a XI-a</h3>
-
-                        <div class="space-y-2">
-
-                            <label class="flex items-center gap-2 text-slate-300">
-                                <input type="checkbox" class="lesson-checkbox accent-cyan-500" name="lessons" value="Matrici" checked data-i18n="m_matrices">Matrici</label>
-
-                            <label class="flex items-center gap-2 text-slate-300">
-                                <input type="checkbox" class="lesson-checkbox accent-cyan-500" name="lessons" value="Legi de compoziție" checked data-i18n="m_composition">Legi de compoziție</label>
-
-                            <label class="flex items-center gap-2 text-slate-300">
-                                <input type="checkbox" class="lesson-checkbox accent-cyan-500" name="lessons" value="Limite" checked data-i18n="m_limits">Limite</label>
-
-                            <label class="flex items-center gap-2 text-slate-300">
-                                <input type="checkbox" class="lesson-checkbox accent-cyan-500" name="lessons" value="Derivate" checked data-i18n="m_deriv">Derivate</label>
-
-                        </div>
-
-                    </div>
-
-                    <!-- XII -->
-                    <div>
-
-                        <h3 class="text-cyan-400 font-bold mb-2" data-i18n="grade_12">Clasa a XII-a</h3>
-
-                        <div class="space-y-2">
-
-                            <label class="flex items-center gap-2 text-slate-300">
-                                <input type="checkbox" class="lesson-checkbox accent-cyan-500" name="lessons" value="Integrale definite" checked data-i18n="m_integrals">Integrale definite</label>
-
-                            <label class="flex items-center gap-2 text-slate-300">
-                                <input type="checkbox" class="lesson-checkbox accent-cyan-500" name="lessons" value="Polinoame" checked data-i18n="m_polynomials">Polinoame</label>
-
-                        </div>
-
-                    </div>
-
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="w-2 h-2 rounded-full bg-cyan-400 flex-shrink-0"></span>
+                    <span class="text-[0.65rem] uppercase tracking-wider text-slate-500 font-bold" data-i18n="m5_bac_active">BAC activ:</span>
                 </div>
+
+                <div class="text-white font-bold text-lg truncate">{{ bac }} M_Tehnologic</div>
 
             </div>
 
-            <!-- FISIERE -->
-            <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 shadow-xl h-[calc(100vh-670px)] overflow-y-auto">
+            <!-- ACCENT -->
+            <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 shadow-xl flex flex-col min-h-0 flex-1">
 
-                <h2 class="text-white font-bold mb-3" data-i18n="m5_download_bac">Descarcă variante BAC</h2>
+                <div class="flex items-baseline justify-between gap-2 flex-shrink-0">
+                    <h2 class="text-white font-bold" data-i18n="m5_accent">Accent</h2>
+                    <span id="accentCurrent" class="text-xs text-cyan-400 font-semibold truncate max-w-[9rem] text-right"></span>
+                </div>
 
-                <div class="space-y-2 text-sm">
+                <p class="text-xs text-slate-500 mt-1 mb-3 leading-snug flex-shrink-0" data-i18n="m5_accent_hint">
+                    Lecția pe care variantele insistă în primul rând.
+                </p>
 
-                    <a class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">
+                <!-- Filled from the picker state so it always offers exactly the included lessons. -->
+                <div id="accentList" class="space-y-1 overflow-y-auto min-h-0 flex-1 text-sm pr-1"></div>
+
+            </div>
+
+            <!-- LECTII OMISE -->
+            <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 shadow-xl flex flex-col min-h-0 max-h-56 flex-shrink-0">
+
+                <div class="flex items-baseline justify-between gap-2 mb-3 flex-shrink-0">
+                    <h2 class="text-white font-bold" data-i18n="m5_lessons_omit">Lecții omise</h2>
+                    <span id="omittedCount" class="text-xs text-slate-500 font-semibold"></span>
+                </div>
+
+                <div id="omittedList" class="flex flex-wrap gap-1.5 overflow-y-auto min-h-0 content-start"></div>
+
+                <p id="omittedEmpty" class="text-xs text-slate-500 leading-snug" data-i18n="m5_omitted_empty">
+                    Nicio lecție omisă. Apasă × pe o lecție pentru a o scoate din variante.
+                </p>
+
+                <p id="omittedForcedNote" class="hidden text-xs text-amber-400/90 leading-snug mt-2 flex-shrink-0" data-i18n="m5_omitted_forced">
+                    ⚠ Lecțiile marcate ocupă un subiect fix din structura oficială BAC, așa că vor apărea oricum în variantă.
+                </p>
+
+            </div>
+
+            <!-- DESCARCA VARIANTE BAC -->
+            <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 shadow-xl flex-shrink-0">
+
+                <h2 class="text-white font-bold mb-2 text-sm" data-i18n="m5_download_bac">Descarcă variante BAC</h2>
+
+                <div class="flex flex-wrap gap-1.5 text-xs">
+
+                    <a class="bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-2.5 py-1 rounded-lg cursor-pointer">
                         2024 - Proba E
                     </a>
 
-                    <a class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">
+                    <a class="bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-2.5 py-1 rounded-lg cursor-pointer">
                         <span data-i18n="m5_bac_sim">Simulare BAC</span> 2025
                     </a>
 
-                    <a class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">
+                    <a class="bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-2.5 py-1 rounded-lg cursor-pointer">
                         Test trigonometrie
                     </a>
 
                 </div>
 
+            </div>
 
+            <!-- BUTTONS -->
+            <div class="flex flex-col gap-2 flex-shrink-0">
+
+                <button onclick="window.location.href='/menu'"
+                    class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold py-3 rounded-xl"
+                 data-i18n="change_mode">Schimbă mod</button>
+
+                <button onclick="window.location.href='/create_mode5'"
+                    class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-3 rounded-xl"
+                 data-i18n="new_chat">Conversație nouă</button>
 
             </div>
-            <!-- BUTTONS -->
-                <div class="flex flex-col gap-2">
-
-                    <button onclick="window.location.href='/menu'"
-                        class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold py-3 rounded-xl"
-                     data-i18n="change_mode">Schimbă mod</button>
-
-                    <button onclick="window.location.href='/create_mode5'"
-                        class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-3 rounded-xl"
-                     data-i18n="new_chat">Conversație nouă</button>
-
-                </div>
 
             <!-- TIP -->
-            <div class="text-xs text-slate-500 px-1" data-i18n="m5_tip">Tip: apasă pe o lecție pentru a o include în generarea variantei BAC.</div>
+            <div class="text-xs text-slate-500 px-1 flex-shrink-0" data-i18n="m5_tip">Tip: apasă pe o lecție pentru a o include în generarea variantei BAC.</div>
 
         </div>
-
     </div>
 
 </div>
+
+<script type="application/json" id="lessonStateData">{{ lesson_state | tojson }}</script>
 
 <script>
 function toggleConversationMenu(event, conversationId) {
@@ -481,18 +479,224 @@ function getLatestGeneratedBac() {
     return content.textContent.trim();
 }
 
-function appendSelectedLessonsToForm(form) {
-    const existing = form.querySelectorAll("input[type='hidden'][name='lessons']");
-    existing.forEach(el => el.remove());
+// ── Lesson picker ──────────────────────────────────────────────────────
+// One source of truth for what the next generation gets: which lessons are
+// included, which single lesson the exam leans on, and which are kept out
+// entirely. The server hands us the conversation's saved state on load and
+// gets the whole thing back on every submit, so a change made here is what
+// the next prompt starts from.
+const lessonPickerState = (function () {
+    let initial = {selected: [], accent: null, omitted: []};
+    try {
+        initial = JSON.parse(document.getElementById("lessonStateData").textContent);
+    } catch (e) { /* fall back to the empty state below */ }
 
-    const checkboxes = document.querySelectorAll(".lesson-checkbox:checked");
-    checkboxes.forEach(cb => {
+    return {
+        selected: new Set(initial.selected || []),
+        accent:   initial.accent || null,
+        omitted:  new Set(initial.omitted || []),
+        // What each slot of the official structure is allowed to be about.
+        slotLessons: initial.slot_lessons || [],
+    };
+})();
+
+// Lessons the exam will contain whatever we do: a slot whose every lesson has
+// been omitted still has to produce one of them, or the variant comes back a
+// subject short. Recomputed on each render because it depends on the whole
+// omitted set, not on any one lesson.
+function forcedOmissions() {
+    const forced = new Set();
+
+    lessonPickerState.slotLessons.forEach(function (lessons) {
+        if (lessons.length && lessons.every(l => lessonPickerState.omitted.has(l))) {
+            lessons.forEach(l => forced.add(l));
+        }
+    });
+
+    return forced;
+}
+
+function lessonLabel(value) {
+    const row = document.querySelector('.lesson-row[data-lesson="' + CSS.escape(value) + '"] .lesson-label');
+    return row ? row.textContent.trim() : value;
+}
+
+function renderLessonRows() {
+    document.querySelectorAll(".lesson-row").forEach(function (row) {
+        const value = row.dataset.lesson;
+        const omitted = lessonPickerState.omitted.has(value);
+
+        row.classList.toggle("opacity-40", omitted);
+
+        const box = row.querySelector(".lesson-checkbox");
+        box.checked = lessonPickerState.selected.has(value);
+        box.disabled = omitted;
+    });
+
+    document.getElementById("lessonPickerCount").textContent = lessonPickerState.selected.size;
+}
+
+function renderAccentList() {
+    const list = document.getElementById("accentList");
+    const current = document.getElementById("accentCurrent");
+    list.innerHTML = "";
+
+    const none = document.createElement("button");
+    none.type = "button";
+    none.dataset.accent = "";
+    none.className = "w-full text-left px-2.5 py-1.5 rounded-xl transition " +
+        (lessonPickerState.accent === null
+            ? "bg-cyan-500 text-slate-950 font-semibold"
+            : "text-slate-400 hover:bg-slate-800");
+    none.innerHTML = '<span data-i18n="m5_no_accent">Fără accent</span>';
+    list.appendChild(none);
+
+    lessonPickerState.selected.forEach(function (value) {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.dataset.accent = value;
+        btn.className = "w-full text-left px-2.5 py-1.5 rounded-xl transition truncate " +
+            (lessonPickerState.accent === value
+                ? "bg-cyan-500 text-slate-950 font-semibold"
+                : "text-slate-300 hover:bg-slate-800");
+        btn.textContent = lessonLabel(value);
+        list.appendChild(btn);
+    });
+
+    current.textContent = lessonPickerState.accent ? lessonLabel(lessonPickerState.accent) : "";
+}
+
+function renderOmittedList() {
+    const list = document.getElementById("omittedList");
+    const empty = document.getElementById("omittedEmpty");
+    const count = document.getElementById("omittedCount");
+    list.innerHTML = "";
+
+    const forcedSet = forcedOmissions();
+
+    lessonPickerState.omitted.forEach(function (value) {
+        const chip = document.createElement("span");
+        chip.className = "inline-flex items-center gap-1 bg-slate-800 text-slate-300 text-xs rounded-lg pl-2.5 pr-1 py-1 max-w-full";
+
+        if (forcedSet.has(value)) {
+            chip.classList.add("border", "border-amber-500/40");
+
+            const warn = document.createElement("span");
+            warn.className = "text-amber-400 flex-shrink-0";
+            warn.textContent = "⚠";
+            warn.title = document.getElementById("omittedForcedNote").textContent.trim();
+            chip.appendChild(warn);
+        }
+
+        const label = document.createElement("span");
+        label.className = "truncate";
+        label.textContent = lessonLabel(value);
+        chip.appendChild(label);
+
+        const restore = document.createElement("button");
+        restore.type = "button";
+        restore.dataset.restore = value;
+        restore.className = "w-4 h-4 flex items-center justify-center rounded text-slate-500 hover:text-cyan-400 transition flex-shrink-0";
+        restore.title = "Reactivează";
+        restore.textContent = "×";
+        chip.appendChild(restore);
+
+        list.appendChild(chip);
+    });
+
+    const hasOmitted = lessonPickerState.omitted.size > 0;
+    empty.classList.toggle("hidden", hasOmitted);
+    count.textContent = hasOmitted ? lessonPickerState.omitted.size : "";
+
+    document.getElementById("omittedForcedNote").classList.toggle("hidden", forcedSet.size === 0);
+}
+
+function renderLessonPicker() {
+    renderLessonRows();
+    renderAccentList();
+    renderOmittedList();
+
+    // The accent list is built in JS, so re-run the translator over it.
+    if (window.applyTranslations) window.applyTranslations();
+}
+
+function setLessonSelected(value, on) {
+    if (on) {
+        lessonPickerState.selected.add(value);
+    } else {
+        lessonPickerState.selected.delete(value);
+        // An accent only means something while its lesson is still included.
+        if (lessonPickerState.accent === value) lessonPickerState.accent = null;
+    }
+    renderLessonPicker();
+}
+
+function omitLesson(value) {
+    lessonPickerState.omitted.add(value);
+    lessonPickerState.selected.delete(value);
+    if (lessonPickerState.accent === value) lessonPickerState.accent = null;
+    renderLessonPicker();
+}
+
+function restoreLesson(value) {
+    lessonPickerState.omitted.delete(value);
+    lessonPickerState.selected.add(value);
+    renderLessonPicker();
+}
+
+function filterLessons(query) {
+    const needle = (query || "").trim().toLowerCase();
+    let visible = 0;
+
+    document.querySelectorAll(".lesson-row").forEach(function (row) {
+        const haystack = (row.dataset.lesson + " " + row.querySelector(".lesson-label").textContent).toLowerCase();
+        const match = !needle || haystack.indexOf(needle) !== -1;
+        row.classList.toggle("hidden", !match);
+        if (match) visible++;
+    });
+
+    // Hide a school-year heading once the search has emptied its group.
+    document.querySelectorAll(".lesson-group").forEach(function (group) {
+        group.classList.toggle("hidden", !group.querySelector(".lesson-row:not(.hidden)"));
+    });
+
+    document.getElementById("lessonEmpty").classList.toggle("hidden", visible > 0);
+}
+
+function toggleLessonPicker(open) {
+    const panel = document.getElementById("lessonPickerPanel");
+    const toggle = document.getElementById("lessonPickerToggle");
+    const chevron = document.getElementById("lessonPickerChevron");
+
+    const show = (open === undefined) ? panel.classList.contains("hidden") : open;
+
+    panel.classList.toggle("hidden", !show);
+    toggle.setAttribute("aria-expanded", show ? "true" : "false");
+    chevron.classList.toggle("rotate-180", show);
+
+    if (show) {
+        const search = document.getElementById("lessonSearch");
+        search.value = "";
+        filterLessons("");
+        search.focus();
+    }
+}
+
+function appendSelectedLessonsToForm(form) {
+    form.querySelectorAll("input[type='hidden'][data-lesson-state]").forEach(el => el.remove());
+
+    const add = (name, value) => {
         const hidden = document.createElement("input");
         hidden.type = "hidden";
-        hidden.name = "lessons";
-        hidden.value = cb.value;
+        hidden.name = name;
+        hidden.value = value;
+        hidden.dataset.lessonState = "1";
         form.appendChild(hidden);
-    });
+    };
+
+    lessonPickerState.selected.forEach(value => add("lessons", value));
+    lessonPickerState.omitted.forEach(value => add("omitted", value));
+    add("accent", lessonPickerState.accent || "");
 }
 
 function submitBacQuickAction(btn, actionType, promptText) {
@@ -517,44 +721,6 @@ function submitBacQuickAction(btn, actionType, promptText) {
     }
 }
 
-function solveLatestBac(btn) {
-    const solutions = document.querySelectorAll("[id^='solution-']");
-
-    if (solutions.length) {
-        const latestSolution = solutions[solutions.length - 1];
-        toggleSolution(latestSolution.id.replace("solution-", ""));
-        return;
-    }
-
-    const latestBac = getLatestGeneratedBac();
-
-    if (!latestBac) {
-        alert("Nu există nicio variantă BAC generată anterior.");
-        return;
-    }
-
-    const promptText =
-        "Rezolvă complet, pas cu pas, următoarea variantă BAC. Include baremul, explicațiile și răspunsurile finale:\n\n" +
-        latestBac;
-
-    submitBacQuickAction(btn, "solve_bac", promptText);
-}
-
-function generateSimilarBac(btn) {
-    const latestBac = getLatestGeneratedBac();
-
-    if (!latestBac) {
-        alert("Nu există nicio variantă BAC anterioară pe baza căreia să generez una similară.");
-        return;
-    }
-
-    const promptText =
-        "Generează o variantă BAC similară cu următoarea. Păstrează structura oficială, nivelul de dificultate și lecțiile selectate, dar schimbă exercițiile și valorile numerice:\n\n" +
-        latestBac;
-
-    submitBacQuickAction(btn, "generate_similar_bac", promptText);
-}
-
 function generateRowTwoBac(btn) {
     const latestBac = getLatestGeneratedBac();
 
@@ -575,6 +741,67 @@ document.addEventListener("DOMContentLoaded", function() {
     if (chat) {
         chat.scrollTop = chat.scrollHeight;
     }
+
+    renderLessonPicker();
+
+    document.getElementById("lessonPickerToggle").addEventListener("click", function (e) {
+        e.stopPropagation();
+        toggleLessonPicker();
+    });
+
+    // Clicks inside the panel must not reach the close-on-outside-click handler.
+    document.getElementById("lessonPickerPanel").addEventListener("click", function (e) {
+        e.stopPropagation();
+
+        const omit = e.target.closest(".lesson-omit");
+        if (omit) {
+            omitLesson(omit.closest(".lesson-row").dataset.lesson);
+            return;
+        }
+
+        const box = e.target.closest(".lesson-checkbox");
+        if (box) {
+            setLessonSelected(box.value, box.checked);
+        }
+    });
+
+    document.getElementById("lessonSearch").addEventListener("input", function () {
+        filterLessons(this.value);
+    });
+
+    document.getElementById("lessonSelectAll").addEventListener("click", function () {
+        document.querySelectorAll(".lesson-row").forEach(function (row) {
+            const value = row.dataset.lesson;
+            if (!lessonPickerState.omitted.has(value)) lessonPickerState.selected.add(value);
+        });
+        renderLessonPicker();
+    });
+
+    document.getElementById("lessonSelectNone").addEventListener("click", function () {
+        lessonPickerState.selected.clear();
+        lessonPickerState.accent = null;
+        renderLessonPicker();
+    });
+
+    document.getElementById("accentList").addEventListener("click", function (e) {
+        const btn = e.target.closest("[data-accent]");
+        if (!btn) return;
+        lessonPickerState.accent = btn.dataset.accent || null;
+        renderLessonPicker();
+    });
+
+    document.getElementById("omittedList").addEventListener("click", function (e) {
+        const btn = e.target.closest("[data-restore]");
+        if (btn) restoreLesson(btn.dataset.restore);
+    });
+
+    document.addEventListener("click", function () {
+        toggleLessonPicker(false);
+    });
+
+    document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") toggleLessonPicker(false);
+    });
 
     const forms = [
         document.getElementById("main-gen-form"),

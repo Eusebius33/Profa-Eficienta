@@ -56,6 +56,18 @@ function applyTranslations() {
         }
     });
 
+    // Update tooltips / accessible names on icon-only controls, which have no
+    // text node for data-i18n to replace.
+    document.querySelectorAll('[data-i18n-title]').forEach(el => {
+        const key = el.getAttribute('data-i18n-title');
+        if (translations[key] && translations[key][currentLang]) {
+            el.title = translations[key][currentLang];
+            if (el.hasAttribute('aria-label')) {
+                el.setAttribute('aria-label', translations[key][currentLang]);
+            }
+        }
+    });
+
     // Update active state in UI toggles if they exist
     const roToggle = document.getElementById('lang-toggle-ro');
     const enToggle = document.getElementById('lang-toggle-en');

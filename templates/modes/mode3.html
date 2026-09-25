@@ -83,34 +83,29 @@
 
         <!-- CENTRU -->
         <div class="flex-1 bg-slate-950 border border-slate-800 rounded-3xl p-6 flex flex-col shadow-xl h-full min-h-0 overflow-hidden">
-            <div class="mb-6 flex items-start justify-between gap-4">
-                <div>
+            <div class="mb-6 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+
+                <div class="min-w-0">
                     <h1 class="text-3xl font-bold text-white" data-i18n="mode3_title">{{ t("mode3_title") }}</h1>
                     <p class="text-slate-400 mt-1" data-i18n="mode3_subtitle">{{ t("mode3_subtitle") }}</p>
                 </div>
-                <div class="bg-slate-900 border border-slate-700 rounded-2xl px-4 py-3 min-w-[220px]">
-                    <div class="text-slate-400 text-sm" data-i18n="mode3_uploaded_file">{{ t("mode3_uploaded_file") }}</div>
-                    <div class="text-white font-bold text-sm truncate">{{ conversation["title"] }}</div>
+
+                <!-- HEADER ACTIONS -->
+                <div class="flex items-center gap-2 flex-shrink-0">
+
+                    <a href="/menu"
+                       class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2.5 px-5 rounded-xl text-sm whitespace-nowrap"
+                       data-i18n="mode3_change_mode">{{ t("mode3_change_mode") }}</a>
+
+                    <a href="/menu"
+                       class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold py-2.5 px-5 rounded-xl text-sm whitespace-nowrap"
+                       data-i18n="mode3_new_conversation">{{ t("mode3_new_conversation") }}</a>
+
                 </div>
+
             </div>
 
             <div class="flex-1 bg-white rounded-3xl border border-slate-700 p-6 flex flex-col shadow-inner min-h-0 overflow-hidden">
-
-                <!-- INFO -->
-                <div class="grid grid-cols-3 gap-4 mb-6 flex-shrink-0">
-                    <div class="bg-slate-100 rounded-2xl p-4 border border-slate-200">
-                        <p class="text-xs uppercase tracking-wide text-slate-500 mb-1" data-i18n="mode3_model_loaded">{{ t("mode3_model_loaded") }}</p>
-                        <p class="font-semibold text-slate-900 truncate">{{ conversation["title"] }}</p>
-                    </div>
-                    <div class="bg-slate-100 rounded-2xl p-4 border border-slate-200">
-                        <p class="text-xs uppercase tracking-wide text-slate-500 mb-1" data-i18n="mode3_changes">{{ t("mode3_changes") }}</p>
-                        <p class="font-semibold text-slate-900" data-i18n="mode3_changes_value">{{ t("mode3_changes_value") }}</p>
-                    </div>
-                    <div class="bg-slate-100 rounded-2xl p-4 border border-slate-200">
-                        <p class="text-xs uppercase tracking-wide text-slate-500 mb-1" data-i18n="mode3_output">{{ t("mode3_output") }}</p>
-                        <p class="font-semibold text-slate-900" data-i18n="mode3_output_value">{{ t("mode3_output_value") }}</p>
-                    </div>
-                </div>
 
                 <form id="exportForm" method="post" class="flex-1 flex flex-col min-h-0">
 
@@ -152,6 +147,18 @@
                                 <div class="text-slate-700 text-sm leading-relaxed whitespace-pre-wrap break-words max-w-full overflow-x-auto msg-content-container">
                                     <div class="math-content">{{ message["content"] }}</div>
                                 </div>
+
+                                <!-- PER-MESSAGE EXPORT -->
+                                <div class="mt-4 flex flex-wrap gap-2 border-t border-slate-200 pt-3">
+                                    <a href="/message/{{ message['id'] }}/export/pdf"
+                                       class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-1.5 px-3 rounded-lg text-xs">
+                                        <span data-i18n="download_msg_pdf">Descarcă PDF</span>
+                                    </a>
+                                    <a href="/message/{{ message['id'] }}/export/docx"
+                                       class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-1.5 px-3 rounded-lg text-xs">
+                                        <span data-i18n="download_msg_docx">Descarcă DOCX</span>
+                                    </a>
+                                </div>
                                 </div>
                             </div>
                         {% endif %}
@@ -182,84 +189,57 @@
                 </div>
                
                 <!-- INPUT -->
-                <form id="chatForm" action="/mode3/{{ conversation_id }}" method="post" class="flex gap-3 flex-shrink-0">
+                <form id="chatForm" action="/mode3/{{ conversation_id }}" method="post" enctype="multipart/form-data" class="flex gap-3 flex-shrink-0">
                     <input type="hidden" id="actionType" name="action_type" value="normal">
                     <input type="hidden" id="exerciseCount" name="exercise_count" value="5">
-                
-                    <textarea
-                        id="promptInput"
-                        name="prompt"
-                        rows="1"
-                        placeholder="{{ t('mode3_placeholder') }}"
-                        data-i18n-placeholder="mode3_placeholder"
-                        class="flex-1 text-white border border-slate-300 rounded-2xl p-4 resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                    ></textarea>
-                    <button type="submit" onclick="this.disabled=true; this.form.submit();" data-i18n="mode3_generate"
-                        class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold px-8 rounded-2xl">
+
+                    <!-- TEXTAREA + INLINE ATTACH -->
+                    <div class="relative flex-1 min-w-0">
+
+                        <textarea
+                            id="promptInput"
+                            name="prompt"
+                            rows="1"
+                            data-i18n-placeholder="mode3_placeholder"
+                            placeholder="{{ t('mode3_placeholder') }}"
+                            class="w-full text-white border border-slate-300 rounded-2xl p-4 pl-14 resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                        ></textarea>
+
+                        <!-- The file input stays hidden; this button is the visible affordance. -->
+                        <input type="file" id="fileInput" name="file" accept=".pdf,.docx,.txt,.png,.jpg,.jpeg" class="hidden">
+
+                        <button
+                            type="button"
+                            id="attachBtn"
+                            onclick="document.getElementById('fileInput').click()"
+                            class="absolute left-3 bottom-3 text-slate-400 hover:text-cyan-500 transition p-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                            title="Atașează fișier"
+                            data-i18n-title="attach_file"
+                            aria-label="Atașează fișier">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+                        </button>
+
+                        <!-- SELECTED FILE CHIP -->
+                        <div id="attachChip" class="hidden absolute left-3 -top-9 flex items-center gap-2 bg-slate-800 text-white text-xs rounded-xl px-3 py-1.5 shadow-lg max-w-full">
+                            <span id="attachName" class="truncate"></span>
+                            <button type="button" onclick="clearAttachment()" class="text-slate-300 hover:text-white font-bold leading-none"
+                                    title="Elimină fișierul" data-i18n-title="remove_file" aria-label="Elimină fișierul">&times;</button>
+                        </div>
+
+                    </div>
+
+                    <button
+                        type="submit"
+                        onclick="document.getElementById('actionType').value='normal'; this.disabled=true; this.form.submit();"
+                        class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold px-8 rounded-2xl flex-shrink-0"
+                        data-i18n="mode3_generate">
                         Generează
                     </button>
+
                 </form>
 
 
             </div>
-        </div>
-
-        <!-- DREAPTA -->
-        <div class="w-80 flex flex-col gap-3">
-
-            <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 shadow-xl h-[calc(100vh-430px)] overflow-y-auto">
-                <h2 class="text-white font-bold mb-4" data-i18n="mode3_select_lessons">{{ t("mode3_select_lessons") }}</h2>
-                <div class="space-y-5 text-sm">
-                    <div>
-                        <h3 class="text-cyan-400 font-bold mb-2" data-i18n="mode3_class_9">{{ t("mode3_class_9") }}</h3>
-                        <div class="space-y-2">
-                            <label class="flex items-center gap-2 text-slate-300"><input type="checkbox"> {{ t("mode3_lesson_radicals") }}</label>
-                            <label class="flex items-center gap-2 text-slate-300"><input type="checkbox"> {{ t("mode3_lesson_powers") }}</label>
-                            <label class="flex items-center gap-2 text-slate-300"><input type="checkbox"> {{ t("mode3_lesson_fractions") }}</label>
-                        </div>
-                    </div>
-                    <div>
-                        <h3 class="text-cyan-400 font-bold mb-2" data-i18n="mode3_class_10">{{ t("mode3_class_10") }}</h3>
-                        <div class="space-y-2">
-                            <label class="flex items-center gap-2 text-slate-300"><input type="checkbox"> {{ t("mode3_lesson_matrices") }}</label>
-                            <label class="flex items-center gap-2 text-slate-300"><input type="checkbox"> {{ t("mode3_lesson_trig") }}</label>
-                            <label class="flex items-center gap-2 text-slate-300"><input type="checkbox"> {{ t("mode3_lesson_complex") }}</label>
-                        </div>
-                    </div>
-                    <div>
-                        <h3 class="text-cyan-400 font-bold mb-2" data-i18n="mode3_class_11">{{ t("mode3_class_11") }}</h3>
-                        <div class="space-y-2">
-                            <label class="flex items-center gap-2 text-slate-300"><input type="checkbox"> {{ t("mode3_lesson_limits") }}</label>
-                            <label class="flex items-center gap-2 text-slate-300"><input type="checkbox"> {{ t("mode3_lesson_derivatives") }}</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 shadow-xl h-[calc(100vh-670px)] overflow-y-auto">
-                <h2 class="text-white font-bold mb-3" data-i18n="mode3_download_bac">{{ t("mode3_download_bac") }}</h2>
-                <div class="space-y-2 text-sm">
-                    <a class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">{{ t("mode3_lesson_bac_2024") }}</a>
-                    <a class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">{{ t("mode3_lesson_bac_sim") }}</a>
-                    <a class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl">{{ t("mode3_lesson_trig_test") }}</a>
-                </div>
-            </div>
-
-            <div class="flex flex-col gap-2">
-                <button onclick="window.location.href='/menu'"
-                    class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold py-3 rounded-xl" data-i18n="mode3_change_mode">
-                    {{ t("mode3_change_mode") }}
-                </button>
-                <button onclick="window.location.href='/menu'"
-                    class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-3 rounded-xl" data-i18n="mode3_new_conversation">
-                    {{ t("mode3_new_conversation") }}
-                </button>
-            </div>
-
-            <div class="text-xs text-slate-500 px-1" data-i18n="mode3_tip">
-                {{ t("mode3_tip") }}
-            </div>
-
         </div>
 
     </div>
@@ -407,7 +387,37 @@ document.addEventListener("click", async function (e) {
         setTimeout(() => window.enhanceCopyButtons(), 100);
     }
 });
+
+/* ===========================
+   INLINE FILE ATTACHMENT
+=========================== */
+
+function clearAttachment() {
+    const input = document.getElementById("fileInput");
+    const chip = document.getElementById("attachChip");
+
+    if (input) input.value = "";
+    if (chip) chip.classList.add("hidden");
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    const input = document.getElementById("fileInput");
+    const chip = document.getElementById("attachChip");
+    const name = document.getElementById("attachName");
+
+    if (!input || !chip || !name) return;
+
+    input.addEventListener("change", function () {
+        const file = this.files && this.files[0];
+
+        if (!file) {
+            chip.classList.add("hidden");
+            return;
+        }
+
+        name.textContent = file.name;
+        chip.classList.remove("hidden");
+    });
+});
 </script>
-
-
 {% endblock %}

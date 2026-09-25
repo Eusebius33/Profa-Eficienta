@@ -2,12 +2,57 @@ import markdown
 import os
 from flask import request, redirect, render_template, session
 from sqlalchemy import select, func
+from werkzeug.utils import secure_filename
 from secondary import ai
 from secondary import adjacent
 from models import Conversation, Message
 
 
-def mode3_chat(db, apology, conversation_id, file_read, upload_folder):
+def _save_attachment(upload_folder, uploaded_file, allowed_file):
+    """Persist a file attached to a mid-conversation message.
+
+    Returns (filepath, filename, error). All three are None/None/None when no
+    file was sent at all; `error` carries a message to show the teacher when
+    one was sent but could not be used, so a rejected upload is never dropped
+    in silence. Uploads share one flat folder, so a name that is already taken
+    gets a numbered suffix rather than overwriting another teacher's model.
+    """
+    if not uploaded_file or not uploaded_file.filename:
+        return None, None, None
+
+    if not allowed_file(uploaded_file.filename):
+        return None, None, "Tip de fișier nepermis"
+
+    filename = secure_filename(uploaded_file.filename)
+    if not filename:
+        return None, None, "Nume de fișier invalid"
+
+    os.makedirs(upload_folder, exist_ok=True)
+    filepath = os.path.join(upload_folder, filename)
+
+    stem, ext = os.path.splitext(filepath)
+    counter = 1
+    while os.path.exists(filepath):
+        filepath = f"{stem}_{counter}{ext}"
+        counter += 1
+
+    uploaded_file.save(filepath)
+    return filepath, os.path.basename(filepath), None
+
+
+def _model_content(db, conversation_id):
+    """The reference material the generator works from: every system message in
+    the conversation, oldest first. That is the file uploaded when the
+    conversation was created, plus anything attached to a later message."""
+    rows = db.scalars(
+        select(Message)
+        .where(Message.conversation_id == conversation_id, Message.role == "system")
+        .order_by(Message.id.asc())
+    ).all()
+    return "\n\n".join(row.content for row in rows if row.content)
+
+
+def mode3_chat(db, apology, conversation_id, file_read, upload_folder, allowed_file):
 
     conversation = db.scalars(
         select(Conversation).where(Conversation.id == conversation_id, Conversation.user_id == session["user_id"])
@@ -61,9 +106,29 @@ def mode3_chat(db, apology, conversation_id, file_read, upload_folder):
         return redirect(f"/mode3/{conversation_id}")
 
     if request.method == "POST":
-        prompt = request.form.get("prompt")
-        if not prompt or not prompt.strip():
+        prompt = (request.form.get("prompt") or "").strip()
+
+        # A file attached to this message becomes extra reference material:
+        # read it, convert it to LaTeX the same way the conversation's original
+        # model was, and store it as another hidden system message.
+        filepath, filename, attach_error = _save_attachment(
+            upload_folder, request.files.get("file"), allowed_file
+        )
+
+        if attach_error:
+            return apology(f"{attach_error}. Folosește .pdf, .docx, .txt, .png, .jpg sau .jpeg.", 400)
+
+        if not prompt and not filename:
             return redirect(f"/mode3/{conversation_id}")
+
+        if filename:
+            attachment_latex = ai.convert_file_to_latex(file_read(filepath), filepath=filepath)
+            db.add(Message(
+                conversation_id=conversation_id,
+                role="system",
+                content=f"MODEL SUPLIMENTAR ({filename}):\n{attachment_latex}",
+            ))
+            prompt = f"[Fișier atașat: {filename}]\n{prompt}".strip()
 
         db.add(Message(conversation_id=conversation_id, role="user", content=prompt))
         db.commit()
@@ -76,13 +141,8 @@ def mode3_chat(db, apology, conversation_id, file_read, upload_folder):
         ).all()
         history = "\n".join(f"{r.role}: {r.content}" for r in history_rows)
 
-        # Fetch pure LaTeX model (the hidden system message)
-        system_msg = db.scalars(
-            select(Message)
-            .where(Message.conversation_id == conversation_id, Message.role == "system")
-            .limit(1)
-        ).first()
-        model_content = system_msg.content if system_msg else ""
+        # Fetch the pure LaTeX model (the hidden system messages)
+        model_content = _model_content(db, conversation_id)
 
         response = ai.generate_from_model(
             model_content=model_content,
@@ -110,7 +170,7 @@ def mode3_chat(db, apology, conversation_id, file_read, upload_folder):
     )
 
 
-def mode4_chat(db, apology, conversation_id, upload_folder):
+def mode4_chat(db, apology, conversation_id, upload_folder, allowed_file):
 
     conversation = db.scalars(
         select(Conversation).where(Conversation.id == conversation_id, Conversation.user_id == session["user_id"])
@@ -160,9 +220,29 @@ def mode4_chat(db, apology, conversation_id, upload_folder):
         return redirect(f"/mode4/{conversation_id}")
 
     if request.method == "POST":
-        prompt = request.form.get("prompt")
-        if not prompt or not prompt.strip():
+        prompt = (request.form.get("prompt") or "").strip()
+
+        # A photo/PDF attached to this message is transcribed the same way the
+        # conversation's first upload was, and kept as another hidden system
+        # message so later prompts can still refer back to it.
+        filepath, filename, attach_error = _save_attachment(
+            upload_folder, request.files.get("file"), allowed_file
+        )
+
+        if attach_error:
+            return apology(f"{attach_error}. Folosește o poză .png/.jpg sau un .pdf.", 400)
+
+        if not prompt and not filename:
             return redirect(f"/mode4/{conversation_id}")
+
+        if filename:
+            attachment_latex = ai.transcribe_handwriting(filepath, extra_instructions=prompt or None)
+            db.add(Message(
+                conversation_id=conversation_id,
+                role="system",
+                content=f"TRANSCRIERE SUPLIMENTARĂ ({filename}):\n{attachment_latex}",
+            ))
+            prompt = f"[Fișier atașat: {filename}]\n{prompt}".strip()
 
         db.add(Message(conversation_id=conversation_id, role="user", content=prompt))
         db.commit()
@@ -175,13 +255,8 @@ def mode4_chat(db, apology, conversation_id, upload_folder):
         ).all()
         history = "\n".join(f"{r.role}: {r.content}" for r in history_rows)
 
-        # Fetch pure LaTeX transcription (the hidden system message)
-        system_msg = db.scalars(
-            select(Message)
-            .where(Message.conversation_id == conversation_id, Message.role == "system")
-            .limit(1)
-        ).first()
-        model_content = system_msg.content if system_msg else ""
+        # Fetch the pure LaTeX transcription (the hidden system messages)
+        model_content = _model_content(db, conversation_id)
 
         response = ai.generate_from_model(
             model_content=model_content,

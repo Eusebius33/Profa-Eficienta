@@ -43,6 +43,23 @@ SLOT_LESSONS = {
 }
 
 
+def forced_lessons(omitted_lessons):
+    """Lessons that will show up in the exam however hard we try to omit them.
+
+    The official structure fixes what each slot is about, so a slot whose every
+    lesson has been omitted still has to produce one of them — leaving it empty
+    would mean handing back an exam that is a subject short. Slot 7 is only
+    ever Matrici, and slot 9 is only ever Derivate or Limite, so omitting both
+    of those is just as stuck as omitting Matrici on its own.
+    """
+    omitted = set(omitted_lessons or ())
+    forced = set()
+    for lessons in SLOT_LESSONS.values():
+        if lessons and omitted.issuperset(lessons):
+            forced.update(lessons)
+    return sorted(forced)
+
+
 class BACExamGenerator:
     """
     Orchestrates generation of a complete 10-exercise BAC exam.
@@ -70,7 +87,9 @@ class BACExamGenerator:
     def generate_exam(self,
                       selected_lessons: list[str] = None,
                       seed: int = None,
-                      duplicate_threshold: float = 0.6) -> dict:
+                      duplicate_threshold: float = 0.6,
+                      accent: str = None,
+                      omitted_lessons: list[str] = None) -> dict:
         """
         Generate a full BAC exam with 10 exercises.
 
@@ -78,17 +97,26 @@ class BACExamGenerator:
             selected_lessons:    If set, prioritize exercises matching these lesson names.
             seed:                RNG seed for deterministic generation.
             duplicate_threshold: Level-4 structural overlap threshold (default 0.6 = 60%).
+            accent:              A single lesson to push to the front of the queue: every
+                                 slot that can serve it generates it in preference to the
+                                 rest of `selected_lessons`.
+            omitted_lessons:     Lessons to keep out of the exam entirely. They win over
+                                 both `accent` and `selected_lessons`.
 
         Returns:
             Exam dict with keys: exercises, html_preview, solution_preview, metadata.
         """
+        omitted_lessons = list(omitted_lessons or [])
+        if accent and accent in omitted_lessons:
+            accent = None
+
         rng = random.Random(seed) if seed is not None else random.Random()
         max_attempts = 200  # increased for large batch generation
 
         last_exercises = []
 
         for attempt in range(max_attempts):
-            exercises = self._generate_exercises(rng, selected_lessons)
+            exercises = self._generate_exercises(rng, selected_lessons, accent, omitted_lessons)
             last_exercises = exercises
 
             if not self.detector.is_duplicate(exercises, threshold=duplicate_threshold):
@@ -101,7 +129,8 @@ class BACExamGenerator:
                 # Assemble + annotate
                 exam_data = self.assemble_exam(exercises)
                 exam_data["metadata"] = self._build_metadata(
-                    exercises, seed, selected_lessons, attempt, diversity_score
+                    exercises, seed, selected_lessons, attempt, diversity_score,
+                    accent=accent, omitted_lessons=omitted_lessons
                 )
 
                 self._persist_metadata(exam_data["metadata"])
@@ -116,53 +145,87 @@ class BACExamGenerator:
         diversity_score = self.detector.compute_diversity_score(last_exercises)
         exam_data["metadata"] = self._build_metadata(
             last_exercises, seed, selected_lessons, max_attempts, diversity_score,
-            validation_status="fallback_max_attempts"
+            validation_status="fallback_max_attempts",
+            accent=accent, omitted_lessons=omitted_lessons
         )
         return exam_data
 
     # ── Exercise generation ────────────────────────────────────────────
 
-    def _generate_exercises(self, rng: random.Random, selected_lessons: list[str]) -> list[dict]:
+    def _generate_exercises(self,
+                            rng: random.Random,
+                            selected_lessons: list[str],
+                            accent: str = None,
+                            omitted_lessons: list[str] = None) -> list[dict]:
         """Generate one exercise per slot (slots 1–10)."""
         exercises = []
         for slot_num in range(1, 11):
-            ex = self._generate_single_exercise(slot_num, rng, selected_lessons)
+            ex = self._generate_single_exercise(
+                slot_num, rng, selected_lessons, accent, omitted_lessons
+            )
             exercises.append(ex)
         return exercises
 
     def _generate_single_exercise(self,
                                    slot_num: int,
                                    rng: random.Random,
-                                   selected_lessons: list[str]) -> dict:
+                                   selected_lessons: list[str],
+                                   accent: str = None,
+                                   omitted_lessons: list[str] = None) -> dict:
         """
         Generate a single validated exercise for a given slot.
+
+        Lesson preference, strongest first:
+          1. `accent`, whenever this slot is one that can teach it;
+          2. otherwise the slot's share of `selected_lessons`;
+          3. otherwise anything the slot produces.
+        `omitted_lessons` is a veto at every stage — it is only given up on in
+        the last-resort branch, where there is nothing valid left to return.
+
         Retries up to 50 times; falls back to unfiltered generation on failure.
         """
         funcs = registry.get_generators(slot_num)
         if not funcs:
             raise ValueError(f"No generators registered for slot {slot_num}")
 
-        slot_can_match = selected_lessons and any(
-            lesson in selected_lessons
-            for lesson in SLOT_LESSONS.get(slot_num, [])
+        omitted = set(omitted_lessons or ())
+        slot_lessons = SLOT_LESSONS.get(slot_num, [])
+
+        # A slot that can't serve any chosen lesson is left unfiltered, so the
+        # selection never starves a slot of candidates.
+        slot_can_match = bool(selected_lessons) and any(
+            lesson in selected_lessons for lesson in slot_lessons
         )
+
+        # Accent outranks the plain selection on any slot that can serve it.
+        if accent and accent in slot_lessons and accent not in omitted:
+            preferred = {accent}
+        elif slot_can_match:
+            preferred = {l for l in selected_lessons if l not in omitted}
+        else:
+            preferred = set()
 
         for attempt in range(50):
             gen_func = rng.choice(funcs)
             ex = gen_func(rng)
+            lesson = ex.get("lesson")
 
-            # Lesson filter (first 15 attempts only)
-            if selected_lessons and slot_can_match and attempt < 15:
-                if ex.get("lesson") not in selected_lessons:
-                    continue
+            if lesson in omitted:
+                continue
+
+            # Lesson preference (first 15 attempts only)
+            if preferred and attempt < 15 and lesson not in preferred:
+                continue
 
             if verify_exercise(ex):
                 return ex
             self.stats["validation_failures"] += 1
 
-        # Fallback: accept anything valid, ignoring lesson
+        # Fallback: accept anything valid that isn't an omitted lesson.
         for _ in range(20):
             ex = rng.choice(funcs)(rng)
+            if ex.get("lesson") in omitted:
+                continue
             if verify_exercise(ex):
                 return ex
             self.stats["validation_failures"] += 1
@@ -178,7 +241,9 @@ class BACExamGenerator:
                         selected_lessons,
                         attempt: int,
                         diversity_score: float,
-                        validation_status: str = "verified") -> dict:
+                        validation_status: str = "verified",
+                        accent: str = None,
+                        omitted_lessons: list[str] = None) -> dict:
         """Build rich per-exam metadata dict."""
         fingerprints = []
         for ex in exercises:
@@ -194,11 +259,17 @@ class BACExamGenerator:
                 "template_param_hash": get_template_param_hash(tid, psig),
             })
 
+        exam_lessons = {ex.get("lesson") for ex in exercises}
+
         return {
             "timestamp":         datetime.datetime.now(datetime.timezone.utc).isoformat(),
             "seed":              seed,
             "generator_version": GENERATOR_VERSION,
             "selected_lessons":  selected_lessons or [],
+            "accent":            accent,
+            "omitted_lessons":   omitted_lessons or [],
+            # Omissions the fixed slot structure would not let us honour.
+            "omitted_not_honoured": sorted(exam_lessons & set(omitted_lessons or ())),
             "validation_status": validation_status,
             "diversity_score":   diversity_score,
             "attempts_required": attempt + 1,

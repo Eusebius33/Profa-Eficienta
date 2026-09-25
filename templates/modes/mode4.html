@@ -108,22 +108,24 @@ Transcriere exerciții scrise de mână |
         <div class="flex-1 bg-slate-950 border border-slate-800 rounded-3xl p-6 flex flex-col shadow-xl h-full min-h-0 overflow-hidden">
 
             <!-- HEADER -->
-            <div class="mb-6 flex items-start justify-between gap-4">
+            <div class="mb-6 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
 
-                <div>
+                <div class="min-w-0">
                     <h1 class="text-3xl font-bold text-white" data-i18n="m4_header">Transcriere AI din scris de mână</h1>
 
                     <p class="text-slate-400 mt-1" data-i18n="m4_sub">Transformă fișe scrise de mână în exerciții digitale și variante noi</p>
                 </div>
 
-                <div class="bg-slate-900 border border-slate-700 rounded-2xl px-4 py-3 min-w-[280px]">
+                <!-- HEADER ACTIONS -->
+                <div class="flex items-center gap-2 flex-shrink-0">
 
+                    <a href="/menu"
+                       class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2.5 px-5 rounded-xl text-sm whitespace-nowrap"
+                       data-i18n="change_mode">Schimbă mod</a>
 
-                    <div class="text-slate-400 text-sm mt-2" data-i18n="m4_class_label">Clasa: {{ class }}
-                    </div>
-
-                    <div class="text-slate-400 text-sm" data-i18n="m4_bac_label">BAC: {{ bac }}
-                    </div>
+                    <a href="/menu"
+                       class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold py-2.5 px-5 rounded-xl text-sm whitespace-nowrap"
+                       data-i18n="new_chat">Conversație nouă</a>
 
                 </div>
 
@@ -131,41 +133,6 @@ Transcriere exerciții scrise de mână |
 
             <!-- CONTENT -->
             <div class="flex-1 bg-white rounded-3xl border border-slate-700 p-6 flex flex-col shadow-inner min-h-0 overflow-hidden">
-
-                <!-- INFO -->
-                <div class="grid grid-cols-3 gap-4 mb-6">
-
-                    <div onclick="document.getElementById('m4-file-input').click();" class="bg-slate-100 text-slate-900 rounded-2xl hover:shadow-md transition-shadow p-4 border border-slate-200 cursor-pointer">
-
-                        <p class="text-xs uppercase tracking-wide text-slate-500 mb-1" data-i18n="m4_upload">Upload</p>
-
-                        <p class="font-semibold text-slate-900" data-i18n="m4_photo_pdf">Poză sau PDF</p>
-
-                        <form id="m4-upload-form" action="/mode4/upload/{{ conversation_id }}" method="post" enctype="multipart/form-data" class="hidden">
-                            <input type="file" id="m4-file-input" name="file" accept="image/*,application/pdf" onchange="document.getElementById('m4-upload-form').submit();">
-                        </form>
-
-                    </div>
-
-                    <div class="bg-slate-100 text-slate-900 rounded-2xl hover:shadow-md transition-shadow p-4 border border-slate-200">
-
-                        <p class="text-xs uppercase tracking-wide text-slate-500 mb-1" data-i18n="m4_ocr">OCR AI</p>
-
-                        <p class="font-semibold text-slate-900" data-i18n="m4_handwriting">Recunoaștere scris de mână</p>
-
-                    </div>
-
-                    <div class="bg-slate-100 text-slate-900 rounded-2xl hover:shadow-md transition-shadow p-4 border border-slate-200">
-
-                        <p class="text-xs uppercase tracking-wide text-slate-500 mb-1">
-                            <span data-i18n="m4_output">Output</span>
-                        </p>
-
-                        <p class="font-semibold text-slate-900" data-i18n="m4_digital_ex">Exerciții digitale</p>
-
-                    </div>
-
-                </div>
 
                 <form id="exportForm" method="post" class="flex-1 flex flex-col min-h-0">
 
@@ -216,6 +183,18 @@ Transcriere exerciții scrise de mână |
                                     <div class="math-content">{{ message["content"] }}</div>
                                 </div>
 
+                                <!-- PER-MESSAGE EXPORT -->
+                                <div class="mt-4 flex flex-wrap gap-2 border-t border-slate-200 pt-3">
+                                    <a href="/message/{{ message['id'] }}/export/pdf"
+                                       class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-1.5 px-3 rounded-lg text-xs">
+                                        <span data-i18n="download_msg_pdf">Descarcă PDF</span>
+                                    </a>
+                                    <a href="/message/{{ message['id'] }}/export/docx"
+                                       class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-1.5 px-3 rounded-lg text-xs">
+                                        <span data-i18n="download_msg_docx">Descarcă DOCX</span>
+                                    </a>
+                                </div>
+
                                 </div>
                             </div>
 
@@ -251,163 +230,53 @@ Transcriere exerciții scrise de mână |
                 <!-- INPUT -->
                 <form id="chatForm" action="/mode4/{{ conversation_id }}" method="post" enctype="multipart/form-data" class="flex gap-3">
                     <input type="hidden" id="actionType" name="action_type" value="normal">
-                
-                    <input
-                        type="file"
-                        id="fileInput"
-                        name="file"
-                        accept=".png,.jpg,.jpeg,.pdf"
-                        class="w-56 text-sm text-slate-950 border border-slate-300 rounded-2xl p-3 bg-white"
-                    >
-                
-                    <textarea
-                        id="promptInput"
-                        name="prompt"
-                        rows="1"
-                        data-i18n-placeholder="m4_gen_ph"
-                        placeholder="Ex: transcrie exercițiile și transformă-le în test BAC..."
-                        class="flex-1 text-white border border-slate-300 rounded-2xl p-4 resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                    ></textarea>
-                
+
+                    <!-- TEXTAREA + INLINE ATTACH -->
+                    <div class="relative flex-1 min-w-0">
+
+                        <textarea
+                            id="promptInput"
+                            name="prompt"
+                            rows="1"
+                            data-i18n-placeholder="m4_gen_ph"
+                            placeholder="Ex: transcrie exercițiile și transformă-le în test BAC..."
+                            class="w-full text-white border border-slate-300 rounded-2xl p-4 pl-14 resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                        ></textarea>
+
+                        <!-- The file input stays hidden; this button is the visible affordance. -->
+                        <input type="file" id="fileInput" name="file" accept=".png,.jpg,.jpeg,.pdf" class="hidden">
+
+                        <button
+                            type="button"
+                            id="attachBtn"
+                            onclick="document.getElementById('fileInput').click()"
+                            class="absolute left-3 bottom-3 text-slate-400 hover:text-cyan-500 transition p-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                            title="Atașează fișier"
+                            data-i18n-title="attach_file"
+                            aria-label="Atașează fișier">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+                        </button>
+
+                        <!-- SELECTED FILE CHIP -->
+                        <div id="attachChip" class="hidden absolute left-3 -top-9 flex items-center gap-2 bg-slate-800 text-white text-xs rounded-xl px-3 py-1.5 shadow-lg max-w-full">
+                            <span id="attachName" class="truncate"></span>
+                            <button type="button" onclick="clearAttachment()" class="text-slate-300 hover:text-white font-bold leading-none"
+                                    title="Elimină fișierul" data-i18n-title="remove_file" aria-label="Elimină fișierul">&times;</button>
+                        </div>
+
+                    </div>
+
                     <button
                         type="submit"
                         onclick="document.getElementById('actionType').value='normal'; this.disabled=true;"
-                        class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold px-8 rounded-2xl"
+                        class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold px-8 rounded-2xl flex-shrink-0"
                         data-i18n="m4_generate">
                         Generează
                     </button>
-                
+
                 </form>
 
             </div>
-
-        </div>
-
-        <!-- DREAPTA -->
-        <div class="w-80 flex flex-col gap-3">
-
-<!-- SIMBOLURI -->
-            <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 shadow-xl h-[calc(100vh-430px)] overflow-y-auto">
-
-<div class="flex items-center justify-between mb-4">
-
-    <h2 class="text-white font-bold" data-i18n="m4_math_sym">Simboluri matematice</h2>
-
-    <div class="flex items-center gap-2">
-
-        <!-- FAVORITE -->
-        <button
-            class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-red-500 transition flex items-center justify-center text-white"
-        >
-            ♥
-        </button>
-
-        <!-- SEARCH -->
-        <button
-            class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 transition flex items-center justify-center text-white"
-        >
-            🔍
-        </button>
-
-    </div>
-
-</div>
-
-                <div class="space-y-5 text-sm">
-
-                    <!-- IX -->
-                    <div>
-
-                        <h3 class="text-cyan-400 font-bold mb-2" data-i18n="grade_9">Clasa a IX-a</h3>
-
-                        <div class="space-y-2 text-slate-300">
-
-                            <div class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="sym_radical">√ Radical</div>
-                            <div class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="sym_powers">x² Puteri</div>
-                            <div class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="sym_fractions">Fracții</div>
-
-                        </div>
-
-                    </div>
-
-                    <!-- X -->
-                    <div>
-
-                        <h3 class="text-cyan-400 font-bold mb-2" data-i18n="grade_10">Clasa a X-a</h3>
-
-                        <div class="space-y-2 text-slate-300">
-
-                            <div class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="sym_trig">Trigonometrie</div>
-                            <div class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="sym_sincos">Sin / Cos</div>
-                            <div class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="sym_matrices">Matrici</div>
-
-                        </div>
-
-                    </div>
-
-                    <!-- XI -->
-                    <div>
-
-                        <h3 class="text-cyan-400 font-bold mb-2" data-i18n="grade_11">Clasa a XI-a</h3>
-
-                        <div class="space-y-2 text-slate-300">
-
-                            <div class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="sym_limits">Limite</div>
-                            <div class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="sym_derivatives">Derivate</div>
-
-                        </div>
-
-                    </div>
-
-                    <!-- XII -->
-                    <div>
-
-                        <h3 class="text-cyan-400 font-bold mb-2" data-i18n="grade_12">Clasa a XII-a</h3>
-
-                        <div class="space-y-2 text-slate-300">
-
-                            <div class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="sym_integrals">Integrale</div>
-                            <div class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl"></div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-            <!-- EXERCITII -->
-            <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 shadow-xl h-[calc(100vh-670px)] overflow-y-auto">
-
-                <h2 class="text-white font-bold mb-3" data-i18n="m4_saved_ex">Exerciții salvate</h2>
-
-                <div class="space-y-2 text-sm">
-
-                    <a class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="m4_fisa_bac">Fișă BAC 2025</a>
-
-                    <a class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="m4_ex_trig">Exerciții trigonometrie</a>
-
-                    <a class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="m4_test_deriv">Test derivate</a>
-
-                </div>
-
-            </div>
-
-            <!-- BUTTONS -->
-            <div class="flex flex-col gap-2">
-
-                <button  onclick="window.location.href='/menu'"
-                    class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold py-3 rounded-xl"
-                 data-i18n="change_mode">Schimbă mod</button>
-
-                <button  onclick="window.location.href='/menu'"
-                    class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-3 rounded-xl"
-                 data-i18n="new_chat">Conversație nouă</button>
-
-            </div>
-
-            <!-- TIP -->
-            <div class="text-xs text-slate-500 px-1" data-i18n="m4_tip">Tip: încarcă poze clare pentru o recunoaștere OCR mai precisă.</div>
 
         </div>
 
@@ -519,6 +388,38 @@ document.addEventListener("DOMContentLoaded", function () {
             this.style.height = this.scrollHeight + "px";
         });
     }
+});
+
+/* ===========================
+   INLINE FILE ATTACHMENT
+=========================== */
+
+function clearAttachment() {
+    const input = document.getElementById("fileInput");
+    const chip = document.getElementById("attachChip");
+
+    if (input) input.value = "";
+    if (chip) chip.classList.add("hidden");
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    const input = document.getElementById("fileInput");
+    const chip = document.getElementById("attachChip");
+    const name = document.getElementById("attachName");
+
+    if (!input || !chip || !name) return;
+
+    input.addEventListener("change", function () {
+        const file = this.files && this.files[0];
+
+        if (!file) {
+            chip.classList.add("hidden");
+            return;
+        }
+
+        name.textContent = file.name;
+        chip.classList.remove("hidden");
+    });
 });
 </script>
 {% endblock %}

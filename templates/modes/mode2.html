@@ -86,27 +86,42 @@ Traducere în limbaj matematic |
 
         <!-- CENTRU -->
         <div class="flex-1 bg-slate-950 border border-slate-800 rounded-3xl p-6 flex flex-col shadow-xl h-full min-h-0 overflow-hidden">
-            <div class="mb-6">
-                <h1 class="text-3xl font-bold text-white"><span data-i18n="m2_header">Traducere limbaj liber în limbaj matematic</span></h1>
-                <p class="text-slate-400 mt-1"><span data-i18n="m2_sub">Transformă textul natural în expresii și simboluri matematice</span></p>
+            <div class="mb-6 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+
+                <div class="min-w-0">
+                    <h1 class="text-3xl font-bold text-white"><span data-i18n="m2_header">Traducere limbaj liber în limbaj matematic</span></h1>
+                    <p class="text-slate-400 mt-1"><span data-i18n="m2_sub">Transformă textul natural în expresii și simboluri matematice</span></p>
+                </div>
+
+                <!-- HEADER ACTIONS -->
+                <div class="flex items-center gap-2 flex-shrink-0">
+
+                    <a href="/menu"
+                       class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2.5 px-5 rounded-xl text-sm whitespace-nowrap"
+                       data-i18n="change_mode">Schimbă mod</a>
+
+                    <form action="/create_mode2" method="post">
+                        <input type="hidden" name="style"        value="{{ conversation['style_id'] }}">
+                        <input type="hidden" name="school_class" value="{{ conversation['school_class'] }}">
+                        <input type="hidden" name="bac"          value="{{ conversation['bac'] }}">
+                        <button type="submit"
+                                class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold py-2.5 px-5 rounded-xl text-sm whitespace-nowrap"
+                                data-i18n="new_chat">Conversație nouă</button>
+                    </form>
+
+                </div>
+
             </div>
 
             <div class="flex-1 bg-white rounded-3xl border border-slate-700 p-6 flex flex-col shadow-inner min-h-0 overflow-hidden">
 
                 <!-- INFO -->
-                <div class="grid grid-cols-3 gap-4 mb-6">
-                    <div class="bg-slate-100 text-slate-900 rounded-2xl hover:shadow-md transition-shadow p-4 border border-slate-200">
-                        <p class="text-xs uppercase tracking-wide text-slate-500 mb-1"><span data-i18n="m2_active_mode">Mod activ</span> {{mode}}</p>
-                        <p class="font-semibold text-slate-900"><span data-i18n="m2_text_math">Text → Mate</span></p>
-                    </div>
-                    <div class="bg-slate-100 text-slate-900 rounded-2xl hover:shadow-md transition-shadow p-4 border border-slate-200">
-                        <p class="text-xs uppercase tracking-wide text-slate-500 mb-1" data-i18n="m2_symbols">Simboluri</p>
-                        <p class="font-semibold text-slate-900" data-i18n="m2_highschool">Liceu</p>
-                    </div>
-                    <div class="bg-slate-100 text-slate-900 rounded-2xl hover:shadow-md transition-shadow p-4 border border-slate-200">
-                        <p class="text-xs uppercase tracking-wide text-slate-500 mb-1" data-i18n="m2_output">Output</p>
-                        <p class="font-semibold text-slate-900" data-i18n="m2_math_exp">Expresii matematice</p>
-                    </div>
+                <div class="flex items-center gap-2 mb-4 flex-shrink-0">
+                    <span class="inline-flex items-center gap-2 bg-slate-100 border border-slate-200 rounded-full pl-3 pr-4 py-1.5 text-xs">
+                        <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
+                        <span class="uppercase tracking-wide text-slate-500"><span data-i18n="m2_active_mode">Mod activ</span> {{mode}}</span>
+                        <span class="font-semibold text-slate-900"><span data-i18n="m2_text_math">Text → Mate</span></span>
+                    </span>
                 </div>
 
                 <form id="exportForm" method="post" class="flex-1 flex flex-col min-h-0">
@@ -151,6 +166,18 @@ Traducere în limbaj matematic |
                                     <div class="math-content whitespace-pre-wrap break-words max-w-full overflow-x-auto" data-math="{{ message['content'] | e }}">{{ message["content"] }}</div>
 
                                 </div>
+
+                                <!-- PER-MESSAGE EXPORT -->
+                                <div class="mt-4 flex flex-wrap gap-2 border-t border-slate-200 pt-3">
+                                    <a href="/message/{{ message['id'] }}/export/pdf"
+                                       class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-1.5 px-3 rounded-lg text-xs">
+                                        <span data-i18n="download_msg_pdf">Descarcă PDF</span>
+                                    </a>
+                                    <a href="/message/{{ message['id'] }}/export/docx"
+                                       class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-1.5 px-3 rounded-lg text-xs">
+                                        <span data-i18n="download_msg_docx">Descarcă DOCX</span>
+                                    </a>
+                                </div>
                                 </div>
                             </div>
                         {% endif %}
@@ -189,78 +216,6 @@ Traducere în limbaj matematic |
                 </form>
 
             </div>
-        </div>
-
-        <!-- DREAPTA -->
-        <div class="w-80 flex flex-col gap-3">
-
-            <!-- SIMBOLURI -->
-            <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 shadow-xl h-[calc(100vh-430px)] overflow-y-auto">
-                <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-white font-bold"><span data-i18n="m2_math_sym">Simboluri matematice</span></h2>
-                    <div class="flex items-center gap-2">
-                        <button class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-red-500 transition flex items-center justify-center text-white">♥</button>
-                        <button class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 transition flex items-center justify-center text-white">🔍</button>
-                    </div>
-                </div>
-                <div class="space-y-5 text-sm">
-                    <div>
-                        <h3 class="text-cyan-400 font-bold mb-2"><span data-i18n="grade_9">Clasa a IX-a</span></h3>
-                        <div class="space-y-2">
-                            <div class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl"><span data-i18n="sym_radical">√ Radical</span></div>
-                            <div class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl"><span data-i18n="sym_powers">x² Puteri</span></div>
-                            <div class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="sym_fractions">Fracții</div>
-                        </div>
-                    </div>
-                    <div>
-                        <h3 class="text-cyan-400 font-bold mb-2"><span data-i18n="grade_10">Clasa a X-a</span></h3>
-                        <div class="space-y-2">
-                            <div class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="sym_trig">Trigonometrie</div>
-                            <div class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="sym_sincos">Sin / Cos</div>
-                            <div class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="sym_matrices">Matrici</div>
-                        </div>
-                    </div>
-                    <div>
-                        <h3 class="text-cyan-400 font-bold mb-2"><span data-i18n="grade_11">Clasa a XI-a</span></h3>
-                        <div class="space-y-2">
-                            <div class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="sym_limits">Limite</div>
-                            <div class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="sym_derivatives">Derivate</div>
-                        </div>
-                    </div>
-                    <div>
-                        <h3 class="text-cyan-400 font-bold mb-2"><span data-i18n="grade_12">Clasa a XII-a</span></h3>
-                        <div class="space-y-2">
-                            <div class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="sym_integrals">Integrale</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- EXERCITII -->
-            <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 shadow-xl h-[calc(100vh-670px)] overflow-y-auto">
-                <h2 class="text-white font-bold mb-3"><span data-i18n="saved_exercises">Exerciții salvate</span></h2>
-                <div class="space-y-2 text-sm">
-                    <a class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="m2_saved_rad">Radicali clasa IX</a>
-                    <a class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="m2_saved_int">Integrale simple</a>
-                    <a class="block bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="m2_saved_trig">Trigonometrie BAC</a>
-                </div>
-            </div>
-
-            <!-- BUTTONS -->
-            <div class="flex flex-col gap-2">
-                <a href="/menu" class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold py-3 rounded-xl text-center" data-i18n="change_mode">Schimbă mod</a>
-                <form action="/create_mode2" method="post">
-                    <input type="hidden" name="style"        value="{{ conversation['style_id'] }}">
-                    <input type="hidden" name="school_class" value="{{ conversation['school_class'] }}">
-                    <input type="hidden" name="bac"          value="{{ conversation['bac'] }}">
-                    <button type="submit" class="w-full bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-3 rounded-xl" data-i18n="new_chat" data-i18n="new_chat">Conversație nouă</button>
-                </form>
-            </div>
-
-            <div class="text-xs text-slate-500 px-1">
-                <span data-i18n="tip_symbol">Tip: apasă pe un simbol pentru a-l insera automat în conversație.</span>
-            </div>
-
         </div>
 
     </div>

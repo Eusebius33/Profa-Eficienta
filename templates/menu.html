@@ -409,6 +409,14 @@ cards.forEach(function(card){
 
     card.addEventListener("keydown", function(e){
 
+        // Enter/Space only mean "select this card" while the card itself has
+        // focus. Inside the card's own fields they mean what the browser says
+        // they mean - a space in a textarea, Enter submitting the form from a
+        // focused button - so let those keystrokes through untouched.
+        if(e.target !== card){
+            return;
+        }
+
         if(e.key==="Enter" || e.key===" "){
 
             e.preventDefault();

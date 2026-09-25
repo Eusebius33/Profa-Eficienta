@@ -3082,5 +3082,57 @@
   "nav_students": {
     "ro": "Elevii mei",
     "en": "My Students"
+  },
+  "m5_lesson_search_ph": {
+    "ro": "Caută lecție...",
+    "en": "Search lesson..."
+  },
+  "m5_lesson_no_match": {
+    "ro": "Nicio lecție găsită.",
+    "en": "No lesson found."
+  },
+  "m5_select_all": {
+    "ro": "Toate",
+    "en": "All"
+  },
+  "m5_select_none": {
+    "ro": "Niciuna",
+    "en": "None"
+  },
+  "m5_no_accent": {
+    "ro": "Fără accent",
+    "en": "No focus"
+  },
+  "m5_accent_hint": {
+    "ro": "Lecția pe care variantele insistă în primul rând.",
+    "en": "The lesson the generated variants lean on first."
+  },
+  "m5_omitted_empty": {
+    "ro": "Nicio lecție omisă. Apasă × pe o lecție pentru a o scoate din variante.",
+    "en": "No omitted lessons. Press × on a lesson to keep it out of the variants."
+  },
+  "m5_omitted_forced": {
+    "ro": "⚠ Lecțiile marcate acoperă singure un subiect din structura oficială BAC, așa că vor apărea oricum în variantă.",
+    "en": "⚠ The flagged lessons are the only ones covering a subject in the official BAC structure, so they will appear in the variant regardless."
+  },
+  "download_msg_pdf": {
+    "ro": "Descarcă PDF",
+    "en": "Download PDF"
+  },
+  "download_msg_docx": {
+    "ro": "Descarcă DOCX",
+    "en": "Download DOCX"
+  },
+  "attach_file": {
+    "ro": "Atașează fișier",
+    "en": "Attach file"
+  },
+  "attached_file": {
+    "ro": "Fișier atașat",
+    "en": "Attached file"
+  },
+  "remove_file": {
+    "ro": "Elimină fișierul",
+    "en": "Remove file"
   }
 }

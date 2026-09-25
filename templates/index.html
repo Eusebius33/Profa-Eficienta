@@ -27,7 +27,7 @@
                             <span class="text-cyan-400">{{ current_user.name.split()[0] if current_user.name else t('dashboard_teacher') }}</span>
                         </h1>
                         <p class="mt-1 text-slate-400 text-sm sm:text-base max-w-xl">
-                            {{ t('dashboard_intro') }}
+                            {{ t('dashboard{ url_for('dashboard') }}_intro') }}
                         </p>
                     </div>
                 </div>

@@ -17,7 +17,12 @@ from docx import Document
 from secondary import ai, docs, ocr, accounts, exports, classroom
 from secondary import model_route
 from secondary.document_editor import document_editor_bp
-from bac_generator.routes import bac_generator_bp
+from bac_generator.routes import (
+    ALL_LESSONS,
+    LESSON_GROUPS,
+    bac_generator_bp,
+    mode5_lesson_state,
+)
 from bac_generator.generator import BACExamGenerator
 from models import SessionLocal, User, Conversation, Message, Style, init_db
 from waitlist.app import waitlist_bp
@@ -538,7 +543,7 @@ def file_read(filepath):
 @app.route("/mode3/<int:conversation_id>", methods=["GET", "POST"])
 @login_required
 def mode3(conversation_id):
-    return model_route.mode3_chat(db, apology, conversation_id, file_read, "uploads")
+    return model_route.mode3_chat(db, apology, conversation_id, file_read, "uploads", allowed_file)
 #                                                                                    ^^^^^^^^^ add this
 
 # @app.route("/mode3", methods=["GET", "POST"])
@@ -612,7 +617,7 @@ def mode4_latest():
 @app.route("/mode4/<int:conversation_id>", methods=["GET", "POST"])
 @login_required
 def mode4(conversation_id):
-    return model_route.mode4_chat(db, apology, conversation_id, "uploads")
+    return model_route.mode4_chat(db, apology, conversation_id, "uploads", allowed_file)
 # =========================================================
 # MODE5
 # =========================================================
@@ -627,15 +632,11 @@ def create_mode5():
 
     conversation_id = conversation.id
 
-    # Generate the first BAC variant right away so the user doesn't land on an empty chat
-    default_lessons = [
-        "Radicali", "Puteri", "Progresii", "Probabilități",
-        "Funcții", "Logaritmi", "Numere complexe", "Trigonometrie",
-        "Matrici", "Legi de compoziție", "Limite", "Derivate",
-        "Integrale definite", "Polinoame",
-    ]
+    # Generate the first BAC variant right away so the user doesn't land on an
+    # empty chat. A fresh conversation starts from the picker's defaults:
+    # everything included, no accent, nothing omitted.
     generator = BACExamGenerator()
-    exam_data = generator.generate_exam(default_lessons)
+    exam_data = generator.generate_exam(ALL_LESSONS)
 
     db.add(Message(
         conversation_id=conversation_id,
@@ -715,7 +716,9 @@ def mode5(conversation_id):
         conversations=conversations,
         conversation=conversation,
         conversation_id=conversation_id,
-        bac=conversation.bac
+        bac=conversation.bac,
+        lesson_groups=LESSON_GROUPS,
+        lesson_state=mode5_lesson_state(conversation_id),
     )
 
 # =========================================================
@@ -836,6 +839,63 @@ def export_conversation_docx(conversation_id):
         as_attachment=True,
         download_name=filename,
     )
+
+
+EXPORT_FORMATS = {
+    "pdf": (
+        exports.build_messages_pdf,
+        "application/pdf",
+    ),
+    "docx": (
+        exports.build_messages_docx,
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ),
+}
+
+
+@app.route("/message/<int:message_id>/export/<fmt>")
+@login_required
+def export_message(message_id, fmt):
+    """Download a single chat message as PDF or DOCX.
+
+    Modes 1-4 render one of these next to every AI reply, the same way mode5
+    offers a per-exam PDF. Mode5 deliberately keeps its own PDF-only route: a
+    BAC variant is a laid-out exam sheet, not a chat transcript, and .docx
+    can't reproduce that layout faithfully.
+    """
+    builder = EXPORT_FORMATS.get(fmt)
+    if builder is None:
+        return apology("Format de export necunoscut.", 404)
+    build, mimetype = builder
+
+    message = db.scalars(
+        select(Message)
+        .join(Conversation, Message.conversation_id == Conversation.id)
+        .where(Message.id == message_id, Conversation.user_id == session["user_id"])
+    ).first()
+
+    if not message:
+        return apology("Mesaj inexistent.", 404)
+
+    conversation = db.get(Conversation, message.conversation_id)
+    title = (conversation.title if conversation else None) or "Conversație"
+
+    payload = build(title, [{
+        "role": message.role,
+        "content": message.content,
+        "created_at": message.created_at,
+    }])
+
+    stem = secure_filename(f"{title}_{message_id}") or f"mesaj_{message_id}"
+
+    return send_file(
+        BytesIO(payload),
+        mimetype=mimetype,
+        as_attachment=True,
+        download_name=f"{stem}.{fmt}",
+    )
+
+
 # =========================================================
 # RUN (Reloaded to refresh translations JSON keys)
 # =========================================================

@@ -111,10 +111,29 @@
 <div class="flex-1 bg-slate-950 border border-slate-800 rounded-3xl p-4 lg:p-6 flex flex-col shadow-xl min-h-[500px] lg:h-full lg:min-h-0 lg:overflow-hidden">
 
     <!-- HEADER -->
-    <div class="mb-6">
-        <h1 class="text-3xl font-bold text-white" data-i18n="m1_ai_assistant">Asistent AI</h1>
+    <div class="mb-6 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
 
-        <p class="text-slate-400 mt-1" data-i18n="m1_desc">Afla raspunsuri la intrebarile tale legate de gestionarea elevilor si matematica. De asemenea poti afla si cum functioneaza programul nostru.</p>
+        <div class="min-w-0">
+            <h1 class="text-3xl font-bold text-white" data-i18n="m1_ai_assistant">Asistent AI</h1>
+
+            <p class="text-slate-400 mt-1" data-i18n="m1_desc">Afla raspunsuri la intrebarile tale legate de gestionarea elevilor si matematica. De asemenea poti afla si cum functioneaza programul nostru.</p>
+        </div>
+
+        <!-- HEADER ACTIONS -->
+        <div class="flex items-center gap-2 flex-shrink-0">
+
+            <a href="/menu"
+               class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2.5 px-5 rounded-xl text-sm whitespace-nowrap"
+               data-i18n="change_mode">Schimbă mod</a>
+
+            <form action="/create_mode1" method="post">
+                <button type="submit"
+                        class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold py-2.5 px-5 rounded-xl text-sm whitespace-nowrap"
+                        data-i18n="new_chat">Conversație nouă</button>
+            </form>
+
+        </div>
+
     </div>
 
     <!-- CONTENT -->
@@ -169,6 +188,18 @@
                             <div class="math-content">
                                 {% if "Sunt un asistent virtual specializat" in message["content"] %}<span data-i18n="ai_intro_msg">{{ message["content"] | safe }}</span>{% else %}{{ message["content"] | safe }}{% endif %}
                             </div>
+                        </div>
+
+                        <!-- PER-MESSAGE EXPORT -->
+                        <div class="mt-4 flex flex-wrap gap-2 border-t border-slate-200 pt-3">
+                            <a href="/message/{{ message['id'] }}/export/pdf"
+                               class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-1.5 px-3 rounded-lg text-xs">
+                                <span data-i18n="download_msg_pdf">Descarcă PDF</span>
+                            </a>
+                            <a href="/message/{{ message['id'] }}/export/docx"
+                               class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-1.5 px-3 rounded-lg text-xs">
+                                <span data-i18n="download_msg_docx">Descarcă DOCX</span>
+                            </a>
                         </div>
 
                         </div>
@@ -235,130 +266,6 @@
     </div>
 
 </div>
-
-        <!-- DREAPTA - SIMBOLURI -->
-        <div class="w-full lg:w-80 flex flex-col gap-3">
-
-            <!-- SIMBOLURI -->
-            <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 shadow-xl h-56 lg:h-[calc(100vh-430px)] overflow-y-auto">
-
-<div class="flex items-center justify-between mb-4">
-
-    <h2 class="text-white font-bold" data-i18n="m1_math_sym">Simboluri matematice</h2>
-
-    <div class="flex items-center gap-2">
-
-        <!-- FAVORITE -->
-        <button
-            class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-red-500 transition flex items-center justify-center text-white"
-        >
-            ♥
-        </button>
-
-        <!-- SEARCH -->
-        <button
-            class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 transition flex items-center justify-center text-white"
-        >
-            🔍
-        </button>
-
-    </div>
-
-</div>
-
-                <div class="space-y-5 text-sm">
-
-                    <div>
-
-                        <h3 class="text-cyan-400 font-bold mb-2" data-i18n="grade_9">Clasa a IX-a</h3>
-
-                        <div class="space-y-2">
-
-                            <div class="bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="m1_radical">radical</div>
-
-                            <div class="bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="m1_radical2">radical ordin 2</div>
-
-                        </div>
-
-                    </div>
-
-                    <div>
-
-                        <h3 class="text-cyan-400 font-bold mb-2" data-i18n="grade_10">Clasa a X-a</h3>
-
-                        <div class="space-y-2">
-
-                            <div class="bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="m1_radical">radical</div>
-
-                            <div class="bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="m1_functions">funcții</div>
-
-                        </div>
-
-                    </div>
-
-                    <div>
-
-                        <h3 class="text-cyan-400 font-bold mb-2" data-i18n="grade_11">Clasa a XI-a</h3>
-
-                        <div class="space-y-2">
-
-                            <div class="bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="m1_derivatives">derivate</div>
-
-                            <div class="bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="m1_integrals">integrale</div>
-
-                        </div>
-
-                    </div>
-
-                    <div>
-
-                        <h3 class="text-cyan-400 font-bold mb-2" data-i18n="grade_12">Clasa a XII-a</h3>
-
-                        <div class="space-y-2">
-
-                            <div class="bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="m1_bac_final">bac final</div>
-
-                            <div class="bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="m1_recap">recapitulare</div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- EXERCITII SALVATE -->
-            <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 shadow-xl h-36 lg:h-[calc(100vh-670px)] overflow-y-auto">
-
-                <h2 class="text-white font-bold mb-3" data-i18n="m1_saved_ex">Exerciții salvate</h2>
-
-                <div class="space-y-2 text-sm">
-
-                    <div class="bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="m1_ex1">exercițiu 1</div>
-
-                    <div class="bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="m1_ex2">exercițiu 2</div>
-
-                    <div class="bg-slate-50 hover:bg-slate-400 transition text-slate-950 px-3 py-2 rounded-xl" data-i18n="m1_ex3">exercițiu 3</div>
-
-                </div>
-
-            </div>
-
-<!-- BUTTON -->
-<div class="flex flex-col gap-2">
-
-    <a href="/menu"
-       class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold py-3 rounded-xl text-center" data-i18n="change_mode">Schimbă mod</a>
-
-    <form action="/create_mode1" method="post">
-        <button type="submit"
-                class="w-full bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-3 rounded-xl" data-i18n="new_chat">Conversație nouă</button>
-    </form>
-
-</div>
-
-        </div>
 
     </div>
 
