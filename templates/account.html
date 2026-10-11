@@ -10,12 +10,12 @@
 
 {% block main %}
 
-<div class="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 px-4 py-10 flex items-center justify-center">
+<div class="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 px-4 py-10 flex items-start justify-center">
 
-    <div class="w-full max-w-3xl bg-white border border-slate-700 rounded-3xl shadow-2xl p-8">
+    <div class="reveal reveal-scale w-full max-w-3xl bg-white border border-slate-700 rounded-3xl shadow-2xl p-8">
 
         <!-- header -->
-        <div class="text-center mb-10">
+        <div class="reveal text-center mb-10" style="--stagger-index:1;">
 
             <h1 class="text-4xl font-bold text-slate-900 mb-2" data-i18n="acc_title">
                 Contul tău
@@ -28,19 +28,19 @@
         </div>
 
         <!-- user info -->
-        <div class="space-y-5 mb-10">
+        <div class="space-y-5 mb-10" data-reveal-group>
 
-            <div class="bg-white border border-slate-700 rounded-2xl p-4">
+            <div class="row-slide bg-white border border-slate-700 rounded-2xl p-4">
                 <p class="text-slate-900 text-sm" data-i18n="acc_username">Username</p>
                 <p class="text-slate-900 text-lg font-semibold">{{ username }}</p>
             </div>
 
-            <div class="bg-white border border-slate-700 rounded-2xl p-4">
+            <div class="row-slide bg-white border border-slate-700 rounded-2xl p-4">
                 <p class="text-slate-900 text-sm" data-i18n="acc_email">Email</p>
                 <p class="text-slate-900 text-lg font-semibold">{{ email }}</p>
             </div>
 
-            <div class="bg-white border border-slate-700 rounded-2xl p-4">
+            <div class="row-slide bg-white border border-slate-700 rounded-2xl p-4">
                 <p class="text-slate-900 text-sm" data-i18n="acc_password">Parolă</p>
                 <p class="text-slate-900 text-lg font-semibold">••••••••</p>
             </div>
@@ -48,13 +48,13 @@
         </div>
 
         <!-- actions -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="reveal grid grid-cols-1 md:grid-cols-2 gap-4" style="--stagger-index:4;">
 
             <!-- change password -->
             <a href="/passwordchange" class="w-full">
                 <button
                     type="button"
-                    class="w-full rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-4 transition"
+                    class="press w-full rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-4 transition"
                 >
                     <span data-i18n="acc_change_pw">Schimbă parola</span>
                 </button>
@@ -63,7 +63,7 @@
             <!-- logout -->
             <a href="/logout">
                 <button
-                    class="w-full rounded-2xl bg-slate-900 hover:bg-red-400 text-white font-bold py-4 transition"
+                    class="press w-full rounded-2xl bg-slate-900 hover:bg-red-400 text-white font-bold py-4 transition"
                 >
                     <span data-i18n="acc_logout">Ieși din cont</span>
                 </button>
@@ -72,66 +72,184 @@
         </div>
 
         <!-- STYLE SETTINGS -->
-<!-- STYLE SETTINGS -->
-<div class="mt-10 border-t border-slate-700 pt-8">
+        <div class="mt-10 border-t border-slate-200 pt-8">
 
-    <h2 class="text-xl font-bold text-slate-900 mb-4" data-i18n="acc_style_pref">
-        Stil & Preferințe
-    </h2>
+            <h2 class="text-xl font-bold text-slate-900 mb-4" data-i18n="acc_style_pref">
+                Stil &amp; Preferințe
+            </h2>
 
-    <form action="/style" method="post">
+            <!-- saved styles -->
+            <div class="mb-8">
 
-        <div class="flex flex-col md:flex-row gap-6">
+                <h3 class="text-sm font-semibold text-slate-500 mb-1" data-i18n="acc_saved_styles">
+                    Stilurile tale salvate
+                </h3>
+                <p class="text-xs text-slate-500 mb-4" data-i18n="acc_active_style_hint">
+                    Stilul activ este folosit automat pentru fiecare material nou pe care îl generezi.
+                </p>
 
-            <!-- LEFT SIDE -->
-            <div class="w-full md:w-1/2 space-y-4">
+                {% if styles %}
+                <ul class="space-y-3">
+                    {% for style in styles %}
+                    {% set type_key = type_label_keys.get(style.test_type) %}
+                    {% set is_active = (style.id == active_style_id) %}
+                    <li class="row-slide rounded-2xl border {% if is_active %}border-cyan-400 bg-cyan-50/60{% else %}border-slate-200 bg-slate-50{% endif %} px-4 py-3">
 
-                <input
-                    type="text"
-                    name="style_name"
-                    required
-                    placeholder="Nume stil"
-                    data-i18n-placeholder="acc_style_name"
-                    class="w-full rounded-2xl bg-white border border-slate-700 px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                >
+                        <div class="flex items-start justify-between gap-4">
+                            <div class="min-w-0">
+                                <p class="font-semibold text-slate-900">
+                                    {{ style.style_name }}
+                                    {% if is_active %}
+                                    <span class="ml-2 align-middle rounded-full bg-cyan-500 px-2 py-0.5 text-xs font-bold text-white"
+                                          data-i18n="acc_is_active">Activ</span>
+                                    {% endif %}
+                                </p>
+                                <!-- A teacher may write 200 words here; the list shows a summary
+                                     and the full text stays in the edit form below. -->
+                                <p class="mt-1 text-sm leading-6 text-slate-600">
+                                    {{ style.style_description | truncate(120, True, "…") }}
+                                </p>
+                            </div>
+                            <span class="flex-shrink-0 rounded-full bg-white border border-slate-200 px-3 py-1 text-xs font-semibold text-cyan-700">
+                                {{ t(type_key) if type_key else style.test_type }}
+                            </span>
+                        </div>
 
-                <select
-                    name="test_type"
-                    required
-                    class="w-full rounded-2xl bg-white border border-slate-700 px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                >
-                    <option disabled selected value="" data-i18n="acc_test_type">Tip teste</option>
-                    <option value="theory" data-i18n="acc_theory">Teoretice</option>
-                    <option value="practice" data-i18n="acc_practice">Practice</option>
-                    <option value="bac_full" data-i18n="acc_bac_model">Model BAC</option>
-                </select>
+                        <div class="mt-3 flex flex-wrap items-center gap-2">
+
+                            {% if not is_active %}
+                            <form action="{{ url_for('activate_style', style_id=style.id) }}" method="post">
+                                <button type="submit"
+                                        class="press rounded-xl bg-cyan-500 hover:bg-cyan-400 px-3 py-1.5 text-xs font-bold text-slate-950 transition"
+                                        data-i18n="acc_set_active">Folosește acest stil</button>
+                            </form>
+                            {% endif %}
+
+                            <details class="w-full">
+                                <summary class="press inline-block cursor-pointer rounded-xl border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:border-cyan-400 transition"
+                                         data-i18n="acc_edit_style">Modifică</summary>
+
+                                <form action="{{ url_for('edit_style', style_id=style.id) }}" method="post"
+                                      class="mt-3 space-y-3">
+
+                                    <input type="text" name="style_name" required value="{{ style.style_name }}"
+                                           class="field w-full rounded-xl bg-white border border-slate-300 px-3 py-2 text-sm text-slate-900">
+
+                                    <select name="test_type" required
+                                            class="field w-full rounded-xl bg-white border border-slate-300 px-3 py-2 text-sm text-slate-900">
+                                        <option value="theory" {% if style.test_type == 'theory' %}selected{% endif %}
+                                                data-i18n="acc_theory">Teoretice</option>
+                                        <option value="practice" {% if style.test_type == 'practice' %}selected{% endif %}
+                                                data-i18n="acc_practice">Practice</option>
+                                        {% if type_key and style.test_type not in ('theory', 'practice') %}
+                                        <!-- keeps a legacy value (e.g. an old BAC style) selectable instead of silently rewriting it -->
+                                        <option value="{{ style.test_type }}" selected>{{ t(type_key) }}</option>
+                                        {% endif %}
+                                    </select>
+
+                                    <textarea name="style_description" required rows="5"
+                                              class="field w-full rounded-xl bg-white border border-slate-300 px-3 py-2 text-sm text-slate-900 resize-none">{{ style.style_description }}</textarea>
+
+                                    <div class="flex flex-wrap gap-2">
+                                        <button type="submit"
+                                                class="press rounded-xl bg-cyan-500 hover:bg-cyan-400 px-4 py-2 text-xs font-bold text-slate-950 transition"
+                                                data-i18n="acc_save_changes">Salvează modificările</button>
+                                    </div>
+                                </form>
+
+                                <form action="{{ url_for('delete_style', style_id=style.id) }}" method="post"
+                                      class="mt-2"
+                                      onsubmit="return confirm(this.dataset.confirm);"
+                                      data-confirm="{{ t('acc_delete_confirm') }}">
+                                    <button type="submit"
+                                            class="press rounded-xl border border-red-200 bg-white px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50 transition"
+                                            data-i18n="acc_delete_style">Șterge</button>
+                                </form>
+                            </details>
+
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="rounded-2xl border border-dashed border-slate-300 px-4 py-6 text-center text-sm text-slate-500"
+                   data-i18n="acc_no_styles">
+                    Nu ai salvat încă niciun stil de redactare.
+                </p>
+                {% endif %}
 
             </div>
 
-            <!-- RIGHT SIDE -->
-            <div class="w-full md:w-1/2 space-y-4">
+            <h3 class="text-sm font-semibold text-slate-500 mb-3" data-i18n="acc_new_style">
+                Adaugă un stil nou
+            </h3>
 
-                <textarea
-                    name="style_description"
-                    required
-                    rows="4"
-                    placeholder="Descrie modul în care vrei să fie generate testele..."
-                    data-i18n-placeholder="acc_style_desc"
-                    class="w-full rounded-2xl bg-white border border-slate-700 px-4 py-3 text-slate-900 resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                ></textarea>
+            <form action="/style" method="post">
 
-                <button
-                    type="submit"
-                    class="w-full rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-4 transition"
-                >
-                    <span data-i18n="acc_save">Salvează setările</span>
-                </button>
+                <input type="hidden" name="next" value="/account">
 
-            </div>
+                <div class="flex flex-col md:flex-row gap-6">
+
+                    <!-- LEFT SIDE -->
+                    <div class="w-full md:w-1/2 space-y-4">
+
+                        <div>
+                            <label for="acc-style-name" class="block text-sm font-medium text-slate-700 mb-2"
+                                   data-i18n="acc_style_name_label">
+                                Nume al stilului de redactare
+                            </label>
+
+                            <input
+                                id="acc-style-name"
+                                type="text"
+                                name="style_name"
+                                required
+                                placeholder="Nume stil"
+                                data-i18n-placeholder="acc_style_name"
+                                class="field w-full rounded-2xl bg-white border border-slate-300 px-4 py-3 text-slate-900"
+                            >
+                        </div>
+
+                        <select
+                            name="test_type"
+                            required
+                            class="field w-full rounded-2xl bg-white border border-slate-300 px-4 py-3 text-slate-900"
+                        >
+                            <option disabled selected value="" data-i18n="acc_test_type">Tip teste</option>
+                            <option value="theory" data-i18n="acc_theory">Teoretice</option>
+                            <option value="practice" data-i18n="acc_practice">Practice</option>
+                        </select>
+
+                    </div>
+
+                    <!-- RIGHT SIDE -->
+                    <div class="w-full md:w-1/2 space-y-4">
+
+                        <textarea
+                            name="style_description"
+                            required
+                            rows="8"
+                            placeholder="Exemplu 1: Exerciții progresive, de la ușor la greu, cu enunțuri scurte și cel puțin un exercițiu aplicat din viața reală.&#10;&#10;Exemplu 2: Test de o pagină, 6 exerciții de algebră, fără rezolvări, cu punctajul trecut în dreptul fiecărui exercițiu."
+                            data-i18n-placeholder="acc_style_desc"
+                            class="field w-full rounded-2xl bg-white border border-slate-300 px-4 py-3 text-slate-900 resize-none"
+                        ></textarea>
+
+                        <button
+                            type="submit"
+                            class="press w-full rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-4 transition"
+                        >
+                            <span data-i18n="acc_save">Salvează setările</span>
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
 
         </div>
 
-    </form>
+    </div>
 
 </div>
 

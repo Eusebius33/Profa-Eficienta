@@ -56,7 +56,7 @@ def gen_s1_ex1_arith_sum(rng=random):
     sn = n * (a1 + an) // 2
     text = (f"Calculați suma primilor ${n}$ termeni ai progresiei aritmetice cu $a_1 = {a1}$ și $d = {d}$.")
     solution = (f"Ultimul termen: $a_{{{n}}} = {a1} + {n-1} \\cdot {d} = {an}$.\n"
-                f"Suma: $S_{{{n}}} = \\frac{{{n}(a_1 + a_{{{n}}})}}{2} = \\frac{{{n} \\cdot ({a1}+{an})}}{2} = {sn}$.")
+                f"Suma: $S_{{{n}}} = \\frac{{{n}(a_1 + a_{{{n}}})}}{{2}} = \\frac{{{n} \\cdot ({a1}+{an})}}{{2}} = {sn}$.")
     return {"id": "s1_ex1_arith_sum", "text": text, "solution": solution,
             "points": 5, "params": {"a1": a1, "d": d, "n": n, "sn": sn}, "lesson": "Progresii"}
 
@@ -318,7 +318,7 @@ def gen_s1_ex4_finance(rng=random):
             f"Determinați prețul inițial.")
     solution = (f"$\\frac{{{p}}}{{100}} \\cdot x = {increase} \\Rightarrow x = {P}$ lei.")
     return {"id": "s1_ex4_finance", "text": text, "solution": solution,
-            "points": 5, "params": {"P": P, "p": p, "increase": increase}, "lesson": "Progresii"}
+            "points": 5, "params": {"P": P, "p": p, "increase": increase}, "lesson": "Procente"}
 
 @registry.register(slot=4)
 @template("s1_geometric_probability", "Probabilitate geometrică", "medium")
@@ -494,7 +494,7 @@ def gen_s1_ex4_mixed_applications(rng=random):
     solution = (f"Reducerea este $\\frac{{{p}}}{{100}} \\cdot {price} = {discount}$ lei.\n"
                 f"Prețul final este ${price} - {discount} = {final_price}$ lei.")
     return {"id": "s1_mixed_applications", "text": text, "solution": solution,
-            "points": 5, "params": {"price": price, "p": p, "final_price": final_price}, "lesson": "Progresii"}
+            "points": 5, "params": {"price": price, "p": p, "final_price": final_price}, "lesson": "Procente"}
 
 def gen_s1_ex4(rng=random):
     return rng.choice(registry.get_generators(4))(rng)

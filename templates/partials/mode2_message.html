@@ -1,0 +1,43 @@
+{# One mode-2 turn. Rendered by the page's message loop and, on its own, by
+   the async POST handler so a new turn arrives without a page reload. #}
+{% if message["role"] == "user" %}
+                        <div class="flex items-start justify-end gap-2{% if fresh %} turn-enter{% endif %}">
+                            <!-- content sits tight against the tags: whitespace-pre-wrap would
+                                 otherwise render the template's own indentation inside the bubble -->
+                            <div class="bg-cyan-100 text-slate-900 p-4 rounded-2xl hover:shadow-md transition-shadow text-slate-900 w-fit max-w-[max(36rem,72%)] border border-cyan-200 whitespace-pre-wrap break-words">{{ message["content"] | safe }}</div>
+                        </div>
+                    {% else %}
+                        <div class="flex items-start gap-2{% if fresh %} turn-enter{% endif %}">
+                            <div class="bg-slate-100 text-slate-900 p-5 rounded-2xl hover:shadow-md transition-shadow max-w-[max(48rem,88%)] border border-slate-200 overflow-hidden relative group">
+
+                    <!-- COPY BUTTON -->
+                    <button type="button" class="copy-math-btn absolute top-3 right-3 text-slate-500 hover:text-slate-900 bg-slate-200 hover:bg-slate-300 p-1.5 rounded-lg transition flex items-center gap-1"
+                            onclick="copyMathToClipboard(this, this.parentElement.querySelector('.msg-content-container'))" title="Copiaza">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                    </button>
+
+                            <h3 class="font-bold text-slate-900 mb-3"><span data-i18n="ai_response">Răspuns AI</span></h3>
+                            <div class="text-slate-700 text-sm leading-relaxed max-w-full msg-content-container">
+                                <div class="math-content whitespace-pre-wrap break-words max-w-full overflow-x-auto" data-math="{{ message['content'] | e }}">{{ message["content"] }}</div>
+
+                            </div>
+
+                            <!-- PER-RESPONSE: pick for the sheet, or download just this one -->
+                            <div class="mt-4 flex flex-wrap items-center gap-2 border-t border-slate-200 pt-3">
+                                <label class="sheet-pick inline-flex items-center gap-2 cursor-pointer rounded-lg px-2 py-1 hover:bg-slate-200 transition">
+                                    <input type="checkbox" name="message_ids" value="{{ message['id'] }}" checked class="accent-cyan-500">
+                                    <span class="sheet-pick-text text-xs font-semibold text-slate-600"></span>
+                                </label>
+                                <span class="flex-1"></span>
+                                <button type="button" onclick="ExportSheet.open('pdf', {{ message['id'] }})"
+                                        class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-1.5 px-3 rounded-lg text-xs">
+                                    <span data-i18n="download_msg_pdf">Descarcă PDF</span>
+                                </button>
+                                <button type="button" onclick="ExportSheet.open('docx', {{ message['id'] }})"
+                                        class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-1.5 px-3 rounded-lg text-xs">
+                                    <span data-i18n="download_msg_docx">Descarcă DOCX</span>
+                                </button>
+                            </div>
+                            </div>
+                        </div>
+                    {% endif %}

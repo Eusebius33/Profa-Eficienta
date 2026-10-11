@@ -1,0 +1,2194 @@
+{
+ "schema": 1,
+ "generated": "2026-10-10",
+ "papers": [
+  {
+   "profile": "M1",
+   "year": 2026,
+   "session": "sesiunea principală",
+   "variant": "02",
+   "id": "M1-2026-sesiunea_principală-02",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/E_c_matematica_M_mate-info_2026_var_02_LRO.pdf",
+   "filename": "E_c_matematica_M_mate-info_2026_var_02_LRO.pdf",
+   "bytes": 107009
+  },
+  {
+   "profile": "M1",
+   "year": 2026,
+   "session": "sesiunea principală",
+   "variant": "03",
+   "id": "M1-2026-sesiunea_principală-03",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/E_c_matematica_M_mate-info_2026_var_03_LRO.pdf",
+   "filename": "E_c_matematica_M_mate-info_2026_var_03_LRO.pdf",
+   "bytes": 106932
+  },
+  {
+   "profile": "M1",
+   "year": 2026,
+   "session": "sesiunea principală",
+   "variant": "04",
+   "id": "M1-2026-sesiunea_principală-04",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/E_c_matematica_M_mate-info_2026_var_04_LRO.pdf",
+   "filename": "E_c_matematica_M_mate-info_2026_var_04_LRO.pdf",
+   "bytes": 107553
+  },
+  {
+   "profile": "M1",
+   "year": 2026,
+   "session": "sesiunea principală",
+   "variant": "07",
+   "id": "M1-2026-sesiunea_principală-07",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/E_c_matematica_M_mate-info_2026_var_07_LRO.pdf",
+   "filename": "E_c_matematica_M_mate-info_2026_var_07_LRO.pdf",
+   "bytes": 108122
+  },
+  {
+   "profile": "M1",
+   "year": 2026,
+   "session": "model",
+   "variant": null,
+   "id": "M1-2026-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/E_c_matematica_M_mate-info_2026_var_model.pdf",
+   "filename": "E_c_matematica_M_mate-info_2026_var_model.pdf",
+   "bytes": 115251
+  },
+  {
+   "profile": "M1",
+   "year": 2025,
+   "session": "sesiunea principală",
+   "variant": "03",
+   "id": "M1-2025-sesiunea_principală-03",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/E_c_matematica_M_mate-info_2025_var_03_LRO.pdf",
+   "filename": "E_c_matematica_M_mate-info_2025_var_03_LRO.pdf",
+   "bytes": 107957
+  },
+  {
+   "profile": "M1",
+   "year": 2025,
+   "session": "model",
+   "variant": null,
+   "id": "M1-2025-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/E_c_matematica_M_mate-info_2025_var_model.pdf",
+   "filename": "E_c_matematica_M_mate-info_2025_var_model.pdf",
+   "bytes": 112417
+  },
+  {
+   "profile": "M1",
+   "year": 2024,
+   "session": "sesiunea 1",
+   "variant": "10",
+   "id": "M1-2024-sesiunea_1-10",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2024_E_c_Matematica_S1_M_mate-info_Subiect_10_LRO.pdf",
+   "filename": "2024_E_c_Matematica_S1_M_mate-info_Subiect_10_LRO.pdf",
+   "bytes": 106568
+  },
+  {
+   "profile": "M1",
+   "year": 2024,
+   "session": "model",
+   "variant": null,
+   "id": "M1-2024-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2024_E_c_Matematica_SM_M_mate-info_Model_Subiect_LRO.pdf",
+   "filename": "2024_E_c_Matematica_SM_M_mate-info_Model_Subiect_LRO.pdf",
+   "bytes": 116587
+  },
+  {
+   "profile": "M1",
+   "year": 2024,
+   "session": "simulare",
+   "variant": null,
+   "id": "M1-2024-simulare-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2024_E_c_Matematica_SM_M_mate-info_Simulare_XII_Subiect_LRO.pdf",
+   "filename": "2024_E_c_Matematica_SM_M_mate-info_Simulare_XII_Subiect_LRO.pdf",
+   "bytes": 117022
+  },
+  {
+   "profile": "M1",
+   "year": 2024,
+   "session": "sesiune specială",
+   "variant": "09",
+   "id": "M1-2024-sesiune_specială-09",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2024_E_c_Matematica_SS_M_mate-info_Subiect_09_LRO.pdf",
+   "filename": "2024_E_c_Matematica_SS_M_mate-info_Subiect_09_LRO.pdf",
+   "bytes": 107997
+  },
+  {
+   "profile": "M1",
+   "year": 2024,
+   "session": "sesiunea principală",
+   "variant": "03",
+   "id": "M1-2024-sesiunea_principală-03",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/E_c_matematica_M_mate-info_2024_var_03_LRO.pdf",
+   "filename": "E_c_matematica_M_mate-info_2024_var_03_LRO.pdf",
+   "bytes": 106548
+  },
+  {
+   "profile": "M1",
+   "year": 2023,
+   "session": "sesiunea 1",
+   "variant": "01",
+   "id": "M1-2023-sesiunea_1-01",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2023_E_c_Matematica_S1_M_mate-info_Subiect_01_LRO.pdf",
+   "filename": "2023_E_c_Matematica_S1_M_mate-info_Subiect_01_LRO.pdf",
+   "bytes": 109086
+  },
+  {
+   "profile": "M1",
+   "year": 2023,
+   "session": "sesiunea 2",
+   "variant": "07",
+   "id": "M1-2023-sesiunea_2-07",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2023_E_c_Matematica_S2_M_mate-info_Subiect_07_LRO.pdf",
+   "filename": "2023_E_c_Matematica_S2_M_mate-info_Subiect_07_LRO.pdf",
+   "bytes": 523834
+  },
+  {
+   "profile": "M1",
+   "year": 2023,
+   "session": "model",
+   "variant": null,
+   "id": "M1-2023-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2023_E_c_Matematica_SM_M_mate-info_Model_Subiect_LRO.pdf",
+   "filename": "2023_E_c_Matematica_SM_M_mate-info_Model_Subiect_LRO.pdf",
+   "bytes": 108801
+  },
+  {
+   "profile": "M1",
+   "year": 2023,
+   "session": "simulare",
+   "variant": null,
+   "id": "M1-2023-simulare-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2023_E_c_Matematica_SM_M_mate-info_Simulare_XII_Subiect_LRO.pdf",
+   "filename": "2023_E_c_Matematica_SM_M_mate-info_Simulare_XII_Subiect_LRO.pdf",
+   "bytes": 121341
+  },
+  {
+   "profile": "M1",
+   "year": 2023,
+   "session": "sesiune specială",
+   "variant": "06",
+   "id": "M1-2023-sesiune_specială-06",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2023_E_c_Matematica_SS_M_mate-info_Subiect_06_LRO.pdf",
+   "filename": "2023_E_c_Matematica_SS_M_mate-info_Subiect_06_LRO.pdf",
+   "bytes": 108686
+  },
+  {
+   "profile": "M1",
+   "year": 2022,
+   "session": "sesiunea 1",
+   "variant": "01",
+   "id": "M1-2022-sesiunea_1-01",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2022_E_c_Matematica_S1_M_mate-info_Subiect_01_LRO.pdf",
+   "filename": "2022_E_c_Matematica_S1_M_mate-info_Subiect_01_LRO.pdf",
+   "bytes": 107856
+  },
+  {
+   "profile": "M1",
+   "year": 2022,
+   "session": "sesiunea 2",
+   "variant": "07",
+   "id": "M1-2022-sesiunea_2-07",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2022_E_c_Matematica_S2_M_mate-info_Subiect_07_LRO.pdf",
+   "filename": "2022_E_c_Matematica_S2_M_mate-info_Subiect_07_LRO.pdf",
+   "bytes": 109516
+  },
+  {
+   "profile": "M1",
+   "year": 2022,
+   "session": "model",
+   "variant": null,
+   "id": "M1-2022-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2022_E_c_Matematica_SM_M_mate-info_Model_Subiect_LRO.pdf",
+   "filename": "2022_E_c_Matematica_SM_M_mate-info_Model_Subiect_LRO.pdf",
+   "bytes": 121941
+  },
+  {
+   "profile": "M1",
+   "year": 2022,
+   "session": "simulare",
+   "variant": null,
+   "id": "M1-2022-simulare-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2022_E_c_Matematica_SM_M_mate-info_Simulare_XII_Subiect_LRO.pdf",
+   "filename": "2022_E_c_Matematica_SM_M_mate-info_Simulare_XII_Subiect_LRO.pdf",
+   "bytes": 117477
+  },
+  {
+   "profile": "M1",
+   "year": 2022,
+   "session": "sesiune specială",
+   "variant": "03",
+   "id": "M1-2022-sesiune_specială-03",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2022_E_c_Matematica_SS_M_mate-info_Subiect_03_LRO.pdf",
+   "filename": "2022_E_c_Matematica_SS_M_mate-info_Subiect_03_LRO.pdf",
+   "bytes": 108759
+  },
+  {
+   "profile": "M1",
+   "year": 2021,
+   "session": "sesiunea 1",
+   "variant": "02",
+   "id": "M1-2021-sesiunea_1-02",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2021_E_c_Matematica_S1_M_mate-info_Subiect_02_LRO.pdf",
+   "filename": "2021_E_c_Matematica_S1_M_mate-info_Subiect_02_LRO.pdf",
+   "bytes": 126776
+  },
+  {
+   "profile": "M1",
+   "year": 2021,
+   "session": "sesiunea 2",
+   "variant": "04",
+   "id": "M1-2021-sesiunea_2-04",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2021_E_c_Matematica_S2_M_mate-info_Subiect_04_LRO.pdf",
+   "filename": "2021_E_c_Matematica_S2_M_mate-info_Subiect_04_LRO.pdf",
+   "bytes": 110412
+  },
+  {
+   "profile": "M1",
+   "year": 2021,
+   "session": "model",
+   "variant": null,
+   "id": "M1-2021-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2021_E_c_Matematica_SM_M_mate-info_Model_Subiect_LRO.pdf",
+   "filename": "2021_E_c_Matematica_SM_M_mate-info_Model_Subiect_LRO.pdf",
+   "bytes": 342891
+  },
+  {
+   "profile": "M1",
+   "year": 2021,
+   "session": "simulare",
+   "variant": null,
+   "id": "M1-2021-simulare-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2021_E_c_Matematica_SM_M_mate-info_Simulare_XII_Subiect_LRO.pdf",
+   "filename": "2021_E_c_Matematica_SM_M_mate-info_Simulare_XII_Subiect_LRO.pdf",
+   "bytes": 115365
+  },
+  {
+   "profile": "M1",
+   "year": 2021,
+   "session": "sesiune specială",
+   "variant": "07",
+   "id": "M1-2021-sesiune_specială-07",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2021_E_c_Matematica_SS_M_mate-info_Subiect_07_LRO.pdf",
+   "filename": "2021_E_c_Matematica_SS_M_mate-info_Subiect_07_LRO.pdf",
+   "bytes": 123923
+  },
+  {
+   "profile": "M1",
+   "year": 2020,
+   "session": "sesiunea 1",
+   "variant": "06",
+   "id": "M1-2020-sesiunea_1-06",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2020_E_c_Matematica_S1_M_mate-info_Subiect_06_LRO.pdf",
+   "filename": "2020_E_c_Matematica_S1_M_mate-info_Subiect_06_LRO.pdf",
+   "bytes": 119786
+  },
+  {
+   "profile": "M1",
+   "year": 2020,
+   "session": "sesiunea 2",
+   "variant": "03",
+   "id": "M1-2020-sesiunea_2-03",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2020_E_c_Matematica_S2_M_mate-info_Subiect_03_LRO.pdf",
+   "filename": "2020_E_c_Matematica_S2_M_mate-info_Subiect_03_LRO.pdf",
+   "bytes": 131571
+  },
+  {
+   "profile": "M1",
+   "year": 2020,
+   "session": "model",
+   "variant": null,
+   "id": "M1-2020-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2020_E_c_Matematica_SM_M_mate-info_Model_Subiect_LRO.pdf",
+   "filename": "2020_E_c_Matematica_SM_M_mate-info_Model_Subiect_LRO.pdf",
+   "bytes": 135038
+  },
+  {
+   "profile": "M1",
+   "year": 2020,
+   "session": "sesiune specială",
+   "variant": "01",
+   "id": "M1-2020-sesiune_specială-01",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2020_E_c_Matematica_SS_M_mate-info_Subiect_01_LRO.pdf",
+   "filename": "2020_E_c_Matematica_SS_M_mate-info_Subiect_01_LRO.pdf",
+   "bytes": 129328
+  },
+  {
+   "profile": "M1",
+   "year": 2019,
+   "session": "sesiunea 1",
+   "variant": "06",
+   "id": "M1-2019-sesiunea_1-06",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2019_E_c_Matematica_S1_M_mate-info_Subiect_06_LRO.pdf",
+   "filename": "2019_E_c_Matematica_S1_M_mate-info_Subiect_06_LRO.pdf",
+   "bytes": 127157
+  },
+  {
+   "profile": "M1",
+   "year": 2019,
+   "session": "sesiunea 2",
+   "variant": "07",
+   "id": "M1-2019-sesiunea_2-07",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2019_E_c_Matematica_S2_M_mate-info_Subiect_07_LRO.pdf",
+   "filename": "2019_E_c_Matematica_S2_M_mate-info_Subiect_07_LRO.pdf",
+   "bytes": 124925
+  },
+  {
+   "profile": "M1",
+   "year": 2019,
+   "session": "model",
+   "variant": null,
+   "id": "M1-2019-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2019_E_c_Matematica_SM_M_mate-info_Model_Subiect_LRO.pdf",
+   "filename": "2019_E_c_Matematica_SM_M_mate-info_Model_Subiect_LRO.pdf",
+   "bytes": 131048
+  },
+  {
+   "profile": "M1",
+   "year": 2019,
+   "session": "simulare",
+   "variant": null,
+   "id": "M1-2019-simulare-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2019_E_c_Matematica_SM_M_mate-info_Simulare_XII_Subiect_LRO.pdf",
+   "filename": "2019_E_c_Matematica_SM_M_mate-info_Simulare_XII_Subiect_LRO.pdf",
+   "bytes": 120526
+  },
+  {
+   "profile": "M1",
+   "year": 2019,
+   "session": "sesiune specială",
+   "variant": "08",
+   "id": "M1-2019-sesiune_specială-08",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2019_E_c_Matematica_SS_M_mate-info_Subiect_08_LRO.pdf",
+   "filename": "2019_E_c_Matematica_SS_M_mate-info_Subiect_08_LRO.pdf",
+   "bytes": 123455
+  },
+  {
+   "profile": "M1",
+   "year": 2018,
+   "session": "sesiunea 1",
+   "variant": "02",
+   "id": "M1-2018-sesiunea_1-02",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2018_E_c_Matematica_S1_M_mate-info_Subiect_02_LRO.pdf",
+   "filename": "2018_E_c_Matematica_S1_M_mate-info_Subiect_02_LRO.pdf",
+   "bytes": 130840
+  },
+  {
+   "profile": "M1",
+   "year": 2018,
+   "session": "sesiunea 2",
+   "variant": "09",
+   "id": "M1-2018-sesiunea_2-09",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2018_E_c_Matematica_S2_M_mate-info_Subiect_09_LRO.pdf",
+   "filename": "2018_E_c_Matematica_S2_M_mate-info_Subiect_09_LRO.pdf",
+   "bytes": 118534
+  },
+  {
+   "profile": "M1",
+   "year": 2018,
+   "session": "model",
+   "variant": null,
+   "id": "M1-2018-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2018_E_c_Matematica_SM_M_mate-info_Model_Subiect_LRO.pdf",
+   "filename": "2018_E_c_Matematica_SM_M_mate-info_Model_Subiect_LRO.pdf",
+   "bytes": 113199
+  },
+  {
+   "profile": "M1",
+   "year": 2018,
+   "session": "simulare",
+   "variant": null,
+   "id": "M1-2018-simulare-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2018_E_c_Matematica_SM_M_mate-info_Simulare_XII_Subiect_LRO.pdf",
+   "filename": "2018_E_c_Matematica_SM_M_mate-info_Simulare_XII_Subiect_LRO.pdf",
+   "bytes": 59112
+  },
+  {
+   "profile": "M1",
+   "year": 2018,
+   "session": "sesiune specială",
+   "variant": "03",
+   "id": "M1-2018-sesiune_specială-03",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2018_E_c_Matematica_SS_M_mate-info_Subiect_03_LRO.pdf",
+   "filename": "2018_E_c_Matematica_SS_M_mate-info_Subiect_03_LRO.pdf",
+   "bytes": 122128
+  },
+  {
+   "profile": "M1",
+   "year": 2017,
+   "session": "sesiunea 1",
+   "variant": "02",
+   "id": "M1-2017-sesiunea_1-02",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2017_E_c_Matematica_S1_M_mate-info_Subiect_02_LRO.pdf",
+   "filename": "2017_E_c_Matematica_S1_M_mate-info_Subiect_02_LRO.pdf",
+   "bytes": 56777
+  },
+  {
+   "profile": "M1",
+   "year": 2017,
+   "session": "sesiunea 2",
+   "variant": "10",
+   "id": "M1-2017-sesiunea_2-10",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2017_E_c_Matematica_S2_M_mate-info_Subiect_10_LRO.pdf",
+   "filename": "2017_E_c_Matematica_S2_M_mate-info_Subiect_10_LRO.pdf",
+   "bytes": 57045
+  },
+  {
+   "profile": "M1",
+   "year": 2017,
+   "session": "model",
+   "variant": null,
+   "id": "M1-2017-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2017_E_c_Matematica_SM_M_mate-info_Model_Subiect_LRO.pdf",
+   "filename": "2017_E_c_Matematica_SM_M_mate-info_Model_Subiect_LRO.pdf",
+   "bytes": 113163
+  },
+  {
+   "profile": "M1",
+   "year": 2017,
+   "session": "simulare",
+   "variant": null,
+   "id": "M1-2017-simulare-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2017_E_c_Matematica_SM_M_mate-info_Simulare_XII_Subiect_LRO.pdf",
+   "filename": "2017_E_c_Matematica_SM_M_mate-info_Simulare_XII_Subiect_LRO.pdf",
+   "bytes": 59894
+  },
+  {
+   "profile": "M1",
+   "year": 2017,
+   "session": "sesiune specială",
+   "variant": "04",
+   "id": "M1-2017-sesiune_specială-04",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2017_E_c_Matematica_SS_M_mate-info_Subiect_04_LRO.pdf",
+   "filename": "2017_E_c_Matematica_SS_M_mate-info_Subiect_04_LRO.pdf",
+   "bytes": 59359
+  },
+  {
+   "profile": "M1",
+   "year": 2016,
+   "session": "sesiunea 1",
+   "variant": "08",
+   "id": "M1-2016-sesiunea_1-08",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2016_E_c_Matematica_S1_M_mate-info_Subiect_08_LRO.pdf",
+   "filename": "2016_E_c_Matematica_S1_M_mate-info_Subiect_08_LRO.pdf",
+   "bytes": 59241
+  },
+  {
+   "profile": "M1",
+   "year": 2016,
+   "session": "sesiunea 2",
+   "variant": "02",
+   "id": "M1-2016-sesiunea_2-02",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2016_E_c_Matematica_S2_M_mate-info_Subiect_02_LRO.pdf",
+   "filename": "2016_E_c_Matematica_S2_M_mate-info_Subiect_02_LRO.pdf",
+   "bytes": 61432
+  },
+  {
+   "profile": "M1",
+   "year": 2016,
+   "session": "model",
+   "variant": null,
+   "id": "M1-2016-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2016_E_c_Matematica_SM_M_mate-info_Model_Subiect_LRO.pdf",
+   "filename": "2016_E_c_Matematica_SM_M_mate-info_Model_Subiect_LRO.pdf",
+   "bytes": 115966
+  },
+  {
+   "profile": "M1",
+   "year": 2016,
+   "session": "simulare",
+   "variant": null,
+   "id": "M1-2016-simulare-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2016_E_c_Matematica_SM_M_mate-info_Simulare_XII_Subiect_LRO.pdf",
+   "filename": "2016_E_c_Matematica_SM_M_mate-info_Simulare_XII_Subiect_LRO.pdf",
+   "bytes": 59939
+  },
+  {
+   "profile": "M1",
+   "year": 2016,
+   "session": "sesiune specială",
+   "variant": "01",
+   "id": "M1-2016-sesiune_specială-01",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2016_E_c_Matematica_SS_M_mate-info_Subiect_01_LRO.pdf",
+   "filename": "2016_E_c_Matematica_SS_M_mate-info_Subiect_01_LRO.pdf",
+   "bytes": 56929
+  },
+  {
+   "profile": "M1",
+   "year": 2015,
+   "session": "sesiunea 1",
+   "variant": "08",
+   "id": "M1-2015-sesiunea_1-08",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2015_E_c_Matematica_S1_M_mate-info_Subiect_08_LRO.pdf",
+   "filename": "2015_E_c_Matematica_S1_M_mate-info_Subiect_08_LRO.pdf",
+   "bytes": 56299
+  },
+  {
+   "profile": "M1",
+   "year": 2015,
+   "session": "sesiunea 2",
+   "variant": "01",
+   "id": "M1-2015-sesiunea_2-01",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2015_E_c_Matematica_S2_M_mate-info_Subiect_01_LRO.pdf",
+   "filename": "2015_E_c_Matematica_S2_M_mate-info_Subiect_01_LRO.pdf",
+   "bytes": 57848
+  },
+  {
+   "profile": "M1",
+   "year": 2015,
+   "session": "model",
+   "variant": null,
+   "id": "M1-2015-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2015_E_c_Matematica_SM_M_mate-info_Model_Subiect_LRO.pdf",
+   "filename": "2015_E_c_Matematica_SM_M_mate-info_Model_Subiect_LRO.pdf",
+   "bytes": 111996
+  },
+  {
+   "profile": "M1",
+   "year": 2015,
+   "session": "simulare",
+   "variant": null,
+   "id": "M1-2015-simulare-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2015_E_c_Matematica_SM_M_mate-info_Simulare_XII_Subiect_LRO.pdf",
+   "filename": "2015_E_c_Matematica_SM_M_mate-info_Simulare_XII_Subiect_LRO.pdf",
+   "bytes": 55903
+  },
+  {
+   "profile": "M1",
+   "year": 2015,
+   "session": "sesiune specială",
+   "variant": "09",
+   "id": "M1-2015-sesiune_specială-09",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m1/2015_E_c_Matematica_SS_M_mate-info_Subiect_09_LRO.pdf",
+   "filename": "2015_E_c_Matematica_SS_M_mate-info_Subiect_09_LRO.pdf",
+   "bytes": 56678
+  },
+  {
+   "profile": "M2",
+   "year": 2026,
+   "session": "sesiunea principală",
+   "variant": "02",
+   "id": "M2-2026-sesiunea_principală-02",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/E_c_matematica_M_st-nat_2026_var_02_LRO.pdf",
+   "filename": "E_c_matematica_M_st-nat_2026_var_02_LRO.pdf",
+   "bytes": 105344
+  },
+  {
+   "profile": "M2",
+   "year": 2026,
+   "session": "sesiunea principală",
+   "variant": "03",
+   "id": "M2-2026-sesiunea_principală-03",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/E_c_matematica_M_st-nat_2026_var_03_LRO.pdf",
+   "filename": "E_c_matematica_M_st-nat_2026_var_03_LRO.pdf",
+   "bytes": 108312
+  },
+  {
+   "profile": "M2",
+   "year": 2026,
+   "session": "sesiunea principală",
+   "variant": "04",
+   "id": "M2-2026-sesiunea_principală-04",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/E_c_matematica_M_st-nat_2026_var_04_LRO.pdf",
+   "filename": "E_c_matematica_M_st-nat_2026_var_04_LRO.pdf",
+   "bytes": 106193
+  },
+  {
+   "profile": "M2",
+   "year": 2026,
+   "session": "sesiunea principală",
+   "variant": "05",
+   "id": "M2-2026-sesiunea_principală-05",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/E_c_matematica_M_st-nat_2026_var_05_LRO.pdf",
+   "filename": "E_c_matematica_M_st-nat_2026_var_05_LRO.pdf",
+   "bytes": 108614
+  },
+  {
+   "profile": "M2",
+   "year": 2026,
+   "session": "model",
+   "variant": null,
+   "id": "M2-2026-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/E_c_matematica_M_st-nat_2026_var_model.pdf",
+   "filename": "E_c_matematica_M_st-nat_2026_var_model.pdf",
+   "bytes": 114024
+  },
+  {
+   "profile": "M2",
+   "year": 2025,
+   "session": "sesiunea principală",
+   "variant": "01",
+   "id": "M2-2025-sesiunea_principală-01",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/E_c_matematica_M_st-nat_2025_var_01_LRO.pdf",
+   "filename": "E_c_matematica_M_st-nat_2025_var_01_LRO.pdf",
+   "bytes": 108399
+  },
+  {
+   "profile": "M2",
+   "year": 2025,
+   "session": "sesiunea principală",
+   "variant": "03",
+   "id": "M2-2025-sesiunea_principală-03",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/E_c_matematica_M_st-nat_2025_var_03_LRO.pdf",
+   "filename": "E_c_matematica_M_st-nat_2025_var_03_LRO.pdf",
+   "bytes": 106474
+  },
+  {
+   "profile": "M2",
+   "year": 2025,
+   "session": "model",
+   "variant": null,
+   "id": "M2-2025-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/E_c_matematica_M_st-nat_2025_var_model.pdf",
+   "filename": "E_c_matematica_M_st-nat_2025_var_model.pdf",
+   "bytes": 110787
+  },
+  {
+   "profile": "M2",
+   "year": 2024,
+   "session": "sesiunea 1",
+   "variant": "10",
+   "id": "M2-2024-sesiunea_1-10",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2024_E_c_Matematica_S1_M_st-nat_Subiect_10_LRO.pdf",
+   "filename": "2024_E_c_Matematica_S1_M_st-nat_Subiect_10_LRO.pdf",
+   "bytes": 104337
+  },
+  {
+   "profile": "M2",
+   "year": 2024,
+   "session": "model",
+   "variant": null,
+   "id": "M2-2024-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2024_E_c_Matematica_SM_M_st-nat_Model_Subiect_LRO.pdf",
+   "filename": "2024_E_c_Matematica_SM_M_st-nat_Model_Subiect_LRO.pdf",
+   "bytes": 111131
+  },
+  {
+   "profile": "M2",
+   "year": 2024,
+   "session": "simulare",
+   "variant": null,
+   "id": "M2-2024-simulare-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2024_E_c_Matematica_SM_M_st-nat_Simulare_XII_Subiect_LRO.pdf",
+   "filename": "2024_E_c_Matematica_SM_M_st-nat_Simulare_XII_Subiect_LRO.pdf",
+   "bytes": 113437
+  },
+  {
+   "profile": "M2",
+   "year": 2024,
+   "session": "sesiune specială",
+   "variant": "09",
+   "id": "M2-2024-sesiune_specială-09",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2024_E_c_Matematica_SS_M_st-nat_Subiect_09_LRO.pdf",
+   "filename": "2024_E_c_Matematica_SS_M_st-nat_Subiect_09_LRO.pdf",
+   "bytes": 104918
+  },
+  {
+   "profile": "M2",
+   "year": 2024,
+   "session": "sesiunea principală",
+   "variant": "03",
+   "id": "M2-2024-sesiunea_principală-03",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/E_c_matematica_M_st-nat_2024_var_03_LRO.pdf",
+   "filename": "E_c_matematica_M_st-nat_2024_var_03_LRO.pdf",
+   "bytes": 105310
+  },
+  {
+   "profile": "M2",
+   "year": 2023,
+   "session": "sesiunea 1",
+   "variant": "01",
+   "id": "M2-2023-sesiunea_1-01",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2023_E_c_Matematica_S1_M_st-nat_Subiect_01_LRO.pdf",
+   "filename": "2023_E_c_Matematica_S1_M_st-nat_Subiect_01_LRO.pdf",
+   "bytes": 105767
+  },
+  {
+   "profile": "M2",
+   "year": 2023,
+   "session": "sesiunea 2",
+   "variant": "07",
+   "id": "M2-2023-sesiunea_2-07",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2023_E_c_Matematica_S2_M_st-nat_Subiect_07_LRO.pdf",
+   "filename": "2023_E_c_Matematica_S2_M_st-nat_Subiect_07_LRO.pdf",
+   "bytes": 108103
+  },
+  {
+   "profile": "M2",
+   "year": 2023,
+   "session": "model",
+   "variant": null,
+   "id": "M2-2023-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2023_E_c_Matematica_SM_M_st-nat_Model_Subiect_LRO.pdf",
+   "filename": "2023_E_c_Matematica_SM_M_st-nat_Model_Subiect_LRO.pdf",
+   "bytes": 110125
+  },
+  {
+   "profile": "M2",
+   "year": 2023,
+   "session": "simulare",
+   "variant": null,
+   "id": "M2-2023-simulare-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2023_E_c_Matematica_SM_M_st-nat_Simulare_XII_Subiect_LRO.pdf",
+   "filename": "2023_E_c_Matematica_SM_M_st-nat_Simulare_XII_Subiect_LRO.pdf",
+   "bytes": 119654
+  },
+  {
+   "profile": "M2",
+   "year": 2023,
+   "session": "sesiune specială",
+   "variant": "06",
+   "id": "M2-2023-sesiune_specială-06",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2023_E_c_Matematica_SS_M_st-nat_Subiect_06_LRO.pdf",
+   "filename": "2023_E_c_Matematica_SS_M_st-nat_Subiect_06_LRO.pdf",
+   "bytes": 106405
+  },
+  {
+   "profile": "M2",
+   "year": 2022,
+   "session": "sesiunea 1",
+   "variant": "01",
+   "id": "M2-2022-sesiunea_1-01",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2022_E_c_Matematica_S1_M_st-nat_Subiect_01_LRO.pdf",
+   "filename": "2022_E_c_Matematica_S1_M_st-nat_Subiect_01_LRO.pdf",
+   "bytes": 107349
+  },
+  {
+   "profile": "M2",
+   "year": 2022,
+   "session": "sesiunea 2",
+   "variant": "07",
+   "id": "M2-2022-sesiunea_2-07",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2022_E_c_Matematica_S2_M_st-nat_Subiect_07_LRO.pdf",
+   "filename": "2022_E_c_Matematica_S2_M_st-nat_Subiect_07_LRO.pdf",
+   "bytes": 106318
+  },
+  {
+   "profile": "M2",
+   "year": 2022,
+   "session": "model",
+   "variant": null,
+   "id": "M2-2022-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2022_E_c_Matematica_SM_M_st-nat_Model_Subiect_LRO.pdf",
+   "filename": "2022_E_c_Matematica_SM_M_st-nat_Model_Subiect_LRO.pdf",
+   "bytes": 116099
+  },
+  {
+   "profile": "M2",
+   "year": 2022,
+   "session": "simulare",
+   "variant": null,
+   "id": "M2-2022-simulare-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2022_E_c_Matematica_SM_M_st-nat_Simulare_XII_Subiect_LRO.pdf",
+   "filename": "2022_E_c_Matematica_SM_M_st-nat_Simulare_XII_Subiect_LRO.pdf",
+   "bytes": 116649
+  },
+  {
+   "profile": "M2",
+   "year": 2022,
+   "session": "sesiune specială",
+   "variant": "03",
+   "id": "M2-2022-sesiune_specială-03",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2022_E_c_Matematica_SS_M_st-nat_Subiect_03_LRO.pdf",
+   "filename": "2022_E_c_Matematica_SS_M_st-nat_Subiect_03_LRO.pdf",
+   "bytes": 107803
+  },
+  {
+   "profile": "M2",
+   "year": 2021,
+   "session": "sesiunea 1",
+   "variant": "02",
+   "id": "M2-2021-sesiunea_1-02",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2021_E_c_Matematica_S1_M_st-nat_Subiect_02_LRO.pdf",
+   "filename": "2021_E_c_Matematica_S1_M_st-nat_Subiect_02_LRO.pdf",
+   "bytes": 118236
+  },
+  {
+   "profile": "M2",
+   "year": 2021,
+   "session": "sesiunea 2",
+   "variant": "04",
+   "id": "M2-2021-sesiunea_2-04",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2021_E_c_Matematica_S2_M_st-nat_Subiect_04_LRO.pdf",
+   "filename": "2021_E_c_Matematica_S2_M_st-nat_Subiect_04_LRO.pdf",
+   "bytes": 105026
+  },
+  {
+   "profile": "M2",
+   "year": 2021,
+   "session": "model",
+   "variant": null,
+   "id": "M2-2021-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2021_E_c_Matematica_SM_M_st-nat_Model_Subiect_LRO.pdf",
+   "filename": "2021_E_c_Matematica_SM_M_st-nat_Model_Subiect_LRO.pdf",
+   "bytes": 278549
+  },
+  {
+   "profile": "M2",
+   "year": 2021,
+   "session": "simulare",
+   "variant": null,
+   "id": "M2-2021-simulare-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2021_E_c_Matematica_SM_M_st-nat_Simulare_XII_Subiect_LRO.pdf",
+   "filename": "2021_E_c_Matematica_SM_M_st-nat_Simulare_XII_Subiect_LRO.pdf",
+   "bytes": 108924
+  },
+  {
+   "profile": "M2",
+   "year": 2020,
+   "session": "sesiunea 1",
+   "variant": "06",
+   "id": "M2-2020-sesiunea_1-06",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2020_E_c_Matematica_S1_M_st-nat_Subiect_06_LRO.pdf",
+   "filename": "2020_E_c_Matematica_S1_M_st-nat_Subiect_06_LRO.pdf",
+   "bytes": 117080
+  },
+  {
+   "profile": "M2",
+   "year": 2020,
+   "session": "sesiunea 2",
+   "variant": "03",
+   "id": "M2-2020-sesiunea_2-03",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2020_E_c_Matematica_S2_M_st-nat_Subiect_03_LRO.pdf",
+   "filename": "2020_E_c_Matematica_S2_M_st-nat_Subiect_03_LRO.pdf",
+   "bytes": 120762
+  },
+  {
+   "profile": "M2",
+   "year": 2020,
+   "session": "model",
+   "variant": null,
+   "id": "M2-2020-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2020_E_c_Matematica_SM_M_st-nat_Model_Subiect_LRO.pdf",
+   "filename": "2020_E_c_Matematica_SM_M_st-nat_Model_Subiect_LRO.pdf",
+   "bytes": 115849
+  },
+  {
+   "profile": "M2",
+   "year": 2020,
+   "session": "sesiune specială",
+   "variant": "01",
+   "id": "M2-2020-sesiune_specială-01",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2020_E_c_Matematica_SS_M_st-nat_Subiect_01_LRO.pdf",
+   "filename": "2020_E_c_Matematica_SS_M_st-nat_Subiect_01_LRO.pdf",
+   "bytes": 114152
+  },
+  {
+   "profile": "M2",
+   "year": 2019,
+   "session": "sesiunea 1",
+   "variant": "06",
+   "id": "M2-2019-sesiunea_1-06",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2019_E_c_Matematica_S1_M_st-nat_Subiect_06_LRO.pdf",
+   "filename": "2019_E_c_Matematica_S1_M_st-nat_Subiect_06_LRO.pdf",
+   "bytes": 121382
+  },
+  {
+   "profile": "M2",
+   "year": 2019,
+   "session": "sesiunea 2",
+   "variant": "07",
+   "id": "M2-2019-sesiunea_2-07",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2019_E_c_Matematica_S2_M_st-nat_Subiect_07_LRO.pdf",
+   "filename": "2019_E_c_Matematica_S2_M_st-nat_Subiect_07_LRO.pdf",
+   "bytes": 111443
+  },
+  {
+   "profile": "M2",
+   "year": 2019,
+   "session": "model",
+   "variant": null,
+   "id": "M2-2019-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2019_E_c_Matematica_SM_M_st-nat_Model_Subiect_LRO.pdf",
+   "filename": "2019_E_c_Matematica_SM_M_st-nat_Model_Subiect_LRO.pdf",
+   "bytes": 122319
+  },
+  {
+   "profile": "M2",
+   "year": 2019,
+   "session": "simulare",
+   "variant": null,
+   "id": "M2-2019-simulare-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2019_E_c_Matematica_SM_M_st-nat_Simulare_XII_Subiect_LRO.pdf",
+   "filename": "2019_E_c_Matematica_SM_M_st-nat_Simulare_XII_Subiect_LRO.pdf",
+   "bytes": 114096
+  },
+  {
+   "profile": "M2",
+   "year": 2019,
+   "session": "sesiune specială",
+   "variant": "08",
+   "id": "M2-2019-sesiune_specială-08",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2019_E_c_Matematica_SS_M_st-nat_Subiect_08_LRO.pdf",
+   "filename": "2019_E_c_Matematica_SS_M_st-nat_Subiect_08_LRO.pdf",
+   "bytes": 119372
+  },
+  {
+   "profile": "M2",
+   "year": 2018,
+   "session": "sesiunea 1",
+   "variant": "02",
+   "id": "M2-2018-sesiunea_1-02",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2018_E_c_Matematica_S1_M_st-nat_Subiect_02_LRO.pdf",
+   "filename": "2018_E_c_Matematica_S1_M_st-nat_Subiect_02_LRO.pdf",
+   "bytes": 120581
+  },
+  {
+   "profile": "M2",
+   "year": 2018,
+   "session": "sesiunea 2",
+   "variant": "09",
+   "id": "M2-2018-sesiunea_2-09",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2018_E_c_Matematica_S2_M_st-nat_Subiect_09_LRO.pdf",
+   "filename": "2018_E_c_Matematica_S2_M_st-nat_Subiect_09_LRO.pdf",
+   "bytes": 122481
+  },
+  {
+   "profile": "M2",
+   "year": 2018,
+   "session": "model",
+   "variant": null,
+   "id": "M2-2018-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2018_E_c_Matematica_SM_M_st-nat_Model_Subiect_LRO.pdf",
+   "filename": "2018_E_c_Matematica_SM_M_st-nat_Model_Subiect_LRO.pdf",
+   "bytes": 105754
+  },
+  {
+   "profile": "M2",
+   "year": 2018,
+   "session": "simulare",
+   "variant": null,
+   "id": "M2-2018-simulare-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2018_E_c_Matematica_SM_M_st-nat_Simulare_XII_Subiect_LRO.pdf",
+   "filename": "2018_E_c_Matematica_SM_M_st-nat_Simulare_XII_Subiect_LRO.pdf",
+   "bytes": 57075
+  },
+  {
+   "profile": "M2",
+   "year": 2018,
+   "session": "sesiune specială",
+   "variant": "03",
+   "id": "M2-2018-sesiune_specială-03",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2018_E_c_Matematica_SS_M_st-nat_Subiect_03_LRO.pdf",
+   "filename": "2018_E_c_Matematica_SS_M_st-nat_Subiect_03_LRO.pdf",
+   "bytes": 115186
+  },
+  {
+   "profile": "M2",
+   "year": 2017,
+   "session": "sesiunea 1",
+   "variant": "02",
+   "id": "M2-2017-sesiunea_1-02",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2017_E_c_Matematica_S1_M_st-nat_Subiect_02_LRO.pdf",
+   "filename": "2017_E_c_Matematica_S1_M_st-nat_Subiect_02_LRO.pdf",
+   "bytes": 56527
+  },
+  {
+   "profile": "M2",
+   "year": 2017,
+   "session": "sesiunea 2",
+   "variant": "10",
+   "id": "M2-2017-sesiunea_2-10",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2017_E_c_Matematica_S2_M_st-nat_Subiect_10_LRO.pdf",
+   "filename": "2017_E_c_Matematica_S2_M_st-nat_Subiect_10_LRO.pdf",
+   "bytes": 55464
+  },
+  {
+   "profile": "M2",
+   "year": 2017,
+   "session": "model",
+   "variant": null,
+   "id": "M2-2017-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2017_E_c_Matematica_SM_M_st-nat_Model_Subiect_LRO.pdf",
+   "filename": "2017_E_c_Matematica_SM_M_st-nat_Model_Subiect_LRO.pdf",
+   "bytes": 105475
+  },
+  {
+   "profile": "M2",
+   "year": 2017,
+   "session": "simulare",
+   "variant": null,
+   "id": "M2-2017-simulare-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2017_E_c_Matematica_SM_M_st-nat_Simulare_XII_Subiect_LRO.pdf",
+   "filename": "2017_E_c_Matematica_SM_M_st-nat_Simulare_XII_Subiect_LRO.pdf",
+   "bytes": 56436
+  },
+  {
+   "profile": "M2",
+   "year": 2017,
+   "session": "sesiune specială",
+   "variant": "04",
+   "id": "M2-2017-sesiune_specială-04",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2017_E_c_Matematica_SS_M_st-nat_Subiect_04_LRO.pdf",
+   "filename": "2017_E_c_Matematica_SS_M_st-nat_Subiect_04_LRO.pdf",
+   "bytes": 57383
+  },
+  {
+   "profile": "M2",
+   "year": 2016,
+   "session": "sesiunea 1",
+   "variant": "08",
+   "id": "M2-2016-sesiunea_1-08",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2016_E_c_Matematica_S1_M_st-nat_Subiect_08_LRO.pdf",
+   "filename": "2016_E_c_Matematica_S1_M_st-nat_Subiect_08_LRO.pdf",
+   "bytes": 56086
+  },
+  {
+   "profile": "M2",
+   "year": 2016,
+   "session": "sesiunea 2",
+   "variant": "02",
+   "id": "M2-2016-sesiunea_2-02",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2016_E_c_Matematica_S2_M_st-nat_Subiect_02_LRO.pdf",
+   "filename": "2016_E_c_Matematica_S2_M_st-nat_Subiect_02_LRO.pdf",
+   "bytes": 56491
+  },
+  {
+   "profile": "M2",
+   "year": 2016,
+   "session": "model",
+   "variant": null,
+   "id": "M2-2016-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2016_E_c_Matematica_SM_M_st-nat_Model_Subiect_LRO.pdf",
+   "filename": "2016_E_c_Matematica_SM_M_st-nat_Model_Subiect_LRO.pdf",
+   "bytes": 112117
+  },
+  {
+   "profile": "M2",
+   "year": 2016,
+   "session": "simulare",
+   "variant": null,
+   "id": "M2-2016-simulare-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2016_E_c_Matematica_SM_M_st-nat_Simulare_XII_Subiect_LRO.pdf",
+   "filename": "2016_E_c_Matematica_SM_M_st-nat_Simulare_XII_Subiect_LRO.pdf",
+   "bytes": 58677
+  },
+  {
+   "profile": "M2",
+   "year": 2016,
+   "session": "sesiune specială",
+   "variant": "01",
+   "id": "M2-2016-sesiune_specială-01",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2016_E_c_Matematica_SS_M_st-nat_Subiect_01_LRO.pdf",
+   "filename": "2016_E_c_Matematica_SS_M_st-nat_Subiect_01_LRO.pdf",
+   "bytes": 56988
+  },
+  {
+   "profile": "M2",
+   "year": 2015,
+   "session": "sesiunea 1",
+   "variant": "08",
+   "id": "M2-2015-sesiunea_1-08",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2015_E_c_Matematica_S1_M_st-nat_Subiect_08_LRO.pdf",
+   "filename": "2015_E_c_Matematica_S1_M_st-nat_Subiect_08_LRO.pdf",
+   "bytes": 56277
+  },
+  {
+   "profile": "M2",
+   "year": 2015,
+   "session": "sesiunea 2",
+   "variant": "01",
+   "id": "M2-2015-sesiunea_2-01",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2015_E_c_Matematica_S2_M_st-nat_Subiect_01_LRO.pdf",
+   "filename": "2015_E_c_Matematica_S2_M_st-nat_Subiect_01_LRO.pdf",
+   "bytes": 57244
+  },
+  {
+   "profile": "M2",
+   "year": 2015,
+   "session": "model",
+   "variant": null,
+   "id": "M2-2015-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2015_E_c_Matematica_SM_M_st-nat_Model_Subiect_LRO.pdf",
+   "filename": "2015_E_c_Matematica_SM_M_st-nat_Model_Subiect_LRO.pdf",
+   "bytes": 103377
+  },
+  {
+   "profile": "M2",
+   "year": 2015,
+   "session": "simulare",
+   "variant": null,
+   "id": "M2-2015-simulare-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2015_E_c_Matematica_SM_M_st-nat_Simulare_XII_Subiect_LRO.pdf",
+   "filename": "2015_E_c_Matematica_SM_M_st-nat_Simulare_XII_Subiect_LRO.pdf",
+   "bytes": 55251
+  },
+  {
+   "profile": "M2",
+   "year": 2015,
+   "session": "sesiune specială",
+   "variant": "09",
+   "id": "M2-2015-sesiune_specială-09",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m2/2015_E_c_Matematica_SS_M_st-nat_Subiect_09_LRO.pdf",
+   "filename": "2015_E_c_Matematica_SS_M_st-nat_Subiect_09_LRO.pdf",
+   "bytes": 55646
+  },
+  {
+   "profile": "M3",
+   "year": 2026,
+   "session": "sesiunea principală",
+   "variant": "02",
+   "id": "M3-2026-sesiunea_principală-02",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/E_c_matematica_M_tehnologic_2026_var_02_LRO.pdf",
+   "filename": "E_c_matematica_M_tehnologic_2026_var_02_LRO.pdf",
+   "bytes": 106310
+  },
+  {
+   "profile": "M3",
+   "year": 2026,
+   "session": "sesiunea principală",
+   "variant": "03",
+   "id": "M3-2026-sesiunea_principală-03",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/E_c_matematica_M_tehnologic_2026_var_03_LRO.pdf",
+   "filename": "E_c_matematica_M_tehnologic_2026_var_03_LRO.pdf",
+   "bytes": 102944
+  },
+  {
+   "profile": "M3",
+   "year": 2026,
+   "session": "sesiunea principală",
+   "variant": "04",
+   "id": "M3-2026-sesiunea_principală-04",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/E_c_matematica_M_tehnologic_2026_var_04_LRO.pdf",
+   "filename": "E_c_matematica_M_tehnologic_2026_var_04_LRO.pdf",
+   "bytes": 107012
+  },
+  {
+   "profile": "M3",
+   "year": 2026,
+   "session": "sesiunea principală",
+   "variant": "05",
+   "id": "M3-2026-sesiunea_principală-05",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/E_c_matematica_M_tehnologic_2026_var_05_LRO.pdf",
+   "filename": "E_c_matematica_M_tehnologic_2026_var_05_LRO.pdf",
+   "bytes": 101887
+  },
+  {
+   "profile": "M3",
+   "year": 2026,
+   "session": "sesiunea principală",
+   "variant": "07",
+   "id": "M3-2026-sesiunea_principală-07",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/E_c_matematica_M_tehnologic_2026_var_07_LRO.pdf",
+   "filename": "E_c_matematica_M_tehnologic_2026_var_07_LRO.pdf",
+   "bytes": 104995
+  },
+  {
+   "profile": "M3",
+   "year": 2026,
+   "session": "model",
+   "variant": null,
+   "id": "M3-2026-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/E_c_matematica_M_tehnologic_2026_var_model.pdf",
+   "filename": "E_c_matematica_M_tehnologic_2026_var_model.pdf",
+   "bytes": 109409
+  },
+  {
+   "profile": "M3",
+   "year": 2025,
+   "session": "sesiunea principală",
+   "variant": "01",
+   "id": "M3-2025-sesiunea_principală-01",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/E_c_matematica_M_tehnologic_2025_var_01_LRO.pdf",
+   "filename": "E_c_matematica_M_tehnologic_2025_var_01_LRO.pdf",
+   "bytes": 106807
+  },
+  {
+   "profile": "M3",
+   "year": 2025,
+   "session": "sesiunea principală",
+   "variant": "03",
+   "id": "M3-2025-sesiunea_principală-03",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/E_c_matematica_M_tehnologic_2025_var_03_LRO.pdf",
+   "filename": "E_c_matematica_M_tehnologic_2025_var_03_LRO.pdf",
+   "bytes": 103798
+  },
+  {
+   "profile": "M3",
+   "year": 2025,
+   "session": "model",
+   "variant": null,
+   "id": "M3-2025-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/E_c_matematica_M_tehnologic_2025_var_model.pdf",
+   "filename": "E_c_matematica_M_tehnologic_2025_var_model.pdf",
+   "bytes": 109150
+  },
+  {
+   "profile": "M3",
+   "year": 2024,
+   "session": "sesiunea 1",
+   "variant": "10",
+   "id": "M3-2024-sesiunea_1-10",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2024_E_c_Matematica_S1_M_tehnologic_Subiect_10_LRO.pdf",
+   "filename": "2024_E_c_Matematica_S1_M_tehnologic_Subiect_10_LRO.pdf",
+   "bytes": 104077
+  },
+  {
+   "profile": "M3",
+   "year": 2024,
+   "session": "model",
+   "variant": null,
+   "id": "M3-2024-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2024_E_c_Matematica_SM_M_tehnologic_Model_Subiect_LRO.pdf",
+   "filename": "2024_E_c_Matematica_SM_M_tehnologic_Model_Subiect_LRO.pdf",
+   "bytes": 212878
+  },
+  {
+   "profile": "M3",
+   "year": 2024,
+   "session": "simulare",
+   "variant": null,
+   "id": "M3-2024-simulare-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2024_E_c_Matematica_SM_M_tehnologic_Simulare_XII_Subiect_LRO.pdf",
+   "filename": "2024_E_c_Matematica_SM_M_tehnologic_Simulare_XII_Subiect_LRO.pdf",
+   "bytes": 214198
+  },
+  {
+   "profile": "M3",
+   "year": 2024,
+   "session": "sesiune specială",
+   "variant": "09",
+   "id": "M3-2024-sesiune_specială-09",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2024_E_c_Matematica_SS_M_tehnologic_Subiect_09_LRO.pdf",
+   "filename": "2024_E_c_Matematica_SS_M_tehnologic_Subiect_09_LRO.pdf",
+   "bytes": 104530
+  },
+  {
+   "profile": "M3",
+   "year": 2024,
+   "session": "sesiunea principală",
+   "variant": "03",
+   "id": "M3-2024-sesiunea_principală-03",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/E_c_matematica_M_tehnologic_2024_var_03_LRO.pdf",
+   "filename": "E_c_matematica_M_tehnologic_2024_var_03_LRO.pdf",
+   "bytes": 105887
+  },
+  {
+   "profile": "M3",
+   "year": 2023,
+   "session": "sesiunea 1",
+   "variant": "01",
+   "id": "M3-2023-sesiunea_1-01",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2023_E_c_Matematica_S1_M_tehnologic_Subiect_01_LRO.pdf",
+   "filename": "2023_E_c_Matematica_S1_M_tehnologic_Subiect_01_LRO.pdf",
+   "bytes": 105020
+  },
+  {
+   "profile": "M3",
+   "year": 2023,
+   "session": "sesiunea 2",
+   "variant": "07",
+   "id": "M3-2023-sesiunea_2-07",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2023_E_c_Matematica_S2_M_tehnologic_Subiect_07_LRO.pdf",
+   "filename": "2023_E_c_Matematica_S2_M_tehnologic_Subiect_07_LRO.pdf",
+   "bytes": 104200
+  },
+  {
+   "profile": "M3",
+   "year": 2023,
+   "session": "model",
+   "variant": null,
+   "id": "M3-2023-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2023_E_c_Matematica_SM_M_tehnologic_Model_Subiect_LRO.pdf",
+   "filename": "2023_E_c_Matematica_SM_M_tehnologic_Model_Subiect_LRO.pdf",
+   "bytes": 106436
+  },
+  {
+   "profile": "M3",
+   "year": 2023,
+   "session": "simulare",
+   "variant": null,
+   "id": "M3-2023-simulare-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2023_E_c_Matematica_SM_M_tehnologic_Simulare_XII_Subiect_LRO.pdf",
+   "filename": "2023_E_c_Matematica_SM_M_tehnologic_Simulare_XII_Subiect_LRO.pdf",
+   "bytes": 109606
+  },
+  {
+   "profile": "M3",
+   "year": 2023,
+   "session": "sesiune specială",
+   "variant": "06",
+   "id": "M3-2023-sesiune_specială-06",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2023_E_c_Matematica_SS_M_tehnologic_Subiect_06_LRO.pdf",
+   "filename": "2023_E_c_Matematica_SS_M_tehnologic_Subiect_06_LRO.pdf",
+   "bytes": 106023
+  },
+  {
+   "profile": "M3",
+   "year": 2022,
+   "session": "sesiunea 1",
+   "variant": "01",
+   "id": "M3-2022-sesiunea_1-01",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2022_E_c_Matematica_S1_M_tehnologic_Subiect_01_LRO.pdf",
+   "filename": "2022_E_c_Matematica_S1_M_tehnologic_Subiect_01_LRO.pdf",
+   "bytes": 103599
+  },
+  {
+   "profile": "M3",
+   "year": 2022,
+   "session": "sesiunea 2",
+   "variant": "07",
+   "id": "M3-2022-sesiunea_2-07",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2022_E_c_Matematica_S2_M_tehnologic_Subiect_07_LRO.pdf",
+   "filename": "2022_E_c_Matematica_S2_M_tehnologic_Subiect_07_LRO.pdf",
+   "bytes": 104867
+  },
+  {
+   "profile": "M3",
+   "year": 2022,
+   "session": "model",
+   "variant": null,
+   "id": "M3-2022-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2022_E_c_Matematica_SM_M_tehnologic_Model_Subiect_LRO.pdf",
+   "filename": "2022_E_c_Matematica_SM_M_tehnologic_Model_Subiect_LRO.pdf",
+   "bytes": 107617
+  },
+  {
+   "profile": "M3",
+   "year": 2022,
+   "session": "simulare",
+   "variant": null,
+   "id": "M3-2022-simulare-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2022_E_c_Matematica_SM_M_tehnologic_Simulare_XII_Subiect_LRO.pdf",
+   "filename": "2022_E_c_Matematica_SM_M_tehnologic_Simulare_XII_Subiect_LRO.pdf",
+   "bytes": 111396
+  },
+  {
+   "profile": "M3",
+   "year": 2022,
+   "session": "sesiune specială",
+   "variant": "03",
+   "id": "M3-2022-sesiune_specială-03",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2022_E_c_Matematica_SS_M_tehnologic_Subiect_03_LRO.pdf",
+   "filename": "2022_E_c_Matematica_SS_M_tehnologic_Subiect_03_LRO.pdf",
+   "bytes": 103510
+  },
+  {
+   "profile": "M3",
+   "year": 2021,
+   "session": "sesiunea 1",
+   "variant": "02",
+   "id": "M3-2021-sesiunea_1-02",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2021_E_c_Matematica_S1_M_tehnologic_Subiect_02_LRO.pdf",
+   "filename": "2021_E_c_Matematica_S1_M_tehnologic_Subiect_02_LRO.pdf",
+   "bytes": 108688
+  },
+  {
+   "profile": "M3",
+   "year": 2021,
+   "session": "sesiunea 2",
+   "variant": "04",
+   "id": "M3-2021-sesiunea_2-04",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2021_E_c_Matematica_S2_M_tehnologic_Subiect_04_LRO.pdf",
+   "filename": "2021_E_c_Matematica_S2_M_tehnologic_Subiect_04_LRO.pdf",
+   "bytes": 105407
+  },
+  {
+   "profile": "M3",
+   "year": 2021,
+   "session": "model",
+   "variant": null,
+   "id": "M3-2021-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2021_E_c_Matematica_SM_M_tehnologic_Model_Subiect_LRO.pdf",
+   "filename": "2021_E_c_Matematica_SM_M_tehnologic_Model_Subiect_LRO.pdf",
+   "bytes": 283461
+  },
+  {
+   "profile": "M3",
+   "year": 2021,
+   "session": "simulare",
+   "variant": null,
+   "id": "M3-2021-simulare-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2021_E_c_Matematica_SM_M_tehnologic_Simulare_XII_Subiect_LRO.pdf",
+   "filename": "2021_E_c_Matematica_SM_M_tehnologic_Simulare_XII_Subiect_LRO.pdf",
+   "bytes": 105276
+  },
+  {
+   "profile": "M3",
+   "year": 2020,
+   "session": "sesiunea 1",
+   "variant": "06",
+   "id": "M3-2020-sesiunea_1-06",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2020_E_c_Matematica_S1_M_tehnologic_Subiect_06_LRO.pdf",
+   "filename": "2020_E_c_Matematica_S1_M_tehnologic_Subiect_06_LRO.pdf",
+   "bytes": 107200
+  },
+  {
+   "profile": "M3",
+   "year": 2020,
+   "session": "sesiunea 2",
+   "variant": "03",
+   "id": "M3-2020-sesiunea_2-03",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2020_E_c_Matematica_S2_M_tehnologic_Subiect_03_LRO.pdf",
+   "filename": "2020_E_c_Matematica_S2_M_tehnologic_Subiect_03_LRO.pdf",
+   "bytes": 107125
+  },
+  {
+   "profile": "M3",
+   "year": 2020,
+   "session": "model",
+   "variant": null,
+   "id": "M3-2020-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2020_E_c_Matematica_SM_M_tehnologic_Model_Subiect_LRO.pdf",
+   "filename": "2020_E_c_Matematica_SM_M_tehnologic_Model_Subiect_LRO.pdf",
+   "bytes": 111273
+  },
+  {
+   "profile": "M3",
+   "year": 2020,
+   "session": "sesiune specială",
+   "variant": "01",
+   "id": "M3-2020-sesiune_specială-01",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2020_E_c_Matematica_SS_M_tehnologic_Subiect_01_LRO.pdf",
+   "filename": "2020_E_c_Matematica_SS_M_tehnologic_Subiect_01_LRO.pdf",
+   "bytes": 106082
+  },
+  {
+   "profile": "M3",
+   "year": 2019,
+   "session": "sesiunea 1",
+   "variant": "06",
+   "id": "M3-2019-sesiunea_1-06",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2019_E_c_Matematica_S1_M_tehnologic_Subiect_06_LRO.pdf",
+   "filename": "2019_E_c_Matematica_S1_M_tehnologic_Subiect_06_LRO.pdf",
+   "bytes": 114774
+  },
+  {
+   "profile": "M3",
+   "year": 2019,
+   "session": "sesiunea 2",
+   "variant": "07",
+   "id": "M3-2019-sesiunea_2-07",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2019_E_c_Matematica_S2_M_tehnologic_Subiect_07_LRO.pdf",
+   "filename": "2019_E_c_Matematica_S2_M_tehnologic_Subiect_07_LRO.pdf",
+   "bytes": 107242
+  },
+  {
+   "profile": "M3",
+   "year": 2019,
+   "session": "model",
+   "variant": null,
+   "id": "M3-2019-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2019_E_c_Matematica_SM_M_tehnologic_Model_Subiect_LRO.pdf",
+   "filename": "2019_E_c_Matematica_SM_M_tehnologic_Model_Subiect_LRO.pdf",
+   "bytes": 120116
+  },
+  {
+   "profile": "M3",
+   "year": 2019,
+   "session": "simulare",
+   "variant": null,
+   "id": "M3-2019-simulare-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2019_E_c_Matematica_SM_M_tehnologic_Simulare_XII_Subiect_LRO.pdf",
+   "filename": "2019_E_c_Matematica_SM_M_tehnologic_Simulare_XII_Subiect_LRO.pdf",
+   "bytes": 104346
+  },
+  {
+   "profile": "M3",
+   "year": 2019,
+   "session": "sesiune specială",
+   "variant": "08",
+   "id": "M3-2019-sesiune_specială-08",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2019_E_c_Matematica_SS_M_tehnologic_Subiect_08_LRO.pdf",
+   "filename": "2019_E_c_Matematica_SS_M_tehnologic_Subiect_08_LRO.pdf",
+   "bytes": 112365
+  },
+  {
+   "profile": "M3",
+   "year": 2018,
+   "session": "sesiunea 2",
+   "variant": "09",
+   "id": "M3-2018-sesiunea_2-09",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2018_E_c_Matematica_S2_M_tehnologic_Subiect_09_LRO.pdf",
+   "filename": "2018_E_c_Matematica_S2_M_tehnologic_Subiect_09_LRO.pdf",
+   "bytes": 109248
+  },
+  {
+   "profile": "M3",
+   "year": 2018,
+   "session": "model",
+   "variant": null,
+   "id": "M3-2018-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2018_E_c_Matematica_SM_M_tehnologic_Model_Subiect_LRO.pdf",
+   "filename": "2018_E_c_Matematica_SM_M_tehnologic_Model_Subiect_LRO.pdf",
+   "bytes": 107094
+  },
+  {
+   "profile": "M3",
+   "year": 2018,
+   "session": "simulare",
+   "variant": null,
+   "id": "M3-2018-simulare-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2018_E_c_Matematica_SM_M_tehnologic_Simulare_XII_Subiect_LRO.pdf",
+   "filename": "2018_E_c_Matematica_SM_M_tehnologic_Simulare_XII_Subiect_LRO.pdf",
+   "bytes": 53058
+  },
+  {
+   "profile": "M3",
+   "year": 2018,
+   "session": "sesiune specială",
+   "variant": "03",
+   "id": "M3-2018-sesiune_specială-03",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2018_E_c_Matematica_SS_M_tehnologic_Subiect_03_LRO.pdf",
+   "filename": "2018_E_c_Matematica_SS_M_tehnologic_Subiect_03_LRO.pdf",
+   "bytes": 110881
+  },
+  {
+   "profile": "M3",
+   "year": 2017,
+   "session": "sesiunea 1",
+   "variant": "02",
+   "id": "M3-2017-sesiunea_1-02",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2017_E_c_Matematica_S1_M_tehnologic_Subiect_02_LRO.pdf",
+   "filename": "2017_E_c_Matematica_S1_M_tehnologic_Subiect_02_LRO.pdf",
+   "bytes": 54113
+  },
+  {
+   "profile": "M3",
+   "year": 2017,
+   "session": "sesiunea 2",
+   "variant": "10",
+   "id": "M3-2017-sesiunea_2-10",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2017_E_c_Matematica_S2_M_tehnologic_Subiect_10_LRO.pdf",
+   "filename": "2017_E_c_Matematica_S2_M_tehnologic_Subiect_10_LRO.pdf",
+   "bytes": 53399
+  },
+  {
+   "profile": "M3",
+   "year": 2017,
+   "session": "model",
+   "variant": null,
+   "id": "M3-2017-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2017_E_c_Matematica_SM_M_tehnologic_Model_Subiect_LRO.pdf",
+   "filename": "2017_E_c_Matematica_SM_M_tehnologic_Model_Subiect_LRO.pdf",
+   "bytes": 114399
+  },
+  {
+   "profile": "M3",
+   "year": 2017,
+   "session": "simulare",
+   "variant": null,
+   "id": "M3-2017-simulare-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2017_E_c_Matematica_SM_M_tehnologic_Simulare_XII_Subiect_LRO.pdf",
+   "filename": "2017_E_c_Matematica_SM_M_tehnologic_Simulare_XII_Subiect_LRO.pdf",
+   "bytes": 52576
+  },
+  {
+   "profile": "M3",
+   "year": 2017,
+   "session": "sesiune specială",
+   "variant": "04",
+   "id": "M3-2017-sesiune_specială-04",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2017_E_c_Matematica_SS_M_tehnologic_Subiect_04_LRO.pdf",
+   "filename": "2017_E_c_Matematica_SS_M_tehnologic_Subiect_04_LRO.pdf",
+   "bytes": 56076
+  },
+  {
+   "profile": "M3",
+   "year": 2016,
+   "session": "sesiunea 1",
+   "variant": "08",
+   "id": "M3-2016-sesiunea_1-08",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2016_E_c_Matematica_S1_M_tehnologic_Subiect_08_LRO.pdf",
+   "filename": "2016_E_c_Matematica_S1_M_tehnologic_Subiect_08_LRO.pdf",
+   "bytes": 53894
+  },
+  {
+   "profile": "M3",
+   "year": 2016,
+   "session": "sesiunea 2",
+   "variant": "02",
+   "id": "M3-2016-sesiunea_2-02",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2016_E_c_Matematica_S2_M_tehnologic_Subiect_02_LRO.pdf",
+   "filename": "2016_E_c_Matematica_S2_M_tehnologic_Subiect_02_LRO.pdf",
+   "bytes": 55838
+  },
+  {
+   "profile": "M3",
+   "year": 2016,
+   "session": "model",
+   "variant": null,
+   "id": "M3-2016-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2016_E_c_Matematica_SM_M_tehnologic_Model_Subiect_LRO.pdf",
+   "filename": "2016_E_c_Matematica_SM_M_tehnologic_Model_Subiect_LRO.pdf",
+   "bytes": 110791
+  },
+  {
+   "profile": "M3",
+   "year": 2016,
+   "session": "simulare",
+   "variant": null,
+   "id": "M3-2016-simulare-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2016_E_c_Matematica_SM_M_tehnologic_Simulare_XII_Subiect_LRO.pdf",
+   "filename": "2016_E_c_Matematica_SM_M_tehnologic_Simulare_XII_Subiect_LRO.pdf",
+   "bytes": 57974
+  },
+  {
+   "profile": "M3",
+   "year": 2016,
+   "session": "sesiune specială",
+   "variant": "01",
+   "id": "M3-2016-sesiune_specială-01",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2016_E_c_Matematica_SS_M_tehnologic_Subiect_01_LRO.pdf",
+   "filename": "2016_E_c_Matematica_SS_M_tehnologic_Subiect_01_LRO.pdf",
+   "bytes": 55054
+  },
+  {
+   "profile": "M3",
+   "year": 2015,
+   "session": "sesiunea 1",
+   "variant": "08",
+   "id": "M3-2015-sesiunea_1-08",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2015_E_c_Matematica_S1_M_tehnologic_Subiect_08_LRO.pdf",
+   "filename": "2015_E_c_Matematica_S1_M_tehnologic_Subiect_08_LRO.pdf",
+   "bytes": 55751
+  },
+  {
+   "profile": "M3",
+   "year": 2015,
+   "session": "sesiunea 2",
+   "variant": "01",
+   "id": "M3-2015-sesiunea_2-01",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2015_E_c_Matematica_S2_M_tehnologic_Subiect_01_LRO.pdf",
+   "filename": "2015_E_c_Matematica_S2_M_tehnologic_Subiect_01_LRO.pdf",
+   "bytes": 57995
+  },
+  {
+   "profile": "M3",
+   "year": 2015,
+   "session": "model",
+   "variant": null,
+   "id": "M3-2015-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2015_E_c_Matematica_SM_M_tehnologic_Model_Subiect_LRO.pdf",
+   "filename": "2015_E_c_Matematica_SM_M_tehnologic_Model_Subiect_LRO.pdf",
+   "bytes": 104090
+  },
+  {
+   "profile": "M3",
+   "year": 2015,
+   "session": "simulare",
+   "variant": null,
+   "id": "M3-2015-simulare-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2015_E_c_Matematica_SM_M_tehnologic_Simulare_XII_Subiect_LRO.pdf",
+   "filename": "2015_E_c_Matematica_SM_M_tehnologic_Simulare_XII_Subiect_LRO.pdf",
+   "bytes": 53658
+  },
+  {
+   "profile": "M3",
+   "year": 2015,
+   "session": "sesiune specială",
+   "variant": "09",
+   "id": "M3-2015-sesiune_specială-09",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 teh/2015_E_c_Matematica_SS_M_tehnologic_Subiect_09_LRO.pdf",
+   "filename": "2015_E_c_Matematica_SS_M_tehnologic_Subiect_09_LRO.pdf",
+   "bytes": 55598
+  },
+  {
+   "profile": "M_PED",
+   "year": 2026,
+   "session": "sesiunea principală",
+   "variant": "03",
+   "id": "M_PED-2026-sesiunea_principală-03",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/E_c_matematica_M_pedagogic_2026_var_03_LRO.pdf",
+   "filename": "E_c_matematica_M_pedagogic_2026_var_03_LRO.pdf",
+   "bytes": 103900
+  },
+  {
+   "profile": "M_PED",
+   "year": 2026,
+   "session": "sesiunea principală",
+   "variant": "04",
+   "id": "M_PED-2026-sesiunea_principală-04",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/E_c_matematica_M_pedagogic_2026_var_04_LRO.pdf",
+   "filename": "E_c_matematica_M_pedagogic_2026_var_04_LRO.pdf",
+   "bytes": 105793
+  },
+  {
+   "profile": "M_PED",
+   "year": 2026,
+   "session": "sesiunea principală",
+   "variant": "07",
+   "id": "M_PED-2026-sesiunea_principală-07",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/E_c_matematica_M_pedagogic_2026_var_07_LRO.pdf",
+   "filename": "E_c_matematica_M_pedagogic_2026_var_07_LRO.pdf",
+   "bytes": 105565
+  },
+  {
+   "profile": "M_PED",
+   "year": 2026,
+   "session": "model",
+   "variant": null,
+   "id": "M_PED-2026-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/E_c_matematica_M_pedagogic_2026_var_model.pdf",
+   "filename": "E_c_matematica_M_pedagogic_2026_var_model.pdf",
+   "bytes": 108589
+  },
+  {
+   "profile": "M_PED",
+   "year": 2025,
+   "session": "sesiunea principală",
+   "variant": "01",
+   "id": "M_PED-2025-sesiunea_principală-01",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/E_c_matematica_M_pedagogic_2025_var_01_LRO.pdf",
+   "filename": "E_c_matematica_M_pedagogic_2025_var_01_LRO.pdf",
+   "bytes": 103523
+  },
+  {
+   "profile": "M_PED",
+   "year": 2025,
+   "session": "sesiunea principală",
+   "variant": "03",
+   "id": "M_PED-2025-sesiunea_principală-03",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/E_c_matematica_M_pedagogic_2025_var_03_LRO.pdf",
+   "filename": "E_c_matematica_M_pedagogic_2025_var_03_LRO.pdf",
+   "bytes": 106711
+  },
+  {
+   "profile": "M_PED",
+   "year": 2025,
+   "session": "model",
+   "variant": null,
+   "id": "M_PED-2025-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/E_c_matematica_M_pedagogic_2025_var_model.pdf",
+   "filename": "E_c_matematica_M_pedagogic_2025_var_model.pdf",
+   "bytes": 109673
+  },
+  {
+   "profile": "M_PED",
+   "year": 2024,
+   "session": "sesiunea 1",
+   "variant": "10",
+   "id": "M_PED-2024-sesiunea_1-10",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2024_E_c_Matematica_S1_M_pedagogic_Subiect_10_LRO.pdf",
+   "filename": "2024_E_c_Matematica_S1_M_pedagogic_Subiect_10_LRO.pdf",
+   "bytes": 103937
+  },
+  {
+   "profile": "M_PED",
+   "year": 2024,
+   "session": "model",
+   "variant": null,
+   "id": "M_PED-2024-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2024_E_c_Matematica_SM_M_pedagogic_Model_Subiect_LRO.pdf",
+   "filename": "2024_E_c_Matematica_SM_M_pedagogic_Model_Subiect_LRO.pdf",
+   "bytes": 210748
+  },
+  {
+   "profile": "M_PED",
+   "year": 2024,
+   "session": "simulare",
+   "variant": null,
+   "id": "M_PED-2024-simulare-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2024_E_c_Matematica_SM_M_pedagogic_Simulare_XII_Subiect_LRO.pdf",
+   "filename": "2024_E_c_Matematica_SM_M_pedagogic_Simulare_XII_Subiect_LRO.pdf",
+   "bytes": 219462
+  },
+  {
+   "profile": "M_PED",
+   "year": 2024,
+   "session": "sesiune specială",
+   "variant": "09",
+   "id": "M_PED-2024-sesiune_specială-09",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2024_E_c_Matematica_SS_M_pedagogic_Subiect_09_LRO.pdf",
+   "filename": "2024_E_c_Matematica_SS_M_pedagogic_Subiect_09_LRO.pdf",
+   "bytes": 104081
+  },
+  {
+   "profile": "M_PED",
+   "year": 2024,
+   "session": "sesiunea principală",
+   "variant": "03",
+   "id": "M_PED-2024-sesiunea_principală-03",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/E_c_matematica_M_pedagogic_2024_var_03_LRO.pdf",
+   "filename": "E_c_matematica_M_pedagogic_2024_var_03_LRO.pdf",
+   "bytes": 105861
+  },
+  {
+   "profile": "M_PED",
+   "year": 2023,
+   "session": "sesiunea 1",
+   "variant": "01",
+   "id": "M_PED-2023-sesiunea_1-01",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2023_E_c_Matematica_S1_M_pedagogic_Subiect_01_LRO.pdf",
+   "filename": "2023_E_c_Matematica_S1_M_pedagogic_Subiect_01_LRO.pdf",
+   "bytes": 105403
+  },
+  {
+   "profile": "M_PED",
+   "year": 2023,
+   "session": "sesiunea 2",
+   "variant": "07",
+   "id": "M_PED-2023-sesiunea_2-07",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2023_E_c_Matematica_S2_M_pedagogic_Subiect_07_LRO.pdf",
+   "filename": "2023_E_c_Matematica_S2_M_pedagogic_Subiect_07_LRO.pdf",
+   "bytes": 105618
+  },
+  {
+   "profile": "M_PED",
+   "year": 2023,
+   "session": "model",
+   "variant": null,
+   "id": "M_PED-2023-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2023_E_c_Matematica_SM_M_pedagogic_Model_Subiect_LRO.pdf",
+   "filename": "2023_E_c_Matematica_SM_M_pedagogic_Model_Subiect_LRO.pdf",
+   "bytes": 212702
+  },
+  {
+   "profile": "M_PED",
+   "year": 2023,
+   "session": "simulare",
+   "variant": null,
+   "id": "M_PED-2023-simulare-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2023_E_c_Matematica_SM_M_pedagogic_Simulare_XII_Subiect_LRO.pdf",
+   "filename": "2023_E_c_Matematica_SM_M_pedagogic_Simulare_XII_Subiect_LRO.pdf",
+   "bytes": 178349
+  },
+  {
+   "profile": "M_PED",
+   "year": 2022,
+   "session": "sesiunea 1",
+   "variant": "01",
+   "id": "M_PED-2022-sesiunea_1-01",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2022_E_c_Matematica_S1_M_pedagogic_Subiect_01_LRO.pdf",
+   "filename": "2022_E_c_Matematica_S1_M_pedagogic_Subiect_01_LRO.pdf",
+   "bytes": 104770
+  },
+  {
+   "profile": "M_PED",
+   "year": 2022,
+   "session": "sesiunea 2",
+   "variant": "07",
+   "id": "M_PED-2022-sesiunea_2-07",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2022_E_c_Matematica_S2_M_pedagogic_Subiect_07_LRO.pdf",
+   "filename": "2022_E_c_Matematica_S2_M_pedagogic_Subiect_07_LRO.pdf",
+   "bytes": 103642
+  },
+  {
+   "profile": "M_PED",
+   "year": 2022,
+   "session": "model",
+   "variant": null,
+   "id": "M_PED-2022-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2022_E_c_Matematica_SM_M_pedagogic_Model_Subiect_LRO.pdf",
+   "filename": "2022_E_c_Matematica_SM_M_pedagogic_Model_Subiect_LRO.pdf",
+   "bytes": 216629
+  },
+  {
+   "profile": "M_PED",
+   "year": 2022,
+   "session": "simulare",
+   "variant": null,
+   "id": "M_PED-2022-simulare-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2022_E_c_Matematica_SM_M_pedagogic_Simulare_XII_Subiect_LRO.pdf",
+   "filename": "2022_E_c_Matematica_SM_M_pedagogic_Simulare_XII_Subiect_LRO.pdf",
+   "bytes": 211800
+  },
+  {
+   "profile": "M_PED",
+   "year": 2022,
+   "session": "sesiune specială",
+   "variant": "03",
+   "id": "M_PED-2022-sesiune_specială-03",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2022_E_c_Matematica_SS_M_pedagogic_Subiect_03_LRO.pdf",
+   "filename": "2022_E_c_Matematica_SS_M_pedagogic_Subiect_03_LRO.pdf",
+   "bytes": 104368
+  },
+  {
+   "profile": "M_PED",
+   "year": 2021,
+   "session": "sesiunea 1",
+   "variant": "02",
+   "id": "M_PED-2021-sesiunea_1-02",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2021_E_c_Matematica_S1_M_pedagogic_Subiect_02_LRO.pdf",
+   "filename": "2021_E_c_Matematica_S1_M_pedagogic_Subiect_02_LRO.pdf",
+   "bytes": 112918
+  },
+  {
+   "profile": "M_PED",
+   "year": 2021,
+   "session": "sesiunea 2",
+   "variant": "04",
+   "id": "M_PED-2021-sesiunea_2-04",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2021_E_c_Matematica_S2_M_pedagogic_Subiect_04_LRO.pdf",
+   "filename": "2021_E_c_Matematica_S2_M_pedagogic_Subiect_04_LRO.pdf",
+   "bytes": 103776
+  },
+  {
+   "profile": "M_PED",
+   "year": 2021,
+   "session": "model",
+   "variant": null,
+   "id": "M_PED-2021-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2021_E_c_Matematica_SM_M_pedagogic_Model_Subiect_LRO.pdf",
+   "filename": "2021_E_c_Matematica_SM_M_pedagogic_Model_Subiect_LRO.pdf",
+   "bytes": 265229
+  },
+  {
+   "profile": "M_PED",
+   "year": 2021,
+   "session": "simulare",
+   "variant": null,
+   "id": "M_PED-2021-simulare-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2021_E_c_Matematica_SM_M_pedagogic_Simulare_XII_Subiect_LRO.pdf",
+   "filename": "2021_E_c_Matematica_SM_M_pedagogic_Simulare_XII_Subiect_LRO.pdf",
+   "bytes": 109395
+  },
+  {
+   "profile": "M_PED",
+   "year": 2020,
+   "session": "sesiunea 1",
+   "variant": "06",
+   "id": "M_PED-2020-sesiunea_1-06",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2020_E_c_Matematica_S1_M_pedagogic_Subiect_06_LRO.pdf",
+   "filename": "2020_E_c_Matematica_S1_M_pedagogic_Subiect_06_LRO.pdf",
+   "bytes": 109640
+  },
+  {
+   "profile": "M_PED",
+   "year": 2020,
+   "session": "sesiunea 2",
+   "variant": "03",
+   "id": "M_PED-2020-sesiunea_2-03",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2020_E_c_Matematica_S2_M_pedagogic_Subiect_03_LRO.pdf",
+   "filename": "2020_E_c_Matematica_S2_M_pedagogic_Subiect_03_LRO.pdf",
+   "bytes": 114507
+  },
+  {
+   "profile": "M_PED",
+   "year": 2020,
+   "session": "model",
+   "variant": null,
+   "id": "M_PED-2020-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2020_E_c_Matematica_SM_M_pedagogic_Model_Subiect_LRO.pdf",
+   "filename": "2020_E_c_Matematica_SM_M_pedagogic_Model_Subiect_LRO.pdf",
+   "bytes": 113714
+  },
+  {
+   "profile": "M_PED",
+   "year": 2020,
+   "session": "sesiune specială",
+   "variant": "01",
+   "id": "M_PED-2020-sesiune_specială-01",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2020_E_c_Matematica_SS_M_pedagogic_Subiect_01_LRO.pdf",
+   "filename": "2020_E_c_Matematica_SS_M_pedagogic_Subiect_01_LRO.pdf",
+   "bytes": 116143
+  },
+  {
+   "profile": "M_PED",
+   "year": 2019,
+   "session": "sesiunea 1",
+   "variant": "06",
+   "id": "M_PED-2019-sesiunea_1-06",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2019_E_c_Matematica_S1_M_pedagogic_Subiect_06_LRO.pdf",
+   "filename": "2019_E_c_Matematica_S1_M_pedagogic_Subiect_06_LRO.pdf",
+   "bytes": 108574
+  },
+  {
+   "profile": "M_PED",
+   "year": 2019,
+   "session": "sesiunea 2",
+   "variant": "07",
+   "id": "M_PED-2019-sesiunea_2-07",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2019_E_c_Matematica_S2_M_pedagogic_Subiect_07_LRO.pdf",
+   "filename": "2019_E_c_Matematica_S2_M_pedagogic_Subiect_07_LRO.pdf",
+   "bytes": 109419
+  },
+  {
+   "profile": "M_PED",
+   "year": 2019,
+   "session": "model",
+   "variant": null,
+   "id": "M_PED-2019-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2019_E_c_Matematica_SM_M_pedagogic_Model_Subiect_LRO.pdf",
+   "filename": "2019_E_c_Matematica_SM_M_pedagogic_Model_Subiect_LRO.pdf",
+   "bytes": 110254
+  },
+  {
+   "profile": "M_PED",
+   "year": 2019,
+   "session": "simulare",
+   "variant": null,
+   "id": "M_PED-2019-simulare-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2019_E_c_Matematica_SM_M_pedagogic_Simulare_XII_Subiect_LRO.pdf",
+   "filename": "2019_E_c_Matematica_SM_M_pedagogic_Simulare_XII_Subiect_LRO.pdf",
+   "bytes": 111515
+  },
+  {
+   "profile": "M_PED",
+   "year": 2018,
+   "session": "sesiunea 1",
+   "variant": "02",
+   "id": "M_PED-2018-sesiunea_1-02",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2018_E_c_Matematica_S1_M_pedagogic_Subiect_02_LRO.pdf",
+   "filename": "2018_E_c_Matematica_S1_M_pedagogic_Subiect_02_LRO.pdf",
+   "bytes": 107906
+  },
+  {
+   "profile": "M_PED",
+   "year": 2018,
+   "session": "sesiunea 2",
+   "variant": "09",
+   "id": "M_PED-2018-sesiunea_2-09",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2018_E_c_Matematica_S2_M_pedagogic_Subiect_09_LRO.pdf",
+   "filename": "2018_E_c_Matematica_S2_M_pedagogic_Subiect_09_LRO.pdf",
+   "bytes": 110806
+  },
+  {
+   "profile": "M_PED",
+   "year": 2018,
+   "session": "model",
+   "variant": null,
+   "id": "M_PED-2018-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2018_E_c_Matematica_SM_M_pedagogic_Model_Subiect_LRO.pdf",
+   "filename": "2018_E_c_Matematica_SM_M_pedagogic_Model_Subiect_LRO.pdf",
+   "bytes": 105015
+  },
+  {
+   "profile": "M_PED",
+   "year": 2018,
+   "session": "simulare",
+   "variant": null,
+   "id": "M_PED-2018-simulare-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2018_E_c_Matematica_SM_M_pedagogic_Simulare_XII_Subiect_LRO.pdf",
+   "filename": "2018_E_c_Matematica_SM_M_pedagogic_Simulare_XII_Subiect_LRO.pdf",
+   "bytes": 53130
+  },
+  {
+   "profile": "M_PED",
+   "year": 2017,
+   "session": "sesiunea 1",
+   "variant": "02",
+   "id": "M_PED-2017-sesiunea_1-02",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2017_E_c_Matematica_S1_M_pedagogic_Subiect_02_LRO.pdf",
+   "filename": "2017_E_c_Matematica_S1_M_pedagogic_Subiect_02_LRO.pdf",
+   "bytes": 53770
+  },
+  {
+   "profile": "M_PED",
+   "year": 2017,
+   "session": "sesiunea 2",
+   "variant": "10",
+   "id": "M_PED-2017-sesiunea_2-10",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2017_E_c_Matematica_S2_M_pedagogic_Subiect_10_LRO.pdf",
+   "filename": "2017_E_c_Matematica_S2_M_pedagogic_Subiect_10_LRO.pdf",
+   "bytes": 55109
+  },
+  {
+   "profile": "M_PED",
+   "year": 2017,
+   "session": "model",
+   "variant": null,
+   "id": "M_PED-2017-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2017_E_c_Matematica_SM_M_pedagogic_Model_Subiect_LRO.pdf",
+   "filename": "2017_E_c_Matematica_SM_M_pedagogic_Model_Subiect_LRO.pdf",
+   "bytes": 106868
+  },
+  {
+   "profile": "M_PED",
+   "year": 2017,
+   "session": "simulare",
+   "variant": null,
+   "id": "M_PED-2017-simulare-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2017_E_c_Matematica_SM_M_pedagogic_Simulare_XII_Subiect_LRO.pdf",
+   "filename": "2017_E_c_Matematica_SM_M_pedagogic_Simulare_XII_Subiect_LRO.pdf",
+   "bytes": 55731
+  },
+  {
+   "profile": "M_PED",
+   "year": 2016,
+   "session": "sesiunea 1",
+   "variant": "08",
+   "id": "M_PED-2016-sesiunea_1-08",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2016_E_c_Matematica_S1_M_pedagogic_Subiect_08_LRO.pdf",
+   "filename": "2016_E_c_Matematica_S1_M_pedagogic_Subiect_08_LRO.pdf",
+   "bytes": 55427
+  },
+  {
+   "profile": "M_PED",
+   "year": 2016,
+   "session": "sesiunea 2",
+   "variant": "02",
+   "id": "M_PED-2016-sesiunea_2-02",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2016_E_c_Matematica_S2_M_pedagogic_Subiect_02_LRO.pdf",
+   "filename": "2016_E_c_Matematica_S2_M_pedagogic_Subiect_02_LRO.pdf",
+   "bytes": 55161
+  },
+  {
+   "profile": "M_PED",
+   "year": 2016,
+   "session": "model",
+   "variant": null,
+   "id": "M_PED-2016-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2016_E_c_Matematica_SM_M_pedagogic_Model_Subiect_LRO.pdf",
+   "filename": "2016_E_c_Matematica_SM_M_pedagogic_Model_Subiect_LRO.pdf",
+   "bytes": 107223
+  },
+  {
+   "profile": "M_PED",
+   "year": 2016,
+   "session": "simulare",
+   "variant": null,
+   "id": "M_PED-2016-simulare-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2016_E_c_Matematica_SM_M_pedagogic_Simulare_XII_Subiect_LRO.pdf",
+   "filename": "2016_E_c_Matematica_SM_M_pedagogic_Simulare_XII_Subiect_LRO.pdf",
+   "bytes": 56602
+  },
+  {
+   "profile": "M_PED",
+   "year": 2015,
+   "session": "sesiunea 1",
+   "variant": "08",
+   "id": "M_PED-2015-sesiunea_1-08",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2015_E_c_Matematica_S1_M_pedagogic_Subiect_08_LRO.pdf",
+   "filename": "2015_E_c_Matematica_S1_M_pedagogic_Subiect_08_LRO.pdf",
+   "bytes": 53336
+  },
+  {
+   "profile": "M_PED",
+   "year": 2015,
+   "session": "sesiunea 2",
+   "variant": "01",
+   "id": "M_PED-2015-sesiunea_2-01",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2015_E_c_Matematica_S2_M_pedagogic_Subiect_01_LRO.pdf",
+   "filename": "2015_E_c_Matematica_S2_M_pedagogic_Subiect_01_LRO.pdf",
+   "bytes": 55887
+  },
+  {
+   "profile": "M_PED",
+   "year": 2015,
+   "session": "model",
+   "variant": null,
+   "id": "M_PED-2015-model-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2015_E_c_Matematica_SM_M_pedagogic_Model_Subiect_LRO.pdf",
+   "filename": "2015_E_c_Matematica_SM_M_pedagogic_Model_Subiect_LRO.pdf",
+   "bytes": 103012
+  },
+  {
+   "profile": "M_PED",
+   "year": 2015,
+   "session": "simulare",
+   "variant": null,
+   "id": "M_PED-2015-simulare-x",
+   "path": "BACVARIANTS/BAC_PREV_SUBJECTS/m3 peda/2015_E_c_Matematica_SM_M_pedagogic_Simulare_XII_Subiect_LRO.pdf",
+   "filename": "2015_E_c_Matematica_SM_M_pedagogic_Simulare_XII_Subiect_LRO.pdf",
+   "bytes": 55102
+  }
+ ],
+ "skipped": [
+  {
+   "filename": "E_c_matematica_M_mate-info_2025_var_03_LRO (1).pdf",
+   "reason": "duplicate scan"
+  },
+  {
+   "filename": "E_c_matematica_M_pedagogic_2025_var_03_LRO (1).pdf",
+   "reason": "duplicate scan"
+  },
+  {
+   "filename": "2018_E_c_Matematica_S1_M_tehnologic_Subiect_02_LRO.pdf",
+   "reason": "barem, not a subject paper"
+  },
+  {
+   "filename": "E_c_matematica_M_tehnologic_2025_var_03_LRO (1).pdf",
+   "reason": "duplicate scan"
+  }
+ ]
+}

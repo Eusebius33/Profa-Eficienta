@@ -23,7 +23,7 @@
             <div class="space-y-2 overflow-y-auto">
                 {% for conv in conversations %}
             
-                    <div class="relative flex items-center gap-1 bg-slate-50 hover:bg-slate-400 transition text-slate-950 rounded-xl">
+                    <div class="row-slide relative flex items-center gap-1 border border-transparent bg-slate-50 hover:bg-white text-slate-950 rounded-xl">
             
                         <a href="/mode3/{{ conv['id'] }}" class="flex-1 px-3 py-2 truncate">
                             {{ conv["title"] }}
@@ -31,8 +31,9 @@
             
                         <button
                             type="button"
-                            onclick="toggleConversationMenu(event, {{ conv['id'] }})"
-                            class="px-2 py-2 rounded-lg hover:bg-slate-300 font-bold"
+                            data-conv-id="{{ conv['id'] }}"
+                            onclick="toggleConversationMenu(event, this.dataset.convId)"
+                            class="press px-2 py-2 rounded-lg hover:bg-slate-300 font-bold"
                             aria-label="Conversation menu">
                             ⋮
                         </button>
@@ -49,7 +50,7 @@
                                 <input type="hidden" name="new_title">
                                 <button
                                     type="submit"
-                                    class="w-full text-left px-3 py-2 text-sm hover:bg-slate-100">
+                                    class="press w-full text-left px-3 py-2 text-sm hover:bg-slate-100">
                                     Rename
                                 </button>
                             </form>
@@ -60,7 +61,7 @@
                                 onsubmit="return confirm('Are you sure you want to delete this conversation?');">
                                 <button
                                     type="submit"
-                                    class="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50">
+                                    class="press w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50">
                                     Delete
                                 </button>
                             </form>
@@ -107,94 +108,81 @@
 
             <div class="flex-1 bg-white rounded-3xl border border-slate-700 p-6 flex flex-col shadow-inner min-h-0 overflow-hidden">
 
-                <form id="exportForm" method="post" class="flex-1 flex flex-col min-h-0">
+                <div id="exportSelection" class="flex-1 flex flex-col min-h-0">
 
                 <!-- EXPORT TOOLBAR -->
                 {% if messages %}
-                <div class="flex flex-wrap items-center justify-between gap-2 mb-2 text-xs flex-shrink-0">
-                    <div class="flex items-center gap-3">
-                        <button type="button" onclick="setAllExportChecks(true)" class="text-cyan-700 hover:text-cyan-900 underline">Selectează tot</button>
-                        <button type="button" onclick="setAllExportChecks(false)" class="text-slate-500 hover:text-slate-800 underline">Deselectează tot</button>
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-2 text-xs flex-shrink-0">
+                        <div class="flex flex-wrap items-center gap-3">
+                            <span id="sheetCount" class="font-semibold text-cyan-700"></span>
+                            <button type="button" onclick="ExportSheet.setAll(true)" class="press text-cyan-700 hover:text-cyan-900 underline" data-i18n="select_all">Selectează tot</button>
+                            <button type="button" onclick="ExportSheet.setAll(false)" class="press text-slate-500 hover:text-slate-800 underline" data-i18n="deselect_all">Deselectează tot</button>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="ExportSheet.open('pdf')" class="press bg-slate-800 hover:bg-slate-700 transition text-white font-semibold px-3 py-1.5 rounded-lg">📄 <span data-i18n="download_pdf">Descarcă PDF</span></button>
+                            <button type="button" onclick="ExportSheet.open('docx')" class="press bg-slate-800 hover:bg-slate-700 transition text-white font-semibold px-3 py-1.5 rounded-lg">📝 <span data-i18n="download_docx">Descarcă DOCX</span></button>
+                        </div>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <button type="submit" formaction="/conversation/{{ conversation_id }}/export/pdf" class="bg-slate-800 hover:bg-slate-700 transition text-white font-semibold px-3 py-1.5 rounded-lg">📄 PDF</button>
-                        <button type="submit" formaction="/conversation/{{ conversation_id }}/export/docx" class="bg-slate-800 hover:bg-slate-700 transition text-white font-semibold px-3 py-1.5 rounded-lg">📝 DOCX</button>
-                    </div>
-                </div>
                 {% endif %}
 
                 <!-- CHAT -->
                 <div id="chat" class="flex-1 overflow-y-auto space-y-4 pr-2 min-h-0 mb-2">
+
                     {% for message in messages %}
-                        {% if message["role"] == "user" %}
-                            <div class="flex items-start justify-end gap-2">
-                                <div class="bg-cyan-100 p-4 rounded-2xl text-slate-900 w-fit max-w-xl border border-cyan-200 whitespace-pre-wrap break-words">
-                                    {{ message["content"] | safe }}
-                                </div>
-                                <input type="checkbox" name="message_ids" value="{{ message['id'] }}" checked title="Include în export" class="accent-cyan-500 mt-4 flex-shrink-0">
-                            </div>
-                        {% else %}
-                            <div class="flex items-start gap-2">
-                                <input type="checkbox" name="message_ids" value="{{ message['id'] }}" checked title="Include în export" class="accent-cyan-500 mt-5 flex-shrink-0">
-                                <div class="bg-slate-100 p-5 rounded-2xl max-w-3xl border border-slate-200 overflow-hidden relative group">
-                                <!-- COPY BUTTON -->
-                                <button type="button" class="copy-math-btn absolute top-3 right-3 text-slate-500 hover:text-slate-900 bg-slate-200 hover:bg-slate-300 p-1.5 rounded-lg transition flex items-center gap-1"
-                                        onclick="copyMathToClipboard(this, this.parentElement.querySelector('.msg-content-container'))" title="Copiaza">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                                </button>
-
-                                <h3 class="font-bold text-slate-900 mb-3">Test generat</h3>
-                                <div class="text-slate-700 text-sm leading-relaxed whitespace-pre-wrap break-words max-w-full overflow-x-auto msg-content-container">
-                                    <div class="math-content">{{ message["content"] }}</div>
-                                </div>
-
-                                <!-- PER-MESSAGE EXPORT -->
-                                <div class="mt-4 flex flex-wrap gap-2 border-t border-slate-200 pt-3">
-                                    <a href="/message/{{ message['id'] }}/export/pdf"
-                                       class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-1.5 px-3 rounded-lg text-xs">
-                                        <span data-i18n="download_msg_pdf">Descarcă PDF</span>
-                                    </a>
-                                    <a href="/message/{{ message['id'] }}/export/docx"
-                                       class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-1.5 px-3 rounded-lg text-xs">
-                                        <span data-i18n="download_msg_docx">Descarcă DOCX</span>
-                                    </a>
-                                </div>
-                                </div>
-                            </div>
-                        {% endif %}
+                        {% include "partials/mode3_message.html" %}
                     {% endfor %}
+
+                    {# Model not read yet: hold the answer's place rather than
+                       blocking the navigation out of /menu. #}
+                    {% if bootstrap_url %}
+                        {% with label = t("ai_reading_model") %}
+                            {% include "partials/chat_skeleton.html" %}
+                        {% endwith %}
+                    {% endif %}
+
                 </div>
 
-                </form>
+                </div>
 
                 <!-- QUICK ACTIONS -->
                 <div class="flex flex-wrap justify-end gap-2 mt-auto mb-3 flex-shrink-0">
                     <button type="button" data-i18n="mode3_solve_test"
-                            onclick="solveGeneratedTest(this)"
-                            class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm">
+                            data-quick-action="solve_test"
+                            data-display="{{ t('qa_solve_test') }}"
+                            data-label="{{ t('ai_thinking') }}"
+                            {% if bootstrap_url %}disabled data-needs-transcription{% endif %}
+                            class="press bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition text-white font-bold py-2 px-4 rounded-xl text-sm">
                         Rezolvare test
                     </button>
-                
+
                     <button type="button" data-i18n="mode3_generate_similar"
-                            onclick="generateSimilarTest(this)"
-                            class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm">
+                            data-quick-action="generate_similar"
+                            data-display="{{ t('qa_similar') }}"
+                            data-label="{{ t('ai_thinking') }}"
+                            {% if bootstrap_url %}disabled data-needs-transcription{% endif %}
+                            class="press bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition text-white font-bold py-2 px-4 rounded-xl text-sm">
                         Generează similare
                     </button>
-                
+
                     <button type="button" data-i18n="mode3_generate_row2"
-                            onclick="generateSecondVersion(this)"
-                            class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm">
+                            data-quick-action="generate_row_2"
+                            data-display="{{ t('qa_row_two') }}"
+                            data-label="{{ t('ai_thinking') }}"
+                            {% if bootstrap_url %}disabled data-needs-transcription{% endif %}
+                            class="press bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition text-white font-bold py-2 px-4 rounded-xl text-sm">
                         Generează rand 2
                     </button>
                 </div>
-               
+
                 <!-- INPUT -->
-                <form id="chatForm" action="/mode3/{{ conversation_id }}" method="post" enctype="multipart/form-data" class="flex gap-3 flex-shrink-0">
+                <form id="chatForm" action="/mode3/{{ conversation_id }}" method="post" enctype="multipart/form-data"
+                      class="flex gap-3 flex-shrink-0" data-async-chat data-chat-target="#chat"
+                      {% if bootstrap_url %}data-chat-bootstrap="{{ bootstrap_url }}"{% endif %}>
                     <input type="hidden" id="actionType" name="action_type" value="normal">
                     <input type="hidden" id="exerciseCount" name="exercise_count" value="5">
 
                     <!-- TEXTAREA + INLINE ATTACH -->
-                    <div class="relative flex-1 min-w-0">
+                    <div class="composer-has-attach relative flex-1 min-w-0">
 
                         <textarea
                             id="promptInput"
@@ -202,7 +190,7 @@
                             rows="1"
                             data-i18n-placeholder="mode3_placeholder"
                             placeholder="{{ t('mode3_placeholder') }}"
-                            class="w-full text-white border border-slate-300 rounded-2xl p-4 pl-14 resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                            class="block w-full text-white border border-slate-300 rounded-2xl p-4 pr-16 resize-none field"
                         ></textarea>
 
                         <!-- The file input stays hidden; this button is the visible affordance. -->
@@ -212,17 +200,17 @@
                             type="button"
                             id="attachBtn"
                             onclick="document.getElementById('fileInput').click()"
-                            class="absolute left-3 bottom-3 text-slate-400 hover:text-cyan-500 transition p-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                            class="press absolute right-3 bottom-4 text-slate-400 hover:text-cyan-500 hover:bg-slate-100 transition p-2 rounded-xl field"
                             title="Atașează fișier"
                             data-i18n-title="attach_file"
                             aria-label="Atașează fișier">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
                         </button>
 
                         <!-- SELECTED FILE CHIP -->
-                        <div id="attachChip" class="hidden absolute left-3 -top-9 flex items-center gap-2 bg-slate-800 text-white text-xs rounded-xl px-3 py-1.5 shadow-lg max-w-full">
+                        <div id="attachChip" class="hidden absolute right-3 -top-9 flex items-center gap-2 bg-slate-800 text-white text-xs rounded-xl px-3 py-1.5 shadow-lg max-w-[calc(100%-1.5rem)]">
                             <span id="attachName" class="truncate"></span>
-                            <button type="button" onclick="clearAttachment()" class="text-slate-300 hover:text-white font-bold leading-none"
+                            <button type="button" onclick="clearAttachment()" class="press text-slate-300 hover:text-white font-bold leading-none"
                                     title="Elimină fișierul" data-i18n-title="remove_file" aria-label="Elimină fișierul">&times;</button>
                         </div>
 
@@ -231,7 +219,7 @@
                     <button
                         type="submit"
                         onclick="document.getElementById('actionType').value='normal'; this.disabled=true; this.form.submit();"
-                        class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold px-8 rounded-2xl flex-shrink-0"
+                        class="press bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold px-8 rounded-2xl flex-shrink-0"
                         data-i18n="mode3_generate">
                         Generează
                     </button>
@@ -285,72 +273,7 @@ document.addEventListener("click", function () {
     });
 });
 
-function getLastGeneratedTest() {
-    const tests = document.querySelectorAll("#chat .bg-slate-100 .math-content");
-    if (!tests.length) return null;
-    return tests[tests.length - 1].textContent.trim();
-}
 
-function submitQuickAction(btn, actionType, promptText) {
-    const actionInput = document.getElementById("actionType");
-    const promptInput = document.getElementById("promptInput");
-    const chatForm = document.getElementById("chatForm");
-
-    if (!actionInput || !promptInput || !chatForm) {
-        alert("Formularul nu a fost găsit.");
-        return;
-    }
-
-    actionInput.value = actionType;
-    promptInput.value = promptText;
-    btn.disabled = true;
-    chatForm.submit();
-}
-
-function solveGeneratedTest(btn) {
-    const lastTest = getLastGeneratedTest();
-
-    if (!lastTest) {
-        alert("Nu există niciun test generat anterior.");
-        return;
-    }
-
-    const promptText =
-        "Rezolvă complet, pas cu pas, următorul test generat. Include explicații clare și răspunsurile finale:\n\n" +
-        lastTest;
-
-    submitQuickAction(btn, "solve_test", promptText);
-}
-
-function generateSimilarTest(btn) {
-    const lastTest = getLastGeneratedTest();
-
-    if (!lastTest) {
-        alert("Nu există niciun test anterior pe baza căruia să generez unul similar.");
-        return;
-    }
-
-    const promptText =
-        "Generează un test similar cu următorul. Păstrează structura și nivelul de dificultate, dar schimbă exercițiile și valorile numerice:\n\n" +
-        lastTest;
-
-    submitQuickAction(btn, "generate_similar_test", promptText);
-}
-
-function generateSecondVersion(btn) {
-    const lastTest = getLastGeneratedTest();
-
-    if (!lastTest) {
-        alert("Nu există niciun test anterior pentru a genera rândul 2.");
-        return;
-    }
-
-    const promptText =
-        "Generează rândul 2 pentru următorul test. Păstrează aceeași structură și același nivel de dificultate, dar creează exerciții diferite:\n\n" +
-        lastTest;
-
-    submitQuickAction(btn, "generate_row_2", promptText);
-}
 
 document.addEventListener("DOMContentLoaded", function () {
     const chat = document.getElementById("chat");
@@ -420,4 +343,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 </script>
+
+{% include "partials/export_sheet_dialog.html" %}
 {% endblock %}

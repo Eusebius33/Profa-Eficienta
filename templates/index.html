@@ -27,7 +27,7 @@
                             <span class="text-cyan-400">{{ current_user.name.split()[0] if current_user.name else t('dashboard_teacher') }}</span>
                         </h1>
                         <p class="mt-1 text-slate-400 text-sm sm:text-base max-w-xl">
-                            {{ t('dashboard{ url_for('dashboard') }}_intro') }}
+                            {{ t('dashboard_intro') }}
                         </p>
                     </div>
                 </div>
@@ -63,9 +63,9 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" data-reveal-group>
 
                 <!-- Start Conversation -->
-                <a href="{{ url_for('chat') }}" class="reveal hover-lift group relative overflow-hidden rounded-2xl bg-white border border-slate-200 p-6 shadow-lg hover:border-cyan-300 hover:shadow-xl">
+                <a href="{{ url_for('menu') }}" data-dash-new-conversation class="reveal hover-lift group relative overflow-hidden rounded-2xl bg-white border border-slate-200 p-6 shadow-lg hover:border-cyan-300 hover:shadow-xl">
                     <div class="relative">
-                        <div class="w-12 h-12 rounded-xl bg-cyan-50 flex items-center justify-center mb-4 group-hover:bg-cyan-100 transition-colors">
+                        <div class="icon-tile w-12 h-12 rounded-xl bg-cyan-50 flex items-center justify-center mb-4 group-hover:bg-cyan-100 transition-colors">
                             <svg class="w-6 h-6 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
                             </svg>
@@ -78,7 +78,7 @@
                 <!-- Generate Math -->
                 <a href="{{ url_for('text_to_math') }}" class="reveal hover-lift group relative overflow-hidden rounded-2xl bg-white border border-slate-200 p-6 shadow-lg hover:border-cyan-300 hover:shadow-xl">
                     <div class="relative">
-                        <div class="w-12 h-12 rounded-xl bg-cyan-50 flex items-center justify-center mb-4 group-hover:bg-cyan-100 transition-colors">
+                        <div class="icon-tile w-12 h-12 rounded-xl bg-cyan-50 flex items-center justify-center mb-4 group-hover:bg-cyan-100 transition-colors">
                             <svg class="w-6 h-6 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
                             </svg>
@@ -91,7 +91,7 @@
                 <!-- Upload Document -->
                 <a href="{{ url_for('upload_to_math') }}" class="reveal hover-lift group relative overflow-hidden rounded-2xl bg-white border border-slate-200 p-6 shadow-lg hover:border-cyan-300 hover:shadow-xl">
                     <div class="relative">
-                        <div class="w-12 h-12 rounded-xl bg-cyan-50 flex items-center justify-center mb-4 group-hover:bg-cyan-100 transition-colors">
+                        <div class="icon-tile w-12 h-12 rounded-xl bg-cyan-50 flex items-center justify-center mb-4 group-hover:bg-cyan-100 transition-colors">
                             <svg class="w-6 h-6 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
                             </svg>
@@ -104,7 +104,7 @@
                 <!-- BAC Variant -->
                 <a href="{{ url_for('bac_generator') }}" class="reveal hover-lift group relative overflow-hidden rounded-2xl bg-white border border-slate-200 p-6 shadow-lg hover:border-cyan-300 hover:shadow-xl">
                     <div class="relative">
-                        <div class="w-12 h-12 rounded-xl bg-cyan-50 flex items-center justify-center mb-4 group-hover:bg-cyan-100 transition-colors">
+                        <div class="icon-tile w-12 h-12 rounded-xl bg-cyan-50 flex items-center justify-center mb-4 group-hover:bg-cyan-100 transition-colors">
                             <svg class="w-6 h-6 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                             </svg>
@@ -139,8 +139,8 @@
                     <div class="divide-y divide-slate-100">
                         {% if recent_conversations %}
                             {% for conv in recent_conversations[:5] %}
-                            <a href="{{ url_for('chat', conversation_id=conv.id) }}" class="group flex items-center gap-4 px-6 py-4 hover:bg-slate-50 transition-colors">
-                                <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center flex-shrink-0 group-hover:bg-cyan-50 transition-colors">
+                            <a href="{{ url_for('chat', conversation_id=conv.id) }}" class="row-slide group flex items-center gap-4 px-6 py-4 hover:bg-slate-50">
+                                <div class="icon-tile w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center flex-shrink-0 group-hover:bg-cyan-50">
                                     <svg class="w-5 h-5 text-slate-400 group-hover:text-cyan-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
                                     </svg>
@@ -187,7 +187,7 @@
                     <div class="p-6 grid grid-cols-1 sm:grid-cols-2 gap-4" data-reveal-group>
 
                         <!-- AI Teacher Assistant -->
-                        <a href="{{ url_for('chat') }}" class="reveal flex items-start gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100 hover:border-cyan-300 hover:bg-cyan-50/40 transition-all group">
+                        <a href="{{ url_for('chat') }}" class="reveal row-slide flex items-start gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100 hover:bg-cyan-50/40 group">
                             <div class="w-10 h-10 rounded-lg bg-cyan-50 flex items-center justify-center flex-shrink-0">
                                 <svg class="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
@@ -200,7 +200,7 @@
                         </a>
 
                         <!-- Text to Math -->
-                        <a href="{{ url_for('text_to_math') }}" class="reveal flex items-start gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100 hover:border-cyan-300 hover:bg-cyan-50/40 transition-all group">
+                        <a href="{{ url_for('text_to_math') }}" class="reveal row-slide flex items-start gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100 hover:bg-cyan-50/40 group">
                             <div class="w-10 h-10 rounded-lg bg-cyan-50 flex items-center justify-center flex-shrink-0">
                                 <svg class="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
@@ -213,7 +213,7 @@
                         </a>
 
                         <!-- Document to Math -->
-                        <a href="{{ url_for('upload_to_math') }}" class="reveal flex items-start gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100 hover:border-cyan-300 hover:bg-cyan-50/40 transition-all group">
+                        <a href="{{ url_for('upload_to_math') }}" class="reveal row-slide flex items-start gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100 hover:bg-cyan-50/40 group">
                             <div class="w-10 h-10 rounded-lg bg-cyan-50 flex items-center justify-center flex-shrink-0">
                                 <svg class="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
@@ -226,7 +226,7 @@
                         </a>
 
                         <!-- Test & BAC Generation -->
-                        <a href="{{ url_for('bac_generator') }}" class="reveal flex items-start gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100 hover:border-cyan-300 hover:bg-cyan-50/40 transition-all group">
+                        <a href="{{ url_for('bac_generator') }}" class="reveal row-slide flex items-start gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100 hover:bg-cyan-50/40 group">
                             <div class="w-10 h-10 rounded-lg bg-cyan-50 flex items-center justify-center flex-shrink-0">
                                 <svg class="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
@@ -239,7 +239,7 @@
                         </a>
 
                         <!-- Handwriting OCR -->
-                        <a href="{{ url_for('handwriting_ocr') }}" class="reveal flex items-start gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100 hover:border-cyan-300 hover:bg-cyan-50/40 transition-all group">
+                        <a href="{{ url_for('handwriting_ocr') }}" class="reveal row-slide flex items-start gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100 hover:bg-cyan-50/40 group">
                             <div class="w-10 h-10 rounded-lg bg-cyan-50 flex items-center justify-center flex-shrink-0">
                                 <svg class="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
@@ -252,7 +252,7 @@
                         </a>
 
                         <!-- Saved Materials -->
-                        <a href="{{ url_for('materials') }}" class="reveal flex items-start gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100 hover:border-cyan-300 hover:bg-cyan-50/40 transition-all group">
+                        <a href="{{ url_for('materials') }}" class="reveal row-slide flex items-start gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100 hover:bg-cyan-50/40 group">
                             <div class="w-10 h-10 rounded-lg bg-cyan-50 flex items-center justify-center flex-shrink-0">
                                 <svg class="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z"></path>
@@ -361,17 +361,95 @@
                     </div>
                 </div>
 
-                <!-- Quick Tips -->
-                <div class="reveal hover-lift rounded-2xl bg-cyan-50 border border-cyan-100 p-6">
+                <!-- Quick Tips: one per mode, cycling -->
+                <section class="reveal rounded-2xl bg-cyan-50 border border-cyan-100 p-6"
+                         aria-roledescription="carousel" aria-label="{{ t('dashboard_teacher_tip') }}"
+                         data-dash-tips>
                     <h3 class="text-sm font-semibold text-cyan-700 uppercase tracking-wider mb-3 flex items-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                         {{ t('dashboard_teacher_tip') }}
                     </h3>
-                    <p class="text-sm text-slate-700 leading-relaxed">
-                        {{ t('dashboard_teacher_tip_text') }}
-                    </p>
+
+                    <ul class="dash-tip-track" aria-live="polite">
+                        <li class="dash-tip is-active" data-dash-tip role="group"
+                            aria-roledescription="slide" aria-label="1 / 5">
+                            <p class="font-semibold text-cyan-800">{{ t('dash_tip_m1_title') }}</p>
+                            <p class="mt-2 text-sm leading-relaxed text-slate-700">{{ t('dash_tip_m1_text') }}</p>
+                        </li>
+                        <li class="dash-tip" data-dash-tip role="group"
+                            aria-roledescription="slide" aria-label="2 / 5">
+                            <p class="font-semibold text-cyan-800">{{ t('dash_tip_m2_title') }}</p>
+                            <p class="mt-2 text-sm leading-relaxed text-slate-700">{{ t('dash_tip_m2_text') }}</p>
+                        </li>
+                        <li class="dash-tip" data-dash-tip role="group"
+                            aria-roledescription="slide" aria-label="3 / 5">
+                            <p class="font-semibold text-cyan-800">{{ t('dash_tip_m3_title') }}</p>
+                            <p class="mt-2 text-sm leading-relaxed text-slate-700">{{ t('dash_tip_m3_text') }}</p>
+                        </li>
+                        <li class="dash-tip" data-dash-tip role="group"
+                            aria-roledescription="slide" aria-label="4 / 5">
+                            <p class="font-semibold text-cyan-800">{{ t('dash_tip_m4_title') }}</p>
+                            <p class="mt-2 text-sm leading-relaxed text-slate-700">{{ t('dash_tip_m4_text') }}</p>
+                        </li>
+                        <li class="dash-tip" data-dash-tip role="group"
+                            aria-roledescription="slide" aria-label="5 / 5">
+                            <p class="font-semibold text-cyan-800">{{ t('dash_tip_m5_title') }}</p>
+                            <p class="mt-2 text-sm leading-relaxed text-slate-700">{{ t('dash_tip_m5_text') }}</p>
+                        </li>
+                    </ul>
+
+                    <div class="mt-4 flex items-center justify-center gap-2">
+                        <button type="button" class="press dash-tip-dot is-active" data-dash-tip-dot="0"
+                            aria-label="1 / 5"></button>
+                        <button type="button" class="press dash-tip-dot" data-dash-tip-dot="1"
+                            aria-label="2 / 5"></button>
+                        <button type="button" class="press dash-tip-dot" data-dash-tip-dot="2"
+                            aria-label="3 / 5"></button>
+                        <button type="button" class="press dash-tip-dot" data-dash-tip-dot="3"
+                            aria-label="4 / 5"></button>
+                        <button type="button" class="press dash-tip-dot" data-dash-tip-dot="4"
+                            aria-label="5 / 5"></button>
+                    </div>
+                </section>
+
+                <!-- Elevii mei -->
+                <div class="reveal hover-lift rounded-2xl bg-white border border-slate-200 shadow-lg p-6">
+                    <div class="flex items-baseline justify-between gap-4 mb-4">
+                        <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider">{{ t('dash_students_title') }}</h3>
+                        {% if student_total %}
+                        <span class="font-display text-lg font-bold text-slate-900">{{ student_total }}</span>
+                        {% endif %}
+                    </div>
+
+                    {% if classes %}
+                    <ul class="divide-y divide-slate-100 border-y border-slate-100">
+                        {% for c in classes %}
+                        <li>
+                            <a href="{{ url_for('elevi', class_id=c.id) }}"
+                               class="flex items-center justify-between gap-4 py-3 group no-underline">
+                                <span class="text-sm font-medium text-slate-700 group-hover:text-cyan-700 transition-colors">{{ c.name }}</span>
+                                <span class="text-xs text-slate-500">{{ c.student_count }} {{ t('dash_students_count') }}</span>
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+
+                    <a href="{{ url_for('elevi') }}"
+                       class="mt-4 inline-flex items-center text-sm text-cyan-600 hover:text-cyan-700 font-medium transition-colors no-underline">
+                        {{ t('dash_students_manage') }}
+                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                        </svg>
+                    </a>
+                    {% else %}
+                    <p class="text-sm leading-relaxed text-slate-500">{{ t('dash_students_empty') }}</p>
+                    <a href="{{ url_for('elevi') }}"
+                       class="mt-4 inline-flex items-center text-sm text-cyan-600 hover:text-cyan-700 font-medium transition-colors no-underline">
+                        {{ t('dash_students_manage') }}
+                    </a>
+                    {% endif %}
                 </div>
 
                 <!-- Keyboard Shortcuts -->
@@ -385,10 +463,6 @@
                         <div class="flex items-center justify-between text-sm">
                             <span class="text-slate-500">{{ t('dashboard_text_to_math') }}</span>
                             <kbd class="px-2 py-1 rounded-md bg-slate-100 border border-slate-300 text-xs text-slate-600 font-mono">T</kbd>
-                        </div>
-                        <div class="flex items-center justify-between text-sm">
-                            <span class="text-slate-500">{{ t('dashboard_upload') }}</span>
-                            <kbd class="px-2 py-1 rounded-md bg-slate-100 border border-slate-300 text-xs text-slate-600 font-mono">U</kbd>
                         </div>
                     </div>
                 </div>
@@ -410,10 +484,119 @@
         </div>
     </div>
 </div>
+
+<!-- New-conversation mode picker ("N") -->
+<div id="newConversation" class="dash-picker" hidden>
+    <div class="dash-picker-backdrop" data-dash-picker-close></div>
+
+    <div class="dash-picker-panel" role="dialog" aria-modal="true"
+         aria-labelledby="newConversationTitle">
+        <h2 id="newConversationTitle" class="dash-picker-title">{{ t('dash_new_conv_title') }}</h2>
+
+        <div class="dash-mode-list">
+                <a href="/create_mode2" class="dash-mode-option no-underline" data-dash-mode>
+                    <span class="dash-mode-name">{{ t('mode2_title') }}</span>
+                    <span class="dash-mode-desc">{{ t('mode2_desc') }}</span>
+                </a>
+                <a href="/menu#mode3" class="dash-mode-option no-underline" data-dash-mode>
+                    <span class="dash-mode-name">{{ t('m3_title') }}</span>
+                    <span class="dash-mode-desc">{{ t('menu_m3_desc') }}</span>
+                </a>
+                <a href="/menu#mode4" class="dash-mode-option no-underline" data-dash-mode>
+                    <span class="dash-mode-name">{{ t('doc_m4_title') }}</span>
+                    <span class="dash-mode-desc">{{ t('menu_m4_desc') }}</span>
+                </a>
+                <a href="/menu#mode5" class="dash-mode-option no-underline" data-dash-mode>
+                    <span class="dash-mode-name">{{ t('doc_m5_title') }}</span>
+                    <span class="dash-mode-desc">{{ t('menu_m5_desc') }}</span>
+                </a>
+        </div>
+
+        <button type="button" class="press dash-picker-cancel" data-dash-picker-close>
+            {{ t('dash_new_conv_cancel') }}
+        </button>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block scripts %}
 <script>
+    // ---- New-conversation mode picker ----
+    var picker = document.getElementById('newConversation');
+    var lastFocused = null;
+
+    function openPicker() {
+        if (!picker || !picker.hidden) return;
+        lastFocused = document.activeElement;
+        picker.hidden = false;
+        var first = picker.querySelector('[data-dash-mode]');
+        if (first) first.focus();
+    }
+
+    function closePicker() {
+        if (!picker || picker.hidden) return;
+        picker.hidden = true;
+        if (lastFocused && lastFocused.focus) lastFocused.focus();
+    }
+
+    if (picker) {
+        picker.querySelectorAll('[data-dash-picker-close]').forEach(function (el) {
+            el.addEventListener('click', closePicker);
+        });
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') closePicker();
+        });
+    }
+
+    document.querySelectorAll('[data-dash-new-conversation]').forEach(function (el) {
+        el.addEventListener('click', function (e) { e.preventDefault(); openPicker(); });
+    });
+
+    // ---- Teacher tips: cycle one card per mode ----
+    (function () {
+        var root = document.querySelector('[data-dash-tips]');
+        if (!root) return;
+
+        var slides = Array.prototype.slice.call(root.querySelectorAll('[data-dash-tip]'));
+        var dots = Array.prototype.slice.call(root.querySelectorAll('[data-dash-tip-dot]'));
+        if (slides.length < 2) return;
+
+        var index = 0;
+        var timer = null;
+        var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        function show(next) {
+            index = (next + slides.length) % slides.length;
+            slides.forEach(function (s, i) { s.classList.toggle('is-active', i === index); });
+            dots.forEach(function (d, i) { d.classList.toggle('is-active', i === index); });
+        }
+
+        function start() {
+            if (reduced || timer) return;
+            timer = window.setInterval(function () { show(index + 1); }, 7000);
+        }
+
+        function stop() {
+            if (!timer) return;
+            window.clearInterval(timer);
+            timer = null;
+        }
+
+        dots.forEach(function (dot, i) {
+            dot.addEventListener('click', function () { stop(); show(i); start(); });
+        });
+
+        // Pause while the teacher is reading or tabbing through it.
+        root.addEventListener('mouseenter', stop);
+        root.addEventListener('mouseleave', start);
+        root.addEventListener('focusin', stop);
+        root.addEventListener('focusout', start);
+
+        show(0);
+        start();
+    })();
+
     // Keyboard shortcuts
     document.addEventListener('keydown', function(e) {
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
@@ -421,17 +604,13 @@
         switch(e.key.toLowerCase()) {
             case 'n':
                 if (!e.ctrlKey && !e.metaKey && !e.altKey) {
-                    window.location.href = "{{ url_for('chat') }}";
+                    e.preventDefault();
+                    openPicker();
                 }
                 break;
             case 't':
                 if (!e.ctrlKey && !e.metaKey && !e.altKey) {
                     window.location.href = "{{ url_for('text_to_math') }}";
-                }
-                break;
-            case 'u':
-                if (!e.ctrlKey && !e.metaKey && !e.altKey) {
-                    window.location.href = "{{ url_for('upload_to_math') }}";
                 }
                 break;
         }

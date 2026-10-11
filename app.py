@@ -2,6 +2,8 @@ from functools import wraps
 from io import BytesIO
 import json
 import os
+import unicodedata
+import re
 from types import SimpleNamespace
 from werkzeug.utils import secure_filename
 import uuid
@@ -10,7 +12,7 @@ from flask import Flask, jsonify, redirect, render_template, request, send_file,
 from flask_session import Session
 from sqlalchemy import select
 from werkzeug.security import check_password_hash, generate_password_hash
-#import markdown
+import markdown
 #mode3
 from PyPDF2 import PdfReader
 from docx import Document
@@ -22,9 +24,12 @@ from bac_generator.routes import (
     LESSON_GROUPS,
     bac_generator_bp,
     mode5_lesson_state,
+    save_mode5_lesson_state,
 )
 from bac_generator.generator import BACExamGenerator
-from models import SessionLocal, User, Conversation, Message, Style, init_db
+from bac_generator import structure as bac_structure
+from bac_generator.generators import difficulty as bac_difficulty
+from models import SessionLocal, User, Conversation, Message, Style, Class, init_db
 from waitlist.app import waitlist_bp
 import traceback
 
@@ -105,6 +110,19 @@ def inject_translations():
 
     return {"t": t, "_": _}
 
+@app.template_filter("fromjson")
+def fromjson_filter(value):
+    """Read a JSON column in a template (the mistake-tag lists on test records).
+    Returns [] for null/garbage so a bad row cannot break the page."""
+    if not value:
+        return []
+    try:
+        parsed = json.loads(value)
+    except (ValueError, TypeError):
+        return []
+    return parsed if isinstance(parsed, list) else []
+
+
 @app.route("/api/translations")
 def api_translations():
     return jsonify(load_translations())
@@ -131,6 +149,34 @@ ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "pdf", "docx", "txt"}
 def allowed_file(filename):
 
     return ("." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS)
+
+def match_lessons(raw):
+    """Map free-text lesson names from the menu card onto real lesson names.
+
+    Returns (matched, unmatched). Accent-insensitive and substring-based, so
+    "progresii aritmetice" finds "Progresii" and "geometrie analitica" finds
+    "Geometrie analitică". Whatever cannot be placed is handed back so the
+    teacher can be told, instead of the field being dropped in silence.
+    """
+    def fold(value):
+        value = unicodedata.normalize("NFKD", str(value or ""))
+        return "".join(c for c in value if not unicodedata.combining(c)).lower().strip()
+
+    matched, unmatched = [], []
+    for chunk in re.split(r"[,;\n]+", raw or ""):
+        needle = fold(chunk)
+        if not needle:
+            continue
+        hit = next((l for l in ALL_LESSONS if fold(l) == needle), None)
+        if hit is None:
+            hit = next((l for l in ALL_LESSONS
+                        if needle in fold(l) or fold(l) in needle), None)
+        if hit and hit not in matched:
+            matched.append(hit)
+        elif hit is None:
+            unmatched.append(chunk.strip())
+    return matched, unmatched
+
 
 # =========================================================
 # LOGIN REQUIRED
@@ -185,7 +231,8 @@ def chat(conversation_id=None):
 
 @app.route("/text_to_math")
 def text_to_math():
-    return redirect("/menu")
+    # The dashboard's "T" shortcut: straight into the translator, not the menu.
+    return redirect("/create_mode2")
 
 @app.route("/upload_to_math")
 def upload_to_math():
@@ -214,6 +261,39 @@ def edit_material(id):
 @app.route("/materials/<int:id>/download")
 def download_material(id):
     return redirect("/dashboard")
+
+@app.route("/api/guide", methods=["POST"])
+def api_guide():
+    """The docked app guide.
+
+    `ai.website_guide` already knew how to route a teacher to the right mode;
+    it was only reachable through a Mode 1 conversation that happened to be
+    titled "Ghid Website", so in practice nobody met it. The thread lives in
+    the session, which keeps it available on every page without creating a
+    conversation record for what is really navigation help.
+    """
+    payload = request.get_json(silent=True) or {}
+    message = (payload.get("message") or "").strip()
+    if not message:
+        return jsonify(ok=False, error="Mesaj gol."), 400
+
+    thread = session.get("guide_thread") or []
+    thread.append({"role": "user", "content": message})
+    # Only the recent turns matter for "where do I go next", and an unbounded
+    # thread would grow the session cookie without bound.
+    thread = thread[-12:]
+
+    transcript = "\n".join(f"{t['role']}: {t['content']}" for t in thread)
+    answer = ai.website_guide(transcript)
+
+    if ai.is_error(answer):
+        return jsonify(ok=False, error=answer), 502
+
+    thread.append({"role": "assistant", "content": answer})
+    session["guide_thread"] = thread[-12:]
+
+    return jsonify(ok=True, html=markdown.markdown(answer))
+
 
 @app.route("/health")
 def health():
@@ -258,8 +338,23 @@ def dashboard():
 
     current_user = SimpleNamespace(name=user.username if user else "Teacher")
 
+    # "Elevii mei" panel on the dashboard: each class with how many students it
+    # holds, so the right column has something substantial next to the stats.
+    classes = db.scalars(
+        select(Class)
+        .where(Class.teacher_id == session["user_id"])
+        .order_by(Class.name.asc())
+    ).all()
+    class_rows = [
+        SimpleNamespace(id=c.id, name=c.name, student_count=len(c.students))
+        for c in classes
+    ]
+    student_total = sum(row.student_count for row in class_rows)
+
     return render_template(
         "index.html",
+        classes=class_rows,
+        student_total=student_total,
         user=user,
         current_user=current_user,
         conversations=conversations,
@@ -310,6 +405,37 @@ def passwordchange():
 # =========================================================
 # STYLE
 # =========================================================
+def _active_style_id():
+    """The style chosen on /account, if it still exists and is the user's own.
+
+    New conversations inherit it so the teacher picks a writing style once
+    instead of per generation.
+    """
+    user = db.get(User, session["user_id"])
+    if not user or not user.active_style_id:
+        return None
+    style = db.get(Style, user.active_style_id)
+    return style.id if style and style.user_id == user.id else None
+
+
+@app.route("/style/<int:style_id>/activeaza", methods=["POST"])
+@login_required
+def activate_style(style_id):
+    return accounts.activate_style_function(db, apology, style_id)
+
+
+@app.route("/style/<int:style_id>/modifica", methods=["POST"])
+@login_required
+def edit_style(style_id):
+    return accounts.edit_style_function(db, apology, style_id)
+
+
+@app.route("/style/<int:style_id>/sterge", methods=["POST"])
+@login_required
+def delete_style(style_id):
+    return accounts.delete_style_function(db, apology, style_id)
+
+
 @app.route("/style", methods=["GET", "POST"])
 @login_required
 def style():
@@ -346,12 +472,22 @@ def documentation():
 @app.route("/elevi/<int:class_id>")
 @login_required
 def elevi(class_id=None):
-    return classroom.elevi_page(db, class_id)
+    return classroom.elevi_page(db, apology, class_id)
 
 @app.route("/elevi/noua", methods=["POST"])
 @login_required
 def clasa_noua():
     return classroom.create_class(db, apology)
+
+@app.route("/elevi/demo", methods=["POST"])
+@login_required
+def elevi_demo():
+    return classroom.seed_demo(db)
+
+@app.route("/elevi/fisier/<path:filename>")
+@login_required
+def elevi_fisier(filename):
+    return classroom.serve_upload(db, apology, filename)
 
 @app.route("/elevi/<int:class_id>/nou", methods=["GET"])
 @login_required
@@ -441,7 +577,9 @@ def grupa_exercitii_genereaza(class_id, gid):
 @login_required
 def create_mode1():
 
-    conversation = Conversation(user_id=session["user_id"], mode="mode1", title="Conversație nouă")
+    conversation = Conversation(
+        user_id=session["user_id"], mode="mode1", title="Conversație nouă", style_id=_active_style_id()
+    )
     db.add(conversation)
     db.commit()
     conversation_id = conversation.id
@@ -459,25 +597,15 @@ def mode1(conversation_id):
 # =========================================================
 # MODE2
 # =========================================================
-@app.route("/create_mode2", methods=["POST"])
+@app.route("/create_mode2", methods=["GET", "POST"])
 @login_required
 def create_mode2():
-
-    raw_style_id = request.form.get("style")
-    try:
-        style_id = int(raw_style_id) if raw_style_id else None
-    except (TypeError, ValueError):
-        style_id = None
-    school_class = request.form.get("school_class")
-    bac = request.form.get("bac")
 
     conversation = Conversation(
         user_id=session["user_id"],
         mode="mode2",
         title="Traducere nouă",
-        style_id=style_id,
-        school_class=school_class,
-        bac=bac,
+        style_id=_active_style_id(),
     )
     db.add(conversation)
     db.commit()
@@ -510,11 +638,20 @@ def create_mode3():
     os.makedirs("uploads", exist_ok=True)          # ← safety net
     uploaded_file.save(f"uploads/{filename}")
 
-    conversation = Conversation(user_id=session["user_id"], mode="mode3", title=filename)
+    conversation = Conversation(
+        user_id=session["user_id"], mode="mode3", title=filename, style_id=_active_style_id()
+    )
     db.add(conversation)
     db.commit()
 
     conversation_id = conversation.id
+
+    # /menu sends one merged "Instrucțiuni și diferențe față de model" field.
+    # The conversation only exists now, so park it for model_route to replay as
+    # the opening turn once the uploaded model has been read.
+    instructions = (request.form.get("instructions") or "").strip()
+    if instructions:
+        session[f"mode_instructions_{conversation_id}"] = instructions
 
     return redirect(f"/mode3/{conversation_id}")
 
@@ -544,6 +681,13 @@ def file_read(filepath):
 @login_required
 def mode3(conversation_id):
     return model_route.mode3_chat(db, apology, conversation_id, file_read, "uploads", allowed_file)
+
+
+@app.route("/mode3/<int:conversation_id>/bootstrap", methods=["POST"])
+@login_required
+def mode3_bootstrap(conversation_id):
+    """Read the uploaded model behind the already-open conversation."""
+    return model_route.mode3_bootstrap(db, apology, conversation_id, file_read, "uploads")
 #                                                                                    ^^^^^^^^^ add this
 
 # @app.route("/mode3", methods=["GET", "POST"])
@@ -589,11 +733,20 @@ def create_mode4():
     os.makedirs("uploads", exist_ok=True)
     uploaded_file.save(f"uploads/{filename}")
 
-    conversation = Conversation(user_id=session["user_id"], mode="mode4", title=filename)
+    conversation = Conversation(
+        user_id=session["user_id"], mode="mode4", title=filename, style_id=_active_style_id()
+    )
     db.add(conversation)
     db.commit()
 
     conversation_id = conversation.id
+
+    # /menu sends one merged "Instrucțiuni și diferențe față de model" field.
+    # The conversation only exists now, so park it for model_route to replay as
+    # the opening turn once the uploaded model has been read.
+    instructions = (request.form.get("instructions") or "").strip()
+    if instructions:
+        session[f"mode_instructions_{conversation_id}"] = instructions
 
     return redirect(f"/mode4/{conversation_id}")
 
@@ -618,6 +771,13 @@ def mode4_latest():
 @login_required
 def mode4(conversation_id):
     return model_route.mode4_chat(db, apology, conversation_id, "uploads", allowed_file)
+
+
+@app.route("/mode4/<int:conversation_id>/bootstrap", methods=["POST"])
+@login_required
+def mode4_bootstrap(conversation_id):
+    """Transcribe the upload behind the already-open conversation."""
+    return model_route.mode4_bootstrap(db, apology, conversation_id, "uploads")
 # =========================================================
 # MODE5
 # =========================================================
@@ -626,23 +786,53 @@ def mode4(conversation_id):
 @login_required
 def create_mode5():
 
-    conversation = Conversation(user_id=session["user_id"], mode="mode5", title="Varianta BAC nouă")
+    # The menu card's profile and difficulty used to be discarded here - this
+    # route never looked at request.form at all, so every mode5 conversation
+    # was born M_tehnologic at the default level whatever had been selected.
+    profile = bac_structure.resolve_profile(request.form.get("bac"))
+    level = bac_difficulty.normalize_level(request.form.get("difficulty"))
+
+    # "Lecții principale" / "Lecții de omis" are free text on the card. Match
+    # them against the real lesson names and keep what we could not place, so
+    # the teacher can be told rather than the field being dropped in silence.
+    accent_lessons, unknown_main = match_lessons(request.form.get("lessons"))
+    omitted_lessons, unknown_avoid = match_lessons(request.form.get("avoid"))
+
+    conversation = Conversation(
+        user_id=session["user_id"], mode="mode5", title="Varianta BAC nouă",
+        style_id=_active_style_id(), bac=profile
+    )
     db.add(conversation)
     db.commit()
 
     conversation_id = conversation.id
 
-    # Generate the first BAC variant right away so the user doesn't land on an
-    # empty chat. A fresh conversation starts from the picker's defaults:
-    # everything included, no accent, nothing omitted.
+    selected = [l for l in ALL_LESSONS if l not in omitted_lessons]
+    accent = accent_lessons[0] if accent_lessons else None
+
+    save_mode5_lesson_state(
+        conversation_id, selected, accent, omitted_lessons,
+        profile=profile, difficulty=level,
+    )
+
+    # Generate the first variant right away so the teacher doesn't land on an
+    # empty chat.
     generator = BACExamGenerator()
-    exam_data = generator.generate_exam(ALL_LESSONS)
+    exam_data = generator.generate_exam(
+        selected, accent=accent, omitted_lessons=omitted_lessons,
+        profile=profile, difficulty=level,
+    )
+    if unknown_main or unknown_avoid:
+        exam_data.setdefault("metadata", {})["unmatched_lessons"] = {
+            "lessons": unknown_main, "avoid": unknown_avoid,
+        }
 
     db.add(Message(
         conversation_id=conversation_id,
         role="assistant",
         content=exam_data["html_preview"],
         exam_data=json.dumps(exam_data),
+        bac=profile,
     ))
     db.commit()
 
@@ -719,6 +909,10 @@ def mode5(conversation_id):
         bac=conversation.bac,
         lesson_groups=LESSON_GROUPS,
         lesson_state=mode5_lesson_state(conversation_id),
+        profile_choices=[(code, spec["label"])
+                         for code, spec in bac_structure.PROFILES.items()],
+        difficulty_choices=[(code, bac_difficulty.LEVEL_LABELS[code])
+                            for code in bac_difficulty.LEVELS],
     )
 
 # =========================================================
@@ -778,8 +972,12 @@ def delete_conversation(conversation_id):
 def _export_messages(conversation_id):
     """Shared lookup for the two export routes below: verify the conversation
     belongs to the current user, then return (conversation, messages) for
-    whichever message_ids were POSTed - or every message in the conversation
-    if none were selected. Returns (None, None) if not found/authorized."""
+    whichever message_ids were POSTed.
+
+    A worksheet is built out of the AI's replies, so when nothing is selected
+    this falls back to every *assistant* message rather than the whole
+    transcript - the teacher's own prompts are not part of what gets printed.
+    Returns (None, None) if not found/authorized."""
     conversation = db.scalars(
         select(Conversation).where(Conversation.id == conversation_id, Conversation.user_id == session["user_id"])
     ).first()
@@ -789,9 +987,14 @@ def _export_messages(conversation_id):
 
     message_ids = [int(v) for v in request.form.getlist("message_ids") if v.isdigit()]
 
-    query = select(Message).where(Message.conversation_id == conversation_id)
+    query = select(Message).where(
+        Message.conversation_id == conversation_id,
+        Message.role != "system",
+    )
     if message_ids:
         query = query.where(Message.id.in_(message_ids))
+    else:
+        query = query.where(Message.role == "assistant")
     query = query.order_by(Message.id.asc())
 
     messages = [
@@ -801,6 +1004,34 @@ def _export_messages(conversation_id):
     return conversation, messages
 
 
+def _sheet_meta():
+    """The worksheet header the teacher filled in before downloading.
+
+    Every field is optional: leaving the whole dialog blank is a supported
+    choice and produces a bare sheet of numbered exercises with no header at
+    all, which is what you want when the paper already has a school letterhead
+    or the teacher writes the title by hand.
+    """
+    form = request.form
+    return {
+        "title": (form.get("doc_title") or "").strip(),
+        "sheet_type": (form.get("sheet_type") or "").strip(),
+        "school_class": (form.get("school_class") or "").strip(),
+        "teacher": (form.get("teacher") or "").strip(),
+        "include_date": form.get("include_date") == "1",
+        "numbering": form.get("numbering", "1") == "1",
+        "sections": form.get("sections") == "1",
+        "restart_numbering": form.get("restart_numbering") == "1",
+    }
+
+
+def _export_filename(meta, conversation, extension):
+    """Name the download after what the teacher called the sheet, not after
+    the conversation title (which is just their first prompt)."""
+    stem = meta["title"] or exports.SHEET_TYPES.get(meta["sheet_type"], "") or "fisa-de-lucru"
+    return secure_filename(f"{stem}.{extension}") or f"fisa-de-lucru.{extension}"
+
+
 @app.route("/conversation/<int:conversation_id>/export/pdf", methods=["POST"])
 @login_required
 def export_conversation_pdf(conversation_id):
@@ -808,16 +1039,16 @@ def export_conversation_pdf(conversation_id):
     if conversation is None:
         return apology("Conversație inexistentă.", 404)
     if not messages:
-        return apology("Niciun mesaj de exportat.", 400)
+        return apology("Niciun răspuns selectat pentru export.", 400)
 
-    pdf_bytes = exports.build_messages_pdf(conversation.title or "Conversație", messages)
-    filename = secure_filename(f"{conversation.title or 'conversatie'}.pdf") or "conversatie.pdf"
+    meta = _sheet_meta()
+    pdf_bytes = exports.build_messages_pdf(meta["title"], messages, meta=meta)
 
     return send_file(
         BytesIO(pdf_bytes),
         mimetype="application/pdf",
         as_attachment=True,
-        download_name=filename,
+        download_name=_export_filename(meta, conversation, "pdf"),
     )
 
 
@@ -828,71 +1059,16 @@ def export_conversation_docx(conversation_id):
     if conversation is None:
         return apology("Conversație inexistentă.", 404)
     if not messages:
-        return apology("Niciun mesaj de exportat.", 400)
+        return apology("Niciun răspuns selectat pentru export.", 400)
 
-    docx_bytes = exports.build_messages_docx(conversation.title or "Conversație", messages)
-    filename = secure_filename(f"{conversation.title or 'conversatie'}.docx") or "conversatie.docx"
+    meta = _sheet_meta()
+    docx_bytes = exports.build_messages_docx(meta["title"], messages, meta=meta)
 
     return send_file(
         BytesIO(docx_bytes),
         mimetype="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         as_attachment=True,
-        download_name=filename,
-    )
-
-
-EXPORT_FORMATS = {
-    "pdf": (
-        exports.build_messages_pdf,
-        "application/pdf",
-    ),
-    "docx": (
-        exports.build_messages_docx,
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    ),
-}
-
-
-@app.route("/message/<int:message_id>/export/<fmt>")
-@login_required
-def export_message(message_id, fmt):
-    """Download a single chat message as PDF or DOCX.
-
-    Modes 1-4 render one of these next to every AI reply, the same way mode5
-    offers a per-exam PDF. Mode5 deliberately keeps its own PDF-only route: a
-    BAC variant is a laid-out exam sheet, not a chat transcript, and .docx
-    can't reproduce that layout faithfully.
-    """
-    builder = EXPORT_FORMATS.get(fmt)
-    if builder is None:
-        return apology("Format de export necunoscut.", 404)
-    build, mimetype = builder
-
-    message = db.scalars(
-        select(Message)
-        .join(Conversation, Message.conversation_id == Conversation.id)
-        .where(Message.id == message_id, Conversation.user_id == session["user_id"])
-    ).first()
-
-    if not message:
-        return apology("Mesaj inexistent.", 404)
-
-    conversation = db.get(Conversation, message.conversation_id)
-    title = (conversation.title if conversation else None) or "Conversație"
-
-    payload = build(title, [{
-        "role": message.role,
-        "content": message.content,
-        "created_at": message.created_at,
-    }])
-
-    stem = secure_filename(f"{title}_{message_id}") or f"mesaj_{message_id}"
-
-    return send_file(
-        BytesIO(payload),
-        mimetype=mimetype,
-        as_attachment=True,
-        download_name=f"{stem}.{fmt}",
+        download_name=_export_filename(meta, conversation, "docx"),
     )
 
 

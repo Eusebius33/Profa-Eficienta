@@ -46,3 +46,8 @@ htmlcov/
 # — used only when Supabase isn't configured; see waitlist/app.py.
 waitlist/waitlist_local.jsonl
 waitlist/whatsapp_local.jsonl
+.verificare-design/
+
+# The extracted corpus is what the app reads; the zip beside it is a 19MB
+# duplicate of the same PDFs.
+BACVARIANTS/BACVARIANTS.zip

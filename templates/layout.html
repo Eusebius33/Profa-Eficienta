@@ -204,6 +204,11 @@
                      data-i18n="nav_conversation">{{ t("nav_conversation") }}</a>
 
                     <a
+                        href="/practice"
+                        class="text-slate-300 hover:text-cyan-400 transition no-underline"
+                     data-i18n="practice_nav">{{ t("practice_nav") }}</a>
+
+                    <a
                         href="/account"
                         class="text-slate-300 hover:text-cyan-400 transition no-underline"
                      data-i18n="nav_account">{{ t("nav_account") }}</a>
@@ -279,6 +284,7 @@
             <div class="flex flex-col px-4 py-3 gap-1">
                 <a href="/elevi" class="text-slate-300 hover:text-cyan-400 hover:bg-slate-800 transition px-3 py-2.5 rounded-xl no-underline" data-i18n="nav_students">{{ t("nav_students") }}</a>
                 <a href="/menu" class="text-slate-300 hover:text-cyan-400 hover:bg-slate-800 transition px-3 py-2.5 rounded-xl no-underline" data-i18n="nav_conversation">{{ t("nav_conversation") }}</a>
+                <a href="/practice" class="text-slate-300 hover:text-cyan-400 hover:bg-slate-800 transition px-3 py-2.5 rounded-xl no-underline" data-i18n="practice_nav">{{ t("practice_nav") }}</a>
                 <a href="/account" class="text-slate-300 hover:text-cyan-400 hover:bg-slate-800 transition px-3 py-2.5 rounded-xl no-underline" data-i18n="nav_account">{{ t("nav_account") }}</a>
                 <a href="/documentation" class="text-slate-300 hover:text-cyan-400 hover:bg-slate-800 transition px-3 py-2.5 rounded-xl no-underline" data-i18n="nav_guide">{{ t("nav_guide") }}</a>
                 <a href="/editor" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-3 py-2.5 rounded-xl font-semibold transition no-underline text-center mt-1" data-i18n="nav_create">{{ t("nav_create") }}</a>
@@ -334,6 +340,20 @@
                 class="hover:text-cyan-400 transition no-underline text-slate-500"
              data-i18n="nav_guide">{{ t("nav_guide") }}</a>
 
+            {% if session.get("user_id") %}
+
+            <a
+                href="/account"
+                class="hover:text-cyan-400 transition no-underline text-slate-500"
+             data-i18n="nav_account">{{ t("nav_account") }}</a>
+
+            <a
+                href="/logout"
+                class="hover:text-cyan-400 transition no-underline text-slate-500"
+             data-i18n="acc_logout">{{ t("acc_logout") }}</a>
+
+            {% else %}
+
             <a
                 href="/login"
                 class="hover:text-cyan-400 transition no-underline text-slate-500"
@@ -343,6 +363,8 @@
                 href="/register"
                 class="hover:text-cyan-400 transition no-underline text-slate-500"
              data-i18n="nav_register">{{ t("nav_register") }}</a>
+
+            {% endif %}
 
         </div>
 
@@ -355,7 +377,28 @@
     {% block scripts %}{% endblock %}
     <script src="/static/i18n.js"></script>
 <script src="/static/copyMath.js"></script>
+<script src="/static/export.js"></script>
 <script src="{{ url_for('static', filename='animations.js') }}"></script>
+<script>
+    // Strings chat-async.js shows in skeletons and error bubbles.
+    window.CHAT_I18N = {
+        thinking: {{ t("ai_thinking") | tojson }},
+        working: {{ t("ai_working") | tojson }},
+        failed: {{ t("ai_failed") | tojson }},
+        retry: {{ t("ai_retry") | tojson }}
+    };
+</script>
+<script src="{{ url_for('static', filename='chat-async.js') }}"></script>
+
+{# The app guide rides along on every page for a signed-in teacher. The
+   landing page has its own job and does not need it. #}
+{% if session.get("user_id") %}
+    {% include "partials/guide_dock.html" %}
+    <script>
+        window.GUIDE_I18N = { error: {{ t("guide_error") | tojson }} };
+    </script>
+    <script src="{{ url_for('static', filename='guide-dock.js') }}"></script>
+{% endif %}
 </body>
 
 </html>

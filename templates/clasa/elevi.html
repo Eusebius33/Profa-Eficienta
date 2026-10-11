@@ -6,9 +6,22 @@
 {% block clasa_content %}
 
 {% if not selected_class %}
-    <div class="text-center py-16">
+    <div class="max-w-xl mx-auto text-center py-16">
         <h1 class="text-2xl font-bold text-white mb-2" data-i18n="no_classes_title">{{ t("no_classes_title") }}</h1>
-        <p class="text-slate-400" data-i18n="no_classes_desc">{{ t("no_classes_desc") }}</p>
+        <p class="text-slate-400 mb-6" data-i18n="no_classes_desc">{{ t("no_classes_desc") }}</p>
+
+        <form action="/elevi/noua" method="post" class="flex flex-col sm:flex-row gap-2 justify-center mb-8">
+            <input type="text" name="name" required placeholder="{{ t('clasa_noua_placeholder') }}"
+                class="flex-1 min-w-0 rounded-xl bg-[#1e293b] border border-[#334155] px-4 py-2.5 text-white placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-cyan-500">
+            <button type="submit" class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold px-5 py-2.5 rounded-xl text-sm whitespace-nowrap" data-i18n="no_classes_cta">{{ t("no_classes_cta") }}</button>
+        </form>
+
+        <div class="border-t border-[#334155] pt-6">
+            <p class="text-xs text-slate-500 mb-3" data-i18n="load_demo_hint">{{ t("load_demo_hint") }}</p>
+            <form action="/elevi/demo" method="post">
+                <button type="submit" class="bg-[#1e293b] hover:bg-[#334155] transition text-slate-300 font-semibold px-4 py-2 rounded-xl text-sm border border-[#334155]" data-i18n="load_demo_btn">{{ t("load_demo_btn") }}</button>
+            </form>
+        </div>
     </div>
 {% else %}
 
@@ -167,11 +180,11 @@
                 {% for s in students %}
                 <tr class="hover:bg-[#1e293b] transition cursor-pointer" onclick="window.location='/elevi/{{ selected_class['id'] }}/{{ s['id'] }}'">
                     <td class="px-4 py-3 font-semibold text-white whitespace-nowrap">{{ s['name'] }}</td>
-                    <td class="px-4 py-3 text-slate-300">{{ s['attendance'] }}%</td>
-                    <td class="px-4 py-3 text-slate-300">{{ s['avg_grade'] }}</td>
-                    <td class="px-4 py-3 text-slate-300">{{ s['mastery_pct'] }}%</td>
-                    <td class="px-4 py-3 text-slate-300">{{ s['completion_pct'] }}%</td>
-                    <td class="px-4 py-3 text-slate-300 whitespace-nowrap">{{ s['avg_time_per_ex'] }}</td>
+                    <td class="px-4 py-3 text-slate-300">{% if s['attendance'] is not none %}{{ s['attendance'] }}%{% else %}—{% endif %}</td>
+                    <td class="px-4 py-3 text-slate-300">{% if s['avg_grade'] is not none %}{{ s['avg_grade'] }}{% else %}<span class="text-slate-500" data-i18n="no_grade_yet">{{ t("no_grade_yet") }}</span>{% endif %}</td>
+                    <td class="px-4 py-3 text-slate-300">{% if s['mastery_pct'] is not none %}{{ s['mastery_pct'] }}%{% else %}—{% endif %}</td>
+                    <td class="px-4 py-3 text-slate-300">{% if s['completion_pct'] is not none %}{{ s['completion_pct'] }}%{% else %}—{% endif %}</td>
+                    <td class="px-4 py-3 text-slate-300 whitespace-nowrap">{{ s['avg_time_per_ex'] or '—' }}</td>
                     <td class="px-4 py-3 text-slate-300">{{ s['repeated_mistakes'] }}</td>
                     <td class="px-4 py-3">{{ macros.risk_badge(s['risk_level']) }}</td>
                     <td class="px-4 py-3 text-lg">{{ macros.trend_arrow(s['risk_trend']) }}</td>
@@ -181,6 +194,7 @@
         </table>
         </div>
     </div>
+    <p class="text-xs text-slate-500 mt-3" data-i18n="metrics_explainer">{{ t("metrics_explainer") }}</p>
     {% endif %}
 
 {% endif %}

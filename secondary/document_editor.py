@@ -30,7 +30,7 @@ MODEL_EXTENSIONS = {"pdf", "docx", "txt"}
 SCAN_EXTENSIONS = {"png", "jpg", "jpeg", "pdf"}
 
 MODES = [
-    {"key": "mode1", "icon": "💬", "title": "Asistent AI", "desc": "Conversație educațională.", "auto_insert": False},
+    {"key": "mode1", "icon": "💬", "title": "Asistent predare", "desc": "Întrebări despre predare, explicații și exerciții.", "auto_insert": False},
     {"key": "mode2", "icon": "🧮", "title": "Limbaj Natural → Matematic", "desc": "Scrii exercițiul în limbaj normal și primești automat forma matematică corectă.", "auto_insert": True},
     {"key": "mode3", "icon": "📄", "title": "Creează după Model", "desc": "Încarci un model de test existent în format Word sau PDF.", "auto_insert": True},
     {"key": "mode4", "icon": "✍️", "title": "Transcriere test scris de mână", "desc": "Încarci o fișă scrisă de mână și o transformăm automat în format digital.", "auto_insert": True},
@@ -640,9 +640,15 @@ def _run_generation(mode_key, action_type, conn, conversation, form, files, is_s
 
             _insert_message(conn, conversation["id"], "system", latex_content)
 
-            prompt = form.get("prompt", "").strip()
-            differences = form.get("differences", "").strip()
-            user_instruction = f"Instrucțiuni: {prompt}\nDiferențe față de model: {differences}".strip()
+            # /menu now sends these merged as one "instructions" field; the
+            # editor still posts the older prompt + differences pair.
+            merged = form.get("instructions", "").strip()
+            if merged:
+                user_instruction = merged
+            else:
+                prompt = form.get("prompt", "").strip()
+                differences = form.get("differences", "").strip()
+                user_instruction = f"Instrucțiuni: {prompt}\nDiferențe față de model: {differences}".strip()
 
             generated = ai.generate_from_model(
                 model_content=latex_content,
@@ -669,10 +675,27 @@ def _run_generation(mode_key, action_type, conn, conversation, form, files, is_s
 
         prompt = form.get("prompt", "").strip()
 
+        # Each of these has to say "work through every item", or the model
+        # answers with a single exercise and calls the job done.
         quick_prompts = {
-            "solve_bac": "Rezolvă complet, pas cu pas, următoarea variantă BAC. Include baremul, explicațiile și răspunsurile finale:\n\n",
-            "generate_similar_bac": "Generează o variantă BAC similară cu următoarea. Păstrează structura oficială, nivelul de dificultate, dar schimbă exercițiile și valorile numerice:\n\n",
-            "generate_row_2_bac": "Generează rândul 2 pentru următoarea variantă BAC. Păstrează aceeași structură și nivel de dificultate, dar creează exerciții diferite:\n\n",
+            "solve_bac": (
+                "Rezolvă complet, pas cu pas, FIECARE subiect și FIECARE item al variantei BAC "
+                "de mai jos, păstrând numerotarea originală. Include baremul, explicațiile și "
+                "răspunsurile finale:\n\n"
+            ),
+            "generate_similar_bac": (
+                "Generează o variantă BAC NOUĂ după modelul celei de mai jos. Parcurge varianta "
+                "item cu item și înlocuiește FIECARE exercițiu cu unul nou, pe aceeași noțiune și "
+                "de aceeași dificultate. Păstrează exact structura oficială, numărul de itemi, "
+                "numerotarea și punctajul. Schimbă datele numerice. NU rezolva:\n\n"
+            ),
+            "generate_row_2_bac": (
+                "Generează RÂNDUL 2 al variantei BAC de mai jos. Parcurge varianta item cu item "
+                "și înlocuiește FIECARE exercițiu cu unul nou, care testează aceeași noțiune și "
+                "are aceeași dificultate ca exercițiul de pe aceeași poziție, dar cu alte date. "
+                "Păstrează exact același număr de itemi, aceeași numerotare și același punctaj. "
+                "NU rezolva:\n\n"
+            ),
         }
         if action_type in quick_prompts:
             last_bac = _last_assistant_content(conn, conversation["id"])

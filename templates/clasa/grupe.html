@@ -27,12 +27,12 @@
     </form>
 </div>
 
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" id="groups-board">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" id="groups-board" data-move-url="/elevi/{{ selected_class['id'] }}/grupe/muta">
     {% for col in board %}
     <div class="bg-[#0f172a] border border-[#334155] rounded-2xl p-4 flex flex-col gap-3 group-column" data-group-id="{{ col.group['id'] }}"
         ondragover="event.preventDefault(); this.classList.add('ring-2','ring-cyan-400')"
         ondragleave="this.classList.remove('ring-2','ring-cyan-400')"
-        ondrop="dropStudent(event, {{ col.group['id'] }})">
+        ondrop="dropStudent(event)">
         <a href="/elevi/{{ selected_class['id'] }}/grupa/{{ col.group['id'] }}" class="text-white font-bold no-underline hover:text-cyan-400 transition flex items-center gap-1.5">
             {{ col.group['name'] }}
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
@@ -44,7 +44,7 @@
             {% for m in col.members %}
             <div class="bg-[#1e293b] border border-[#334155] rounded-xl px-3 py-2 flex items-center justify-between gap-2 cursor-grab active:cursor-grabbing"
                 draggable="true" data-student-id="{{ m['id'] }}"
-                ondragstart="event.dataTransfer.setData('text/plain', '{{ m['id'] }}')">
+                ondragstart="event.dataTransfer.setData('text/plain', this.dataset.studentId)">
                 <a href="/elevi/{{ selected_class['id'] }}/{{ m['id'] }}" class="text-sm text-white no-underline truncate">{{ m['name'] }}</a>
                 {{ macros.risk_badge(m['risk_level']) }}
             </div>
@@ -61,7 +61,7 @@
         {% for m in unassigned %}
         <div class="bg-[#1e293b] border border-[#334155] rounded-xl px-3 py-2 flex items-center gap-2 cursor-grab"
             draggable="true" data-student-id="{{ m['id'] }}"
-            ondragstart="event.dataTransfer.setData('text/plain', '{{ m['id'] }}')">
+            ondragstart="event.dataTransfer.setData('text/plain', this.dataset.studentId)">
             <span class="text-sm text-white">{{ m['name'] }}</span>
         </div>
         {% endfor %}
@@ -72,16 +72,21 @@
 <p class="text-xs text-slate-500 mt-4" data-i18n="drag_drop_hint">{{ t("drag_drop_hint") }}</p>
 
 <script>
-function dropStudent(event, groupId) {
+function dropStudent(event) {
     event.preventDefault();
-    event.currentTarget.classList.remove('ring-2', 'ring-cyan-400');
-    const studentId = event.dataTransfer.getData('text/plain');
-    if (!studentId) return;
+    const column = event.currentTarget;
+    column.classList.remove('ring-2', 'ring-cyan-400');
 
-    fetch("/elevi/{{ selected_class['id'] }}/grupe/muta", {
+    const studentId = event.dataTransfer.getData('text/plain');
+    const groupId = column.dataset.groupId;
+    if (!studentId || !groupId) return;
+
+    const moveUrl = document.getElementById('groups-board').dataset.moveUrl;
+
+    fetch(moveUrl, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `student_id=${studentId}&group_id=${groupId}`
+        body: `student_id=${encodeURIComponent(studentId)}&group_id=${encodeURIComponent(groupId)}`
     }).then(() => window.location.reload());
 }
 </script>

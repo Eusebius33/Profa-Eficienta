@@ -1,11 +1,114 @@
 import markdown
 import os
-from flask import request, redirect, render_template, session
+from flask import request, redirect, render_template, session, jsonify
 from sqlalchemy import select, func
 from werkzeug.utils import secure_filename
 from secondary import ai
 from secondary import adjacent
 from models import Conversation, Message
+
+
+def _wants_json():
+    """True when the chat form posted through fetch rather than the browser.
+
+    The async path and the plain form post share one handler: this decides
+    whether to answer with the new turn as JSON or with the old redirect, so
+    the modes keep working with scripting unavailable.
+    """
+    return request.headers.get("X-Requested-With") == "fetch"
+
+
+def _render_turns(partial, messages, fresh=True):
+    """Render a run of messages with a mode's single-turn partial."""
+    return "".join(
+        render_template(partial, message=m, fresh=fresh) for m in messages
+    )
+
+
+def _turn_response(partial, messages, redirect_to, fresh=True):
+    """Answer a chat POST: the rendered turn for fetch, a redirect otherwise."""
+    if _wants_json():
+        return jsonify(ok=True, html=_render_turns(partial, messages, fresh=fresh))
+    return redirect(redirect_to)
+
+
+def _json_error(message, redirect_to, status=400):
+    if _wants_json():
+        return jsonify(ok=False, error=message), status
+    return redirect(redirect_to)
+
+
+# Quick-action prompts live here, not in the page. The buttons used to build
+# these client side and paste the whole previous answer into the textarea,
+# which is why the teacher saw a wall of text appear before anything sent --
+# and why "rândul 2" only ever produced a single exercise: nothing told the
+# model to work through the test item by item.
+QUICK_ACTIONS = {
+    "solve_test": (
+        "Rezolvă complet, pas cu pas, FIECARE exercițiu din testul de mai jos. "
+        "Păstrează numerotarea originală a exercițiilor. Pentru fiecare exercițiu "
+        "arată raționamentul și răspunsul final, clar marcat."
+    ),
+    "generate_row_2": (
+        "Creează RÂNDUL 2 al testului de mai jos.\n"
+        "Reguli obligatorii:\n"
+        "- Parcurge testul exercițiu cu exercițiu și înlocuiește FIECARE exercițiu "
+        "cu unul nou.\n"
+        "- Rezultatul trebuie să conțină EXACT același număr de exerciții ca "
+        "originalul și aceeași numerotare.\n"
+        "- Fiecare exercițiu nou testează aceeași noțiune și are aceeași "
+        "dificultate ca exercițiul din original aflat pe aceeași poziție, dar cu "
+        "alte numere/date, astfel încât răspunsurile să difere.\n"
+        "- Păstrează structura, punctajul și formularea generală a testului.\n"
+        "- NU rezolva exercițiile; livrează doar enunțurile rândului 2."
+    ),
+    "generate_similar": (
+        "Creează un test NOU după modelul testului de mai jos.\n"
+        "Reguli obligatorii:\n"
+        "- Parcurge modelul exercițiu cu exercițiu și generează, pentru FIECARE, "
+        "un exercițiu nou pe aceeași temă și de aceeași dificultate.\n"
+        "- Păstrează exact numărul de exerciții, numerotarea, structura și "
+        "punctajul modelului.\n"
+        "- Schimbă datele numerice și contextul, ca răspunsurile să fie diferite "
+        "de cele ale modelului.\n"
+        "- NU rezolva exercițiile; livrează doar enunțurile."
+    ),
+}
+
+# Mode 1 is a free conversation, so its quick actions refer to what was just
+# said rather than to an uploaded model.
+CHAT_ACTIONS = {
+    "solve": (
+        "Rezolvă complet, pas cu pas, exercițiul din mesajul anterior al conversației. "
+        "Arată raționamentul și marchează clar răspunsul final. Dacă în mesajul anterior "
+        "sunt mai multe exerciții, rezolvă-le pe toate, păstrând numerotarea."
+    ),
+    "generate_similar": (
+        "Generează 5 exerciții noi, similare cu cel din mesajul anterior: aceeași noțiune "
+        "și aceeași dificultate, dar cu alte date numerice. Numerotează-le de la 1 la 5 și "
+        "NU le rezolva."
+    ),
+    "teach_class": (
+        "Explică-mi cum predau la clasă noțiunea din discuția de mai sus. Structurează "
+        "răspunsul astfel: 1) ideea de bază în cuvinte simple, 2) un exemplu lucrat, "
+        "3) greșelile frecvente ale elevilor și cum le previn, 4) două exerciții de fixare."
+    ),
+}
+
+CHAT_ACTION_LABELS = {
+    "solve": "Soluție exercițiu anterior",
+    "generate_similar": "Generează exerciții similare",
+    "teach_class": "Cum predau la clasă",
+}
+
+
+# What the teacher sees in the transcript for a quick action: the intent, not
+# the several-hundred-word instruction that goes to the model.
+QUICK_ACTION_LABELS = {
+    "solve_test": "Rezolvare test",
+    "generate_row_2": "Generează rândul 2",
+    "generate_similar": "Creează după model",
+}
 
 
 def _save_attachment(upload_folder, uploaded_file, allowed_file):
@@ -52,6 +155,113 @@ def _model_content(db, conversation_id):
     return "\n\n".join(row.content for row in rows if row.content)
 
 
+def _seed_instructions(db, conversation_id):
+    """Run the instructions typed on /menu as the conversation's opening turn.
+
+    The mode-3/mode-4 cards on /menu collect one "Instrucțiuni și diferențe față
+    de model" field. /create_modeN stashes it here because the conversation does
+    not exist yet at that point; this replays it as the first user message once
+    the uploaded model has been read, so the teacher lands on a generated test
+    instead of having to retype what they already asked for.
+    """
+    instructions = (session.pop(f"mode_instructions_{conversation_id}", "") or "").strip()
+    if not instructions:
+        return
+
+    db.add(Message(conversation_id=conversation_id, role="user", content=instructions))
+    db.commit()
+
+    history_rows = db.scalars(
+        select(Message)
+        .where(Message.conversation_id == conversation_id, Message.role != "system")
+        .order_by(Message.id.asc())
+    ).all()
+    history = "\n".join(f"{r.role}: {r.content}" for r in history_rows)
+
+    response = ai.generate_from_model(
+        model_content=_model_content(db, conversation_id),
+        conversation_history=history,
+        user_prompt=instructions,
+    )
+
+    db.add(Message(conversation_id=conversation_id, role="assistant", content=response))
+    db.commit()
+
+
+def mode3_bootstrap(db, apology, conversation_id, file_read, upload_folder):
+    """Read the uploaded model for a brand-new mode-3 conversation.
+
+    Same move as mode 4: this used to run inside the first GET, so the teacher
+    waited on /menu through the file conversion and any instructions typed on
+    the card. The conversation opens first and this fills it in.
+    """
+    conversation = db.scalars(
+        select(Conversation).where(
+            Conversation.id == conversation_id, Conversation.user_id == session["user_id"]
+        )
+    ).first()
+
+    if not conversation:
+        return jsonify(ok=False, error="Conversație inexistentă"), 404
+
+    total = db.scalar(
+        select(func.count()).select_from(Message).where(Message.conversation_id == conversation_id)
+    )
+
+    if total:
+        existing = db.scalars(
+            select(Message)
+            .where(Message.conversation_id == conversation_id, Message.role != "system")
+            .order_by(Message.id.asc())
+        ).all()
+        return jsonify(ok=True, html=_render_turns("partials/mode3_message.html", existing))
+
+    filename = conversation.title
+    filepath = os.path.join(upload_folder, filename)
+
+    if not os.path.exists(filepath):
+        return jsonify(ok=False, error="Fișierul încărcat nu a fost găsit"), 404
+
+    try:
+        raw_content = file_read(filepath)
+        latex_content = ai.convert_file_to_latex(raw_content, filepath=filepath)
+    except Exception as exc:  # noqa: BLE001 - surfaced to the teacher verbatim
+        return jsonify(
+            ok=False,
+            error=f"Fișierul nu a putut fi citit ({exc.__class__.__name__}). Încarcă din nou modelul.",
+        ), 422
+
+    # Store PURE LaTeX as hidden system message (model reference for generation)
+    db.add(Message(conversation_id=conversation_id, role="system", content=latex_content))
+
+    if latex_content and latex_content.startswith("Eroare AI:"):
+        intro = (
+            f"Am încercat să citesc fișierul **{filename}**, "
+            f"dar a apărut o eroare la procesare:\n\n{latex_content}\n\n"
+            f"Poți încerca să încarci din nou fișierul."
+        )
+    else:
+        intro = (
+            f"Am citit fișierul **{filename}** și am identificat "
+            f"următoarele exerciții:\n\n{latex_content}\n\n"
+            f"Verifică dacă exercițiile au fost extrase corect.\n"
+            f"- Dacă totul arată bine, scrie **\"generează testul\"**\n"
+            f"- Dacă sunt probleme, descrie ce trebuie corectat."
+        )
+
+    db.add(Message(conversation_id=conversation_id, role="assistant", content=intro))
+    db.commit()
+    _seed_instructions(db, conversation_id)
+
+    fresh = db.scalars(
+        select(Message)
+        .where(Message.conversation_id == conversation_id, Message.role != "system")
+        .order_by(Message.id.asc())
+    ).all()
+
+    return jsonify(ok=True, html=_render_turns("partials/mode3_message.html", fresh))
+
+
 def mode3_chat(db, apology, conversation_id, file_read, upload_folder, allowed_file):
 
     conversation = db.scalars(
@@ -71,41 +281,8 @@ def mode3_chat(db, apology, conversation_id, file_read, upload_folder, allowed_f
     # Count ALL messages (including system) to check if first load
     total = db.scalar(select(func.count()).select_from(Message).where(Message.conversation_id == conversation_id))
 
-    if total == 0:
-        filename = conversation.title
-        filepath = os.path.join(upload_folder, filename)
-
-        if not os.path.exists(filepath):
-            return apology("Fișierul încărcat nu a fost găsit", 404)
-
-        raw_content = file_read(filepath)
-
-        latex_content = ai.convert_file_to_latex(raw_content, filepath=filepath)
-
-        # Store PURE LaTeX as hidden system message (model reference for generation)
-        db.add(Message(conversation_id=conversation_id, role="system", content=latex_content))
-
-        if latex_content and latex_content.startswith("Eroare AI:"):
-            intro = (
-                f"Am încercat să citesc fișierul **{filename}**, "
-                f"dar a apărut o eroare la procesare:\n\n{latex_content}\n\n"
-                f"Poți încerca să încarci din nou fișierul."
-            )
-        else:
-            intro = (
-                f"Am citit fișierul **{filename}** și am identificat "
-                f"următoarele exerciții:\n\n{latex_content}\n\n"
-                f"Verifică dacă exercițiile au fost extrase corect.\n"
-                f"- Dacă totul arată bine, scrie **\"generează testul\"**\n"
-                f"- Dacă sunt probleme, descrie ce trebuie corectat."
-            )
-
-        # Store visible intro
-        db.add(Message(conversation_id=conversation_id, role="assistant", content=intro))
-        db.commit()
-        return redirect(f"/mode3/{conversation_id}")
-
     if request.method == "POST":
+        action_type = (request.form.get("action_type") or "normal").strip()
         prompt = (request.form.get("prompt") or "").strip()
 
         # A file attached to this message becomes extra reference material:
@@ -116,10 +293,22 @@ def mode3_chat(db, apology, conversation_id, file_read, upload_folder, allowed_f
         )
 
         if attach_error:
-            return apology(f"{attach_error}. Folosește .pdf, .docx, .txt, .png, .jpg sau .jpeg.", 400)
+            msg = f"{attach_error}. Folosește .pdf, .docx, .txt, .png, .jpg sau .jpeg."
+            if _wants_json():
+                return jsonify(ok=False, error=msg), 400
+            return apology(msg, 400)
 
-        if not prompt and not filename:
-            return redirect(f"/mode3/{conversation_id}")
+        quick_instruction = QUICK_ACTIONS.get(action_type)
+
+        if quick_instruction:
+            if not total:
+                return _json_error("Nu există încă niciun model citit.", f"/mode3/{conversation_id}")
+            prompt = QUICK_ACTION_LABELS.get(action_type, action_type)
+            model_prompt = f"{quick_instruction}\n\nTESTUL:\n{_model_content(db, conversation_id)}"
+        else:
+            if not prompt and not filename:
+                return _json_error("Mesaj gol.", f"/mode3/{conversation_id}")
+            model_prompt = prompt
 
         if filename:
             attachment_latex = ai.convert_file_to_latex(file_read(filepath), filepath=filepath)
@@ -129,6 +318,7 @@ def mode3_chat(db, apology, conversation_id, file_read, upload_folder, allowed_f
                 content=f"MODEL SUPLIMENTAR ({filename}):\n{attachment_latex}",
             ))
             prompt = f"[Fișier atașat: {filename}]\n{prompt}".strip()
+            model_prompt = prompt
 
         db.add(Message(conversation_id=conversation_id, role="user", content=prompt))
         db.commit()
@@ -147,12 +337,18 @@ def mode3_chat(db, apology, conversation_id, file_read, upload_folder, allowed_f
         response = ai.generate_from_model(
             model_content=model_content,
             conversation_history=history,
-            user_prompt=prompt
+            user_prompt=model_prompt
         )
 
-        db.add(Message(conversation_id=conversation_id, role="assistant", content=response))
+        assistant_message = Message(conversation_id=conversation_id, role="assistant", content=response)
+        db.add(assistant_message)
         db.commit()
-        return redirect(f"/mode3/{conversation_id}")
+
+        return _turn_response(
+            "partials/mode3_message.html",
+            [assistant_message],
+            f"/mode3/{conversation_id}",
+        )
 
     # ---- GET: render chat ----
     conversations = db.scalars(
@@ -166,8 +362,87 @@ def mode3_chat(db, apology, conversation_id, file_read, upload_folder, allowed_f
         messages=messages,
         conversations=conversations,
         conversation=conversation,
-        conversation_id=conversation_id
+        conversation_id=conversation_id,
+        bootstrap_url=(f"/mode3/{conversation_id}/bootstrap" if total == 0 else None),
     )
+
+
+def mode4_bootstrap(db, apology, conversation_id, upload_folder):
+    """Read the uploaded photo/PDF for a brand-new mode-4 conversation.
+
+    This used to run inside the first GET of /mode4/<id>, so the teacher stared
+    at /menu for the whole transcription (and again for any instructions typed
+    on the card). The page now renders immediately with a skeleton and calls
+    this, so the conversation is open while the handwriting is being read.
+    """
+    conversation = db.scalars(
+        select(Conversation).where(
+            Conversation.id == conversation_id, Conversation.user_id == session["user_id"]
+        )
+    ).first()
+
+    if not conversation:
+        return jsonify(ok=False, error="Conversație inexistentă"), 404
+
+    total = db.scalar(
+        select(func.count()).select_from(Message).where(Message.conversation_id == conversation_id)
+    )
+
+    # Already transcribed -- a double-submit or a reload mid-flight. Hand back
+    # what is there rather than paying for the model a second time.
+    if total:
+        existing = db.scalars(
+            select(Message)
+            .where(Message.conversation_id == conversation_id, Message.role != "system")
+            .order_by(Message.id.asc())
+        ).all()
+        return jsonify(ok=True, html=_render_turns("partials/mode4_message.html", existing))
+
+    filename = conversation.title
+    filepath = os.path.join(upload_folder, filename)
+
+    if not os.path.exists(filepath):
+        return jsonify(ok=False, error="Poza încărcată nu a fost găsită"), 404
+
+    # A corrupt or truncated upload makes the reader raise. Before this ran
+    # asynchronously it took the whole page down; now it would strand the
+    # skeleton, so it is reported as a normal failed turn instead.
+    try:
+        latex_content = ai.transcribe_handwriting(filepath)
+    except Exception as exc:  # noqa: BLE001 - surfaced to the teacher verbatim
+        return jsonify(
+            ok=False,
+            error=f"Fișierul nu a putut fi citit ({exc.__class__.__name__}). Încarcă din nou poza sau PDF-ul.",
+        ), 422
+
+    # Store PURE LaTeX as hidden system message (model reference for generation)
+    db.add(Message(conversation_id=conversation_id, role="system", content=latex_content))
+
+    if latex_content and latex_content.startswith("Eroare AI:"):
+        intro = (
+            f"Am încercat să citesc poza **{filename}**, "
+            f"dar a apărut o eroare la procesare:\n\n{latex_content}\n\n"
+            f"Poți încerca să încarci din nou fișierul."
+        )
+    else:
+        intro = (
+            f"Am transcris exercițiile scrise de mână din **{filename}**:\n\n{latex_content}\n\n"
+            f"Verifică dacă transcrierea este corectă.\n"
+            f"- Dacă totul arată bine, scrie **\"generează testul\"** sau cere o variantă nouă\n"
+            f"- Dacă ceva a fost citit greșit, descrie ce trebuie corectat."
+        )
+
+    db.add(Message(conversation_id=conversation_id, role="assistant", content=intro))
+    db.commit()
+    _seed_instructions(db, conversation_id)
+
+    fresh = db.scalars(
+        select(Message)
+        .where(Message.conversation_id == conversation_id, Message.role != "system")
+        .order_by(Message.id.asc())
+    ).all()
+
+    return jsonify(ok=True, html=_render_turns("partials/mode4_message.html", fresh))
 
 
 def mode4_chat(db, apology, conversation_id, upload_folder, allowed_file):
@@ -188,38 +463,8 @@ def mode4_chat(db, apology, conversation_id, upload_folder, allowed_file):
 
     total = db.scalar(select(func.count()).select_from(Message).where(Message.conversation_id == conversation_id))
 
-    if total == 0:
-        filename = conversation.title
-        filepath = os.path.join(upload_folder, filename)
-
-        if not os.path.exists(filepath):
-            return apology("Poza încărcată nu a fost găsită", 404)
-
-        latex_content = ai.transcribe_handwriting(filepath)
-
-        # Store PURE LaTeX as hidden system message (model reference for generation)
-        db.add(Message(conversation_id=conversation_id, role="system", content=latex_content))
-
-        if latex_content and latex_content.startswith("Eroare AI:"):
-            intro = (
-                f"Am încercat să citesc poza **{filename}**, "
-                f"dar a apărut o eroare la procesare:\n\n{latex_content}\n\n"
-                f"Poți încerca să încarci din nou fișierul."
-            )
-        else:
-            intro = (
-                f"Am transcris exercițiile scrise de mână din **{filename}**:\n\n{latex_content}\n\n"
-                f"Verifică dacă transcrierea este corectă.\n"
-                f"- Dacă totul arată bine, scrie **\"generează testul\"** sau cere o variantă nouă\n"
-                f"- Dacă ceva a fost citit greșit, descrie ce trebuie corectat."
-            )
-
-        # Store visible intro
-        db.add(Message(conversation_id=conversation_id, role="assistant", content=intro))
-        db.commit()
-        return redirect(f"/mode4/{conversation_id}")
-
     if request.method == "POST":
+        action_type = (request.form.get("action_type") or "normal").strip()
         prompt = (request.form.get("prompt") or "").strip()
 
         # A photo/PDF attached to this message is transcribed the same way the
@@ -230,10 +475,26 @@ def mode4_chat(db, apology, conversation_id, upload_folder, allowed_file):
         )
 
         if attach_error:
+            if _wants_json():
+                return jsonify(ok=False, error=f"{attach_error}. Folosește o poză .png/.jpg sau un .pdf."), 400
             return apology(f"{attach_error}. Folosește o poză .png/.jpg sau un .pdf.", 400)
 
-        if not prompt and not filename:
-            return redirect(f"/mode4/{conversation_id}")
+        # A quick action carries no typed prompt: the instruction is built here
+        # so the button never has to stuff it into the teacher's textarea.
+        quick_instruction = QUICK_ACTIONS.get(action_type)
+
+        if quick_instruction:
+            if not total:
+                return _json_error(
+                    "Nu există încă nicio transcriere.", f"/mode4/{conversation_id}"
+                )
+            display = QUICK_ACTION_LABELS.get(action_type, action_type)
+            prompt = display
+            model_prompt = f"{quick_instruction}\n\nTESTUL:\n{_model_content(db, conversation_id)}"
+        else:
+            if not prompt and not filename:
+                return _json_error("Mesaj gol.", f"/mode4/{conversation_id}")
+            model_prompt = prompt
 
         if filename:
             attachment_latex = ai.transcribe_handwriting(filepath, extra_instructions=prompt or None)
@@ -243,8 +504,10 @@ def mode4_chat(db, apology, conversation_id, upload_folder, allowed_file):
                 content=f"TRANSCRIERE SUPLIMENTARĂ ({filename}):\n{attachment_latex}",
             ))
             prompt = f"[Fișier atașat: {filename}]\n{prompt}".strip()
+            model_prompt = prompt
 
-        db.add(Message(conversation_id=conversation_id, role="user", content=prompt))
+        user_message = Message(conversation_id=conversation_id, role="user", content=prompt)
+        db.add(user_message)
         db.commit()
 
         # Build history (exclude system message)
@@ -261,12 +524,20 @@ def mode4_chat(db, apology, conversation_id, upload_folder, allowed_file):
         response = ai.generate_from_model(
             model_content=model_content,
             conversation_history=history,
-            user_prompt=prompt
+            user_prompt=model_prompt
         )
 
-        db.add(Message(conversation_id=conversation_id, role="assistant", content=response))
+        assistant_message = Message(conversation_id=conversation_id, role="assistant", content=response)
+        db.add(assistant_message)
         db.commit()
-        return redirect(f"/mode4/{conversation_id}")
+
+        # The user's bubble is already on screen from the optimistic send, so
+        # only the answer comes back over fetch.
+        return _turn_response(
+            "partials/mode4_message.html",
+            [assistant_message],
+            f"/mode4/{conversation_id}",
+        )
 
     # ---- GET: render chat ----
     conversations = db.scalars(
@@ -281,6 +552,9 @@ def mode4_chat(db, apology, conversation_id, upload_folder, allowed_file):
         conversations=conversations,
         conversation=conversation,
         conversation_id=conversation_id,
+        # Nothing transcribed yet: the page paints now and the browser kicks
+        # off the transcription against this endpoint.
+        bootstrap_url=(f"/mode4/{conversation_id}/bootstrap" if total == 0 else None),
         **{"class": conversation["school_class"] if "school_class" in conversation.keys() else "—"},
         bac=conversation["bac"] if "bac" in conversation.keys() else "—"
     )
@@ -304,14 +578,14 @@ def mode2_chat(db, apology, conversation_id):
     if existing_count == 0:
 
         style_desc = conversation["style_description"] or "Stil implicit"
-        school_class = conversation["school_class"] or "—"
-        bac = conversation["bac"] or "—"
 
+        # Class and BAC profile are no longer asked for when a mode2
+        # conversation is created, so they were only ever rendering as "—".
+        # An empty field tells the teacher nothing, so the intro names the
+        # active style and nothing else.
         intro = (
             f"Stilul tău activ este:\n"
-            f"- {style_desc}\n"
-            f"- Clasa: {school_class}\n"
-            f"- BAC: {bac}\n\n"
+            f"- {style_desc}\n\n"
             f"Scrie exercițiile în limbaj natural, "
             f"iar eu le voi transforma în limbaj matematic gata de printat."
         )
@@ -322,11 +596,36 @@ def mode2_chat(db, apology, conversation_id):
     # ---- Handle user POST ----
     if request.method == "POST":
 
-        prompt = request.form.get("prompt")
-        action_type = request.form.get("action_type", "normal")
+        prompt = (request.form.get("prompt") or "").strip()
+        action_type = (request.form.get("action_type") or "normal").strip()
 
-        if not prompt or not prompt.strip():
-            return redirect(f"/mode2/{conversation_id}")
+        # "Soluție exercițiu anterior" used to ship the previous bubble's text
+        # back from the page. The server already has the transcript, so it
+        # reads the last exercise itself and the button stays a button.
+        # What the solver is handed, when that differs from what the teacher
+        # sees in the transcript.
+        target = prompt
+
+        if action_type == "solve" and not prompt:
+            previous = db.scalars(
+                select(Message)
+                .where(Message.conversation_id == conversation_id, Message.role == "user")
+                .order_by(Message.id.desc())
+                .limit(1)
+            ).first()
+            if not previous:
+                return _json_error("Nu există niciun exercițiu anterior.", f"/mode2/{conversation_id}")
+            target = previous.content
+            # The bubble says what was asked for, not a second copy of the
+            # exercise -- and it matches what the page showed optimistically.
+            prompt = CHAT_ACTION_LABELS["solve"]
+
+        if action_type == "generate" and not prompt:
+            prompt = f"Generează {request.form.get('exercise_count', '5')} exerciții noi."
+            target = prompt
+
+        if not prompt:
+            return _json_error("Mesaj gol.", f"/mode2/{conversation_id}")
 
         # save user message
         db.add(Message(conversation_id=conversation_id, role="user", content=prompt))
@@ -350,7 +649,7 @@ def mode2_chat(db, apology, conversation_id):
 
         elif action_type == "solve":
             response = adjacent.solve_step_by_step(
-                prompt,
+                target,
                 conversation["style_description"],
                 conversation["school_class"],
                 conversation["bac"]
@@ -365,7 +664,8 @@ def mode2_chat(db, apology, conversation_id):
             )
 
         # save assistant message
-        db.add(Message(conversation_id=conversation_id, role="assistant", content=response))
+        assistant_message = Message(conversation_id=conversation_id, role="assistant", content=response)
+        db.add(assistant_message)
         db.commit()
 
         # update title with first user prompt (optional, like mode1)
@@ -374,7 +674,11 @@ def mode2_chat(db, apology, conversation_id):
             conversation.title = short_title
             db.commit()
 
-        return redirect(f"/mode2/{conversation_id}")
+        return _turn_response(
+            "partials/mode2_message.html",
+            [assistant_message],
+            f"/mode2/{conversation_id}",
+        )
 
     # ---- Load messages + sidebar conversations ----
     messages = db.scalars(
@@ -395,6 +699,11 @@ def mode2_chat(db, apology, conversation_id):
         conversation_id=conversation_id
     )
 
+def _mode1_view(message):
+    """A mode-1 turn as the template wants it: markdown already rendered."""
+    return dict(message) | {"content": markdown.markdown(message["content"])}
+
+
 def mode1_chat(db, apology, conversation_id):
     conversation = db.scalars(
         select(Conversation).where(Conversation.id == conversation_id, Conversation.user_id == session["user_id"])
@@ -405,16 +714,24 @@ def mode1_chat(db, apology, conversation_id):
 
     if request.method == "POST":
 
-        prompt = request.form.get("prompt")
-        if not prompt:
-            return redirect(f"/mode1/{conversation_id}")
+        action_type = (request.form.get("action_type") or "normal").strip()
+        prompt = (request.form.get("prompt") or "").strip()
+
+        # A quick action's instruction is built here, so the button no longer
+        # has to paste several hundred words into the teacher's textarea.
+        quick_instruction = CHAT_ACTIONS.get(action_type)
+        if quick_instruction:
+            prompt = CHAT_ACTION_LABELS.get(action_type, action_type)
+            model_prompt = quick_instruction
+        else:
+            if not prompt:
+                return _json_error("Mesaj gol.", f"/mode1/{conversation_id}")
+            model_prompt = prompt
 
         if conversation.title == "Conversație nouă":
-            new_title = prompt[:40]
-            conversation.title = new_title
+            conversation.title = prompt[:40]
             db.commit()
 
-        # save user msg
         db.add(Message(conversation_id=conversation_id, role="user", content=prompt))
         db.commit()
 
@@ -423,33 +740,31 @@ def mode1_chat(db, apology, conversation_id):
             select(Message).where(Message.conversation_id == conversation_id).order_by(Message.id.asc())
         ).all()
 
-        history = [
-            {
-                "role": row.role,
-                "content": row.content
-            }
-            for row in history_rows
-        ]
-        prompt = "\n".join([f"{m['role']}: {m['content']}" for m in history])
-        if conversation.title == "Ghid Website":
-            response = ai.website_guide(prompt)
-        else:
-            response = ai.assistant(prompt)
-        response_html=markdown.markdown(response)
+        history = "\n".join(f"{row.role}: {row.content}" for row in history_rows)
+        # The quick action's real instruction rides at the end, after the
+        # transcript it refers back to.
+        full_prompt = history if model_prompt == prompt else f"{history}\n\nINSTRUCȚIUNE: {model_prompt}"
 
-        # save ai msg
-        db.add(Message(conversation_id=conversation_id, role="assistant", content=response))
+        if conversation.title == "Ghid Website":
+            response = ai.website_guide(full_prompt)
+        else:
+            response = ai.assistant(full_prompt)
+
+        assistant_message = Message(conversation_id=conversation_id, role="assistant", content=response)
+        db.add(assistant_message)
         db.commit()
 
-        return redirect(f"/mode1/{conversation_id}")
+        return _turn_response(
+            "partials/mode1_message.html",
+            [_mode1_view(assistant_message)],
+            f"/mode1/{conversation_id}",
+        )
 
     messages = db.scalars(
         select(Message).where(Message.conversation_id == conversation_id).order_by(Message.id.asc())
     ).all()
-    messages = [
-        dict(m) | {"content": markdown.markdown(m["content"])}
-        for m in messages
-    ]
+    messages = [_mode1_view(m) for m in messages]
+
     #outputs first message
     if len(messages) == 0:
         if conversation.title == "Ghid Website":
@@ -470,18 +785,20 @@ def mode1_chat(db, apology, conversation_id):
         db.commit()
 
         return redirect(f"/mode1/{conversation_id}")
+
     conversations = db.scalars(
         select(Conversation)
         .where(Conversation.user_id == session["user_id"], Conversation.mode == "mode1")
         .order_by(Conversation.created_at.desc())
     ).all()
 
-    #content= markdown.markdown("row["content"]")
     return render_template("modes/mode1.html",
         messages=messages,
         conversations=conversations,
         conversation_id=conversation_id
     )
+
+
 # def mode2_chat(db, connect, apology, conversation_id):
 
 #     conversation = db.execute(

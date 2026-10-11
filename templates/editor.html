@@ -389,8 +389,8 @@
                         <!-- QUICK ACTIONS -->
                         <div class="ed-quick-actions">
                             {% if m.key == "mode2" %}
-                                <button type="button" class="ed-quick-btn" onclick="runQuickAction('mode2','solve','Soluție exercițiu anterior')">Soluție exercițiu anterior</button>
-                                <button type="button" class="ed-quick-btn" onclick="runQuickAction('mode2','generate','Generează 5 exerciții noi.')">Generează 5 exerciții</button>
+                                <button type="button" class="ed-quick-btn" onclick="runQuickAction('mode2','solve','')">Soluție exercițiu anterior</button>
+                                <button type="button" class="ed-quick-btn" onclick="runQuickAction('mode2','generate','')">Generează 5 exerciții</button>
                             {% elif m.key == "mode5" %}
                                 <button type="button" class="ed-quick-btn" onclick="runQuickAction('mode5','solve_bac','')">Rezolvare test</button>
                                 <button type="button" class="ed-quick-btn" onclick="runQuickAction('mode5','generate_similar_bac','')">Generează similare</button>
@@ -463,6 +463,7 @@
      data-modes="{{ modes | tojson | forceescape }}"
      data-i18n="{{ {
          'aiResponse': t('ed_ai_response'),
+         'thinking': t('ai_thinking'),
          'insertedToDoc': t('ed_inserted_to_doc'),
          'showContent': t('ed_show_content'),
          'hideContent': t('ed_hide_content'),

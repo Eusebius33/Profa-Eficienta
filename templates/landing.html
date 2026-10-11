@@ -5,6 +5,8 @@
 {% endblock %}
 
 {% block main %}
+<div class="scroll-progress" aria-hidden="true"></div>
+
 <div class="min-h-screen overflow-x-clip bg-[radial-gradient(circle_at_top_left,rgba(6,182,212,0.18),transparent_30%),linear-gradient(135deg,#020617_0%,#0f172a_45%,#111827_100%)]">
 
     <!-- ================= HERO ================= -->
@@ -35,27 +37,27 @@
                         {{ t("landing_badge") }}
                     </div>
 
-                    <h1 class="reveal font-display text-4xl font-extrabold leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-6xl" style="--stagger-index:1;">
+                    <h1 data-split-words class="hero-title font-display text-4xl font-extrabold leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-6xl">
                         {{ t("landing_title") }}
                     </h1>
 
-                    <p class="reveal mt-6 max-w-2xl text-lg leading-8 text-slate-300 sm:text-xl" style="--stagger-index:2;">
+                    <p class="reveal mt-6 max-w-xl text-lg leading-8 text-slate-300" style="--stagger-index:2;">
                         {{ t("landing_subtitle") }}
                     </p>
 
                     <div class="reveal mt-8 flex flex-col gap-3 sm:flex-row" style="--stagger-index:3;">
                         {% if session.get("user_id") %}
-                        <a href="/menu" class="group inline-flex items-center justify-center gap-2 rounded-2xl bg-cyan-500 px-6 py-3.5 text-base font-semibold text-slate-950 shadow-lg shadow-cyan-500/25 transition duration-200 hover:-translate-y-0.5 hover:bg-cyan-400 hover:shadow-cyan-400/30">
+                        <a href="/menu" class="group press sheen inline-flex items-center justify-center gap-2 rounded-2xl bg-cyan-500 px-6 py-3.5 text-base font-semibold text-slate-950 shadow-lg shadow-cyan-500/25 transition duration-200 hover:-translate-y-0.5 hover:bg-cyan-400 hover:shadow-cyan-400/30">
                             {{ t("landing_cta_primary") }}
                             <svg class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                         </a>
                         {% else %}
-                        <a href="/register" class="group inline-flex items-center justify-center gap-2 rounded-2xl bg-cyan-500 px-6 py-3.5 text-base font-semibold text-slate-950 shadow-lg shadow-cyan-500/25 transition duration-200 hover:-translate-y-0.5 hover:bg-cyan-400 hover:shadow-cyan-400/30">
+                        <a href="/register" class="group press sheen inline-flex items-center justify-center gap-2 rounded-2xl bg-cyan-500 px-6 py-3.5 text-base font-semibold text-slate-950 shadow-lg shadow-cyan-500/25 transition duration-200 hover:-translate-y-0.5 hover:bg-cyan-400 hover:shadow-cyan-400/30">
                             {{ t("landing_cta_primary") }}
                             <svg class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                         </a>
                         {% endif %}
-                        <a href="/login" class="inline-flex items-center justify-center rounded-2xl border border-slate-700 bg-slate-900/70 px-6 py-3.5 text-base font-semibold text-white transition duration-200 hover:-translate-y-0.5 hover:border-cyan-400 hover:text-cyan-300">
+                        <a href="/login" class="press inline-flex items-center justify-center rounded-2xl border border-slate-700 bg-slate-900/70 px-6 py-3.5 text-base font-semibold text-white transition duration-200 hover:-translate-y-0.5 hover:border-cyan-400 hover:text-cyan-300">
                             {{ t("landing_cta_secondary") }}
                         </a>
                     </div>
@@ -63,23 +65,23 @@
                     <p class="reveal mt-4 text-sm text-slate-500" style="--stagger-index:4;">{{ t("landing_hero_note") }}</p>
 
                     <div class="reveal mt-8 flex flex-wrap gap-3 text-sm text-slate-300" style="--stagger-index:5;">
-                        <span class="inline-flex items-center gap-1.5 rounded-full border border-slate-700/80 bg-slate-900/60 px-3 py-1.5">
-                            <svg class="h-3.5 w-3.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                        <span class="pill inline-flex items-center gap-1.5 rounded-full border border-slate-700/80 bg-slate-900/60 px-3 py-1.5">
+                            <svg class="pill-check h-3.5 w-3.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
                             {{ t("landing_feature_1") }}
                         </span>
-                        <span class="inline-flex items-center gap-1.5 rounded-full border border-slate-700/80 bg-slate-900/60 px-3 py-1.5">
-                            <svg class="h-3.5 w-3.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                        <span class="pill inline-flex items-center gap-1.5 rounded-full border border-slate-700/80 bg-slate-900/60 px-3 py-1.5">
+                            <svg class="pill-check h-3.5 w-3.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
                             {{ t("landing_feature_2") }}
                         </span>
-                        <span class="inline-flex items-center gap-1.5 rounded-full border border-slate-700/80 bg-slate-900/60 px-3 py-1.5">
-                            <svg class="h-3.5 w-3.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                        <span class="pill inline-flex items-center gap-1.5 rounded-full border border-slate-700/80 bg-slate-900/60 px-3 py-1.5">
+                            <svg class="pill-check h-3.5 w-3.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
                             {{ t("landing_feature_3") }}
                         </span>
                     </div>
                 </div>
 
                 <!-- Live demo panel -->
-                <div id="hero-demo" class="reveal-scale rounded-[2rem] border border-slate-200 bg-white p-6 shadow-2xl shadow-cyan-500/10" style="--stagger-index:2;">
+                <div id="hero-demo" class="reveal reveal-scale rounded-[2rem] border border-slate-200 bg-white p-6 shadow-2xl shadow-cyan-500/10" style="--stagger-index:3;">
                     <div class="flex items-center justify-between">
                         <div class="text-sm font-bold uppercase tracking-[0.2em] text-cyan-600">{{ t("landing_example_label") }}</div>
                         <div class="inline-flex items-center gap-1.5 rounded-full border border-cyan-200 bg-cyan-50 px-3 py-1 text-xs font-semibold text-cyan-700">
@@ -104,8 +106,8 @@
                     </div>
 
                     <div class="mt-4 space-y-3">
-                        <div class="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4">
-                            <div class="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600">
+                        <div class="panel-row flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4">
+                            <div class="panel-row-icon mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600">
                                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                             </div>
                             <div>
@@ -113,8 +115,8 @@
                                 <div class="mt-0.5 text-sm text-slate-500">{{ t("landing_panel_item_1_desc") }}</div>
                             </div>
                         </div>
-                        <div class="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4">
-                            <div class="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600">
+                        <div class="panel-row flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4">
+                            <div class="panel-row-icon mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600">
                                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
                             </div>
                             <div>
@@ -122,8 +124,8 @@
                                 <div class="mt-0.5 text-sm text-slate-500">{{ t("landing_panel_item_2_desc") }}</div>
                             </div>
                         </div>
-                        <div class="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4">
-                            <div class="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600">
+                        <div class="panel-row flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4">
+                            <div class="panel-row-icon mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600">
                                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z"></path></svg>
                             </div>
                             <div>
@@ -137,49 +139,77 @@
         </div>
     </section>
 
-    <!-- ================= TRUST STRIP ================= -->
+    <!-- ================= WHAT IT DOES =================
+         Second half of the hero copy. It was one block of ten lines sitting
+         under the headline; the two jobs it describes -- making materials and
+         following students who fall behind -- are split into their own columns,
+         each marked by a rule that fills as the column arrives. -->
+    <section class="relative mx-auto max-w-7xl px-6 pb-16 lg:px-8 lg:pb-20">
+        <h2 class="reveal max-w-3xl font-display text-3xl font-extrabold leading-[1.15] tracking-tight text-white sm:text-4xl">
+            {{ t("landing_story_title") }}
+        </h2>
+
+        <div class="mt-10 grid gap-x-16 gap-y-12 md:grid-cols-2">
+            <div class="reveal" style="--stagger-index:1;">
+                <article class="story-col relative h-full pl-6">
+                    <span class="story-rule absolute bottom-1 left-0 top-2 w-px bg-slate-700/60" aria-hidden="true">
+                        <span class="step-fill step-fill--vertical block h-full w-px bg-gradient-to-b from-cyan-400 to-blue-500" data-stagger-index="0"></span>
+                    </span>
+                    <h3 class="story-title font-display text-xl font-bold text-white sm:text-2xl">{{ t("landing_story_a_title") }}</h3>
+                    <p class="mt-4 text-base leading-8 text-slate-300">{{ t("landing_story_a_body") }}</p>
+                </article>
+            </div>
+
+            <div class="reveal" style="--stagger-index:2;">
+                <article class="story-col relative h-full pl-6">
+                    <span class="story-rule absolute bottom-1 left-0 top-2 w-px bg-slate-700/60" aria-hidden="true">
+                        <span class="step-fill step-fill--vertical block h-full w-px bg-gradient-to-b from-cyan-400 to-blue-500" data-stagger-index="1"></span>
+                    </span>
+                    <h3 class="story-title font-display text-xl font-bold text-white sm:text-2xl">{{ t("landing_story_b_title") }}</h3>
+                    <p class="mt-4 text-base leading-8 text-slate-300">{{ t("landing_story_b_body") }}</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= SUBHERO: ONE TEACHER, THE PLAIN FACTS ================= -->
     <section class="relative mx-auto max-w-7xl px-6 pb-4 lg:px-8">
-        <div class="reveal-scale rounded-[2rem] border border-slate-200 bg-white p-6 shadow-xl md:p-8">
-            <p class="text-center text-xs font-bold uppercase tracking-[0.3em] text-slate-400 md:text-left">
-                {{ t("landing_trust_title") }}
-            </p>
-            <div class="mt-5 grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6" data-reveal-group>
-                <div class="flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-4">
-                    <div class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-600">
-                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5" stroke-width="2"></rect><rect x="13" y="4" width="7" height="7" rx="1.5" stroke-width="2"></rect><rect x="4" y="13" width="7" height="7" rx="1.5" stroke-width="2"></rect><rect x="13" y="13" width="7" height="7" rx="1.5" stroke-width="2"></rect></svg>
-                    </div>
-                    <div>
-                        <div class="font-display text-2xl font-extrabold text-slate-900"><span data-count-to="5">0</span></div>
-                        <div class="text-xs font-medium text-slate-500">{{ t("landing_trust_modes_label") }}</div>
-                    </div>
+        <div class="reveal reveal-scale relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900/70 shadow-2xl shadow-slate-950/50">
+            <div class="bg-grid-quad pointer-events-none absolute inset-0" aria-hidden="true"></div>
+            <div class="relative grid gap-10 p-8 md:p-10 lg:grid-cols-5 lg:items-center lg:gap-14">
+
+                <figure class="reveal lg:col-span-3">
+                    <blockquote class="font-display text-2xl font-semibold leading-snug text-white sm:text-3xl sm:leading-snug">
+                        &bdquo;{{ t("landing_quote") }}&rdquo;
+                    </blockquote>
+                    <figcaption class="mt-7 flex items-center gap-[14px]">
+                        <span class="h-px w-10 flex-shrink-0 bg-cyan-400" aria-hidden="true"></span>
+                        <span class="text-sm font-semibold text-slate-200">{{ t("landing_quote_author") }}</span>
+                    </figcaption>
+                </figure>
+
+                <div class="reveal lg:col-span-2 lg:ml-auto lg:w-full lg:max-w-xs">
+                    <h2 class="sr-only">{{ t("landing_trust_title") }}</h2>
+                    <dl class="border-y border-white/10 divide-y divide-white/10">
+                        <div class="stat-row flex items-baseline justify-between gap-6 py-3.5">
+                            <dt class="text-sm text-slate-400">{{ t("landing_trust_modes_label") }}</dt>
+                            <dd class="font-display text-xl font-extrabold tabular-nums text-cyan-300"><span data-count-to="5">0</span></dd>
+                        </div>
+                        <div class="stat-row flex items-baseline justify-between gap-6 py-3.5">
+                            <dt class="text-sm text-slate-400">{{ t("landing_trust_languages_label") }}</dt>
+                            <dd class="font-display text-xl font-extrabold tabular-nums text-cyan-300"><span data-count-to="2">0</span></dd>
+                        </div>
+                        <div class="stat-row flex items-baseline justify-between gap-6 py-3.5">
+                            <dt class="text-sm text-slate-400">{{ t("landing_trust_ai_label") }}</dt>
+                            <dd class="text-right text-sm font-semibold text-white">{{ t("landing_trust_ai_value") }}</dd>
+                        </div>
+                        <div class="stat-row flex items-baseline justify-between gap-6 py-3.5">
+                            <dt class="text-sm text-slate-400">{{ t("landing_trust_export_label") }}</dt>
+                            <dd class="text-right text-sm font-semibold text-white">{{ t("landing_trust_export_value") }}</dd>
+                        </div>
+                    </dl>
                 </div>
-                <div class="flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-4">
-                    <div class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-600">
-                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke-width="2"></circle><ellipse cx="12" cy="12" rx="3.6" ry="8.5" stroke-width="2"></ellipse><path stroke-width="2" d="M3.5 12h17"></path></svg>
-                    </div>
-                    <div>
-                        <div class="font-display text-2xl font-extrabold text-slate-900"><span data-count-to="2">0</span></div>
-                        <div class="text-xs font-medium text-slate-500">{{ t("landing_trust_languages_label") }}</div>
-                    </div>
-                </div>
-                <div class="flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-4">
-                    <div class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-600">
-                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2" stroke-width="2"></rect><path stroke-width="2" stroke-linecap="round" d="M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3"></path></svg>
-                    </div>
-                    <div>
-                        <div class="font-display text-lg font-extrabold text-slate-900">{{ t("landing_trust_ai_value") }}</div>
-                        <div class="text-xs font-medium text-slate-500">{{ t("landing_trust_ai_label") }}</div>
-                    </div>
-                </div>
-                <div class="flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-4">
-                    <div class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-600">
-                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                    </div>
-                    <div>
-                        <div class="font-display text-lg font-extrabold text-slate-900">{{ t("landing_trust_export_value") }}</div>
-                        <div class="text-xs font-medium text-slate-500">{{ t("landing_trust_export_label") }}</div>
-                    </div>
-                </div>
+
             </div>
         </div>
     </section>
@@ -194,28 +224,34 @@
         </div>
 
         <div class="mt-12 grid gap-6 md:grid-cols-3" data-reveal-group>
-            <div class="tilt-card reveal rounded-3xl border border-slate-200 bg-white p-7 shadow-lg">
-                <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-50 text-cyan-600">
-                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+            <div class="reveal">
+                <div class="tilt-card h-full rounded-3xl border border-slate-200 bg-white p-7 shadow-lg">
+                    <div class="icon-tile flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-50 text-cyan-600">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                    </div>
+                    <h3 class="mt-5 text-xl font-bold text-slate-900">{{ t("landing_card_1_title") }}</h3>
+                    <p class="mt-3 text-sm leading-7 text-slate-600">{{ t("landing_card_1_desc") }}</p>
                 </div>
-                <h3 class="mt-5 text-xl font-bold text-slate-900">{{ t("landing_card_1_title") }}</h3>
-                <p class="mt-3 text-sm leading-7 text-slate-600">{{ t("landing_card_1_desc") }}</p>
             </div>
 
-            <div class="tilt-card reveal rounded-3xl border border-slate-200 bg-white p-7 shadow-lg">
-                <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-50 text-cyan-600">
-                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            <div class="reveal">
+                <div class="tilt-card h-full rounded-3xl border border-slate-200 bg-white p-7 shadow-lg">
+                    <div class="icon-tile flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-50 text-cyan-600">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    </div>
+                    <h3 class="mt-5 text-xl font-bold text-slate-900">{{ t("landing_card_2_title") }}</h3>
+                    <p class="mt-3 text-sm leading-7 text-slate-600">{{ t("landing_card_2_desc") }}</p>
                 </div>
-                <h3 class="mt-5 text-xl font-bold text-slate-900">{{ t("landing_card_2_title") }}</h3>
-                <p class="mt-3 text-sm leading-7 text-slate-600">{{ t("landing_card_2_desc") }}</p>
             </div>
 
-            <div class="tilt-card reveal rounded-3xl border border-slate-200 bg-white p-7 shadow-lg">
-                <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-50 text-cyan-600">
-                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke-width="2"></circle><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"></path></svg>
+            <div class="reveal">
+                <div class="tilt-card h-full rounded-3xl border border-slate-200 bg-white p-7 shadow-lg">
+                    <div class="icon-tile flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-50 text-cyan-600">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke-width="2"></circle><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"></path></svg>
+                    </div>
+                    <h3 class="mt-5 text-xl font-bold text-slate-900">{{ t("landing_card_3_title") }}</h3>
+                    <p class="mt-3 text-sm leading-7 text-slate-600">{{ t("landing_card_3_desc") }}</p>
                 </div>
-                <h3 class="mt-5 text-xl font-bold text-slate-900">{{ t("landing_card_3_title") }}</h3>
-                <p class="mt-3 text-sm leading-7 text-slate-600">{{ t("landing_card_3_desc") }}</p>
             </div>
         </div>
     </section>
@@ -240,20 +276,26 @@
         </div>
 
         <div class="mt-4 grid gap-6 md:mt-6 md:grid-cols-3" data-reveal-group>
-            <div class="reveal rounded-3xl border border-slate-200 bg-white p-7 shadow-lg">
-                <span class="badge-pop flex h-10 w-10 items-center justify-center rounded-full bg-cyan-500 font-display text-base font-bold text-slate-950 shadow-lg shadow-cyan-500/30">01</span>
-                <h3 class="mt-5 text-lg font-bold text-slate-900">{{ t("landing_step_1_title") }}</h3>
-                <p class="mt-2 text-sm leading-7 text-slate-600">{{ t("landing_step_1_desc") }}</p>
+            <div class="reveal">
+                <div class="step-card h-full rounded-3xl border border-slate-200 bg-white p-7 shadow-lg">
+                    <span class="badge-pop flex h-10 w-10 items-center justify-center rounded-full bg-cyan-500 font-display text-base font-bold text-slate-950 shadow-lg shadow-cyan-500/30">01</span>
+                    <h3 class="mt-5 text-lg font-bold text-slate-900">{{ t("landing_step_1_title") }}</h3>
+                    <p class="mt-2 text-sm leading-7 text-slate-600">{{ t("landing_step_1_desc") }}</p>
+                </div>
             </div>
-            <div class="reveal rounded-3xl border border-slate-200 bg-white p-7 shadow-lg">
-                <span class="badge-pop flex h-10 w-10 items-center justify-center rounded-full bg-cyan-500 font-display text-base font-bold text-slate-950 shadow-lg shadow-cyan-500/30">02</span>
-                <h3 class="mt-5 text-lg font-bold text-slate-900">{{ t("landing_step_2_title") }}</h3>
-                <p class="mt-2 text-sm leading-7 text-slate-600">{{ t("landing_step_2_desc") }}</p>
+            <div class="reveal">
+                <div class="step-card h-full rounded-3xl border border-slate-200 bg-white p-7 shadow-lg">
+                    <span class="badge-pop flex h-10 w-10 items-center justify-center rounded-full bg-cyan-500 font-display text-base font-bold text-slate-950 shadow-lg shadow-cyan-500/30">02</span>
+                    <h3 class="mt-5 text-lg font-bold text-slate-900">{{ t("landing_step_2_title") }}</h3>
+                    <p class="mt-2 text-sm leading-7 text-slate-600">{{ t("landing_step_2_desc") }}</p>
+                </div>
             </div>
-            <div class="reveal rounded-3xl border border-slate-200 bg-white p-7 shadow-lg">
-                <span class="badge-pop flex h-10 w-10 items-center justify-center rounded-full bg-cyan-500 font-display text-base font-bold text-slate-950 shadow-lg shadow-cyan-500/30">03</span>
-                <h3 class="mt-5 text-lg font-bold text-slate-900">{{ t("landing_step_3_title") }}</h3>
-                <p class="mt-2 text-sm leading-7 text-slate-600">{{ t("landing_step_3_desc") }}</p>
+            <div class="reveal">
+                <div class="step-card h-full rounded-3xl border border-slate-200 bg-white p-7 shadow-lg">
+                    <span class="badge-pop flex h-10 w-10 items-center justify-center rounded-full bg-cyan-500 font-display text-base font-bold text-slate-950 shadow-lg shadow-cyan-500/30">03</span>
+                    <h3 class="mt-5 text-lg font-bold text-slate-900">{{ t("landing_step_3_title") }}</h3>
+                    <p class="mt-2 text-sm leading-7 text-slate-600">{{ t("landing_step_3_desc") }}</p>
+                </div>
             </div>
         </div>
     </section>
@@ -265,33 +307,149 @@
         </div>
 
         <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4" data-reveal-group>
-            <div class="tilt-card reveal rounded-3xl border border-slate-200 bg-white p-6 shadow-lg">
-                <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600">
-                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 18h6M10 21h4M12 3a6 6 0 00-6 6c0 2.2 1.2 3.6 2.2 4.6.6.6 1 1.4 1.1 2.4h5.4c.1-1 .5-1.8 1.1-2.4C16.8 12.6 18 11.2 18 9a6 6 0 00-6-6z"></path></svg>
+            <div class="reveal">
+                <div class="tilt-card h-full rounded-3xl border border-slate-200 bg-white p-6 shadow-lg">
+                    <div class="icon-tile flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 18h6M10 21h4M12 3a6 6 0 00-6 6c0 2.2 1.2 3.6 2.2 4.6.6.6 1 1.4 1.1 2.4h5.4c.1-1 .5-1.8 1.1-2.4C16.8 12.6 18 11.2 18 9a6 6 0 00-6-6z"></path></svg>
+                    </div>
+                    <h3 class="mt-4 font-bold text-slate-900">{{ t("landing_usecase_1_title") }}</h3>
+                    <p class="mt-2 text-sm leading-6 text-slate-600">{{ t("landing_usecase_1_desc") }}</p>
                 </div>
-                <h3 class="mt-4 font-bold text-slate-900">{{ t("landing_usecase_1_title") }}</h3>
-                <p class="mt-2 text-sm leading-6 text-slate-600">{{ t("landing_usecase_1_desc") }}</p>
             </div>
-            <div class="tilt-card reveal rounded-3xl border border-slate-200 bg-white p-6 shadow-lg">
-                <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600">
-                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="4" width="12" height="16" rx="2" stroke-width="2"></rect><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 4V3a1 1 0 011-1h4a1 1 0 011 1v1"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13l2 2 4-4"></path></svg>
+            <div class="reveal">
+                <div class="tilt-card h-full rounded-3xl border border-slate-200 bg-white p-6 shadow-lg">
+                    <div class="icon-tile flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="4" width="12" height="16" rx="2" stroke-width="2"></rect><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 4V3a1 1 0 011-1h4a1 1 0 011 1v1"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13l2 2 4-4"></path></svg>
+                    </div>
+                    <h3 class="mt-4 font-bold text-slate-900">{{ t("landing_usecase_2_title") }}</h3>
+                    <p class="mt-2 text-sm leading-6 text-slate-600">{{ t("landing_usecase_2_desc") }}</p>
                 </div>
-                <h3 class="mt-4 font-bold text-slate-900">{{ t("landing_usecase_2_title") }}</h3>
-                <p class="mt-2 text-sm leading-6 text-slate-600">{{ t("landing_usecase_2_desc") }}</p>
             </div>
-            <div class="tilt-card reveal rounded-3xl border border-slate-200 bg-white p-6 shadow-lg">
-                <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600">
-                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v18"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 4h13l-3 4 3 4H5"></path></svg>
+            <div class="reveal">
+                <div class="tilt-card h-full rounded-3xl border border-slate-200 bg-white p-6 shadow-lg">
+                    <div class="icon-tile flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v18"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 4h13l-3 4 3 4H5"></path></svg>
+                    </div>
+                    <h3 class="mt-4 font-bold text-slate-900">{{ t("landing_usecase_3_title") }}</h3>
+                    <p class="mt-2 text-sm leading-6 text-slate-600">{{ t("landing_usecase_3_desc") }}</p>
                 </div>
-                <h3 class="mt-4 font-bold text-slate-900">{{ t("landing_usecase_3_title") }}</h3>
-                <p class="mt-2 text-sm leading-6 text-slate-600">{{ t("landing_usecase_3_desc") }}</p>
             </div>
-            <div class="tilt-card reveal rounded-3xl border border-slate-200 bg-white p-6 shadow-lg">
-                <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600">
-                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z"></path></svg>
+            <div class="reveal">
+                <div class="tilt-card h-full rounded-3xl border border-slate-200 bg-white p-6 shadow-lg">
+                    <div class="icon-tile flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z"></path></svg>
+                    </div>
+                    <h3 class="mt-4 font-bold text-slate-900">{{ t("landing_usecase_4_title") }}</h3>
+                    <p class="mt-2 text-sm leading-6 text-slate-600">{{ t("landing_usecase_4_desc") }}</p>
                 </div>
-                <h3 class="mt-4 font-bold text-slate-900">{{ t("landing_usecase_4_title") }}</h3>
-                <p class="mt-2 text-sm leading-6 text-slate-600">{{ t("landing_usecase_4_desc") }}</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= FAQ ================= -->
+    <section class="relative mx-auto max-w-7xl px-6 pb-20 lg:px-8 lg:pb-28">
+        <div class="mx-auto max-w-3xl">
+            <div class="reveal text-center">
+                <h2 class="font-display text-3xl font-extrabold text-white sm:text-4xl">{{ t("doc_faq_title") }}</h2>
+            </div>
+            <div class="reveal reveal-scale mt-10 rounded-3xl border border-slate-200 bg-white px-6 shadow-xl md:px-8">
+                <div class="divide-y divide-slate-100" data-accordion>
+                    <div data-accordion-item>
+                        <button type="button" data-accordion-trigger class="flex w-full items-center justify-between gap-6 py-6 text-left">
+                            <span class="faq-label font-semibold text-slate-900">{{ t("doc_faq_q1") }}</span>
+                            <svg data-accordion-chevron class="h-5 w-5 flex-shrink-0 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div data-accordion-panel>
+                            <div>
+                                <p class="pb-6 pr-9 text-sm leading-7 text-slate-600">{{ t("doc_faq_a1") | safe }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div data-accordion-item>
+                        <button type="button" data-accordion-trigger class="flex w-full items-center justify-between gap-6 py-6 text-left">
+                            <span class="faq-label font-semibold text-slate-900">{{ t("doc_faq_q2") }}</span>
+                            <svg data-accordion-chevron class="h-5 w-5 flex-shrink-0 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div data-accordion-panel>
+                            <div>
+                                <p class="pb-6 pr-9 text-sm leading-7 text-slate-600">{{ t("doc_faq_a2") | safe }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div data-accordion-item>
+                        <button type="button" data-accordion-trigger class="flex w-full items-center justify-between gap-6 py-6 text-left">
+                            <span class="faq-label font-semibold text-slate-900">{{ t("doc_faq_q3") }}</span>
+                            <svg data-accordion-chevron class="h-5 w-5 flex-shrink-0 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div data-accordion-panel>
+                            <div>
+                                <p class="pb-6 pr-9 text-sm leading-7 text-slate-600">{{ t("doc_faq_a3") | safe }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div data-accordion-item>
+                        <button type="button" data-accordion-trigger class="flex w-full items-center justify-between gap-6 py-6 text-left">
+                            <span class="faq-label font-semibold text-slate-900">{{ t("doc_faq_q4") }}</span>
+                            <svg data-accordion-chevron class="h-5 w-5 flex-shrink-0 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div data-accordion-panel>
+                            <div>
+                                <p class="pb-6 pr-9 text-sm leading-7 text-slate-600">{{ t("doc_faq_a4") | safe }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div data-accordion-item>
+                        <button type="button" data-accordion-trigger class="flex w-full items-center justify-between gap-6 py-6 text-left">
+                            <span class="faq-label font-semibold text-slate-900">{{ t("doc_faq_q5") }}</span>
+                            <svg data-accordion-chevron class="h-5 w-5 flex-shrink-0 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div data-accordion-panel>
+                            <div>
+                                <p class="pb-6 pr-9 text-sm leading-7 text-slate-600">{{ t("doc_faq_a5") | safe }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div data-accordion-item>
+                        <button type="button" data-accordion-trigger class="flex w-full items-center justify-between gap-6 py-6 text-left">
+                            <span class="faq-label font-semibold text-slate-900">{{ t("doc_faq_q6") }}</span>
+                            <svg data-accordion-chevron class="h-5 w-5 flex-shrink-0 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div data-accordion-panel>
+                            <div>
+                                <p class="pb-6 pr-9 text-sm leading-7 text-slate-600">{{ t("doc_faq_a6") | safe }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div data-accordion-item>
+                        <button type="button" data-accordion-trigger class="flex w-full items-center justify-between gap-6 py-6 text-left">
+                            <span class="faq-label font-semibold text-slate-900">{{ t("doc_faq_q7") }}</span>
+                            <svg data-accordion-chevron class="h-5 w-5 flex-shrink-0 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div data-accordion-panel>
+                            <div>
+                                <p class="pb-6 pr-9 text-sm leading-7 text-slate-600">{{ t("doc_faq_a7") | safe }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div data-accordion-item>
+                        <button type="button" data-accordion-trigger class="flex w-full items-center justify-between gap-6 py-6 text-left">
+                            <span class="faq-label font-semibold text-slate-900">{{ t("doc_faq_q8") }}</span>
+                            <svg data-accordion-chevron class="h-5 w-5 flex-shrink-0 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div data-accordion-panel>
+                            <div>
+                                <p class="pb-6 pr-9 text-sm leading-7 text-slate-600">{{ t("doc_faq_a8") | safe }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -303,12 +461,12 @@
             <p class="mx-auto mt-4 max-w-xl text-cyan-50">{{ t("landing_final_subtitle") }}</p>
             <div class="mt-8 flex flex-col items-center gap-3">
                 {% if session.get("user_id") %}
-                <a href="/menu" class="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-8 py-3.5 text-base font-bold text-cyan-700 shadow-xl transition duration-200 hover:-translate-y-0.5 hover:bg-cyan-50">
+                <a href="/menu" class="press sheen inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-8 py-3.5 text-base font-bold text-cyan-700 shadow-xl transition duration-200 hover:-translate-y-0.5 hover:bg-cyan-50">
                     {{ t("landing_cta_primary") }}
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                 </a>
                 {% else %}
-                <a href="/register" class="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-8 py-3.5 text-base font-bold text-cyan-700 shadow-xl transition duration-200 hover:-translate-y-0.5 hover:bg-cyan-50">
+                <a href="/register" class="press sheen inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-8 py-3.5 text-base font-bold text-cyan-700 shadow-xl transition duration-200 hover:-translate-y-0.5 hover:bg-cyan-50">
                     {{ t("landing_final_cta") }}
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                 </a>
@@ -320,6 +478,14 @@
 
 </div>
 
+<!-- Demo prompts live in a JSON island so the script below stays plain JS. -->
+<script type="application/json" id="demoPromptsData">{{ [
+    t('landing_demo_1_prompt'),
+    t('landing_demo_2_prompt'),
+    t('landing_demo_3_prompt'),
+    t('landing_demo_4_prompt')
+] | tojson }}</script>
+
 <script>
 (function () {
     var promptTarget = document.getElementById("demo-prompt-text");
@@ -327,12 +493,19 @@
     var demoSection = document.getElementById("hero-demo");
     if (!promptTarget || !resultWrap) return;
 
-    var DEMOS = [
-        { prompt: {{ t('landing_demo_1_prompt') | tojson }}, latex: "\\int x^{2}\\,dx = \\dfrac{x^{3}}{3} + C" },
-        { prompt: {{ t('landing_demo_2_prompt') | tojson }}, latex: "f(x)=\\sin\\left(x^{2}\\right) \\Rightarrow f'(x)=2x\\cos\\left(x^{2}\\right)" },
-        { prompt: {{ t('landing_demo_3_prompt') | tojson }}, latex: "ax^{2}+bx+c=0 \\Rightarrow x_{1,2}=\\dfrac{-b\\pm\\sqrt{\\Delta}}{2a}" },
-        { prompt: {{ t('landing_demo_4_prompt') | tojson }}, latex: "\\sin^{2}(x)+\\cos^{2}(x)=1" }
+    var promptsNode = document.getElementById("demoPromptsData");
+    var prompts = promptsNode ? JSON.parse(promptsNode.textContent) : [];
+
+    var LATEX = [
+        "\\int x^{2}\\,dx = \\dfrac{x^{3}}{3} + C",
+        "f(x)=\\sin\\left(x^{2}\\right) \\Rightarrow f'(x)=2x\\cos\\left(x^{2}\\right)",
+        "ax^{2}+bx+c=0 \\Rightarrow x_{1,2}=\\dfrac{-b\\pm\\sqrt{\\Delta}}{2a}",
+        "\\sin^{2}(x)+\\cos^{2}(x)=1"
     ];
+
+    var DEMOS = LATEX.map(function (latex, i) {
+        return { prompt: prompts[i] || "", latex: latex };
+    });
 
     var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     var visible = true;

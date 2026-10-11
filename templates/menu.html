@@ -34,7 +34,7 @@
 <div class="flex flex-col gap-5">
 
     <!-- MODE 2 -->
-    <div class="mode-card reveal clickable-card mode-card--recommended bg-white border border-slate-200 rounded-3xl p-7 shadow-xl min-h-[670px] flex flex-col">
+    <div class="mode-card reveal clickable-card mode-card--recommended bg-white border border-slate-200 rounded-3xl p-7 shadow-xl flex flex-col">
 
         <div class="mb-6">
             <h2 class="text-2xl font-bold text-slate-900 mb-3" data-i18n="mode2_title">
@@ -48,41 +48,8 @@
 
         <form action="/create_mode2" method="post" class="flex flex-col gap-4 mt-auto">
 
-            <label class="text-sm font-medium text-slate-700" data-i18n="style_label">Stil generare</label>
-            <select name="style" required
-                class="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900">
-                <option disabled selected value="" data-i18n="style_placeholder">Selectează stilul</option>
-                <option value="" data-i18n="style_default">Stil implicit</option>
-                {% for style in styles %}
-                    <option value="{{ style['id'] }}">
-                        {{ style["style_name"] }}
-                    </option>
-                {% endfor %}
-            </select>
-
-            <label class="text-sm font-medium text-slate-700" data-i18n="class_label">Clasa</label>
-            <select name="school_class" required
-                class="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900">
-
-                <option disabled selected value="" data-i18n="class_placeholder">Selectează clasa</option>
-                <option value="9" data-i18n="class_9">Clasa a IX-a</option>
-                <option value="10" data-i18n="class_10">Clasa a X-a</option>
-                <option value="11" data-i18n="class_11">Clasa a XI-a</option>
-                <option value="12" data-i18n="class_12">Clasa a XII-a</option>
-
-            </select>
-
-            <label class="text-sm font-medium text-slate-700" data-i18n="bac_version_label">Versiune BAC</label>
-            <select name="bac" required
-                class="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900">
-
-                <option disabled selected value="" data-i18n="bac_version_ph">Versiune BAC</option>
-                <option value="M3">M_Tehnologic</option>
-
-            </select>
-
             <button type="submit"
-                class="mt-2 rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-4 transition"
+                class="press mt-2 rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-4 transition"
                 data-i18n="start_gen">
                 Începe Generarea
             </button>
@@ -90,23 +57,38 @@
         </form>
     </div>
 
-    <!-- GHID -->
-    <div class="flex flex-col gap-2">
+    <!-- MODE 1 (ASISTENT AI) -->
+    <div class="mode-card reveal clickable-card mode-card--quick bg-white border border-slate-200 rounded-3xl p-7 shadow-xl flex flex-col">
 
-            <button type="submit"
-                class="mt-2 rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-4 transition"
-                data-i18n="nav_guide">
-                Ghid
+        <div class="mb-6">
+            <h2 class="text-2xl font-bold text-slate-900 mb-3" data-i18n="ai_assistant">
+                Asistent predare
+            </h2>
+
+            <p class="text-slate-600 leading-relaxed" data-i18n="ai_desc">
+                Conversație educațională.
+            </p>
+        </div>
+
+        <form action="/create_mode1" method="post" class="mt-auto">
+
+            <button
+                class="press w-full rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-4 transition"
+                data-i18n="start_btn">
+                Începe
             </button>
+
+        </form>
 
     </div>
 
 </div>
+
         <!-- COL 2 -->
         <div class="flex flex-col gap-5">
 
             <!-- MODE 3 -->
-            <div class="mode-card reveal clickable-card mode-card--new bg-white border border-slate-200 rounded-3xl p-7 shadow-xl min-h-[800px] flex flex-col">
+            <div class="mode-card reveal clickable-card mode-card--new bg-white border border-slate-200 rounded-3xl p-7 shadow-xl min-h-[800px] flex flex-col" id="mode3">
 
                 <div class="mb-6">
 
@@ -137,23 +119,17 @@
                             accept=".pdf,.docx,.txt,.png,.jpg,.jpeg">
 
                     </label>
-                    <label class="text-sm font-medium text-slate-700" data-i18n="instructions">Instrucțiuni</label>
-                    <textarea rows="3" name="prompt" required
-                        data-i18n-placeholder="inst_ph" placeholder="Ex: generează un test cu dificultate medie..."
-                        class="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900 resize-none"></textarea>
-
-                    <label class="text-sm font-medium text-slate-700" data-i18n="diff_model">Diferențe față de model</label>
-                    <textarea rows="3" name="differences" required
-                        data-i18n-placeholder="diff_ph" placeholder="Ex: mai multe exerciții de algebră..."
-                        class="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900 resize-none"></textarea>
-
+                    <label class="text-sm font-medium text-slate-700" for="m3-instructions" data-i18n="inst_diff_model">Instrucțiuni și diferențe față de model</label>
+                    <textarea id="m3-instructions" rows="4" name="instructions" required
+                        data-i18n-placeholder="inst_diff_model_ph" placeholder="Ex: păstrează structura pe 3 subiecte, dar schimbă toate valorile numerice și adaugă două exerciții de trigonometrie. Fără rezolvări."
+                        class="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900 resize-none outline-none focus:ring-2 focus:ring-cyan-500"></textarea>
 
                     <p class="text-slate-500 text-xs" data-i18n="menu_m3_note">
                         După încărcare, vei vedea exercițiile extrase și vei putea cere modificări sau genera un test nou.
                     </p>
 
                     <button type="submit"
-                        class="rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-4 transition"
+                        class="press rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-4 transition"
                         data-i18n="menu_m3_analyze">
                         Analizează fișierul
                     </button>
@@ -166,7 +142,7 @@
 
         <!-- COL 3 -->
         <div class="flex flex-col gap-5">
-            <div class="mode-card reveal clickable-card mode-card--beta bg-white border border-slate-200 rounded-3xl p-7 shadow-xl min-h-[520px] flex flex-col">
+            <div class="mode-card reveal clickable-card mode-card--beta bg-white border border-slate-200 rounded-3xl p-7 shadow-xl min-h-[520px] flex flex-col" id="mode4">
 
                 <div class="mb-6">
 
@@ -202,29 +178,10 @@
 
                     </label>
 
-                    <!-- INSTRUCTIUNI -->
-                    <label class="text-sm font-medium text-slate-700" data-i18n="inst_gen">
-                        Instrucțiuni generare
-                    </label>
-
-                    <textarea name="prompt" required
-                        rows="3"
-                        placeholder="Ex: transformă în test BAC cu dificultate medie..."
-                        data-i18n-placeholder="inst_gen_ph"
-                        class="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900 resize-none outline-none focus:ring-2 focus:ring-cyan-500"
-                    ></textarea>
-
-                    <!-- DIFERENTE -->
-                    <label class="text-sm font-medium text-slate-700" data-i18n="diff_orig">
-                        Diferențe față de original
-                    </label>
-
-                    <textarea name="differences" required
-                        rows="3"
-                        placeholder="Ex: adaugă exerciții noi din algebră..."
-                        data-i18n-placeholder="diff_orig_ph"
-                        class="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900 resize-none outline-none focus:ring-2 focus:ring-cyan-500"
-                    ></textarea>
+                    <label class="text-sm font-medium text-slate-700" for="m4-instructions" data-i18n="inst_diff_model">Instrucțiuni și diferențe față de model</label>
+                    <textarea id="m4-instructions" rows="4" name="instructions" required
+                        data-i18n-placeholder="inst_diff_model_ph" placeholder="Ex: păstrează structura pe 3 subiecte, dar schimbă toate valorile numerice și adaugă două exerciții de trigonometrie. Fără rezolvări."
+                        class="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900 resize-none outline-none focus:ring-2 focus:ring-cyan-500"></textarea>
 
                     <!-- CLASA
                     <label class="text-sm font-medium text-slate-700">
@@ -256,7 +213,7 @@
                     </select>-->
 
                     <!-- BUTTON -->
-                    <button type="submit" class="mt-2 rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-4 transition" data-i18n="start_gen">
+                    <button type="submit" class="press mt-2 rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-4 transition" data-i18n="start_gen">
                         Începe Generarea
                     </button>
 
@@ -274,7 +231,7 @@
     <div class="flex flex-col gap-3">
 
         <!-- MODE 5 -->
-        <div class="mode-card reveal clickable-card mode-card--new bg-white border border-slate-200 rounded-3xl p-7 shadow-xl min-h-[534px] flex flex-col">
+        <div class="mode-card reveal clickable-card mode-card--new bg-white border border-slate-200 rounded-3xl p-7 shadow-xl min-h-[534px] flex flex-col" id="mode5">
 
             <div class="mb-5">
                 <h2 class="text-2xl font-bold text-slate-900 mb-2" data-i18n="doc_m5_title">
@@ -288,44 +245,41 @@
 
             <form action="/create_mode5" method="post" class="flex flex-col gap-3 mt-auto">
 
+                <label for="m5-profile" class="text-sm font-medium text-slate-700" data-i18n="bac_profile_label">Profil BAC</label>
+                <select id="m5-profile" name="bac"
+                    class="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900 outline-none focus:ring-2 focus:ring-cyan-500">
+                    <option value="M3" selected data-i18n="bac_profile_m3">M_tehnologic</option>
+                    <option value="M1" data-i18n="bac_profile_m1">M_mate-info</option>
+                    <option value="M2" data-i18n="bac_profile_m2">M_științe ale naturii</option>
+                    <option value="M_PED" data-i18n="bac_profile_ped">M_pedagogic (incomplet)</option>
+                </select>
+
+                <label for="m5-difficulty" class="text-sm font-medium text-slate-700" data-i18n="difficulty_label">Dificultate</label>
+                <select id="m5-difficulty" name="difficulty"
+                    class="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900 outline-none focus:ring-2 focus:ring-cyan-500">
+                    <option value="usor" data-i18n="difficulty_easy">Ușor</option>
+                    <option value="mediu" selected data-i18n="difficulty_medium">Mediu</option>
+                    <option value="dificil" data-i18n="difficulty_hard">Dificil</option>
+                    <option value="olimpic" data-i18n="difficulty_olympic">Olimpic (peste nivel BAC)</option>
+                </select>
+
+                <p id="m5-profile-note" class="hidden text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 text-xs"></p>
+
                 <label class="text-sm font-medium text-slate-700" data-i18n="main_lessons">Lecții principale</label>
-                <textarea rows="2" name="lessons" required
+                <textarea rows="2" name="lessons"
+                    data-i18n-placeholder="m5_lessons_ph" placeholder="Opțional. Ex: derivate, matrici"
                     class="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900"></textarea>
 
                 <label class="text-sm font-medium text-slate-700" data-i18n="omit_lessons">Lecții de omis</label>
-                <textarea rows="2" name="avoid" required
+                <textarea rows="2" name="avoid"
+                    data-i18n-placeholder="m5_avoid_ph" placeholder="Opțional. Ex: integrale"
                     class="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900"></textarea>
 
-                <button class="rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-4" data-i18n="gen_bac">
+                <button class="press rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-4" data-i18n="gen_bac">
                     Generează BAC
                 </button>
 
             </form>
-        </div>
-
-        <!-- MODE 1 (ASISTENT AI) -->
-        <div class="mode-card reveal clickable-card mode-card--quick bg-white border border-slate-200 rounded-3xl p-3 shadow-xl min-h-[250px] flex flex-col">
-
-            <div class="mb-5">
-                <h2 class="text-2xl font-bold text-slate-900 mb-2" data-i18n="ai_assistant">
-                    Asistent AI
-                </h2>
-
-                <p class="text-slate-600" data-i18n="ai_desc">
-                    Conversație educațională.
-                </p>
-            </div>
-
-            <form action="/create_mode1" method="post" class="mt-auto">
-
-                <button
-                    class="mt-4 w-full rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-4"
-                    data-i18n="start_btn">
-                    Începe
-                </button>
-
-            </form>
-
         </div>
 
     </div>
@@ -354,24 +308,100 @@
         setFile(this.files[0]);
     });
 
+    // A drop target only exists if BOTH dragenter and dragover are cancelled -
+    // cancelling dragover alone is enough for Chrome but not for Firefox, which
+    // is why dropping used to do nothing.
+    function highlight(on) {
+        label.classList.toggle('border-cyan-400', on);
+        label.classList.toggle('bg-cyan-50', on);
+        label.classList.toggle('border-slate-200', !on);
+        label.classList.toggle('bg-slate-50', !on);
+    }
+
+    // dragenter/dragleave also fire when the pointer crosses the label's own
+    // children, so count them instead of clearing the highlight on the first
+    // dragleave we happen to see.
+    let depth = 0;
+
+    label.addEventListener('dragenter', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        depth += 1;
+        highlight(true);
+    });
+
     label.addEventListener('dragover', function(e) {
         e.preventDefault();
         e.stopPropagation();
-        label.classList.add('border-cyan-400', 'bg-cyan-50');
+        e.dataTransfer.dropEffect = 'copy';
+        highlight(true);
     });
 
     label.addEventListener('dragleave', function(e) {
         e.preventDefault();
-        label.classList.remove('border-cyan-400', 'bg-slate-50');
-        label.classList.add('border-slate-200', 'bg-slate-50');
+        e.stopPropagation();
+        depth = Math.max(0, depth - 1);
+        if (depth === 0 && !input.files.length) {
+            highlight(false);
+        }
     });
 
     label.addEventListener('drop', function(e) {
         e.preventDefault();
         e.stopPropagation();
-        setFile(e.dataTransfer.files[0]);
+        depth = 0;
+        const dropped = e.dataTransfer.files && e.dataTransfer.files[0];
+        if (dropped) {
+            setFile(dropped);
+        } else {
+            highlight(false);
+        }
     });
 });
+
+// Without this, a file dropped slightly off-target makes the browser navigate
+// away from the menu and open the file instead - which looks exactly like
+// "drag & drop is broken".
+['dragover', 'drop'].forEach(function(type) {
+    window.addEventListener(type, function(e) {
+        const over = e.target instanceof Element && e.target.closest('#drop3, #drop4');
+        if (!over) {
+            e.preventDefault();
+            if (type === 'drop') { e.dataTransfer.dropEffect = 'none'; }
+        }
+    });
+});
+
+/* ===========================
+   MODE 5: honest notes on what a selection actually delivers
+=========================== */
+
+(function () {
+    const profile = document.getElementById("m5-profile");
+    const difficulty = document.getElementById("m5-difficulty");
+    const note = document.getElementById("m5-profile-note");
+    if (!profile || !difficulty || !note) return;
+
+    // Said plainly rather than discovered after printing: the pedagogic paper
+    // explores one theme over six items in Subiects II and III, and we have no
+    // template family for that shape yet, so those come out short.
+    const NOTES = {
+        "M_PED": "M_pedagogic: Subiectele II și III ies momentan incomplete (60 din 90 de puncte) — încă nu avem exerciții pe formatul pedagogic cu 6 itemi pe o singură temă.",
+        "olimpic": "Nivelul olimpic nu reproduce un subiect oficial de BAC — e material de antrenament, marcat ca atare pe foaie."
+    };
+
+    function refresh() {
+        const messages = [];
+        if (NOTES[profile.value]) messages.push(NOTES[profile.value]);
+        if (NOTES[difficulty.value]) messages.push(NOTES[difficulty.value]);
+        note.textContent = messages.join(" ");
+        note.classList.toggle("hidden", messages.length === 0);
+    }
+
+    profile.addEventListener("change", refresh);
+    difficulty.addEventListener("change", refresh);
+    refresh();
+})();
 
 /* ===========================
    MODE CARD SELECTION

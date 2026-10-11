@@ -1,0 +1,49 @@
+{# Asistent de navigare — a docked chat that explains where in the app to go
+   for what the teacher wants to do today. It is deliberately separate from
+   Mode 1: Mode 1 is the teaching assistant and answers mathematics, this one
+   only routes people around the product. #}
+<button type="button" id="guide-toggle" class="guide-toggle press"
+        aria-controls="guide-dock" aria-expanded="false">
+    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    </svg>
+    <span>{{ t("guide_title") }}</span>
+</button>
+
+<aside id="guide-dock" class="guide-dock" hidden aria-label="{{ t('guide_title') }}">
+
+    <header class="guide-head">
+        <div>
+            <p class="guide-head-title">{{ t("guide_title") }}</p>
+            <p class="guide-head-sub">{{ t("guide_subtitle") }}</p>
+        </div>
+        <button type="button" id="guide-close" class="press guide-close" aria-label="{{ t('close') }}">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+    </header>
+
+    <div id="guide-messages" class="guide-messages" aria-live="polite">
+        <div class="guide-msg guide-msg--bot">{{ t("guide_intro") }}</div>
+    </div>
+
+    <!-- Openers, so the first message costs a click rather than a blank page. -->
+    <div id="guide-suggestions" class="guide-suggestions">
+        <button type="button" class="guide-chip press" data-guide-ask="{{ t('guide_q1') }}">{{ t("guide_q1") }}</button>
+        <button type="button" class="guide-chip press" data-guide-ask="{{ t('guide_q2') }}">{{ t("guide_q2") }}</button>
+        <button type="button" class="guide-chip press" data-guide-ask="{{ t('guide_q3') }}">{{ t("guide_q3") }}</button>
+    </div>
+
+    <form id="guide-form" class="guide-form">
+        <textarea id="guide-input" rows="1" class="guide-input"
+                  placeholder="{{ t('guide_placeholder') }}"
+                  aria-label="{{ t('guide_placeholder') }}"></textarea>
+        <button type="submit" class="press guide-send" aria-label="{{ t('chat_send') }}">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m0 0l-6-6m6 6l-6 6"/>
+            </svg>
+        </button>
+    </form>
+</aside>

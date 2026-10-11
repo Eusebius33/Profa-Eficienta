@@ -1,0 +1,120 @@
+{# Asks the teacher what the sheet IS before any file is produced.
+   Every field is optional: submitting it untouched gives a bare sheet of
+   numbered exercises with no header, which is the right output when the
+   paper already carries a school letterhead.
+   Expects: conversation_id #}
+
+<div id="sheetDialog"
+     class="hidden fixed inset-0 z-50 items-center justify-center bg-slate-950/70 p-4"
+     role="dialog" aria-modal="true" aria-labelledby="sheetDialogTitle">
+
+    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-6">
+
+        <div class="flex items-start justify-between gap-4 mb-1">
+            <h2 id="sheetDialogTitle" class="text-xl font-bold text-slate-900" data-i18n="sheet_dialog_title">
+                Detaliile fișei
+            </h2>
+            <button type="button" onclick="ExportSheet.close()"
+                    class="text-slate-400 hover:text-slate-900 text-2xl leading-none font-bold"
+                    title="Închide" data-i18n-title="close" aria-label="Închide">&times;</button>
+        </div>
+
+        <p class="text-slate-500 text-sm mb-1" data-i18n="sheet_dialog_hint">
+            Completează doar ce vrei să apară pe foaie. Lași totul gol → doar exercițiile, numerotate.
+        </p>
+        <p id="sheetDialogNote" class="text-cyan-700 text-xs font-semibold mb-4"></p>
+
+        <form id="sheetForm" method="post"
+              data-action-base="/conversation/{{ conversation_id }}/export"
+              onsubmit="return ExportSheet.prepareSubmit(this)"
+              class="flex flex-col gap-4">
+
+            <div>
+                <label for="docTitle" class="text-sm font-medium text-slate-700" data-i18n="sheet_title_label">
+                    Titlu
+                </label>
+                <input type="text" id="docTitle" name="doc_title" maxlength="120"
+                       data-i18n-placeholder="sheet_title_ph"
+                       placeholder="Ex: Integrale definite — recapitulare"
+                       class="mt-1 w-full rounded-2xl bg-slate-50 border border-slate-200 px-4 py-2.5 text-slate-900 outline-none focus:ring-2 focus:ring-cyan-500">
+            </div>
+
+            <div>
+                <label for="sheetType" class="text-sm font-medium text-slate-700" data-i18n="sheet_type_label">
+                    Scopul fișei
+                </label>
+                <select id="sheetType" name="sheet_type"
+                        class="mt-1 w-full rounded-2xl bg-slate-50 border border-slate-200 px-4 py-2.5 text-slate-900 outline-none focus:ring-2 focus:ring-cyan-500">
+                    <option value="" data-i18n="sheet_type_none">— fără —</option>
+                    <option value="tema" data-i18n="sheet_type_tema">Temă</option>
+                    <option value="clasa" data-i18n="sheet_type_clasa">Exerciții în clasă</option>
+                    <option value="test_r1" data-i18n="sheet_type_r1">Test — Rândul 1</option>
+                    <option value="test_r2" data-i18n="sheet_type_r2">Test — Rândul 2</option>
+                    <option value="fisa" data-i18n="sheet_type_fisa">Fișă de lucru</option>
+                    <option value="evaluare" data-i18n="sheet_type_evaluare">Evaluare</option>
+                    <option value="recapitulare" data-i18n="sheet_type_recap">Recapitulare</option>
+                </select>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label for="sheetClass" class="text-sm font-medium text-slate-700" data-i18n="sheet_class_label">
+                        Clasa
+                    </label>
+                    <input type="text" id="sheetClass" name="school_class" maxlength="40"
+                           data-i18n-placeholder="sheet_class_ph" placeholder="Ex: a XII-a B"
+                           class="mt-1 w-full rounded-2xl bg-slate-50 border border-slate-200 px-4 py-2.5 text-slate-900 outline-none focus:ring-2 focus:ring-cyan-500">
+                </div>
+                <div>
+                    <label for="sheetTeacher" class="text-sm font-medium text-slate-700" data-i18n="sheet_teacher_label">
+                        Profesor
+                    </label>
+                    <input type="text" id="sheetTeacher" name="teacher" maxlength="60"
+                           data-i18n-placeholder="sheet_teacher_ph" placeholder="Opțional"
+                           class="mt-1 w-full rounded-2xl bg-slate-50 border border-slate-200 px-4 py-2.5 text-slate-900 outline-none focus:ring-2 focus:ring-cyan-500">
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-2 border-t border-slate-200 pt-3">
+
+                <label class="flex items-center gap-2 text-sm text-slate-700">
+                    <input type="checkbox" name="include_date" value="1" class="accent-cyan-500">
+                    <span data-i18n="sheet_include_date">Scrie data de azi pe fișă</span>
+                </label>
+
+                <label class="flex items-center gap-2 text-sm text-slate-700">
+                    <input type="checkbox" name="numbering" value="1" checked class="accent-cyan-500">
+                    <span data-i18n="sheet_numbering">Numerotează exercițiile</span>
+                </label>
+
+                <div id="sheetDialogSections" class="hidden flex flex-col gap-2">
+                    <label class="flex items-center gap-2 text-sm text-slate-700">
+                        <input type="checkbox" name="sections" value="1" checked class="accent-cyan-500">
+                        <span data-i18n="sheet_sections">Separă răspunsurile în „Subiectul I, II, …”</span>
+                    </label>
+                    <label class="flex items-center gap-2 text-sm text-slate-700">
+                        <input type="checkbox" name="restart_numbering" value="1" class="accent-cyan-500">
+                        <span data-i18n="sheet_restart">Renumerotează de la 1 în fiecare subiect</span>
+                    </label>
+                </div>
+
+            </div>
+
+            <div class="flex justify-end gap-2 pt-1">
+                <button type="button" onclick="ExportSheet.close()"
+                        class="rounded-2xl bg-slate-100 hover:bg-slate-200 transition text-slate-700 font-semibold px-5 py-2.5"
+                        data-i18n="cancel">
+                    Anulează
+                </button>
+                <button type="submit"
+                        class="rounded-2xl bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold px-6 py-2.5"
+                        data-i18n="sheet_create">
+                    Creează fișa
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>

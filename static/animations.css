@@ -8,6 +8,8 @@
     --ease-enter: cubic-bezier(0.22, 1, 0.36, 1);
     --ease-move: cubic-bezier(0.25, 1, 0.5, 1);
     --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+    --ease-expo: cubic-bezier(0.19, 1, 0.22, 1);
+    --ease-press: cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 html {
@@ -16,11 +18,21 @@ html {
 
 /* ---------- Reveal-on-scroll ---------- */
 
-.reveal {
+/* `:not(.reveal-done)` is here for specificity, not for the negation: pages
+   put .reveal and a hover utility on the same element, and a plain `.reveal`
+   loses the `transition` shorthand to whichever utility is declared later -
+   which dropped the opacity fade and ran the entrance at hover speed. Script
+   adds `reveal-done` once the entrance has played, handing the element back to
+   its hover rules. */
+.reveal:not(.reveal-done) {
     opacity: 0;
-    transform: translateY(28px);
-    transition: opacity 700ms var(--ease-enter), transform 700ms var(--ease-enter);
-    transition-delay: calc(var(--stagger-index, 0) * 60ms);
+    transform: translateY(22px);
+    transition: opacity 560ms var(--ease-enter), transform 620ms var(--ease-enter);
+    transition-delay: calc(var(--stagger-index, 0) * 65ms);
+}
+
+.reveal.reveal-done {
+    transition-delay: 0s;
 }
 
 .reveal.is-visible {
@@ -144,10 +156,12 @@ html {
 
 /* ---------- Tilt + spotlight cards ---------- */
 
+/* The entrance lives on a wrapping .reveal element, so this one owns only
+   pointer state and the two never fight over `transform`. */
 .tilt-card {
-    transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
-    transition: transform 400ms var(--ease-enter), box-shadow 400ms var(--ease-enter), border-color 300ms ease;
     position: relative;
+    transform: perspective(900px) translateY(var(--lift, 0px)) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    transition: transform 150ms var(--ease-enter), box-shadow 260ms var(--ease-enter), border-color 220ms ease;
 }
 
 .tilt-card::before {
@@ -155,14 +169,39 @@ html {
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    background: radial-gradient(360px circle at var(--x, 50%) var(--y, 50%), rgba(6, 182, 212, 0.12), transparent 55%);
+    background: radial-gradient(360px circle at var(--x, 50%) var(--y, 50%), rgba(6, 182, 212, 0.14), transparent 55%);
     opacity: 0;
-    transition: opacity 300ms ease;
+    transition: opacity 260ms ease;
     pointer-events: none;
 }
 
-.tilt-card:hover::before {
-    opacity: 1;
+/* Keyboard users get the same affordance as the pointer lift. */
+.tilt-card:focus-within {
+    --lift: -6px;
+    border-color: rgba(34, 211, 238, 0.65);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .tilt-card:hover {
+        --lift: -6px;
+        border-color: rgba(34, 211, 238, 0.65);
+        box-shadow: 0 26px 50px -26px rgba(8, 145, 178, 0.5), 0 10px 24px -16px rgba(2, 6, 23, 0.3);
+    }
+
+    .tilt-card:hover::before {
+        opacity: 1;
+    }
+
+    /* The icon tile is the card's focal point, so it leads the hover. */
+    .tilt-card:hover .icon-tile {
+        transform: translateY(-2px) scale(1.08) rotate(-5deg);
+        background-color: #22d3ee;
+        color: #083344;
+    }
+}
+
+.icon-tile {
+    transition: transform 180ms var(--ease-enter), background-color 220ms ease, color 220ms ease;
 }
 
 /* ---------- Numbered badge pop ---------- */
@@ -258,6 +297,24 @@ html {
     cursor: pointer;
 }
 
+.faq-label {
+    transition: color 180ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    [data-accordion-trigger]:hover .faq-label {
+        color: #0891b2;
+    }
+
+    [data-accordion-trigger]:hover [data-accordion-chevron] {
+        transform: translateY(2px);
+    }
+
+    [data-accordion-item].is-open [data-accordion-trigger]:hover [data-accordion-chevron] {
+        transform: rotate(180deg) translateY(2px);
+    }
+}
+
 /* ---------- Nav scroll state ---------- */
 
 nav.is-scrolled {
@@ -277,6 +334,15 @@ nav.is-scrolled {
     background-size: 26px 26px;
 }
 
+/* Squared-paper ruling, after the quadrille maths exercise books this is for.
+   Kept near-invisible: it should read as paper texture, not as a grid. */
+.bg-grid-quad {
+    background-image:
+        linear-gradient(to right, rgba(148, 163, 184, 0.055) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(148, 163, 184, 0.055) 1px, transparent 1px);
+    background-size: 22px 22px;
+}
+
 /* ---------- Scrollspy TOC ---------- */
 
 [data-toc-link] {
@@ -290,12 +356,401 @@ nav.is-scrolled {
     background: rgba(6, 182, 212, 0.12);
 }
 
+/* A card that answers the pointer. 300ms read as drag on a hover, so the
+   travel is quick and only the shadow takes its time. */
 .hover-lift {
-    transition: transform 300ms var(--ease-enter), box-shadow 300ms var(--ease-enter), border-color 300ms ease;
+    transition: transform 150ms var(--ease-enter), box-shadow 260ms var(--ease-enter),
+                border-color 200ms ease;
 }
 
-.hover-lift:hover {
+.hover-lift:focus-within {
     transform: translateY(-4px);
+    border-color: rgba(34, 211, 238, 0.6);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .hover-lift:hover {
+        transform: translateY(-4px);
+        border-color: rgba(34, 211, 238, 0.6);
+        box-shadow: 0 24px 44px -26px rgba(8, 145, 178, 0.45);
+    }
+
+    .hover-lift:hover .icon-tile {
+        transform: translateY(-2px) scale(1.08) rotate(-5deg);
+        background-color: #22d3ee;
+        color: #083344;
+    }
+}
+
+/* ---------- List rows (conversations, saved styles, students) ---------- */
+
+.row-slide {
+    transition: transform 160ms var(--ease-enter), border-color 200ms ease,
+                background-color 200ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .row-slide:hover {
+        transform: translateX(4px);
+        border-color: rgba(34, 211, 238, 0.55);
+    }
+
+    .row-slide:hover .icon-tile {
+        transform: scale(1.1) rotate(-5deg);
+    }
+}
+
+.row-slide:focus-within {
+    border-color: rgba(34, 211, 238, 0.55);
+}
+
+/* ---------- Form fields ---------- */
+
+/* The ring is drawn with box-shadow rather than `outline`, so it can animate
+   and still follow the rounded corners. */
+.field {
+    transition: border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+}
+
+.field:hover:not(:focus) {
+    border-color: #94a3b8;
+}
+
+.field:focus {
+    outline: none;
+    border-color: #22d3ee;
+    box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.25);
+}
+
+/* ---------- Section heading underline ---------- */
+
+.rule-grow {
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 700ms var(--ease-move);
+    transition-delay: calc(var(--stagger-index, 0) * 65ms);
+}
+
+.rule-grow.is-visible {
+    transform: scaleX(1);
+}
+
+/* ---------- Pressable controls ---------- */
+
+/* Every tappable control presses at 0ms so the feedback never trails the tap. */
+.press {
+    touch-action: manipulation;
+    transition: transform 150ms var(--ease-press);
+}
+
+.press:active:not([disabled]) {
+    transform: scale(0.97);
+    transition-duration: 0s;
+}
+
+/* ---------- Sheen sweep on primary calls to action ---------- */
+
+.sheen {
+    position: relative;
+    overflow: hidden;
+}
+
+.sheen::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -45%;
+    width: 36%;
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+    transform: translateX(0) skewX(-18deg);
+    opacity: 0;
+    pointer-events: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .sheen:hover::after {
+        animation: sheen-sweep 700ms var(--ease-move);
+    }
+}
+
+@keyframes sheen-sweep {
+    0% { opacity: 0; transform: translateX(0) skewX(-18deg); }
+    18% { opacity: 1; }
+    82% { opacity: 1; }
+    100% { opacity: 0; transform: translateX(430%) skewX(-18deg); }
+}
+
+/* ---------- Hero headline: per-word rise ---------- */
+
+/* `.is-split` is only added by script, so without JS (or under reduced motion)
+   the headline renders as ordinary text with no hidden state to get stuck in. */
+.hero-title.is-split .word {
+    display: inline-block;
+    overflow: hidden;
+    /* Room for the descenders on ț and ș, which the clip would otherwise cut. */
+    padding-bottom: 0.16em;
+    margin-bottom: -0.16em;
+}
+
+.hero-title.is-split .word-inner {
+    display: inline-block;
+    transform: translateY(112%);
+    opacity: 0;
+    transition: transform 700ms var(--ease-expo), opacity 400ms linear;
+    transition-delay: calc(var(--word-index, 0) * 36ms);
+}
+
+.hero-title.is-split.is-revealed .word-inner {
+    transform: none;
+    opacity: 1;
+}
+
+/* ---------- Scroll progress ---------- */
+
+/* Scrubbed by scroll position, so it carries no duration or easing of its own;
+   any curve here would make it lag the scrollbar. */
+.scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    z-index: 60;
+    transform: scaleX(var(--progress, 0));
+    transform-origin: left center;
+    background: linear-gradient(90deg, #22d3ee, #3b82f6);
+    pointer-events: none;
+}
+
+/* ---------- Hero feature pills ---------- */
+
+.pill {
+    transition: transform 150ms var(--ease-enter), border-color 200ms ease,
+                background-color 200ms ease, color 200ms ease;
+}
+
+.pill-check {
+    transition: transform 150ms var(--ease-enter);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .pill:hover {
+        transform: translateY(-3px);
+        border-color: rgba(34, 211, 238, 0.6);
+        background-color: rgba(8, 145, 178, 0.2);
+        color: #a5f3fc;
+    }
+
+    .pill:hover .pill-check {
+        transform: scale(1.2);
+    }
+}
+
+/* ---------- Demo panel rows ---------- */
+
+.panel-row {
+    transition: transform 160ms var(--ease-enter), border-color 200ms ease, box-shadow 220ms ease;
+}
+
+.panel-row-icon {
+    transition: transform 180ms var(--ease-enter), background-color 200ms ease, color 200ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .panel-row:hover {
+        transform: translateX(5px);
+        border-color: rgba(34, 211, 238, 0.7);
+        box-shadow: 0 12px 24px -18px rgba(8, 145, 178, 0.7);
+    }
+
+    .panel-row:hover .panel-row-icon {
+        transform: scale(1.1) rotate(-6deg);
+        background-color: #22d3ee;
+        color: #083344;
+    }
+}
+
+/* ---------- Stat rows (quote block) ---------- */
+
+.stat-row {
+    transition: transform 180ms var(--ease-enter);
+}
+
+.stat-row dt {
+    transition: color 200ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .stat-row:hover {
+        transform: translateX(6px);
+    }
+
+    .stat-row:hover dt {
+        color: #e2e8f0;
+    }
+}
+
+/* ---------- Story columns (hero copy, part two) ---------- */
+
+.story-col {
+    transition: transform 240ms var(--ease-enter);
+}
+
+.story-rule {
+    transition: background-color 240ms ease;
+}
+
+.story-title {
+    transition: color 240ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .story-col:hover {
+        transform: translateX(5px);
+    }
+
+    .story-col:hover .story-rule {
+        background-color: rgba(34, 211, 238, 0.4);
+    }
+
+    .story-col:hover .story-title {
+        color: #67e8f9;
+    }
+}
+
+/* ---------- Numbered step cards ---------- */
+
+.step-card {
+    transition: transform 160ms var(--ease-enter), box-shadow 260ms var(--ease-enter), border-color 220ms ease;
+}
+
+.step-card:focus-within {
+    transform: translateY(-6px);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .step-card:hover {
+        transform: translateY(-6px);
+        border-color: rgba(34, 211, 238, 0.65);
+        box-shadow: 0 26px 50px -26px rgba(8, 145, 178, 0.5);
+    }
+
+    .step-card:hover .badge-pop {
+        transform: scale(1.1) rotate(-6deg);
+    }
+}
+
+.step-card .badge-pop {
+    transition: transform 200ms var(--ease-enter);
+}
+
+/* ---------- Skeleton loading ---------- */
+
+/* Placeholders carry the shape of the content that is coming, so the layout
+   does not jump when the real thing lands. One shared sweep keeps every
+   skeleton on the page in phase instead of shimmering against each other. */
+.skeleton {
+    position: relative;
+    overflow: hidden;
+    background-color: rgba(148, 163, 184, 0.18);
+    border-radius: 0.5rem;
+}
+
+.skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.35),
+        transparent
+    );
+    animation: skeleton-sweep 1.6s var(--ease-move) infinite;
+}
+
+@keyframes skeleton-sweep {
+    100% { transform: translateX(100%); }
+}
+
+.skeleton-line {
+    height: 0.75rem;
+    margin-bottom: 0.625rem;
+}
+
+.skeleton-line:last-child {
+    margin-bottom: 0;
+}
+
+/* Ragged right edge, so a block of them reads as prose rather than a barcode. */
+.skeleton-line--full { width: 100%; }
+.skeleton-line--9 { width: 92%; }
+.skeleton-line--8 { width: 84%; }
+.skeleton-line--6 { width: 64%; }
+.skeleton-line--4 { width: 42%; }
+
+.skeleton-title {
+    height: 1.1rem;
+    width: 38%;
+    margin-bottom: 1rem;
+}
+
+.skeleton-block {
+    height: 4.5rem;
+    width: 100%;
+    border-radius: 1rem;
+}
+
+.skeleton-circle {
+    border-radius: 9999px;
+}
+
+/* A pending turn fades out as the real answer is swapped in, so the two never
+   hard-cut against each other. */
+.skeleton-swap-out {
+    animation: skeleton-dismiss 180ms var(--ease-move) forwards;
+}
+
+@keyframes skeleton-dismiss {
+    to { opacity: 0; }
+}
+
+/* ---------- Thinking dots (inline AI activity) ---------- */
+
+.thinking-dots {
+    display: inline-flex;
+    gap: 0.25rem;
+    align-items: center;
+}
+
+.thinking-dots span {
+    width: 0.375rem;
+    height: 0.375rem;
+    border-radius: 9999px;
+    background: currentColor;
+    opacity: 0.35;
+    animation: thinking-bounce 1.1s ease-in-out infinite;
+}
+
+.thinking-dots span:nth-child(2) { animation-delay: 0.15s; }
+.thinking-dots span:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes thinking-bounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.35; }
+    30% { transform: translateY(-3px); opacity: 1; }
+}
+
+/* ---------- Freshly arrived chat turn ---------- */
+
+.turn-enter {
+    animation: turn-in 420ms var(--ease-enter) backwards;
+}
+
+@keyframes turn-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: none; }
 }
 
 /* ---------- Reduced motion: kill non-essential movement ---------- */
@@ -335,9 +790,501 @@ nav.is-scrolled {
         animation: none !important;
     }
 
+    /* Keep explicit press feedback; drop the decorative travel and sweeps. */
+    .pill,
+    .panel-row,
+    .stat-row,
+    .story-col,
+    .step-card,
+    .step-card .badge-pop,
+    .icon-tile,
+    .panel-row-icon,
+    .pill-check {
+        transform: none !important;
+        transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
+    }
+
+    .sheen:hover::after {
+        animation: none !important;
+    }
+
+    .hover-lift,
+    .row-slide,
+    .rule-grow {
+        transform: none !important;
+        transition: border-color 200ms ease, background-color 200ms ease, box-shadow 200ms ease;
+    }
+
+    .hero-title.is-split .word-inner {
+        transform: none !important;
+        opacity: 1 !important;
+        transition: none !important;
+    }
+
+    .draw-line path,
+    .step-fill {
+        transition: none !important;
+    }
+
+    /* Keep the skeleton's shape -- it still says "content is coming" -- but
+       stop it sweeping and bouncing. */
+    .skeleton::after,
+    .thinking-dots span {
+        animation: none !important;
+    }
+
+    .thinking-dots span {
+        opacity: 0.6;
+    }
+
+    .turn-enter {
+        animation: none !important;
+    }
+
     .animate-ping,
     .animate-pulse,
     .animate-bounce {
         animation: none !important;
     }
+}
+
+/* ---------- Dashboard: cycling teacher tips ---------- */
+
+.dash-tip-track {
+    display: grid;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Every tip sits in the same grid cell, so the card keeps the height of the
+   tallest one and never jumps as the cycle advances. */
+.dash-tip {
+    grid-area: 1 / 1;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 420ms var(--ease-enter);
+}
+
+.dash-tip.is-active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.dash-tip-dot {
+    width: 1.5rem;
+    height: 3px;
+    border: 0;
+    padding: 0;
+    border-radius: 999px;
+    background: rgba(8, 145, 178, 0.25);
+    cursor: pointer;
+    transition: background 240ms ease;
+}
+
+.dash-tip-dot.is-active {
+    background: #0891b2;
+}
+
+.dash-tip-dot:focus-visible {
+    outline: 2px solid #0891b2;
+    outline-offset: 3px;
+}
+
+/* ---------- Dashboard: new-conversation mode picker ---------- */
+
+.dash-picker {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.dash-picker[hidden] {
+    display: none;
+}
+
+.dash-picker-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(2, 6, 23, 0.6);
+}
+
+.dash-picker-panel {
+    position: relative;
+    width: 100%;
+    max-width: 30rem;
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+    border-radius: 1.5rem;
+    background: #fff;
+    padding: 1.75rem;
+    box-shadow: 0 30px 60px -20px rgba(2, 6, 23, 0.45);
+}
+
+.dash-picker-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 1.25rem;
+}
+
+.dash-mode-list {
+    display: grid;
+    gap: 0.625rem;
+}
+
+.dash-mode-option {
+    display: block;
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 0.875rem 1rem;
+    transition: border-color 200ms ease, background 200ms ease;
+}
+
+.dash-mode-option:hover,
+.dash-mode-option:focus-visible {
+    border-color: #22d3ee;
+    background: #ecfeff;
+}
+
+.dash-mode-name {
+    display: block;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.dash-mode-desc {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: #64748b;
+}
+
+.dash-picker-cancel {
+    width: 100%;
+    margin-top: 1.25rem;
+    border: 0;
+    border-radius: 1rem;
+    background: #f1f5f9;
+    padding: 0.75rem;
+    font-weight: 600;
+    color: #475569;
+    cursor: pointer;
+    transition: background 200ms ease;
+}
+
+.dash-picker-cancel:hover {
+    background: #e2e8f0;
+}
+
+/* =============================================
+   PRACTICE — exercise generator
+   ============================================= */
+
+/* One chip style for profile, difficulty and chapters. Pressed state is the
+   selection, so the control reads the same whether it is single- or
+   multi-choice. */
+.chip {
+    border-radius: 9999px;
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #334155;
+    cursor: pointer;
+    transition: transform 150ms var(--ease-enter), background-color 180ms ease,
+                border-color 180ms ease, color 180ms ease;
+}
+
+.chip[aria-pressed="true"] {
+    background: #06b6d4;
+    border-color: #06b6d4;
+    color: #042f2e;
+}
+
+.chip:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.chip:focus-visible {
+    outline: 2px solid #0891b2;
+    outline-offset: 2px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .chip:not(:disabled):hover {
+        transform: translateY(-2px);
+        border-color: #22d3ee;
+        color: #0e7490;
+    }
+
+    .chip[aria-pressed="true"]:not(:disabled):hover {
+        background: #22d3ee;
+        border-color: #22d3ee;
+        color: #042f2e;
+    }
+}
+
+/* ---------- Exercise card ---------- */
+
+.ex-card {
+    transition: transform 160ms var(--ease-enter), box-shadow 260ms var(--ease-enter),
+                border-color 200ms ease;
+}
+
+.ex-card.is-active {
+    border-color: #06b6d4;
+    box-shadow: 0 0 0 1px #06b6d4, 0 20px 40px -24px rgba(8, 145, 178, 0.55);
+}
+
+.ex-card.is-selected {
+    border-color: #22d3ee;
+    background-image: linear-gradient(180deg, rgba(236, 254, 255, 0.9), rgba(255, 255, 255, 0.9));
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .ex-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 24px 44px -26px rgba(8, 145, 178, 0.45);
+    }
+}
+
+/* ---------- Detail panel ---------- */
+
+.detail-panel {
+    animation: panel-in 320ms var(--ease-enter);
+    max-height: calc(100vh - 8rem);
+    overflow-y: auto;
+}
+
+@keyframes panel-in {
+    from { opacity: 0; transform: translateX(14px); }
+    to { opacity: 1; transform: none; }
+}
+
+/* ---------- Export bar ---------- */
+
+/* Appears only once something is ticked, so it never covers the page for
+   nothing. It rises from the bottom edge it is anchored to. */
+.export-bar {
+    position: sticky;
+    bottom: 0;
+    z-index: 40;
+    border-top: 1px solid rgba(148, 163, 184, 0.25);
+    background: rgba(2, 6, 23, 0.92);
+    backdrop-filter: blur(10px);
+    animation: export-bar-in 260ms var(--ease-enter);
+}
+
+.export-bar[hidden] {
+    display: none;
+}
+
+@keyframes export-bar-in {
+    from { opacity: 0; transform: translateY(100%); }
+    to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .chip,
+    .ex-card {
+        transform: none !important;
+        transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease;
+    }
+
+    .detail-panel,
+    .export-bar {
+        animation: none !important;
+    }
+}
+
+/* =============================================
+   GUIDE DOCK — "where do I go for this?"
+   ============================================= */
+
+.guide-toggle {
+    position: fixed;
+    right: 1.25rem;
+    bottom: 1.25rem;
+    z-index: 55;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 0;
+    border-radius: 9999px;
+    background: #06b6d4;
+    padding: 0.75rem 1.125rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #042f2e;
+    box-shadow: 0 18px 32px -16px rgba(8, 145, 178, 0.8);
+    cursor: pointer;
+    transition: transform 150ms var(--ease-enter), background-color 200ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .guide-toggle:hover { transform: translateY(-3px); background: #22d3ee; }
+}
+
+.guide-toggle[aria-expanded="true"] { display: none; }
+
+.guide-dock {
+    position: fixed;
+    right: 1.25rem;
+    bottom: 1.25rem;
+    z-index: 56;
+    display: flex;
+    flex-direction: column;
+    width: min(23rem, calc(100vw - 2.5rem));
+    max-height: min(34rem, calc(100vh - 6rem));
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    border-radius: 1.5rem;
+    background: #0f172a;
+    box-shadow: 0 30px 70px -24px rgba(2, 6, 23, 0.85);
+    overflow: hidden;
+    /* Grows out of the button it replaced, rather than arriving from nowhere. */
+    animation: guide-in 260ms var(--ease-enter);
+    transform-origin: bottom right;
+}
+
+.guide-dock[hidden] { display: none; }
+
+@keyframes guide-in {
+    from { opacity: 0; transform: scale(0.92) translateY(12px); }
+    to { opacity: 1; transform: none; }
+}
+
+.guide-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 1rem 1.125rem;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.guide-head-title { margin: 0; font-weight: 700; color: #fff; font-size: 0.9375rem; }
+.guide-head-sub { margin: 0.125rem 0 0; font-size: 0.75rem; line-height: 1.4; color: #94a3b8; }
+
+.guide-close {
+    border: 0;
+    background: transparent;
+    color: #94a3b8;
+    border-radius: 0.5rem;
+    padding: 0.25rem;
+    cursor: pointer;
+    transition: color 180ms ease, background-color 180ms ease;
+}
+
+.guide-close:hover { color: #fff; background: rgba(148, 163, 184, 0.15); }
+
+.guide-messages {
+    flex: 1;
+    min-height: 6rem;
+    overflow-y: auto;
+    padding: 1rem 1.125rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+}
+
+.guide-msg {
+    max-width: 92%;
+    border-radius: 1rem;
+    padding: 0.625rem 0.875rem;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    animation: turn-in 320ms var(--ease-enter) backwards;
+}
+
+.guide-msg--bot { background: rgba(148, 163, 184, 0.14); color: #e2e8f0; align-self: flex-start; }
+.guide-msg--me { background: #06b6d4; color: #042f2e; align-self: flex-end; font-weight: 600; }
+.guide-msg--error { background: rgba(244, 63, 94, 0.15); color: #fda4af; align-self: flex-start; }
+
+.guide-msg ol, .guide-msg ul { margin: 0.5rem 0 0; padding-left: 1.1rem; }
+.guide-msg li { margin-bottom: 0.25rem; }
+.guide-msg p { margin: 0 0 0.5rem; }
+.guide-msg p:last-child { margin-bottom: 0; }
+
+.guide-suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    padding: 0 1.125rem 0.75rem;
+}
+
+.guide-suggestions:empty { display: none; }
+
+.guide-chip {
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    border-radius: 9999px;
+    background: transparent;
+    padding: 0.3125rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #cbd5e1;
+    cursor: pointer;
+    transition: border-color 180ms ease, color 180ms ease, background-color 180ms ease;
+}
+
+.guide-chip:hover { border-color: #22d3ee; color: #67e8f9; background: rgba(6, 182, 212, 0.1); }
+
+.guide-form {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.5rem;
+    padding: 0.75rem 1.125rem 1rem;
+    border-top: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.guide-input {
+    flex: 1;
+    min-width: 0;
+    max-height: 7rem;
+    resize: none;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    border-radius: 0.875rem;
+    background: rgba(2, 6, 23, 0.6);
+    padding: 0.5rem 0.75rem;
+    font: inherit;
+    font-size: 0.8125rem;
+    color: #fff;
+}
+
+.guide-input:focus { outline: none; border-color: #22d3ee; }
+.guide-input::placeholder { color: #64748b; }
+
+.guide-send {
+    flex-shrink: 0;
+    border: 0;
+    border-radius: 0.875rem;
+    background: #06b6d4;
+    padding: 0.625rem;
+    color: #042f2e;
+    cursor: pointer;
+    transition: background-color 180ms ease;
+}
+
+.guide-send:hover { background: #22d3ee; }
+.guide-send:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* The guide's own pending state: same skeleton language as the chat modes. */
+.guide-skeleton {
+    align-self: flex-start;
+    width: 92%;
+    border-radius: 1rem;
+    background: rgba(148, 163, 184, 0.1);
+    padding: 0.75rem 0.875rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .guide-dock, .guide-msg { animation: none !important; }
+    .guide-toggle { transform: none !important; }
 }

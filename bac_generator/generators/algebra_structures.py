@@ -1,3 +1,4 @@
+
 import random
 from bac_generator.generators.registry import registry
 from bac_generator.generators.base import template

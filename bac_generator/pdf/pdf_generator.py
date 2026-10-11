@@ -2,6 +2,7 @@ import os
 import re
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
+from bac_generator import structure
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, KeepTogether
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfbase import pdfmetrics
@@ -88,6 +89,63 @@ def escape_xml_tags(text: str) -> str:
     
     return text
 
+def _read_braced(text, index):
+    """Read a {...} group starting at `index`, honouring nesting.
+
+    Returns (contents, index_after). The regex this replaces used [^}]* and so
+    gave up on \\frac{x^{2}}{3} - which is why \\frac was still showing up raw
+    in generated papers.
+    """
+    if index >= len(text) or text[index] != "{":
+        return None, index
+    depth, start = 0, index
+    for position in range(index, len(text)):
+        if text[position] == "{":
+            depth += 1
+        elif text[position] == "}":
+            depth -= 1
+            if depth == 0:
+                return text[start + 1:position], position + 1
+    return None, index
+
+
+def _replace_command(text, command, arity, render):
+    """Rewrite every \\command{..}{..} using a real brace matcher."""
+    token = "\\" + command
+    out, cursor = [], 0
+    while True:
+        hit = text.find(token, cursor)
+        if hit == -1:
+            out.append(text[cursor:])
+            return "".join(out)
+        # Do not match \\fracture when looking for \\frac.
+        after = hit + len(token)
+        if after < len(text) and text[after].isalpha():
+            out.append(text[cursor:after])
+            cursor = after
+            continue
+        args, position = [], after
+        while position < len(text) and text[position] == " ":
+            position += 1
+        for _ in range(arity):
+            arg, position = _read_braced(text, position)
+            if arg is None:
+                # TeX accepts a single unbraced token: \frac{a}2 is legal and
+                # does occur in template output.
+                if position < len(text) and text[position] not in "{} \\":
+                    arg, position = text[position], position + 1
+                else:
+                    break
+            args.append(arg)
+        if len(args) != arity:
+            out.append(text[cursor:after])
+            cursor = after
+            continue
+        out.append(text[cursor:hit])
+        out.append(render(*args))
+        cursor = position
+
+
 def clean_latex_for_pdf(text: str) -> str:
     """
     Converts LaTeX formulas into clean, readable text/unicode/HTML representation for ReportLab.
@@ -128,6 +186,22 @@ def clean_latex_for_pdf(text: str) -> str:
     text = text.replace(r"\pi", "π")
     text = text.replace(r"\theta", "θ")
     
+    # Commands that used to reach the page as raw LaTeX. Measured over 160
+    # generated papers: \vec 216 times, \gt 196, \lt 98, \bar 44, \circ 32.
+    text = text.replace(r"\gt", " > ")
+    text = text.replace(r"\lt", " < ")
+    text = text.replace(r"\notin", " nu apartine ")
+    text = text.replace(r"\sec", "sec")
+    # Vectors are set bold, the way Romanian textbooks print them, because an
+    # arrow accent does not survive the diacritic-stripping fallback font.
+    text = _replace_command(text, "vec", 1, lambda a: f"<b>{a}</b>")
+    text = _replace_command(text, "overrightarrow", 1, lambda a: f"<b>{a}</b>")
+    text = _replace_command(text, "bar", 1, lambda a: f"conj({a})")
+    text = _replace_command(text, "overline", 1, lambda a: f"conj({a})")
+    text = _replace_command(text, "mathcal", 1, lambda a: a)
+    text = _replace_command(text, "mathbf", 1, lambda a: f"<b>{a}</b>")
+    text = _replace_command(text, "operatorname", 1, lambda a: a)
+
     text = text.replace(r"\geq", " >= ")
     text = text.replace(r"\leq", " <= ")
     text = text.replace(r"\ge", " >= ")
@@ -166,14 +240,18 @@ def clean_latex_for_pdf(text: str) -> str:
     text = text.replace(r"\partial", "∂")
     text = text.replace(r"\in", " in ")
     text = text.replace(r"^\circ", "°")
+    text = text.replace(r"^{\circ}", "°")
+    # Only now is a surviving \circ function composition rather than degrees.
+    text = text.replace(r"\circ", " o ")
     text = text.replace(r"\_", "_")
     text = text.replace(r"\,", " ")
     
-    # Recursively clean nested fractions: \frac{a}{b} -> (a)/(b)
-    for _ in range(5):
-        if r"\frac" not in text:
+    # Fractions, innermost first. Brace-matched, so \frac{x^{2}}{3} works.
+    for _ in range(6):
+        if r"\frac" not in text and r"\dfrac" not in text and r"\tfrac" not in text:
             break
-        text = re.sub(r'\\frac\{([^}]*)\}\{([^}]*)\}', r'(\1)/(\2)', text)
+        for name in ("dfrac", "tfrac", "frac"):
+            text = _replace_command(text, name, 2, lambda a, b: f"({a})/({b})")
         
     # Recursively clean roots: \sqrt[n]{x} -> n√(x), \sqrt{x} -> √(x)
     for _ in range(5):
@@ -249,27 +327,23 @@ def clean_latex_for_pdf(text: str) -> str:
     return text
 
 def get_spec_details(bac: str):
-    bac = str(bac).upper()
-    if bac == "M1":
-        return {
-            "title": "Matematică M_mate-info",
-            "filiera": "Filiera teoretică, profilul real, specializarea matematică-informatică"
-        }
-    elif bac == "M2":
-        return {
-            "title": "Matematică M_şt-nat",
-            "filiera": "Filiera teoretică, profilul real, specializarea științe ale naturii"
-        }
-    elif bac == "M4":
-        return {
-            "title": "Matematică M_pedagogic",
-            "filiera": "Filiera vocațională, profilul pedagogic, specializarea învățător-educatoare"
-        }
-    else: # Default is M3 (M_tehnologic)
-        return {
-            "title": "Matematică M_tehnologic",
-            "filiera": "Filiera tehnologică: profilul servicii, resurse naturale și protecția mediului, profilul tehnic"
-        }
+    """Header/footer wording for a BAC profile.
+
+    The profile table lives in bac_generator/structure.py so the paper's shape
+    and its letterhead can never disagree. "M4" is still accepted because that
+    is what this function has always called the pedagogic profile, and old
+    Conversation.bac rows may hold it.
+    """
+    spec = structure.profile_spec(bac)
+    return {
+        "code":    spec["code"],
+        "title":   spec["title"],
+        "label":   spec["label"],
+        # Kept as a single string: callers render it as one italic line.
+        "filiera": "; ".join(spec["filiera"]),
+        "filiera_lines": list(spec["filiera"]),
+    }
+
 
 class NumberedCanvas(canvas.Canvas):
     def __init__(self, *args, **kwargs):
@@ -318,6 +392,15 @@ def make_numbered_canvas(bac_code):
             super().__init__(*args, **kwargs)
             self.bac = bac_code
     return CustomNumberedCanvas
+
+def _stem_for(exam_data, slot):
+    """The shared statement a problem's subpoints hang off."""
+    for ex in exam_data.get("exercises", []):
+        if ex.get("slot") == slot:
+            stem, _ = structure.split_subpoints(ex.get("text", ""))
+            return stem
+    return ""
+
 
 def build_pdf(filepath: str, exam_data: dict, include_solutions: bool = False, bac: str = "M3"):
     """
@@ -444,145 +527,223 @@ def build_pdf(filepath: str, exam_data: dict, include_solutions: bool = False, b
         ]))
         return t_div
 
-    if not include_solutions:
-        # --- EXAM CONTENT ---
-        # SUBIECTUL I
-        story.append(Paragraph("<b>SUBIECTUL I (30 de puncte)</b>", style_section_title))
-        for i in range(6):
-            ex = exercises[i]
-            cleaned_text = clean_latex_for_pdf(ex["text"])
+    def _render_legacy_layout():
+        if not include_solutions:
+            # --- EXAM CONTENT ---
+            # SUBIECTUL I
+            story.append(Paragraph("<b>SUBIECTUL I (30 de puncte)</b>", style_section_title))
+            for i in range(6):
+                ex = exercises[i]
+                cleaned_text = clean_latex_for_pdf(ex["text"])
             
-            # Form exercise table layout (number, description, points)
-            p_num = Paragraph(f"<b>{i+1}.</b>", style_bold)
-            p_desc = Paragraph(cleaned_text, style_normal)
-            p_pts = Paragraph("<b>(5p)</b>", style_bold)
+                # Form exercise table layout (number, description, points)
+                p_num = Paragraph(f"<b>{i+1}.</b>", style_bold)
+                p_desc = Paragraph(cleaned_text, style_normal)
+                p_pts = Paragraph("<b>(5p)</b>", style_bold)
             
-            t = Table([[p_num, p_desc, p_pts]], colWidths=[30, printable_w - 80, 50])
-            t.setStyle(TableStyle([
-                ('VALIGN', (0,0), (-1,-1), 'TOP'),
-                ('BOTTOMPADDING', (0,0), (-1,-1), 8),
-            ]))
-            story.append(t)
-            
-        story.append(Spacer(1, 10))
-        story.append(make_subject_divider())
-        
-        # SUBIECTUL II
-        story.append(Paragraph("<b>SUBIECTUL al II-lea (30 de puncte)</b>", style_section_title))
-        for i in range(6, 8):
-            ex = exercises[i]
-            ex_num = 1 if i == 6 else 2
-            cleaned_text = clean_latex_for_pdf(ex["text"])
-            
-            # Format text cleanly by parts
-            parts = cleaned_text.split('\n\n')
-            intro_text = parts[0]
-            
-            story.append(Paragraph(f"<b>{ex_num}.</b> {intro_text}", style_normal))
-            story.append(Spacer(1, 4))
-            
-            for part in parts[1:]:
-                # Part should look like "a) ... (5p)"
-                p_part = Paragraph(part, style_normal)
-                t_part = Table([["", p_part]], colWidths=[20, printable_w - 20])
-                t_part.setStyle(TableStyle([
+                t = Table([[p_num, p_desc, p_pts]], colWidths=[30, printable_w - 80, 50])
+                t.setStyle(TableStyle([
                     ('VALIGN', (0,0), (-1,-1), 'TOP'),
-                    ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+                    ('BOTTOMPADDING', (0,0), (-1,-1), 8),
                 ]))
-                story.append(t_part)
-                
-            story.append(Spacer(1, 8))
+                story.append(t)
             
-        story.append(Spacer(1, 10))
-        story.append(make_subject_divider())
+            story.append(Spacer(1, 10))
+            story.append(make_subject_divider())
         
-        # SUBIECTUL III
-        story.append(Paragraph("<b>SUBIECTUL al III-lea (30 de puncte)</b>", style_section_title))
-        for i in range(8, 10):
-            ex = exercises[i]
-            ex_num = 1 if i == 8 else 2
-            cleaned_text = clean_latex_for_pdf(ex["text"])
+            # SUBIECTUL II
+            story.append(Paragraph("<b>SUBIECTUL al II-lea (30 de puncte)</b>", style_section_title))
+            for i in range(6, 8):
+                ex = exercises[i]
+                ex_num = 1 if i == 6 else 2
+                cleaned_text = clean_latex_for_pdf(ex["text"])
             
-            parts = cleaned_text.split('\n\n')
-            intro_text = parts[0]
+                # Format text cleanly by parts
+                parts = cleaned_text.split('\n\n')
+                intro_text = parts[0]
             
-            story.append(Paragraph(f"<b>{ex_num}.</b> {intro_text}", style_normal))
-            story.append(Spacer(1, 4))
+                story.append(Paragraph(f"<b>{ex_num}.</b> {intro_text}", style_normal))
+                story.append(Spacer(1, 4))
             
-            for part in parts[1:]:
-                p_part = Paragraph(part, style_normal)
-                t_part = Table([["", p_part]], colWidths=[20, printable_w - 20])
-                t_part.setStyle(TableStyle([
-                    ('VALIGN', (0,0), (-1,-1), 'TOP'),
-                    ('BOTTOMPADDING', (0,0), (-1,-1), 4),
-                ]))
-                story.append(t_part)
+                for part in parts[1:]:
+                    # Part should look like "a) ... (5p)"
+                    p_part = Paragraph(part, style_normal)
+                    t_part = Table([["", p_part]], colWidths=[20, printable_w - 20])
+                    t_part.setStyle(TableStyle([
+                        ('VALIGN', (0,0), (-1,-1), 'TOP'),
+                        ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+                    ]))
+                    story.append(t_part)
                 
-            story.append(Spacer(1, 8))
+                story.append(Spacer(1, 8))
             
+            story.append(Spacer(1, 10))
+            story.append(make_subject_divider())
+        
+            # SUBIECTUL III
+            story.append(Paragraph("<b>SUBIECTUL al III-lea (30 de puncte)</b>", style_section_title))
+            for i in range(8, 10):
+                ex = exercises[i]
+                ex_num = 1 if i == 8 else 2
+                cleaned_text = clean_latex_for_pdf(ex["text"])
+            
+                parts = cleaned_text.split('\n\n')
+                intro_text = parts[0]
+            
+                story.append(Paragraph(f"<b>{ex_num}.</b> {intro_text}", style_normal))
+                story.append(Spacer(1, 4))
+            
+                for part in parts[1:]:
+                    p_part = Paragraph(part, style_normal)
+                    t_part = Table([["", p_part]], colWidths=[20, printable_w - 20])
+                    t_part.setStyle(TableStyle([
+                        ('VALIGN', (0,0), (-1,-1), 'TOP'),
+                        ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+                    ]))
+                    story.append(t_part)
+                
+                story.append(Spacer(1, 8))
+            
+        else:
+            # --- SOLUTIONS CONTENT (BAREM) ---
+            story.append(Paragraph("<b>SUBIECTUL I</b>", style_section_title))
+            for i in range(6):
+                ex = exercises[i]
+                cleaned_sol = clean_latex_for_pdf(ex["solution"])
+            
+                p_num = Paragraph(f"<b>{i+1}.</b>", style_bold)
+                p_sol = Paragraph(cleaned_sol.replace('\n', '<br/>'), style_normal)
+            
+                t = Table([[p_num, p_sol]], colWidths=[30, printable_w - 30])
+                t.setStyle(TableStyle([
+                    ('VALIGN', (0,0), (-1,-1), 'TOP'),
+                    ('BOTTOMPADDING', (0,0), (-1,-1), 10),
+                ]))
+                story.append(KeepTogether(t))
+            
+            story.append(Spacer(1, 10))
+            story.append(make_subject_divider())
+        
+            story.append(Paragraph("<b>SUBIECTUL al II-lea</b>", style_section_title))
+            for i in range(6, 8):
+                ex = exercises[i]
+                ex_num = 1 if i == 6 else 2
+                cleaned_sol = clean_latex_for_pdf(ex["solution"])
+            
+                story.append(Paragraph(f"<b>Exercițiul {ex_num}</b>", style_bold))
+                story.append(Spacer(1, 4))
+            
+                parts = cleaned_sol.split('\n\n')
+                for part in parts:
+                    p_part = Paragraph(part.replace('\n', '<br/>'), style_normal)
+                    t_part = Table([["", p_part]], colWidths=[20, printable_w - 20])
+                    t_part.setStyle(TableStyle([
+                        ('VALIGN', (0,0), (-1,-1), 'TOP'),
+                        ('BOTTOMPADDING', (0,0), (-1,-1), 6),
+                    ]))
+                    story.append(KeepTogether(t_part))
+                
+                story.append(Spacer(1, 8))
+            
+            story.append(Spacer(1, 10))
+            story.append(make_subject_divider())
+        
+            story.append(Paragraph("<b>SUBIECTUL al III-lea</b>", style_section_title))
+            for i in range(8, 10):
+                ex = exercises[i]
+                ex_num = 1 if i == 8 else 2
+                cleaned_sol = clean_latex_for_pdf(ex["solution"])
+            
+                story.append(Paragraph(f"<b>Exercițiul {ex_num}</b>", style_bold))
+                story.append(Spacer(1, 4))
+            
+                parts = cleaned_sol.split('\n\n')
+                for part in parts:
+                    p_part = Paragraph(part.replace('\n', '<br/>'), style_normal)
+                    t_part = Table([["", p_part]], colWidths=[20, printable_w - 20])
+                    t_part.setStyle(TableStyle([
+                        ('VALIGN', (0,0), (-1,-1), 'TOP'),
+                        ('BOTTOMPADDING', (0,0), (-1,-1), 6),
+                    ]))
+                    story.append(KeepTogether(t_part))
+                
+                story.append(Spacer(1, 8))
+            
+
+    units = exam_data.get("units")
+
+    if not units:
+        # Every Message.exam_data row written before the 18-item rework stores
+        # ten flat exercises and no units. Those rows are re-rendered on demand
+        # by the download route, so the old layout has to keep working.
+        _render_legacy_layout()
     else:
-        # --- SOLUTIONS CONTENT (BAREM) ---
-        story.append(Paragraph("<b>SUBIECTUL I</b>", style_section_title))
-        for i in range(6):
-            ex = exercises[i]
-            cleaned_sol = clean_latex_for_pdf(ex["solution"])
-            
-            p_num = Paragraph(f"<b>{i+1}.</b>", style_bold)
-            p_sol = Paragraph(cleaned_sol.replace('\n', '<br/>'), style_normal)
-            
-            t = Table([[p_num, p_sol]], colWidths=[30, printable_w - 30])
-            t.setStyle(TableStyle([
-                ('VALIGN', (0,0), (-1,-1), 'TOP'),
-                ('BOTTOMPADDING', (0,0), (-1,-1), 10),
+        if exam_data.get("above_bac") and not include_solutions:
+            warn = Paragraph(
+                "<b>Peste nivel BAC</b> — variantă de antrenament, "
+                "nu reproduce structura unui subiect oficial.", style_italic)
+            t_warn = Table([[warn]], colWidths=[printable_w])
+            t_warn.setStyle(TableStyle([
+                ('BOX', (0, 0), (-1, -1), 1, colors.HexColor('#F59E0B')),
+                ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#FFFBEB')),
+                ('PADDING', (0, 0), (-1, -1), 8),
             ]))
-            story.append(KeepTogether(t))
-            
-        story.append(Spacer(1, 10))
-        story.append(make_subject_divider())
-        
-        story.append(Paragraph("<b>SUBIECTUL al II-lea</b>", style_section_title))
-        for i in range(6, 8):
-            ex = exercises[i]
-            ex_num = 1 if i == 6 else 2
-            cleaned_sol = clean_latex_for_pdf(ex["solution"])
-            
-            story.append(Paragraph(f"<b>Exercițiul {ex_num}</b>", style_bold))
-            story.append(Spacer(1, 4))
-            
-            parts = cleaned_sol.split('\n\n')
-            for part in parts:
-                p_part = Paragraph(part.replace('\n', '<br/>'), style_normal)
-                t_part = Table([["", p_part]], colWidths=[20, printable_w - 20])
-                t_part.setStyle(TableStyle([
-                    ('VALIGN', (0,0), (-1,-1), 'TOP'),
-                    ('BOTTOMPADDING', (0,0), (-1,-1), 6),
+            story.append(t_warn)
+            story.append(Spacer(1, 12))
+
+        subjects = exam_data.get("structure") or []
+        by_subject = {}
+        for unit in units:
+            by_subject.setdefault(unit["subject"], []).append(unit)
+
+        for index, subject in enumerate(subjects):
+            number = subject["subject"]
+            rows = by_subject.get(number, [])
+            if not rows:
+                continue
+
+            name = structure.SUBJECT_NAMES.get(number, f"SUBIECTUL {number}")
+            points = sum(r["points"] for r in rows)
+            heading = name if include_solutions else f"{name} ({points} de puncte)"
+            story.append(Paragraph(f"<b>{heading}</b>", style_section_title))
+
+            printed_stem = set()
+            for unit in rows:
+                body = unit["solution"] if include_solutions else unit["text"]
+                cleaned = clean_latex_for_pdf(body or "").replace("\n", "<br/>")
+
+                # A problem's stem is printed once, above its subpoints.
+                if unit["label"] and unit["slot"] not in printed_stem:
+                    printed_stem.add(unit["slot"])
+                    stem = _stem_for(exam_data, unit["slot"])
+                    if stem and not include_solutions:
+                        story.append(Paragraph(
+                            f"<b>{unit['position']}.</b> "
+                            + clean_latex_for_pdf(stem).replace("\n", "<br/>"),
+                            style_normal))
+                        story.append(Spacer(1, 4))
+                    elif include_solutions:
+                        story.append(Paragraph(f"<b>{unit['position']}.</b>", style_bold))
+
+                tag = f"{unit['label']})" if unit["label"] else f"{unit['position']}."
+                indent = 20 if unit["label"] else 0
+
+                p_num = Paragraph(f"<b>{tag}</b>", style_bold)
+                p_desc = Paragraph(cleaned, style_normal)
+                # Every piece of a real paper carries its own 5p. Subiects II
+                # and III used to print no marks at all.
+                p_pts = Paragraph(f"<b>({unit['points']}p)</b>", style_bold)
+
+                t = Table([[p_num, p_desc, p_pts]],
+                          colWidths=[30 + indent, printable_w - 80 - indent, 50])
+                t.setStyle(TableStyle([
+                    ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+                    ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
                 ]))
-                story.append(KeepTogether(t_part))
-                
-            story.append(Spacer(1, 8))
-            
-        story.append(Spacer(1, 10))
-        story.append(make_subject_divider())
-        
-        story.append(Paragraph("<b>SUBIECTUL al III-lea</b>", style_section_title))
-        for i in range(8, 10):
-            ex = exercises[i]
-            ex_num = 1 if i == 8 else 2
-            cleaned_sol = clean_latex_for_pdf(ex["solution"])
-            
-            story.append(Paragraph(f"<b>Exercițiul {ex_num}</b>", style_bold))
-            story.append(Spacer(1, 4))
-            
-            parts = cleaned_sol.split('\n\n')
-            for part in parts:
-                p_part = Paragraph(part.replace('\n', '<br/>'), style_normal)
-                t_part = Table([["", p_part]], colWidths=[20, printable_w - 20])
-                t_part.setStyle(TableStyle([
-                    ('VALIGN', (0,0), (-1,-1), 'TOP'),
-                    ('BOTTOMPADDING', (0,0), (-1,-1), 6),
-                ]))
-                story.append(KeepTogether(t_part))
-                
-            story.append(Spacer(1, 8))
-            
+                story.append(KeepTogether(t))
+
+            if index < len(subjects) - 1:
+                story.append(Spacer(1, 10))
+                story.append(make_subject_divider())
+
     doc.build(story, canvasmaker=make_numbered_canvas(bac))

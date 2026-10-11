@@ -1,8 +1,7 @@
 flask
 flask-session
-SQLAlchemy
+SQLAlchemy>=2.0
 psycopg2-binary
-SQLAlchemy-Utils
 PyPDF2
 python-docx
 google-genai

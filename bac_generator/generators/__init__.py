@@ -1,5 +1,5 @@
 from .registry import registry
-from . import algebra, geometry, matrices, algebra_structures, calculus
+from . import algebra, geometry, matrices, algebra_structures, polynomials, calculus
 
 # Explicitly expose backward-compatible generator functions
 from .algebra import gen_s1_ex1, gen_s1_ex2, gen_s1_ex3, gen_s1_ex4

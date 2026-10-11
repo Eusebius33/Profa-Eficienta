@@ -1,0 +1,88 @@
+{% extends "layout.html" %}
+
+{% block title %}Subiecte BAC oficiale{% endblock %}
+
+{% block main %}
+<div class="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 px-4 py-10">
+
+    <div class="max-w-6xl mx-auto">
+
+        <div class="flex flex-wrap items-end justify-between gap-4 mb-8">
+            <div>
+                <h1 class="text-4xl font-bold text-white mb-2" data-i18n="archive_title">
+                    Subiecte BAC oficiale
+                </h1>
+                <p class="text-slate-400">
+                    <span data-i18n="archive_sub">Subiectele date la bacalaureat, pe profiluri și ani.</span>
+                    <span class="text-slate-500">({{ total }})</span>
+                </p>
+            </div>
+            <a href="/mode5" class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2.5 px-5 rounded-xl text-sm"
+               data-i18n="archive_back">Înapoi la generator</a>
+        </div>
+
+        <!-- FILTERS -->
+        <form method="get" action="/bac-archive"
+              class="bg-slate-950 border border-slate-800 rounded-3xl p-5 mb-6 flex flex-wrap items-end gap-4">
+
+            <div class="flex flex-col gap-1">
+                <label for="f-profile" class="text-xs uppercase tracking-wider text-slate-500 font-bold"
+                       data-i18n="bac_profile_label">Profil BAC</label>
+                <select id="f-profile" name="profile"
+                    class="bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:ring-2 focus:ring-cyan-500">
+                    <option value="" data-i18n="archive_all_profiles">Toate profilurile</option>
+                    {% for code, label in profiles %}
+                        <option value="{{ code }}" {% if code == active_profile %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="flex flex-col gap-1">
+                <label for="f-year" class="text-xs uppercase tracking-wider text-slate-500 font-bold"
+                       data-i18n="archive_year">An</label>
+                <select id="f-year" name="year"
+                    class="bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:ring-2 focus:ring-cyan-500">
+                    <option value="" data-i18n="archive_all_years">Toți anii</option>
+                    {% for y in years %}
+                        <option value="{{ y }}" {% if active_year == y|string %}selected{% endif %}>{{ y }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit"
+                class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold px-6 py-2.5 rounded-xl text-sm"
+                data-i18n="archive_filter">Filtrează</button>
+
+        </form>
+
+        <!-- RESULTS -->
+        {% if papers %}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {% for paper in papers %}
+                    <a href="/bac-archive/{{ paper.id }}" target="_blank" rel="noopener"
+                       class="bg-white border border-slate-200 rounded-2xl p-4 hover:shadow-xl hover:border-cyan-400 transition flex flex-col gap-1">
+                        <div class="flex items-baseline justify-between gap-2">
+                            <span class="text-lg font-bold text-slate-900">{{ paper.year }}</span>
+                            <span class="text-xs font-bold text-cyan-700 bg-cyan-50 border border-cyan-200 rounded-lg px-2 py-0.5">
+                                {{ paper.profile }}
+                            </span>
+                        </div>
+                        <div class="text-sm text-slate-600 capitalize">{{ paper.session }}</div>
+                        {% if paper.variant %}
+                            <div class="text-xs text-slate-500">Varianta {{ paper.variant }}</div>
+                        {% endif %}
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-slate-400 bg-slate-950 border border-slate-800 rounded-3xl p-8 text-center"
+               data-i18n="archive_empty">Niciun subiect pentru filtrele alese.</p>
+        {% endif %}
+
+        <p class="text-slate-500 text-xs mt-8">
+            <span data-i18n="archive_credit">Subiecte publice, Ministerul Educației / Centrul Național de Politici și Evaluare în Educație.</span>
+        </p>
+
+    </div>
+</div>
+{% endblock %}

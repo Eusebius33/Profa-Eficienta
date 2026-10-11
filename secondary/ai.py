@@ -40,13 +40,29 @@ def _mock_response(args, kwargs):
             "3. Valoarea maximă este $-\\frac{\\Delta}{4a} = -\\frac{16}{-4} = 4$, realizată în $x_V = 2$."
         )
     return (
-        "Răspuns generat de asistentul virtual de matematică (Mock AI).\n\n"
-        "Exemplu matematic: $\\frac{a}{b}$, $\\sqrt{x}$, $x^2$, $x_{1,2}$.\n\n"
-        "Diacritice românești: ă, â, î, ș, ț."
+        "1. Calculați $\\int_{1}^{5} x^2 e^x \\, dx$.\n"
+        "2. Se dă matricea $A = \\begin{pmatrix} 0 & 1 \\\\ 1 & 0 \\end{pmatrix}$. "
+        "Calculați $\\det(A)$.\n"
+        "3. Rezolvați în $\\mathbb{R}$ ecuația $x^2 - 5x + 6 = 0$.\n"
+        "4. Calculați $\\frac{a}{b} + \\sqrt{x}$ pentru $a = 4$, $b = 2$, $x = 9$."
     )
 
 
+def _mock_enabled():
+    """AI_MOCK=1 forces canned replies without calling Google.
+
+    Deliberately opt-in: when a key is configured but Google refuses it, the
+    app reports the error rather than quietly serving invented exercises that
+    a teacher could print and hand to a class. Set it only to work on the UI
+    while a key is being sorted out.
+    """
+    return os.getenv("AI_MOCK", "").strip().lower() in ("1", "true", "yes")
+
+
 def generate_content(*args, **kwargs):
+    if _mock_enabled():
+        return _mock_response(args, kwargs)
+
     try:
         client = gemini_keys.get_client()
     except RuntimeError:
@@ -59,7 +75,17 @@ def generate_content(*args, **kwargs):
         if gemini_keys.is_rate_limit_error(error):
             return "Eroare AI: limita de request-uri a fost atinsă pentru moment. Încearcă din nou mai târziu."
         if gemini_keys.is_key_blocked_error(error):
-            return "Eroare AI: cheia configurată este blocată de Google. Contactează administratorul."
+            # The full Google payload says WHICH problem it is (project banned
+            # vs. Gemini API never enabled on it), and the two need different
+            # fixes - so never swallow it, even though the teacher only sees
+            # the short version.
+            print(f"[gemini] key rejected by Google: {error}", flush=True)
+            return (
+                "Eroare AI: cheia Gemini configurată este respinsă de Google. "
+                "Verifică GEMINI_API_KEY_1 în .env (rulează "
+                "`python diagnose_gemini_keys.py` pentru detalii)."
+            )
+        print(f"[gemini] call failed: {error}", flush=True)
         return f"Eroare AI: {error}"
 
 # =========================================================
@@ -118,7 +144,7 @@ def website_guide(prompt):
             - Butonul "Creeaza" duce direct in Editor, care are acelasi 5 moduri intr-un panel lateral din dreapta.
 
             Cele 5 moduri:
-            1. Asistent AI (Mod 1) - conversatie libera, intrebari despre predare, elevi, explicatii.
+            1. Asistent predare (Mod 1) - conversatie libera: intrebari despre predare, elevi, explicatii.
             2. Limbaj Natural -> Matematic (Mod 2) - scrii un exercitiu in cuvinte simple si primesti
                forma matematica corecta, exercitii noi sau rezolvari pas cu pas, adaptate pe stil/clasa/BAC.
             3. Creeaza dupa Model (Mod 3) - incarci un test existent (Word/PDF) si generezi un test nou
@@ -146,16 +172,14 @@ def website_guide(prompt):
 
 def translate_math(prompt, style, school_class, bac):
 
-    full_prompt = f"""
-    Stil: {style}
+    # Only name the fields that actually carry a value - mode2 conversations
+    # no longer collect class/BAC profile, and feeding the model "Clasa: None"
+    # just invites it to invent a level.
+    context = [f"{label}: {value}" for label, value in
+               (("Stil", style), ("Clasa", school_class), ("BAC", bac))
+               if value and str(value).strip() and str(value).strip() != "—"]
 
-    Clasa: {school_class}
-
-    BAC: {bac}
-
-    Exercitii:
-    {prompt}
-    """
+    full_prompt = "\n\n".join(context + [f"Exercitii:\n{prompt}"])
 
     return generate_content(
         model="gemini-2.5-flash",
@@ -163,14 +187,23 @@ def translate_math(prompt, style, school_class, bac):
         config=types.GenerateContentConfig(
 
             system_instruction="""
-            Transforma textul in expresii matematice LaTeX.
+            Transforma textul in exercitii matematice scrise in LaTeX,
+            gata de pus pe o fisa de lucru.
 
-            Reguli:
-            - doar LaTeX
-            - fara explicatii
-            - fiecare exercitiu pe rand nou
-            - foloseste delimitatori $ $
-            - nu folosi alte delimitatoare latex-
+            Format obligatoriu:
+            - numeroteaza fiecare exercitiu: "1. ", "2. ", "3. " s.a.m.d.
+            - un singur exercitiu pe linie, linie noua intre exercitii
+            - pastreaza ordinea in care le-a cerut profesorul
+            - daca textul contine un singur exercitiu, numeroteaza-l tot cu "1. "
+            - daca un exercitiu are subpuncte, scrie-le ca "a)", "b)", "c)"
+
+            Reguli de continut:
+            - doar enuntul matematic, fara rezolvari si fara explicatii
+            - fara titluri, fara introduceri, fara concluzii
+            - foloseste delimitatori $ $ pentru matematica inline
+            - nu folosi alte delimitatoare LaTeX ($$, \\[ \\], \\( \\))
+            - scrie matricele cu \\begin{pmatrix} ... \\end{pmatrix}
+            - scrie integralele definite cu limite: \\int_{a}^{b}
             """,
 
             temperature=0.1
@@ -396,3 +429,112 @@ def bac_generator(lessons, avoid):
             temperature=0.8
         )
     )
+
+# =========================================================
+# ELEVII MEI - ANALIZA CLASEI
+# (profil elev, recenzie test, grupe inteligente)
+#
+# These are JSON-mode calls: the caller gets structured
+# fields back instead of prose it would have to scrape.
+# is_error() below is the contract for the failure case -
+# generate_content() reports a dead key/quota by RETURNING
+# an "Eroare AI: ..." string rather than raising, and that
+# string must never be persisted as if it were analysis.
+# =========================================================
+
+AI_ERROR_PREFIX = "Eroare AI"
+
+
+def is_error(text):
+    """True when `text` is generate_content()'s error channel, not a result."""
+    return not isinstance(text, str) or text.strip().startswith(AI_ERROR_PREFIX)
+
+
+CLASSROOM_SYSTEM_INSTRUCTION = """
+Esti un asistent pentru profesorii de matematica din Romania care analizeaza
+elevi si clase reale.
+
+Reguli:
+- Raspunzi DOAR cu JSON valid care respecta schema ceruta. Fara markdown,
+  fara ```json, fara text in afara obiectului JSON.
+- Scrii in limba romana, cu diacritice corecte.
+- Te bazezi STRICT pe datele primite despre elev (note, lectii, prezenta,
+  observatiile profesorului, transcrierea testului). Nu inventezi note,
+  absente, capitole sau greseli care nu apar in datele primite.
+- Daca datele sunt insuficiente pentru o concluzie, spui explicit ca e nevoie
+  de mai multe rezultate, in loc sa completezi cu presupuneri.
+- Pentru formule matematice folosesti delimitatori $ $.
+- Recomandarile sunt concrete si aplicabile la ora urmatoare, nu generalitati.
+"""
+
+
+def _strip_json_fence(text):
+    """Models sometimes wrap JSON in a markdown fence despite being told not to."""
+    cleaned = text.strip()
+    if cleaned.startswith("```"):
+        cleaned = cleaned.split("\n", 1)[-1] if "\n" in cleaned else cleaned
+        if cleaned.rstrip().endswith("```"):
+            cleaned = cleaned.rstrip()[: -len("```")]
+    # Fall back to the outermost {...} span if there is still stray prose.
+    if not cleaned.strip().startswith("{"):
+        start, end = cleaned.find("{"), cleaned.rfind("}")
+        if start != -1 and end > start:
+            cleaned = cleaned[start : end + 1]
+    return cleaned.strip()
+
+
+def classroom_json(prompt, schema=None, temperature=0.4):
+    """One JSON-mode call for the classroom features.
+
+    Returns a parsed dict on success, or None when the model is unavailable or
+    answered with something unparseable. Callers MUST handle None by falling
+    back to their deterministic path - a teacher is better served by a plainly
+    computed summary than by an error message stored as their student's profile.
+    """
+    config_kwargs = {
+        "system_instruction": CLASSROOM_SYSTEM_INSTRUCTION,
+        "temperature": temperature,
+        "response_mime_type": "application/json",
+    }
+    if schema is not None:
+        config_kwargs["response_schema"] = schema
+
+    try:
+        raw = generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt,
+            config=types.GenerateContentConfig(**config_kwargs),
+        )
+    except Exception as error:
+        print(f"[classroom] AI call failed: {error}", flush=True)
+        return None
+
+    if is_error(raw):
+        print(f"[classroom] AI unavailable: {raw}", flush=True)
+        return None
+
+    try:
+        parsed = json.loads(_strip_json_fence(raw))
+    except (ValueError, TypeError) as error:
+        print(f"[classroom] unparseable AI JSON ({error}): {raw[:300]!r}", flush=True)
+        return None
+
+    return parsed if isinstance(parsed, dict) else None
+
+
+def classroom_text(prompt, temperature=0.5):
+    """Prose variant of classroom_json, for the free-text worksheet/chat paths.
+    Returns None on failure so callers can fall back instead of printing an
+    error string onto a worksheet a teacher is about to hand to a class."""
+    raw = generate_content(
+        model="gemini-2.5-flash",
+        contents=prompt,
+        config=types.GenerateContentConfig(
+            system_instruction=CLASSROOM_SYSTEM_INSTRUCTION.replace(
+                "Raspunzi DOAR cu JSON valid care respecta schema ceruta. Fara markdown,\n  fara ```json, fara text in afara obiectului JSON.",
+                "Raspunzi in format text/markdown, fara JSON.",
+            ),
+            temperature=temperature,
+        ),
+    )
+    return None if is_error(raw) else raw

@@ -19,7 +19,7 @@ def gen_s1_ex5_midpoint(rng=random):
     solution = (f"$x_M = \\frac{{{x1}+{x2}}}{{2}} = {mx}$, "
                 f"$y_M = \\frac{{{y1}+{y2}}}{{2}} = {my}$. Mijlocul: $M({mx}, {my})$.")
     return {"id": "s1_ex5_midpoint", "text": text, "solution": solution,
-            "points": 5, "params": {"x1": x1, "x2": x2, "y1": y1, "y2": y2, "mx": mx, "my": my}, "lesson": "Numere complexe"}
+            "points": 5, "params": {"x1": x1, "x2": x2, "y1": y1, "y2": y2, "mx": mx, "my": my}, "lesson": "Geometrie analitică"}
 
 @registry.register(slot=5)
 @template("s1_parallel_line_through_point", "Dreapta paralelă prin un punct dat", "medium")
@@ -36,7 +36,7 @@ def gen_s1_ex5_parallel_line(rng=random):
                 f"Înlocuind $A$: ${a*x1 + b*y1} + c' = 0 \\Rightarrow c' = {c_new}$. "
                 f"Ecuația: ${a}x {b:+}y {c_new:+} = 0$.")
     return {"id": "s1_ex5_parallel_line", "text": text, "solution": solution,
-            "points": 5, "params": {"a": a, "b": b, "c": c, "x1": x1, "y1": y1, "c_new": c_new}, "lesson": "Trigonometrie"}
+            "points": 5, "params": {"a": a, "b": b, "c": c, "x1": x1, "y1": y1, "c_new": c_new}, "lesson": "Geometrie analitică"}
 
 @registry.register(slot=5)
 @template("s1_collinear_vectors_condition", "Condiția de coliniaritate a vectorilor", "medium")
@@ -51,7 +51,7 @@ def gen_s1_ex5_vectors(rng=random):
     solution = (f"Coliniari ⟺ $\\frac{{m}}{{{c}}} = \\frac{{{b}}}{{{d}}} "
                 f"\\Rightarrow {d}m = {b*c} \\Rightarrow m = {a}$.")
     return {"id": "s1_ex5_vectors", "text": text, "solution": solution,
-            "points": 5, "params": {"a": a, "b": b, "c": c, "d": d}, "lesson": "Trigonometrie"}
+            "points": 5, "params": {"a": a, "b": b, "c": c, "d": d}, "lesson": "Geometrie analitică"}
 
 @registry.register(slot=5)
 @template("s1_line_equation_two_points", "Ecuația dreptei prin două puncte date", "easy")
@@ -69,7 +69,7 @@ def gen_s1_ex5_line_two_points(rng=random):
                 f"Ecuația: $y - ({y1}) = \\frac{{{dy}}}{{{dx}}}(x - ({x1}))$, "
                 f"adică ${dy}x - {dx}y {c:+} = 0$.")
     return {"id": "s1_ex5_line_two_points", "text": text, "solution": solution,
-            "points": 5, "params": {"x1": x1, "y1": y1, "x2": x2, "y2": y2, "dy": dy, "dx": dx}, "lesson": "Trigonometrie"}
+            "points": 5, "params": {"x1": x1, "y1": y1, "x2": x2, "y2": y2, "dy": dy, "dx": dx}, "lesson": "Geometrie analitică"}
 
 @registry.register(slot=5)
 @template("s1_distance_point_to_line", "Distanța de la un punct la o dreaptă", "medium")
@@ -86,7 +86,7 @@ def gen_s1_ex5_distance(rng=random):
     solution = (f"$d(P, d) = \\frac{{|{a} \\cdot ({x0}) + {b} \\cdot ({y0}) {c:+}|}}{{"
                 f"\\sqrt{{{a}^2 + {b}^2}}}} = \\frac{{{dist_num}}}{{\\sqrt{{{a**2+b**2}}}}}$.")
     return {"id": "s1_ex5_distance", "text": text, "solution": solution,
-            "points": 5, "params": {"a": a, "b": b, "c": c, "x0": x0, "y0": y0, "dist_num": dist_num}, "lesson": "Trigonometrie"}
+            "points": 5, "params": {"a": a, "b": b, "c": c, "x0": x0, "y0": y0, "dist_num": dist_num}, "lesson": "Geometrie analitică"}
 
 def gen_s1_ex5(rng=random):
     return rng.choice(registry.get_generators(5))(rng)
@@ -108,7 +108,7 @@ def gen_s1_ex6_law_cos(rng=random):
     solution = (f"$BC^2 = {c}^2 + {b}^2 - 2 \\cdot {c} \\cdot {b} \\cdot ({cosA_str}) = "
                 f"{c**2 + b**2 - 2*b*c*cosA_val:.0f}$. Deci $BC = {a}$.")
     return {"id": "s1_ex6_law_cos", "text": text, "solution": solution,
-            "points": 5, "params": {"b": b, "c": c, "cosA": cosA_str, "a": a}, "lesson": "Trigonometrie"}
+            "points": 5, "params": {"b": b, "c": c, "cosA": cosA_str, "a": a}, "lesson": "Geometrie plană"}
 
 @registry.register(slot=6)
 @template("s1_triangle_area_formula", "Aria triunghiului cu sin", "easy")
@@ -121,7 +121,7 @@ def gen_s1_ex6_area(rng=random):
     solution = (f"$\\mathcal{{A}} = \\frac{{1}}{{2}} \\cdot {AB} \\cdot {AC} \\cdot \\sin 30^\\circ "
                 f"= \\frac{{1}}{{2}} \\cdot {AB} \\cdot {AC} \\cdot \\frac{{1}}{{2}} = {area}$.")
     return {"id": "s1_ex6_area", "text": text, "solution": solution,
-            "points": 5, "params": {"AB": AB, "AC": AC, "area": area}, "lesson": "Trigonometrie"}
+            "points": 5, "params": {"AB": AB, "AC": AC, "area": area}, "lesson": "Geometrie plană"}
 
 @registry.register(slot=6)
 @template("s1_trig_special_values", "Calcul cu valori trigonometrice remarcabile", "easy")
@@ -153,7 +153,7 @@ def gen_s1_ex6_law_sin(rng=random):
     solution = (f"Teorema sinusurilor: $\\frac{{BC}}{{\\sin A}} = 2R$.\n"
                 f"$BC = 2 \\cdot {R} \\cdot \\sin {angle_deg}^\\circ = 2 \\cdot {R} \\cdot {sin_val} = {a}$.")
     return {"id": "s1_ex6_law_sin", "text": text, "solution": solution,
-            "points": 5, "params": {"R": R, "angle_deg": angle_deg, "a": a}, "lesson": "Trigonometrie"}
+            "points": 5, "params": {"R": R, "angle_deg": angle_deg, "a": a}, "lesson": "Geometrie plană"}
 
 @registry.register(slot=6)
 @template("s1_trig_identity_simplification", "Simplificarea identităților trigonometrice", "hard")

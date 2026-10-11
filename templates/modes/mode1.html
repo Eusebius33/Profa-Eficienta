@@ -31,7 +31,7 @@
     
         {% for conv in conversations %}
     
-            <div class="relative flex items-center gap-1 bg-slate-50 hover:bg-slate-400 transition text-slate-950 rounded-xl">
+            <div class="row-slide relative flex items-center gap-1 border border-transparent bg-slate-50 hover:bg-white text-slate-950 rounded-xl">
     
                 <a href="/mode1/{{ conv['id'] }}" class="flex-1 px-3 py-2 truncate">
                     {% if conv["title"] == "Conversație nouă" %}
@@ -43,8 +43,9 @@
     
                 <button
                     type="button"
-                    onclick="toggleConversationMenu(event, {{ conv['id'] }})"
-                    class="px-2 py-2 rounded-lg hover:bg-slate-300 font-bold"
+                    data-conv-id="{{ conv['id'] }}"
+                    onclick="toggleConversationMenu(event, this.dataset.convId)"
+                    class="press px-2 py-2 rounded-lg hover:bg-slate-300 font-bold"
                     aria-label="Conversation menu">
                     ⋮
                 </button>
@@ -61,7 +62,7 @@
                         <input type="hidden" name="new_title">
                         <button
                             type="submit"
-                            class="w-full text-left px-3 py-2 text-sm hover:bg-slate-100">
+                            class="press w-full text-left px-3 py-2 text-sm hover:bg-slate-100">
                             Rename
                         </button>
                     </form>
@@ -72,7 +73,7 @@
                         onsubmit="return confirm('Are you sure you want to delete this conversation?');">
                         <button
                             type="submit"
-                            class="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50">
+                            class="press w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50">
                             Delete
                         </button>
                     </form>
@@ -114,7 +115,7 @@
     <div class="mb-6 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
 
         <div class="min-w-0">
-            <h1 class="text-3xl font-bold text-white" data-i18n="m1_ai_assistant">Asistent AI</h1>
+            <h1 class="text-3xl font-bold text-white" data-i18n="m1_ai_assistant">Asistent predare</h1>
 
             <p class="text-slate-400 mt-1" data-i18n="m1_desc">Afla raspunsuri la intrebarile tale legate de gestionarea elevilor si matematica. De asemenea poti afla si cum functioneaza programul nostru.</p>
         </div>
@@ -128,7 +129,7 @@
 
             <form action="/create_mode1" method="post">
                 <button type="submit"
-                        class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold py-2.5 px-5 rounded-xl text-sm whitespace-nowrap"
+                        class="press bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold py-2.5 px-5 rounded-xl text-sm whitespace-nowrap"
                         data-i18n="new_chat">Conversație nouă</button>
             </form>
 
@@ -139,82 +140,36 @@
     <!-- CONTENT -->
     <div class="flex-1 bg-white rounded-3xl border border-slate-700 p-4 lg:p-6 flex flex-col shadow-inner min-h-0 overflow-hidden">
 
-        <form id="exportForm" method="post" class="flex-1 flex flex-col min-h-0">
+        <div id="exportSelection" class="flex-1 flex flex-col min-h-0">
 
         <!-- EXPORT TOOLBAR -->
         {% if messages %}
-        <div class="flex flex-wrap items-center justify-between gap-2 mb-2 text-xs flex-shrink-0">
-            <div class="flex items-center gap-3">
-                <button type="button" onclick="setAllExportChecks(true)" class="text-cyan-700 hover:text-cyan-900 underline">Selectează tot</button>
-                <button type="button" onclick="setAllExportChecks(false)" class="text-slate-500 hover:text-slate-800 underline">Deselectează tot</button>
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-2 text-xs flex-shrink-0">
+                <div class="flex flex-wrap items-center gap-3">
+                    <span id="sheetCount" class="font-semibold text-cyan-700"></span>
+                    <button type="button" onclick="ExportSheet.setAll(true)" class="press text-cyan-700 hover:text-cyan-900 underline" data-i18n="select_all">Selectează tot</button>
+                    <button type="button" onclick="ExportSheet.setAll(false)" class="press text-slate-500 hover:text-slate-800 underline" data-i18n="deselect_all">Deselectează tot</button>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button type="button" onclick="ExportSheet.open('pdf')" class="press bg-slate-800 hover:bg-slate-700 transition text-white font-semibold px-3 py-1.5 rounded-lg">📄 <span data-i18n="download_pdf">Descarcă PDF</span></button>
+                    <button type="button" onclick="ExportSheet.open('docx')" class="press bg-slate-800 hover:bg-slate-700 transition text-white font-semibold px-3 py-1.5 rounded-lg">📝 <span data-i18n="download_docx">Descarcă DOCX</span></button>
+                </div>
             </div>
-            <div class="flex items-center gap-2">
-                <button type="submit" formaction="/conversation/{{ conversation_id }}/export/pdf" class="bg-slate-800 hover:bg-slate-700 transition text-white font-semibold px-3 py-1.5 rounded-lg">📄 PDF</button>
-                <button type="submit" formaction="/conversation/{{ conversation_id }}/export/docx" class="bg-slate-800 hover:bg-slate-700 transition text-white font-semibold px-3 py-1.5 rounded-lg">📝 DOCX</button>
-            </div>
-        </div>
         {% endif %}
 
         <!-- CHAT -->
         <div id="chat" class="flex-1 overflow-y-auto space-y-4 pr-2 min-h-0 mb-2">
 
             {% for message in messages %}
-
-                {% if message["role"] == "user" %}
-
-                    <div class="flex items-start justify-end gap-2">
-                        <div class="bg-cyan-100 text-slate-900 p-4 rounded-2xl hover:shadow-md transition-shadow text-slate-900 w-fit max-w-xl border border-cyan-200">
-                            {% if "Sunt un asistent virtual specializat" in message["content"] %}<span data-i18n="ai_intro_msg">{{ message["content"] | safe }}</span>{% else %}{{ message["content"] | safe }}{% endif %}
-                        </div>
-                        <input type="checkbox" name="message_ids" value="{{ message['id'] }}" checked title="Include în export" class="accent-cyan-500 mt-4 flex-shrink-0">
-                    </div>
-
-                {% else %}
-
-                    <div class="flex items-start gap-2">
-                        <input type="checkbox" name="message_ids" value="{{ message['id'] }}" checked title="Include în export" class="accent-cyan-500 mt-5 flex-shrink-0">
-                        <div class="bg-slate-100 text-slate-900 p-5 rounded-2xl hover:shadow-md transition-shadow max-w-3xl border border-slate-200 relative group">
-
-
-                        <!-- COPY BUTTON -->
-                        <button type="button" class="copy-math-btn absolute top-3 right-3 text-slate-500 hover:text-slate-900 bg-slate-200 hover:bg-slate-300 p-1.5 rounded-lg transition flex items-center gap-1"
-                                onclick="copyMathToClipboard(this, this.parentElement.querySelector('.msg-content-container'))" title="Copy Math to Word">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                        </button>
-
-                        <h3 class="font-bold text-slate-900 mb-3" data-i18n="ai_response">Răspuns AI</h3>
-
-                        <div class="text-slate-700 text-sm leading-relaxed whitespace-pre-line msg-content-container">
-                            <div class="math-content">
-                                {% if "Sunt un asistent virtual specializat" in message["content"] %}<span data-i18n="ai_intro_msg">{{ message["content"] | safe }}</span>{% else %}{{ message["content"] | safe }}{% endif %}
-                            </div>
-                        </div>
-
-                        <!-- PER-MESSAGE EXPORT -->
-                        <div class="mt-4 flex flex-wrap gap-2 border-t border-slate-200 pt-3">
-                            <a href="/message/{{ message['id'] }}/export/pdf"
-                               class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-1.5 px-3 rounded-lg text-xs">
-                                <span data-i18n="download_msg_pdf">Descarcă PDF</span>
-                            </a>
-                            <a href="/message/{{ message['id'] }}/export/docx"
-                               class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-1.5 px-3 rounded-lg text-xs">
-                                <span data-i18n="download_msg_docx">Descarcă DOCX</span>
-                            </a>
-                        </div>
-
-                        </div>
-                    </div>
-
-                {% endif %}
-
+                {% include "partials/mode1_message.html" %}
             {% endfor %}
 
         </div>
 
-        </form>
+        </div>
 
             <!-- USER MESSAGE
-            <div class="bg-cyan-100 text-slate-900 p-4 rounded-2xl hover:shadow-md transition-shadow w-fit max-w-xl ml-auto border border-cyan-200">
+            <div class="bg-cyan-100 text-slate-900 p-4 rounded-2xl hover:shadow-md transition-shadow w-fit max-w-[max(36rem,72%)] ml-auto border border-cyan-200">
                 Text introdus de utilizator...
             </div>
 
@@ -223,26 +178,33 @@
         <!-- ACTION BUTTONS -->
         <div class="flex flex-wrap justify-end gap-2 mt-auto mb-3 flex-shrink-0 text-xs sm:text-sm">
             <button type="button"
-                    onclick="solvePreviousExercise(this)"
-                    class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm">
+                    data-quick-action="solve"
+                    data-display="{{ t('m1_sol_prev') }}"
+                    data-label="{{ t('ai_thinking') }}"
+                    class="press bg-slate-800 hover:bg-slate-700 disabled:opacity-40 transition text-white font-bold py-2 px-4 rounded-xl text-sm">
                 <span data-i18n="m1_sol_prev">Soluție exercițiu anterior</span>
             </button>
-        
+
             <button type="button"
-                    onclick="generateSimilarExercises(this)"
-                    class="bg-slate-800 hover:bg-slate-700 transition text-white font-bold py-2 px-4 rounded-xl text-sm">
+                    data-quick-action="generate_similar"
+                    data-display="{{ t('m1_gen_similar') }}"
+                    data-label="{{ t('ai_thinking') }}"
+                    class="press bg-slate-800 hover:bg-slate-700 disabled:opacity-40 transition text-white font-bold py-2 px-4 rounded-xl text-sm">
                 <span data-i18n="m1_gen_similar">Generează exerciții similare</span>
             </button>
-        
+
             <button type="button"
-                    onclick="teachInClass(this)"
-                    class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold py-2 px-4 rounded-xl text-sm">
+                    data-quick-action="teach_class"
+                    data-display="{{ t('m1_teach_class') }}"
+                    data-label="{{ t('ai_thinking') }}"
+                    class="press bg-cyan-500 hover:bg-cyan-400 disabled:opacity-40 transition text-slate-950 font-bold py-2 px-4 rounded-xl text-sm">
                 <span data-i18n="m1_teach_class">Cum predau la clasă</span>
             </button>
         </div>
 
         <!-- INPUT -->
-        <form id="chatForm" action="/mode1/{{ conversation_id }}" method="post" class="flex gap-3">
+        <form id="chatForm" action="/mode1/{{ conversation_id }}" method="post" class="flex gap-3"
+              data-async-chat data-chat-target="#chat">
             <input type="hidden" id="actionType" name="action_type" value="normal">
             <input type="hidden" id="exerciseCount" name="exercise_count" value="5">
         
@@ -252,13 +214,13 @@
                 rows="1"
                 data-i18n-placeholder="m1_write_ex"
                 placeholder="Scrie exercițiul sau întrebarea..."
-                class="flex-1 text-white border border-slate-300 rounded-2xl p-4 resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                class="flex-1 text-white border border-slate-300 rounded-2xl p-4 resize-none field"
             ></textarea>
         
             <button
                 type="submit"
                 onclick="document.getElementById('actionType').value='normal'; this.disabled=true; this.form.submit();"
-                class="bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold px-4 sm:px-8 rounded-2xl text-sm sm:text-base"
+                class="press bg-cyan-500 hover:bg-cyan-400 transition text-slate-950 font-bold px-4 sm:px-8 rounded-2xl text-sm sm:text-base"
                 data-i18n="m1_send">
                 Trimite
             </button>
@@ -312,73 +274,6 @@ document.addEventListener("click", function () {
     });
 });
 
-function getLastUserMessage() {
-    const bubbles = document.querySelectorAll('#chat .bg-cyan-100');
-    if (!bubbles.length) return null;
-    return bubbles[bubbles.length - 1].textContent.trim();
-}
-
-function submitQuickAction(btn, actionType, promptText) {
-    const actionInput = document.getElementById('actionType');
-    const promptInput = document.getElementById('promptInput');
-    const chatForm = document.getElementById('chatForm');
-
-    if (!actionInput || !promptInput || !chatForm) {
-        alert("Formularul nu a fost găsit.");
-        return;
-    }
-
-    actionInput.value = actionType;
-    promptInput.value = promptText;
-    btn.disabled = true;
-    chatForm.submit();
-}
-
-function solvePreviousExercise(btn) {
-    const lastMessage = getLastUserMessage();
-
-    if (!lastMessage) {
-        alert("Nu există niciun exercițiu anterior în această conversație.");
-        return;
-    }
-
-    const promptText =
-        "Rezolvă pas cu pas următorul exercițiu și explică metoda clar pentru un elev:\n\n" +
-        lastMessage;
-
-    submitQuickAction(btn, "solve", promptText);
-}
-
-function generateSimilarExercises(btn) {
-    const lastMessage = getLastUserMessage();
-
-    if (!lastMessage) {
-        alert("Nu există niciun exercițiu anterior pe baza căruia să generez exerciții similare.");
-        return;
-    }
-
-    const promptText =
-        "Generează 5 exerciții similare cu următorul exercițiu. Include răspunsurile la final:\n\n" +
-        lastMessage;
-
-    submitQuickAction(btn, "generate_similar", promptText);
-}
-
-function teachInClass(btn) {
-    const lastMessage = getLastUserMessage();
-
-    if (!lastMessage) {
-        alert("Scrie mai întâi un exercițiu sau o întrebare.");
-        return;
-    }
-
-    const promptText =
-        "Explică cum aș putea preda la clasă următorul exercițiu sau subiect. Include pași, întrebări pentru elevi și greșeli comune:\n\n" +
-        lastMessage;
-
-    submitQuickAction(btn, "teach_class", promptText);
-}
-
 document.addEventListener("DOMContentLoaded", function () {
     const chat = document.getElementById("chat");
     if (chat) chat.scrollTop = chat.scrollHeight;
@@ -392,4 +287,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 </script>
+
+{% include "partials/export_sheet_dialog.html" %}
 {% endblock %}

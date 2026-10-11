@@ -240,7 +240,10 @@ class TestBACGenerator(unittest.TestCase):
 
     def test_metadata_persistence(self):
         """Verify exam metadata structure and persistence on disk."""
-        history_path = "bac_generator/metadata_history.json"
+        # The history is JSONL now, at a path derived from the package rather
+        # than the working directory - the old read-modify-write of a whole
+        # JSON array raced under gunicorn's three workers.
+        history_path = BACExamGenerator.HISTORY_PATH
         
         # Reset file if it exists
         if os.path.exists(history_path):
@@ -255,7 +258,7 @@ class TestBACGenerator(unittest.TestCase):
         self.assertIn("metadata", exam)
         meta = exam["metadata"]
         self.assertEqual(meta["seed"], 100)
-        self.assertEqual(meta["generator_version"], "3.0.0")
+        self.assertEqual(meta["generator_version"], "4.0.0")
         self.assertIn("exercise_fingerprints", meta)
         self.assertIn("diversity_score", meta,
                       "Metadata must include diversity_score")
@@ -270,9 +273,9 @@ class TestBACGenerator(unittest.TestCase):
         # Check that it got written to history file
         self.assertTrue(os.path.exists(history_path))
         with open(history_path, "r", encoding="utf-8") as f:
-            history = json.load(f)
-            self.assertTrue(len(history) >= 1)
-            self.assertEqual(history[-1]["seed"], 100)
+            history = [json.loads(line) for line in f if line.strip()]
+        self.assertTrue(len(history) >= 1)
+        self.assertEqual(history[-1]["seed"], 100)
 
     def test_routes_integration(self):
         """Verify routes blueprint using the Flask test client and an in-memory SQLite DB."""

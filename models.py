@@ -7,8 +7,8 @@ from datetime import datetime
 from typing import Optional
 
 from dotenv import load_dotenv
-from sqlalchemy_utils import database_exists, create_database
-from sqlalchemy import Float, ForeignKey, Integer, String, Text, DateTime, create_engine, func
+from sqlalchemy import Float, ForeignKey, Integer, String, Text, DateTime, create_engine, func, text, text
+from sqlalchemy.engine import make_url
 from sqlalchemy.orm import (
     DeclarativeBase,
     Mapped,
@@ -48,6 +48,11 @@ class User(RowMixin, Base):
     gender: Mapped[str] = mapped_column(String, nullable=False)
     tehnologie: Mapped[str] = mapped_column(String, nullable=False)
     liceu: Mapped[str] = mapped_column(String, nullable=False)
+    # The one writing style every new conversation inherits, chosen on /account.
+    # Plain Integer rather than a ForeignKey: deployed databases get this column
+    # through _COLUMN_MIGRATIONS, which cannot add a constraint, so the value is
+    # validated against the user's own styles when it is read.
+    active_style_id: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
 
     conversations: Mapped[list["Conversation"]] = relationship(back_populates="user", cascade="all, delete-orphan")
     styles: Mapped[list["Style"]] = relationship(back_populates="user", cascade="all, delete-orphan")
@@ -275,8 +280,64 @@ class TestRecord(RowMixin, Base):
     solution_filename: Mapped[Optional[str]] = mapped_column(String)
     ai_insights: Mapped[Optional[str]] = mapped_column(Text)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.current_timestamp())
+    # Minutes the student needed per exercise on this paper. Teacher-entered:
+    # nothing in the app observes solving time, so it is the only real source
+    # for the "timp/exercițiu" column on the risk overview.
+    minutes_per_exercise: Mapped[Optional[float]] = mapped_column(Float)
+    # JSON list of short error tags the AI review extracted from the solution
+    # ("semne", "simplificare fracții", ...). Counting tags that show up on
+    # more than one paper is what drives the "greșeli repetate" column.
+    mistake_tags_json: Mapped[Optional[str]] = mapped_column(Text)
+    # What the AI actually read off the uploaded pages, kept so the teacher can
+    # check the transcription and so a re-analysis does not re-run OCR.
+    transcript: Mapped[Optional[str]] = mapped_column(Text)
 
     student: Mapped["Student"] = relationship(back_populates="test_records")
+
+
+# database_exists/create_database used to come from SQLAlchemy-Utils, which
+# breaks on SQLAlchemy 2.1 (it subclasses the removed ScalarAttributeImpl).
+# We only ever needed these two helpers, so they live here now and the app
+# no longer pins SQLAlchemy to an old release.
+def _admin_engine(url_obj):
+    """Engine on the server's maintenance database, so we can inspect/create
+    the app database itself. AUTOCOMMIT because CREATE DATABASE cannot run
+    inside a transaction."""
+    return create_engine(url_obj.set(database="postgres"), isolation_level="AUTOCOMMIT")
+
+
+def database_exists(url):
+    url_obj = make_url(url)
+    if url_obj.get_backend_name() == "sqlite":
+        name = url_obj.database
+        return name in (None, "", ":memory:") or os.path.exists(name)
+
+    engine = _admin_engine(url_obj)
+    try:
+        with engine.connect() as conn:
+            found = conn.scalar(
+                text("SELECT 1 FROM pg_database WHERE datname = :name"),
+                {"name": url_obj.database},
+            )
+        return found is not None
+    finally:
+        engine.dispose()
+
+
+def create_database(url):
+    url_obj = make_url(url)
+    if url_obj.get_backend_name() == "sqlite":
+        return  # sqlite creates the file on first connect
+
+    # CREATE DATABASE takes no bind parameters, so the name is quoted as an
+    # identifier instead. It comes from DATABASE_URL, not from user input.
+    name = url_obj.database.replace('"', '""')
+    engine = _admin_engine(url_obj)
+    try:
+        with engine.connect() as conn:
+            conn.execute(text(f'CREATE DATABASE "{name}"'))
+    finally:
+        engine.dispose()
 
 
 # Functia de creare a Engine-ului PostgreSQL
@@ -310,5 +371,25 @@ def get_session():
     return SessionLocal()
 
 
+# Columns added to tables that already exist in deployed databases.
+# create_all() only ever CREATEs missing tables, so it will not widen a table
+# that is already there - these run on every boot and are no-ops once applied.
+_COLUMN_MIGRATIONS = [
+    "ALTER TABLE test_records ADD COLUMN IF NOT EXISTS minutes_per_exercise DOUBLE PRECISION",
+    "ALTER TABLE test_records ADD COLUMN IF NOT EXISTS mistake_tags_json TEXT",
+    "ALTER TABLE test_records ADD COLUMN IF NOT EXISTS transcript TEXT",
+    "ALTER TABLE users ADD COLUMN IF NOT EXISTS active_style_id INTEGER",
+]
+
+
 def init_db():
     Base.metadata.create_all(engine)
+
+    with engine.begin() as connection:
+        for statement in _COLUMN_MIGRATIONS:
+            try:
+                connection.execute(text(statement))
+            except Exception as error:
+                # A missing table is fine (create_all just made it with the
+                # column already present); anything else is worth seeing.
+                print(f"[migrations] skipped {statement!r}: {error}", flush=True)

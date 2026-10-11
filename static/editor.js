@@ -826,10 +826,21 @@
         const block = modeBlockEl(mode);
         const messagesEl = block && block.querySelector(`[data-mode-messages="${mode}"]`);
         if (!messagesEl) return;
+        // A skeleton rather than three dots: it carries the shape of the
+        // answer that is coming, so the panel does not jump when it lands.
         const el = document.createElement("div");
-        el.className = "ed-typing-indicator";
+        el.className = "ed-skeleton";
         el.dataset.typingIndicator = "1";
-        el.innerHTML = "<span></span><span></span><span></span>";
+        el.innerHTML =
+            '<div class="ed-skeleton-head">' +
+                '<span class="thinking-dots"><span></span><span></span><span></span></span>' +
+                "<span>" + (I18N.thinking || "Se generează răspunsul…") + "</span>" +
+            "</div>" +
+            '<div class="skeleton skeleton-line skeleton-line--full"></div>' +
+            '<div class="skeleton skeleton-line skeleton-line--9"></div>' +
+            '<div class="skeleton skeleton-line skeleton-line--6"></div>';
+        el.setAttribute("role", "status");
+        el.setAttribute("aria-live", "polite");
         messagesEl.appendChild(el);
         messagesEl.scrollTop = messagesEl.scrollHeight;
     }

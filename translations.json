@@ -24,7 +24,7 @@
     "en": "Create"
   },
   "nav_login": {
-    "ro": "Autentificare",
+    "ro": "Intră în cont",
     "en": "Login"
   },
   "nav_register": {
@@ -32,7 +32,7 @@
     "en": "Register"
   },
   "landing_badge": {
-    "ro": "AI pentru profesori de matematică",
+    "ro": "AI pentru profesorii de matematică",
     "en": "AI for mathematics teachers"
   },
   "landing_title": {
@@ -40,15 +40,35 @@
     "en": "Create tests, exercises and BAC variants in minutes"
   },
   "landing_subtitle": {
-    "ro": "Proful Eficient transformă ideile tale în materiale gata de folosit, cu asistență AI pentru lecții, evaluări și pregătire pentru examen.",
-    "en": "Proful Eficient turns your ideas into ready-to-use materials with AI assistance for lessons, assessments and exam preparation."
+    "ro": "Pregătirea lecțiilor ocupă aproximativ 14,5% din timpul de muncă al unui profesor și poate ajunge la 12–20 de ore pe săptămână pentru cei aflați la început de carieră sau care predau mai multe discipline. Proful Eficient te ajută să recuperezi peste 80% din acest timp.",
+    "en": "Lesson preparation takes up about 14.5% of a teacher's working time and can reach 12–20 hours per week for those early in their careers or teaching several subjects. Proful Eficient helps you win back over 80% of that time."
+  },
+  "landing_story_title": {
+    "ro": "De la idee la material, de la note la progres",
+    "en": "From idea to material, from grades to progress"
+  },
+  "landing_story_a_title": {
+    "ro": "Materiale gata de printat",
+    "en": "Materials ready to print"
+  },
+  "landing_story_a_body": {
+    "ro": "Programul nostru transformă ideile și descrierile tale simple în materiale gata de folosit, cu expresii și formule corecte, gata de printat. Îți poți converti testele scrise de mână în format digital și ai acces la un agregator de subiecte de BAC pe care elevii tăi nu le-au rezolvat încă.",
+    "en": "Our platform turns your ideas and simple descriptions into ready-to-use materials, with correct expressions and formulas, ready to print. You can convert handwritten tests into digital format and access a collection of Baccalaureate (BAC) exam papers your students haven't solved yet."
+  },
+  "landing_story_b_title": {
+    "ro": "Sprijin pentru elevii rămași în urmă",
+    "en": "Support for students falling behind"
+  },
+  "landing_story_b_body": {
+    "ro": "Dacă vrei să ai grijă de elevii cu rezultate mai slabe, poți înregistra notele, testele și comportamentul lor, astfel programul nostru are informațiile necesare pentru a găsi cea mai eficientă cale de a-i ajuta să progreseze. Asistența AI te sprijină și în predarea lecțiilor, elevii tăi trebuie să înțeleagă materia pentru a obține rezultate performante la BAC și în evaluări.",
+    "en": "If you want to support students who are struggling, you can log their grades, tests and behavior in our software, so it can find the most effective way to help them improve. Our AI assistant also helps you teach your lessons, because your students need to truly understand the material to perform well at the BAC exam."
   },
   "landing_cta_primary": {
     "ro": "Începe acum",
     "en": "Start now"
   },
   "landing_cta_secondary": {
-    "ro": "Autentificare",
+    "ro": "Intră în cont",
     "en": "Login"
   },
   "landing_feature_1": {
@@ -72,8 +92,8 @@
     "en": "Assisted conversations"
   },
   "landing_panel_item_1_desc": {
-    "ro": "Pregătește explicații, exerciții și idei de lecție în timp real.",
-    "en": "Prepare explanations, exercises and lesson ideas in real time."
+    "ro": "Pregătește explicații, exerciții, variante de BAC noi și idei de predare instant.",
+    "en": "Prepare explanations, exercises, new BAC variants and teaching ideas instantly."
   },
   "landing_panel_item_2": {
     "ro": "Generare de conținut matematic",
@@ -96,8 +116,8 @@
     "en": "AI Assistant"
   },
   "landing_card_1_desc": {
-    "ro": "Discută liber cu aplicația pentru idei de lecții, explicații și răspunsuri rapide.",
-    "en": "Chat freely with the app for lesson ideas, explanations and quick support."
+    "ro": "Discută cu asistentul pentru a ințelege platforma și pentru a obține idei de lecții, explicații și răspunsuri rapide.",
+    "en": "Chat freely with our assistant. Our AI can guide you through our platform & it can give you lesson ideas, explanations and quick support."
   },
   "landing_card_2_title": {
     "ro": "Text și documente",
@@ -108,12 +128,12 @@
     "en": "Use text or uploaded files to generate mathematical content ready to copy."
   },
   "landing_card_3_title": {
-    "ro": "Pregătire pentru evaluări",
-    "en": "Assessment preparation"
+    "ro": "Pregătire BAC",
+    "en": "Exam preparation"
   },
   "landing_card_3_desc": {
-    "ro": "Construiește variante BAC, teste și exerciții personalizate pentru fiecare clasă.",
-    "en": "Build BAC variants, tests and personalized exercises for each class."
+    "ro": "Construiește variante BAC nepublicate și nerezolvate de elevi, împreună cu teste și exerciții personalizate pentru fiecare clasă, totul în doar câteva minute.",
+    "en": "Build unpublished BAC exam papers your students haven't solved yet, along with personalized tests and exercises for each class, all in just a few minutes."
   },
   "landing_example_label": {
     "ro": "Exemplu live",
@@ -156,15 +176,15 @@
     "en": "AI transforms the text"
   },
   "landing_step_2_desc": {
-    "ro": "Platforma creează formulări matematice corecte, în format clar și gata pentru clasă.",
-    "en": "The platform creates correct mathematical formulations in a clear format ready for class."
+    "ro": "Platforma creează formulări matematice corecte, în format clar și gata de printat pentru clasă.",
+    "en": "The platform creates correct mathematical formulations in a clear ready-to-print format."
   },
   "landing_step_3_title": {
     "ro": "Reutilizează și personalizează",
     "en": "Reuse and personalize"
   },
   "landing_step_3_desc": {
-    "ro": "Salvează, adaptează și folosește rezultatele pentru lecții, evaluări sau pregătirea pentru examen.",
+    "ro": "Salvează, adaptează și folosește resursele generate la alte clase, sau în anii următori pentru o pregătire matematică sistematizată și eficientă.",
     "en": "Save, adapt and use the results for lessons, assessments or exam preparation."
   },
   "landing_usecases_title": {
@@ -176,7 +196,7 @@
     "en": "Lessons and explanations"
   },
   "landing_usecase_1_desc": {
-    "ro": "Pregătește exemple clare și rapid accesibile pentru elevi.",
+    "ro": "Pregătește fișe cu explicații clare și accesibile pentru elevi.",
     "en": "Prepare clear and quickly accessible examples for students."
   },
   "landing_usecase_2_title": {
@@ -184,7 +204,7 @@
     "en": "Assessments and tests"
   },
   "landing_usecase_2_desc": {
-    "ro": "Generează variante diferite pentru clasă sau pentru verificări rapide.",
+    "ro": "Generează variante diferite și verificări rapide pentru fiecare clasă, pentru a nu se copia din XII A în XII B.",
     "en": "Generate different variants for class or quick checks."
   },
   "landing_usecase_3_title": {
@@ -204,23 +224,23 @@
     "en": "Transform uploaded materials into ready-to-use mathematical content."
   },
   "landing_final_title": {
-    "ro": "Gata să reduci timpul petrecut pe pregătire?",
-    "en": "Ready to reduce the time spent on preparation?"
+    "ro": "Reduce timpul petrecut pe teste astazi.",
+    "en": "Reduce the time spent on writing tests today."
   },
   "landing_final_subtitle": {
-    "ro": "Începe cu un cont și construiește primul set de materiale în câteva minute.",
-    "en": "Start with an account and build your first set of materials in minutes."
+    "ro": "Începe cu un cont și construiește primul set de materiale în câteva minute. Este momentul ca munca si statul sa nu iti mai ocupe timpul din afara programului.",
+    "en": "Start with an account and build your first set of materials in minutes. The state and your work shouldnt eat your free time anymore."
   },
   "landing_final_cta": {
     "ro": "Creează contul meu",
     "en": "Create my account"
   },
   "footer_rights": {
-    "ro": "© 2025 Proful Eficient. Toate drepturile rezervate.",
-    "en": "© 2025 Proful Eficient. All rights reserved."
+    "ro": "© 2026 Proful Eficient. Toate drepturile rezervate.",
+    "en": "© 2026 Proful Eficient. All rights reserved."
   },
   "login_title": {
-    "ro": "Autentificare",
+    "ro": "Intră în cont",
     "en": "Login"
   },
   "login_welcome": {
@@ -240,7 +260,7 @@
     "en": "Password"
   },
   "login_button": {
-    "ro": "Autentificare",
+    "ro": "Intră în cont",
     "en": "Log In"
   },
   "no_account": {
@@ -308,7 +328,7 @@
     "en": "Already have an account?"
   },
   "authenticate": {
-    "ro": "Autentifică-te",
+    "ro": "Intră în cont",
     "en": "Log in"
   },
   "err_must_provide_email": {
@@ -868,8 +888,8 @@
     "en": "Free Chat"
   },
   "m1_sub": {
-    "ro": "Asistentul tău personal, disponibil oricând",
-    "en": "Your personal assistant, always available"
+    "ro": "Ajutor la predare, disponibil oricând",
+    "en": "Teaching help, whenever you need it"
   },
   "m1_active_mode": {
     "ro": "Mod activ",
@@ -1439,21 +1459,117 @@
     "ro": "Model BAC",
     "en": "BAC Model"
   },
+  "dash_tip_m1_title": {
+    "ro": "Asistent predare",
+    "en": "Teaching assistant"
+  },
+  "dash_tip_m1_text": {
+    "ro": "Întreabă orice ține de matematică sau de predare: explicații, idei de lecție, exerciții pe o temă anume. Funcționează ca o conversație — poți cere lămuriri până iese cum vrei.",
+    "en": "Ask anything about maths or teaching: explanations, lesson ideas, exercises on a given topic. It works as a conversation — keep asking until it comes out the way you want."
+  },
+  "dash_tip_m2_title": {
+    "ro": "Limbaj Natural → Matematic",
+    "en": "Limbaj Natural → Matematic"
+  },
+  "dash_tip_m2_text": {
+    "ro": "Scrie enunțul în română obișnuită („integrala din x la puterea a doua”) și primești formula corect scrisă, gata de copiat în Word. Nu cauți simboluri.",
+    "en": "Write the statement in plain language (“the integral of x squared”) and get the formula properly typeset, ready to paste into Word. No hunting for symbols."
+  },
+  "dash_tip_m3_title": {
+    "ro": "Creează după Model",
+    "en": "Creează după Model"
+  },
+  "dash_tip_m3_text": {
+    "ro": "Încarci un test existent în Word sau PDF, iar platforma extrage exercițiile și generează unul nou după aceeași structură. Spui într-un singur câmp ce vrei schimbat.",
+    "en": "Upload an existing test in Word or PDF; the platform extracts the exercises and generates a new one with the same structure. One field tells it what to change."
+  },
+  "dash_tip_m4_title": {
+    "ro": "Transcriere scris de mână",
+    "en": "Transcriere scris de mână"
+  },
+  "dash_tip_m4_text": {
+    "ro": "Fotografiezi o fișă scrisă de mână și o primești digitizată, cu formulele transcrise. De acolo poți cere direct o variantă nouă.",
+    "en": "Photograph a handwritten worksheet and get it digitised, formulas and all. From there you can ask for a fresh variant straight away."
+  },
+  "dash_tip_m5_title": {
+    "ro": "Generator BAC",
+    "en": "Generator BAC"
+  },
+  "dash_tip_m5_text": {
+    "ro": "Alegi lecțiile intrate și ce vrei evitat, iar platforma construiește o variantă completă de BAC pe structura oficială.",
+    "en": "Pick the lessons covered and what to avoid; the platform builds a complete BAC variant on the official structure."
+  },
+  "dash_students_title": {
+    "ro": "Elevii mei",
+    "en": "My students"
+  },
+  "dash_students_empty": {
+    "ro": "Nu ai încă nicio clasă. Creează una ca să urmărești elevii.",
+    "en": "No classes yet. Create one to start tracking students."
+  },
+  "dash_students_manage": {
+    "ro": "Vezi toți elevii",
+    "en": "See all students"
+  },
+  "dash_students_count": {
+    "ro": "elevi",
+    "en": "students"
+  },
+  "dash_new_conv_title": {
+    "ro": "Alege modul pentru conversația nouă",
+    "en": "Pick a mode for the new conversation"
+  },
+  "dash_new_conv_cancel": {
+    "ro": "Renunță",
+    "en": "Cancel"
+  },
+  "acc_style_name_label": {
+    "ro": "Nume al stilului de redactare",
+    "en": "Name of the writing style"
+  },
+  "acc_saved_styles": {
+    "ro": "Stilurile tale salvate",
+    "en": "Your saved styles"
+  },
+  "acc_no_styles": {
+    "ro": "Nu ai salvat încă niciun stil de redactare.",
+    "en": "You have not saved a writing style yet."
+  },
+  "acc_bac_partial": {
+    "ro": "Subiect tip BAC",
+    "en": "BAC-style problem"
+  },
+  "acc_guided": {
+    "ro": "Parțial rezolvate",
+    "en": "Partly solved"
+  },
+  "acc_formula_help": {
+    "ro": "Cu formule și indicații",
+    "en": "With formulas and hints"
+  },
+  "inst_diff_model": {
+    "ro": "Instrucțiuni și diferențe față de model",
+    "en": "Instructions and differences from the template"
+  },
+  "inst_diff_model_ph": {
+    "ro": "Ex: păstrează structura pe 3 subiecte, dar schimbă toate valorile numerice și adaugă două exerciții de trigonometrie. Fără rezolvări.",
+    "en": "Ex: keep the three-part structure but change every numeric value and add two trigonometry exercises. No worked solutions."
+  },
   "acc_style_desc": {
-    "ro": "Descrie modul în care vrei să fie generate testele...",
-    "en": "Describe how you want the tests to be generated..."
+    "ro": "Exemplu 1: Exerciții progresive, de la ușor la greu, cu enunțuri scurte și cel puțin un exercițiu aplicat din viața reală.\n\nExemplu 2: Test de o pagină, 6 exerciții de algebră, fără rezolvări, cu punctajul trecut în dreptul fiecărui exercițiu.",
+    "en": "Example 1: Progressive exercises, easy to hard, short statements and at least one applied real-life problem.\n\nExample 2: A one-page test, 6 algebra exercises, no worked solutions, marks printed next to each exercise."
   },
   "acc_save": {
     "ro": "Salvează setările",
     "en": "Save settings"
   },
   "m1_ai_assistant": {
-    "ro": "Asistent AI",
-    "en": "AI Assistant"
+    "ro": "Asistent predare",
+    "en": "Teaching assistant"
   },
   "m1_desc": {
-    "ro": "Afla raspunsuri la intrebarile tale legate de gestionarea elevilor si matematica. De asemenea poti afla si cum functioneaza programul nostru.",
-    "en": "Find answers to your questions about student management and mathematics. You can also learn how our program works."
+    "ro": "Întreabă orice despre predare, matematică și gestionarea elevilor: explicații, exerciții, planuri de lecție și idei pentru clasă.",
+    "en": "Ask anything about teaching, mathematics and managing students: explanations, exercises, lesson plans and ideas for the classroom."
   },
   "m1_sol_prev": {
     "ro": "Soluție exercițiu anterior",
@@ -1968,8 +2084,8 @@
     "en": "Generate BAC"
   },
   "ai_assistant": {
-    "ro": "Asistent AI",
-    "en": "AI Assistant"
+    "ro": "Asistent predare",
+    "en": "Teaching assistant"
   },
   "ai_desc": {
     "ro": "Conversație educațională.",
@@ -2014,6 +2130,10 @@
   "menu_m3_analyze": {
     "ro": "Analizează fișierul",
     "en": "Analyze file"
+  },
+  "menu_m5_desc": {
+    "ro": "Alegi lecțiile intrate și ce vrei evitat, iar platforma construiește o variantă completă de BAC.",
+    "en": "Pick the lessons covered and what to avoid; the platform builds a complete BAC variant."
   },
   "menu_m4_desc": {
     "ro": "Încarci o fișă scrisă de mână și o transformăm automat în format digital, cu structurare și generare de variantă nouă.",
@@ -2279,6 +2399,30 @@
     "ro": "Da. Fiecare răspuns AI are un buton de copiere care preia conținutul cu formulele matematice păstrate în format compatibil cu Microsoft Word.",
     "en": "Yes. Each AI response has a copy button that captures the content with math formulas preserved in a Microsoft Word-compatible format."
   },
+  "doc_faq_q6": {
+    "ro": "Cât timp economisesc pe săptămână?",
+    "en": "How much time do I save per week?"
+  },
+  "doc_faq_a6": {
+    "ro": "Depinde cât de mult generezi, dar profesorii care pregătesc săptămânal fișe, teste și variante de BAC raportează că partea de redactare — scrisul propriu-zis al enunțurilor și al formulelor — scade de la câteva ore la câteva minute pe material. Timpul câștigat este cel de tehnoredactare, nu cel de gândire didactică: tu decizi ce se cere, platforma scrie.",
+    "en": "It depends how much you generate, but teachers who prepare worksheets, tests and BAC variants every week report that the writing itself — typing out the statements and the formulas — drops from hours to minutes per material. What you save is typesetting time, not teaching judgement: you decide what is asked, the platform writes it."
+  },
+  "doc_faq_q7": {
+    "ro": "De ce să folosesc platforma?",
+    "en": "Why should I use the platform?"
+  },
+  "doc_faq_a7": {
+    "ro": "Pentru că scrie matematică în locul tău. Descrii în limbaj obișnuit ce vrei, iar platforma produce formulele corect formatate, gata de copiat în Word sau de printat. Poți porni de la un model existent, de la o fișă scrisă de mână sau de la zero, iar rezultatul îl poți ajusta până iese exact cum îți trebuie.",
+    "en": "Because it writes the maths for you. You describe what you want in ordinary language and the platform produces correctly formatted formulas, ready to paste into Word or print. You can start from an existing template, from a handwritten worksheet or from scratch, and keep adjusting the result until it is exactly what you need."
+  },
+  "doc_faq_q8": {
+    "ro": "Dacă nu înțeleg cum să folosesc platforma, ce fac?",
+    "en": "What do I do if I do not understand how to use the platform?"
+  },
+  "doc_faq_a8": {
+    "ro": "Deschide Ghidul din meniul de sus — acolo fiecare mod este explicat pas cu pas, cu exemple. Dacă tot nu e clar, scrie-ne la <a class=\"text-cyan-600 font-semibold\" href=\"mailto:profuleficient@gmail.com\">profuleficient@gmail.com</a> și îți răspundem noi. Nu ai nevoie de cunoștințe tehnice: dacă poți descrie în cuvinte ce test vrei, poți folosi platforma.",
+    "en": "Open the Guide in the top menu — every mode is explained there step by step, with examples. If it is still unclear, write to us at <a class=\"text-cyan-600 font-semibold\" href=\"mailto:profuleficient@gmail.com\">profuleficient@gmail.com</a> and we will help. You need no technical knowledge: if you can describe the test you want in words, you can use the platform."
+  },
   "doc_faq_q5": {
     "ro": "Ce versiuni de BAC sunt disponibile?",
     "en": "What BAC versions are available?"
@@ -2328,28 +2472,76 @@
     "en": "The platform at a glance"
   },
   "landing_trust_modes_label": {
-    "ro": "Moduri de generare",
-    "en": "Generation modes"
+    "ro": "Funcționalități pentru profesori",
+    "en": "Features for teachers"
   },
   "landing_trust_languages_label": {
     "ro": "Limbi disponibile",
     "en": "Available languages"
   },
   "landing_trust_ai_label": {
-    "ro": "Motor AI",
-    "en": "AI engine"
+    "ro": "Profile acoperite",
+    "en": "Covered specializations"
   },
   "landing_trust_ai_value": {
-    "ro": "Google Gemini",
-    "en": "Google Gemini"
+    "ro": "M1 · M2 · M3 · M_ped",
+    "en": "M1 · M2 · M3 · M_ped"
   },
   "landing_trust_export_label": {
     "ro": "Export compatibil",
     "en": "Export compatible"
   },
   "landing_trust_export_value": {
-    "ro": "Microsoft Word",
-    "en": "Microsoft Word"
+    "ro": "Word și PDF",
+    "en": "Word & PDF"
+  },
+  "landing_quote": {
+    "ro": "Programul mă ajută enorm să economisesc timp redactând materiale pentru meditațiile pe care le susțin la matematică",
+    "en": "The program saves me an enormous amount of time writing up materials for the maths tutoring I give"
+  },
+  "landing_quote_author": {
+    "ro": "Christine Graef",
+    "en": "Christine Graef"
+  },
+  "acc_active_style": {
+    "ro": "Stil activ",
+    "en": "Active style"
+  },
+  "acc_active_style_hint": {
+    "ro": "Stilul activ este folosit automat pentru fiecare material nou pe care îl generezi.",
+    "en": "The active style is applied automatically to every new material you generate."
+  },
+  "acc_set_active": {
+    "ro": "Folosește acest stil",
+    "en": "Use this style"
+  },
+  "acc_is_active": {
+    "ro": "Activ",
+    "en": "Active"
+  },
+  "acc_edit_style": {
+    "ro": "Modifică",
+    "en": "Edit"
+  },
+  "acc_save_changes": {
+    "ro": "Salvează modificările",
+    "en": "Save changes"
+  },
+  "acc_cancel": {
+    "ro": "Renunță",
+    "en": "Cancel"
+  },
+  "acc_delete_style": {
+    "ro": "Șterge",
+    "en": "Delete"
+  },
+  "acc_delete_confirm": {
+    "ro": "Ștergi definitiv acest stil?",
+    "en": "Delete this style permanently?"
+  },
+  "acc_new_style": {
+    "ro": "Adaugă un stil nou",
+    "en": "Add a new style"
   },
   "landing_final_note": {
     "ro": "Gratuit la înregistrare. Nu este necesar niciun card bancar.",
@@ -3134,5 +3326,433 @@
   "remove_file": {
     "ro": "Elimină fișierul",
     "en": "Remove file"
+  },
+  "select_all": {
+    "ro": "Selectează tot",
+    "en": "Select all"
+  },
+  "deselect_all": {
+    "ro": "Deselectează tot",
+    "en": "Deselect all"
+  },
+  "download_pdf": {
+    "ro": "Descarcă PDF",
+    "en": "Download PDF"
+  },
+  "download_docx": {
+    "ro": "Descarcă DOCX",
+    "en": "Download DOCX"
+  },
+  "close": {
+    "ro": "Închide",
+    "en": "Close"
+  },
+  "cancel": {
+    "ro": "Anulează",
+    "en": "Cancel"
+  },
+  "sheet_dialog_title": {
+    "ro": "Detaliile fișei",
+    "en": "Worksheet details"
+  },
+  "sheet_dialog_hint": {
+    "ro": "Completează doar ce vrei să apară pe foaie. Lași totul gol → doar exercițiile, numerotate.",
+    "en": "Fill in only what should appear on the page. Leave it all blank → just the numbered exercises."
+  },
+  "sheet_title_label": {
+    "ro": "Titlu",
+    "en": "Title"
+  },
+  "sheet_title_ph": {
+    "ro": "Ex: Integrale definite — recapitulare",
+    "en": "e.g. Definite integrals — review"
+  },
+  "sheet_type_label": {
+    "ro": "Scopul fișei",
+    "en": "Purpose"
+  },
+  "sheet_type_none": {
+    "ro": "— fără —",
+    "en": "— none —"
+  },
+  "sheet_type_tema": {
+    "ro": "Temă",
+    "en": "Homework"
+  },
+  "sheet_type_clasa": {
+    "ro": "Exerciții în clasă",
+    "en": "Classwork"
+  },
+  "sheet_type_r1": {
+    "ro": "Test — Rândul 1",
+    "en": "Test — Row 1"
+  },
+  "sheet_type_r2": {
+    "ro": "Test — Rândul 2",
+    "en": "Test — Row 2"
+  },
+  "sheet_type_fisa": {
+    "ro": "Fișă de lucru",
+    "en": "Worksheet"
+  },
+  "sheet_type_evaluare": {
+    "ro": "Evaluare",
+    "en": "Assessment"
+  },
+  "sheet_type_recap": {
+    "ro": "Recapitulare",
+    "en": "Review"
+  },
+  "sheet_class_label": {
+    "ro": "Clasa",
+    "en": "Class"
+  },
+  "sheet_class_ph": {
+    "ro": "Ex: a XII-a B",
+    "en": "e.g. 12th B"
+  },
+  "sheet_teacher_label": {
+    "ro": "Profesor",
+    "en": "Teacher"
+  },
+  "sheet_teacher_ph": {
+    "ro": "Opțional",
+    "en": "Optional"
+  },
+  "sheet_include_date": {
+    "ro": "Scrie data de azi pe fișă",
+    "en": "Print today's date on the sheet"
+  },
+  "sheet_numbering": {
+    "ro": "Numerotează exercițiile",
+    "en": "Number the exercises"
+  },
+  "sheet_sections": {
+    "ro": "Separă răspunsurile în „Subiectul I, II, …”",
+    "en": "Split replies into “Subject I, II, …”"
+  },
+  "sheet_restart": {
+    "ro": "Renumerotează de la 1 în fiecare subiect",
+    "en": "Restart numbering in each subject"
+  },
+  "sheet_create": {
+    "ro": "Creează fișa",
+    "en": "Create sheet"
+  },
+  "no_classes_cta": {
+    "ro": "Creează prima clasă",
+    "en": "Create your first class"
+  },
+  "load_demo_btn": {
+    "ro": "Încarcă date demo",
+    "en": "Load demo data"
+  },
+  "load_demo_hint": {
+    "ro": "Adaugă 4 clase demonstrative cu elevi și note de exemplu, ca să vezi cum funcționează secțiunea.",
+    "en": "Adds 4 demo classes with sample students and grades so you can see how the section works."
+  },
+  "minutes_per_ex_label": {
+    "ro": "Minute/exercițiu",
+    "en": "Minutes per exercise"
+  },
+  "minutes_per_ex_ph": {
+    "ro": "ex: 6",
+    "en": "e.g. 6"
+  },
+  "view_uploaded_test": {
+    "ro": "Vezi subiectul",
+    "en": "View test"
+  },
+  "view_uploaded_solution": {
+    "ro": "Vezi rezolvarea",
+    "en": "View solution"
+  },
+  "transcript_label": {
+    "ro": "Ce a citit AI din lucrare",
+    "en": "What the AI read from the paper"
+  },
+  "ai_unavailable_note": {
+    "ro": "Analiza AI nu a fost disponibilă — valorile afișate sunt calculate din datele introduse.",
+    "en": "AI analysis was unavailable — the values shown are computed from the entered data."
+  },
+  "no_grade_yet": {
+    "ro": "fără note",
+    "en": "no grades yet"
+  },
+  "metrics_explainer": {
+    "ro": "Toate valorile din tabel sunt calculate din rezultatele înregistrate. Adaugă o lucrare în tabul „Recenzie” al unui elev pentru a le actualiza.",
+    "en": "Every value in this table is computed from recorded results. Add a paper in a student's „Review” tab to update them."
+  },
+  "bac_profile_label": {
+    "ro": "Profil BAC",
+    "en": "BAC profile"
+  },
+  "bac_profile_m1": {
+    "ro": "M_mate-info",
+    "en": "M_mate-info"
+  },
+  "bac_profile_m2": {
+    "ro": "M_științe ale naturii",
+    "en": "M_natural sciences"
+  },
+  "bac_profile_m3": {
+    "ro": "M_tehnologic",
+    "en": "M_technological"
+  },
+  "bac_profile_ped": {
+    "ro": "M_pedagogic (incomplet)",
+    "en": "M_pedagogic (incomplete)"
+  },
+  "difficulty_hard": {
+    "ro": "Dificil",
+    "en": "Hard"
+  },
+  "difficulty_olympic": {
+    "ro": "Olimpic (peste nivel BAC)",
+    "en": "Olympiad (above BAC level)"
+  },
+  "m5_lessons_ph": {
+    "ro": "Opțional. Ex: derivate, matrici",
+    "en": "Optional. e.g. derivatives, matrices"
+  },
+  "m5_avoid_ph": {
+    "ro": "Opțional. Ex: integrale",
+    "en": "Optional. e.g. integrals"
+  },
+  "m_analytic_geometry": {
+    "ro": "Geometrie analitică",
+    "en": "Analytic geometry"
+  },
+  "m_plane_geometry": {
+    "ro": "Geometrie plană",
+    "en": "Plane geometry"
+  },
+  "m_percentages": {
+    "ro": "Procente",
+    "en": "Percentages"
+  },
+  "ai_thinking": {
+    "ro": "Se generează răspunsul…",
+    "en": "Generating the answer…"
+  },
+  "ai_transcribing": {
+    "ro": "Se citește scrisul de mână…",
+    "en": "Reading the handwriting…"
+  },
+  "ai_reading_model": {
+    "ro": "Se citește modelul încărcat…",
+    "en": "Reading the uploaded model…"
+  },
+  "ai_working": {
+    "ro": "Se lucrează…",
+    "en": "Working…"
+  },
+  "ai_failed": {
+    "ro": "Răspunsul nu a putut fi generat.",
+    "en": "The answer could not be generated."
+  },
+  "ai_retry": {
+    "ro": "Încearcă din nou",
+    "en": "Try again"
+  },
+  "qa_solve_test": {
+    "ro": "Rezolvare test",
+    "en": "Solve the test"
+  },
+  "qa_row_two": {
+    "ro": "Generează rândul 2",
+    "en": "Generate row 2"
+  },
+  "qa_similar": {
+    "ro": "Generează similare",
+    "en": "Generate similar"
+  },
+  "qa_sent": {
+    "ro": "Trimis",
+    "en": "Sent"
+  },
+  "archive_title": {
+    "ro": "Subiecte BAC oficiale",
+    "en": "Official BAC papers"
+  },
+  "archive_sub": {
+    "ro": "Subiectele date la bacalaureat, pe profiluri și ani.",
+    "en": "Past baccalaureate papers, by profile and year."
+  },
+  "archive_back": {
+    "ro": "Înapoi la generator",
+    "en": "Back to generator"
+  },
+  "archive_all_profiles": {
+    "ro": "Toate profilurile",
+    "en": "All profiles"
+  },
+  "archive_all_years": {
+    "ro": "Toți anii",
+    "en": "All years"
+  },
+  "archive_year": {
+    "ro": "An",
+    "en": "Year"
+  },
+  "archive_filter": {
+    "ro": "Filtrează",
+    "en": "Filter"
+  },
+  "archive_empty": {
+    "ro": "Niciun subiect pentru filtrele alese.",
+    "en": "No papers match these filters."
+  },
+  "archive_all": {
+    "ro": "Toate subiectele",
+    "en": "All papers"
+  },
+  "archive_credit": {
+    "ro": "Subiecte publice, Ministerul Educației / Centrul Național de Politici și Evaluare în Educație.",
+    "en": "Public exam papers, Romanian Ministry of Education."
+  },
+  "practice_title": {
+    "ro": "Generator de exerciții",
+    "en": "Exercise generator"
+  },
+  "practice_subtitle": {
+    "ro": "Configurează profilul, capitolele și dificultatea. Lasă seed-ul gol pentru un set nou sau introdu unul cunoscut pentru a regenera exact același set.",
+    "en": "Set the profile, chapters and difficulty. Leave the seed empty for a new set, or enter a known one to rebuild exactly the same set."
+  },
+  "practice_profile": {
+    "ro": "Profil",
+    "en": "Profile"
+  },
+  "practice_difficulty": {
+    "ro": "Dificultate",
+    "en": "Difficulty"
+  },
+  "practice_chapters": {
+    "ro": "Capitole",
+    "en": "Chapters"
+  },
+  "practice_count": {
+    "ro": "Număr de exerciții",
+    "en": "Number of exercises"
+  },
+  "practice_seed": {
+    "ro": "Seed (opțional)",
+    "en": "Seed (optional)"
+  },
+  "practice_seed_ph": {
+    "ro": "ex.: 7a3b1f",
+    "en": "e.g. 7a3b1f"
+  },
+  "practice_generate": {
+    "ro": "Generează",
+    "en": "Generate"
+  },
+  "practice_regenerate": {
+    "ro": "Generează din nou",
+    "en": "Generate again"
+  },
+  "practice_generated": {
+    "ro": "exerciții generate",
+    "en": "exercises generated"
+  },
+  "practice_answer": {
+    "ro": "Răspuns",
+    "en": "Answer"
+  },
+  "practice_steps": {
+    "ro": "Pași",
+    "en": "Steps"
+  },
+  "practice_select": {
+    "ro": "Selectează",
+    "en": "Select"
+  },
+  "practice_selected": {
+    "ro": "selectate",
+    "en": "selected"
+  },
+  "practice_question": {
+    "ro": "Întrebarea",
+    "en": "The question"
+  },
+  "practice_export_pdf": {
+    "ro": "Exportă PDF",
+    "en": "Export PDF"
+  },
+  "practice_export_docx": {
+    "ro": "Exportă DOCX",
+    "en": "Export DOCX"
+  },
+  "practice_with_sol": {
+    "ro": "Include rezolvările",
+    "en": "Include solutions"
+  },
+  "practice_select_all": {
+    "ro": "Selectează tot",
+    "en": "Select all"
+  },
+  "practice_clear": {
+    "ro": "Golește selecția",
+    "en": "Clear selection"
+  },
+  "practice_close": {
+    "ro": "Închide",
+    "en": "Close"
+  },
+  "practice_empty": {
+    "ro": "Alege cel puțin un capitol disponibil pentru profilul și dificultatea selectate.",
+    "en": "Pick at least one chapter available for the chosen profile and difficulty."
+  },
+  "practice_unavailable": {
+    "ro": "Indisponibil la acest profil sau nivel",
+    "en": "Not available at this profile or level"
+  },
+  "practice_sheet_title": {
+    "ro": "Titlul fișei",
+    "en": "Worksheet title"
+  },
+  "practice_sheet_default": {
+    "ro": "Fișă de exerciții",
+    "en": "Exercise worksheet"
+  },
+  "practice_nav": {
+    "ro": "Exerciții",
+    "en": "Practice"
+  },
+  "guide_title": {
+    "ro": "Ghid aplicație",
+    "en": "App guide"
+  },
+  "guide_subtitle": {
+    "ro": "Îți spun unde să mergi pentru ce vrei să faci",
+    "en": "Tells you where to go for what you want to do"
+  },
+  "guide_intro": {
+    "ro": "Spune-mi ce vrei să pregătești azi și îți arăt pas cu pas unde se face în aplicație.",
+    "en": "Tell me what you want to prepare today and I'll show you step by step where to do it in the app."
+  },
+  "guide_placeholder": {
+    "ro": "Ex: vreau un test pentru clasa a XI-a la derivate…",
+    "en": "e.g. I want a test on derivatives for 11th grade…"
+  },
+  "guide_q1": {
+    "ro": "Vreau să fac un test după un model",
+    "en": "I want to make a test from a model"
+  },
+  "guide_q2": {
+    "ro": "Am exerciții scrise de mână",
+    "en": "I have handwritten exercises"
+  },
+  "guide_q3": {
+    "ro": "Vreau o variantă de BAC",
+    "en": "I want a BAC variant"
+  },
+  "guide_error": {
+    "ro": "Ghidul nu a putut răspunde. Încearcă din nou.",
+    "en": "The guide could not answer. Try again."
+  },
+  "m1_teaching_assistant": {
+    "ro": "Asistent predare",
+    "en": "Teaching assistant"
   }
 }

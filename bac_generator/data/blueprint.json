@@ -1,0 +1,326 @@
+{
+ "schema": 1,
+ "generated": "2026-10-10",
+ "source": "BACVARIANTS/BAC_PREV_SUBJECTS",
+ "papers": 217,
+ "note": "Topic shares measured from official papers. I.1 is hand-authored because the radical glyph is absent from the PDF text layer; `unclassified` records how many papers a slot could not be read from.",
+ "profiles": {
+  "M1": {
+   "papers": 56,
+   "slots": {
+    "I.1": {
+     "n": 56,
+     "unclassified": 23,
+     "topics": {
+      "Numere complexe": 0.3,
+      "Progresii": 0.25,
+      "Radicali": 0.25,
+      "Puteri": 0.2
+     },
+     "hand_authored": true
+    },
+    "I.2": {
+     "n": 56,
+     "unclassified": 7,
+     "topics": {
+      "Funcții": 0.786
+     }
+    },
+    "I.3": {
+     "n": 56,
+     "unclassified": 24,
+     "topics": {
+      "Logaritmi": 0.268,
+      "Ecuații": 0.268
+     }
+    },
+    "I.4": {
+     "n": 56,
+     "unclassified": 3,
+     "topics": {
+      "Probabilități": 0.911
+     }
+    },
+    "I.5": {
+     "n": 56,
+     "unclassified": 2,
+     "topics": {
+      "Geometrie analitică": 0.804,
+      "Geometrie plană": 0.143
+     }
+    },
+    "I.6": {
+     "n": 54,
+     "unclassified": 0,
+     "topics": {
+      "Trigonometrie": 0.63,
+      "Geometrie plană": 0.37
+     }
+    },
+    "II.p1": {
+     "n": 56,
+     "unclassified": 0,
+     "topics": {
+      "Matrici": 1.0
+     }
+    },
+    "II.p2": {
+     "n": 56,
+     "unclassified": 15,
+     "topics": {
+      "Polinoame": 0.357,
+      "Legi de compoziție": 0.339
+     }
+    },
+    "III.p1": {
+     "n": 56,
+     "unclassified": 0,
+     "topics": {
+      "Derivate": 0.893
+     }
+    },
+    "III.p2": {
+     "n": 56,
+     "unclassified": 5,
+     "topics": {
+      "Integrale definite": 0.411,
+      "Limite": 0.321
+     }
+    }
+   }
+  },
+  "M2": {
+   "papers": 56,
+   "slots": {
+    "I.1": {
+     "n": 56,
+     "unclassified": 20,
+     "topics": {
+      "Progresii": 0.39,
+      "Radicali": 0.31,
+      "Puteri": 0.3
+     },
+     "hand_authored": true
+    },
+    "I.2": {
+     "n": 56,
+     "unclassified": 4,
+     "topics": {
+      "Funcții": 0.804
+     }
+    },
+    "I.3": {
+     "n": 56,
+     "unclassified": 23,
+     "topics": {
+      "Ecuații": 0.357,
+      "Logaritmi": 0.161
+     }
+    },
+    "I.4": {
+     "n": 56,
+     "unclassified": 5,
+     "topics": {
+      "Probabilități": 0.839
+     }
+    },
+    "I.5": {
+     "n": 56,
+     "unclassified": 1,
+     "topics": {
+      "Geometrie analitică": 0.839
+     }
+    },
+    "I.6": {
+     "n": 52,
+     "unclassified": 0,
+     "topics": {
+      "Trigonometrie": 0.596,
+      "Geometrie plană": 0.404
+     }
+    },
+    "II.p1": {
+     "n": 56,
+     "unclassified": 0,
+     "topics": {
+      "Matrici": 1.0
+     }
+    },
+    "II.p2": {
+     "n": 56,
+     "unclassified": 24,
+     "topics": {
+      "Polinoame": 0.286,
+      "Legi de compoziție": 0.25
+     }
+    },
+    "III.p1": {
+     "n": 56,
+     "unclassified": 1,
+     "topics": {
+      "Derivate": 0.893
+     }
+    },
+    "III.p2": {
+     "n": 56,
+     "unclassified": 2,
+     "topics": {
+      "Integrale definite": 0.589,
+      "Logaritmi": 0.179,
+      "Funcții": 0.125
+     }
+    }
+   }
+  },
+  "M3": {
+   "papers": 56,
+   "slots": {
+    "I.1": {
+     "n": 56,
+     "unclassified": 48,
+     "topics": {
+      "Radicali": 0.4,
+      "Puteri": 0.35,
+      "Progresii": 0.25
+     },
+     "hand_authored": true
+    },
+    "I.2": {
+     "n": 56,
+     "unclassified": 7,
+     "topics": {
+      "Funcții": 0.804
+     }
+    },
+    "I.3": {
+     "n": 56,
+     "unclassified": 24,
+     "topics": {
+      "Ecuații": 0.375,
+      "Logaritmi": 0.196
+     }
+    },
+    "I.4": {
+     "n": 56,
+     "unclassified": 3,
+     "topics": {
+      "Probabilități": 0.5,
+      "Procente": 0.446
+     }
+    },
+    "I.5": {
+     "n": 56,
+     "unclassified": 0,
+     "topics": {
+      "Geometrie analitică": 1.0
+     }
+    },
+    "I.6": {
+     "n": 54,
+     "unclassified": 1,
+     "topics": {
+      "Trigonometrie": 0.537,
+      "Geometrie plană": 0.444
+     }
+    },
+    "II.p1": {
+     "n": 56,
+     "unclassified": 0,
+     "topics": {
+      "Matrici": 1.0
+     }
+    },
+    "II.p2": {
+     "n": 56,
+     "unclassified": 26,
+     "topics": {
+      "Polinoame": 0.321,
+      "Legi de compoziție": 0.196
+     }
+    },
+    "III.p1": {
+     "n": 56,
+     "unclassified": 0,
+     "topics": {
+      "Derivate": 0.982
+     }
+    },
+    "III.p2": {
+     "n": 56,
+     "unclassified": 2,
+     "topics": {
+      "Integrale definite": 0.589,
+      "Logaritmi": 0.196
+     }
+    }
+   }
+  },
+  "M_PED": {
+   "papers": 49,
+   "slots": {
+    "I.1": {
+     "n": 49,
+     "unclassified": 36,
+     "topics": {
+      "Radicali": 0.4,
+      "Puteri": 0.36,
+      "Progresii": 0.24
+     },
+     "hand_authored": true
+    },
+    "I.2": {
+     "n": 49,
+     "unclassified": 5,
+     "topics": {
+      "Funcții": 0.816
+     }
+    },
+    "I.3": {
+     "n": 49,
+     "unclassified": 20,
+     "topics": {
+      "Ecuații": 0.367,
+      "Logaritmi": 0.163
+     }
+    },
+    "I.4": {
+     "n": 49,
+     "unclassified": 5,
+     "topics": {
+      "Procente": 0.49,
+      "Probabilități": 0.347
+     }
+    },
+    "I.5": {
+     "n": 49,
+     "unclassified": 2,
+     "topics": {
+      "Geometrie analitică": 0.796
+     }
+    },
+    "I.6": {
+     "n": 46,
+     "unclassified": 4,
+     "topics": {
+      "Trigonometrie": 0.478,
+      "Geometrie plană": 0.435
+     }
+    },
+    "II.tema": {
+     "n": 49,
+     "unclassified": 11,
+     "topics": {
+      "Legi de compoziție": 0.755
+     }
+    },
+    "III.tema": {
+     "n": 49,
+     "unclassified": 0,
+     "topics": {
+      "Matrici": 1.0
+     }
+    }
+   }
+  }
+ }
+}

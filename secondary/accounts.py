@@ -68,7 +68,7 @@ def style_function(apology, db):
         ))
         db.commit()
 
-        return redirect("/menu")
+        return redirect(request.form.get("next") or "/menu")
 
     return render_template("style.html", user=user)
 
@@ -223,14 +223,100 @@ def register_function(db, apology):
 
     return render_template("register.html")
 
+# Style.test_type is stored as a slug; these are the translation keys that
+# render it back as a label. Older rows may still hold the BAC slugs, which the
+# selectors no longer offer, so they stay listed here.
+TEST_TYPE_LABEL_KEYS = {
+    "practice": "acc_practice",
+    "theory": "acc_theory",
+    "bac_full": "acc_bac_model",
+    "bac_partial": "acc_bac_partial",
+    "guided": "acc_guided",
+    "formula_help": "acc_formula_help",
+}
+
+
+def _user_styles(db, user_id):
+    return db.scalars(
+        select(Style).where(Style.user_id == user_id).order_by(Style.created_at.desc())
+    ).all()
+
+
+def _active_style_id(user, styles):
+    """The active style, but only if it still belongs to the user.
+
+    active_style_id has no foreign key (see models.User), so a style deleted
+    from another tab can leave a dangling id behind. Treat that as "none set".
+    """
+    if user.active_style_id and any(s.id == user.active_style_id for s in styles):
+        return user.active_style_id
+    return None
+
+
 def account_function(db):
     user = db.get(User, session["user_id"])
+    styles = _user_styles(db, session["user_id"])
 
     return render_template(
         "account.html",
         username=user.username,
-        email=user.email
+        email=user.email,
+        user=user,
+        styles=styles,
+        active_style_id=_active_style_id(user, styles),
+        type_label_keys=TEST_TYPE_LABEL_KEYS,
     )
+
+
+def activate_style_function(db, apology, style_id):
+    """Pick the style every new conversation inherits."""
+    style = db.get(Style, style_id)
+    if not style or style.user_id != session["user_id"]:
+        return apology("stil inexistent", 404)
+
+    user = db.get(User, session["user_id"])
+    # Clicking the active style again clears it, so there is a way back to
+    # "no style" without deleting anything.
+    user.active_style_id = None if user.active_style_id == style_id else style_id
+    db.commit()
+    return redirect("/account")
+
+
+def edit_style_function(db, apology, style_id):
+    style = db.get(Style, style_id)
+    if not style or style.user_id != session["user_id"]:
+        return apology("stil inexistent", 404)
+
+    style_name = (request.form.get("style_name") or "").strip()
+    test_type = (request.form.get("test_type") or "").strip()
+    style_description = (request.form.get("style_description") or "").strip()
+
+    if not style_name:
+        return apology("adauga numele stilului", 400)
+    if not test_type:
+        return apology("selecteaza tipul", 400)
+    if not style_description:
+        return apology("adauga descriere", 400)
+
+    style.style_name = style_name
+    style.test_type = test_type
+    style.style_description = style_description
+    db.commit()
+    return redirect("/account")
+
+
+def delete_style_function(db, apology, style_id):
+    style = db.get(Style, style_id)
+    if not style or style.user_id != session["user_id"]:
+        return apology("stil inexistent", 404)
+
+    user = db.get(User, session["user_id"])
+    if user.active_style_id == style_id:
+        user.active_style_id = None
+
+    db.delete(style)
+    db.commit()
+    return redirect("/account")
 
 def password_function(db, apology):
     if request.method == "POST":
