@@ -51,3 +51,4 @@ waitlist/whatsapp_local.jsonl
 # The extracted corpus is what the app reads; the zip beside it is a 19MB
 # duplicate of the same PDFs.
 BACVARIANTS/BACVARIANTS.zip
+flask_session/
